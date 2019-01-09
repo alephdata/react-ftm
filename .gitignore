@@ -1,2 +1,8 @@
 # IDA
 .idea
+
+# Dynamic content
+dist/
+
+# Dependencies
+node_modules
