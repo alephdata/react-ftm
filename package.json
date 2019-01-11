@@ -22,5 +22,10 @@
     "webpack": "^4.28.1",
     "webpack-cli": "^3.2.1",
     "webpack-dev-server": "^3.1.14"
+  },
+  "dependencies": {
+    "@types/d3": "^5.5.0",
+    "d3": "^5.7.0",
+    "rxjs": "^6.3.3"
   }
 }
