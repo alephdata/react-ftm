@@ -4,6 +4,8 @@ import {Selection} from 'd3-selection';
 import {BaseType, Simulation} from "d3";
 import Link, {ILinkDatum} from "./Link";
 import NodeCollection from "./NodeCollection";
+import {LinkCollection} from "./LinkCollection";
+import {merge} from "rxjs";
 
 interface IGraphConfiguration {
     links: ILinkDatum[];
@@ -20,14 +22,12 @@ export default class Graph {
     private readonly width: number;
     private readonly height: number;
     private readonly simulation: Simulation<INodeDatum, undefined>;
-    private links: Link[] = [];
+    private links: LinkCollection;
     private nodes: NodeCollection;
     private containerG: Selection<SVGGElement, any, HTMLElement | null, undefined>;
     private linkContainer: Selection<SVGLineElement, any, BaseType, any>;
     private nodeContainer: Selection<SVGCircleElement, any, BaseType, any>;
 
-
-    // private container: Selection<BaseType, any, HTMLElement, any>;
     constructor(configuration: IGraphConfiguration) {
 
         if (configuration.containerElement) {
@@ -51,9 +51,13 @@ export default class Graph {
         }
 
         if (configuration.links) {
-            this.links = configuration.links.map(linkDatum => new Link({
-                linkDatum
-            }));
+            this.links = new LinkCollection({
+                pureCollection: configuration.links.map((linkDatum) => new Link({
+                    linkDatum
+                }))
+            })
+        } else {
+            this.links = new LinkCollection({})
         }
 
         if (configuration.nodes) {
@@ -89,11 +93,14 @@ export default class Graph {
             .alphaTarget(1)
             .on("tick", this.ticked.bind(this));
         this.restart();
-        this.nodes.onAdded
-            .subscribe(()=> this.restart() )
+        merge(this.nodes.onChange, this.links.onChange)
+            .subscribe(()=> {
+                console.log('RESTARTING');
+                this.restart()
+            } )
     }
 
-    restart() {
+    private restart() {
         const {getColor} = this;
         // Apply the general update pattern to the nodes.
         this.nodeContainer = this.nodeContainer
@@ -110,7 +117,7 @@ export default class Graph {
             .call(this.onDrag(this.simulation));
 
         // Apply the general update pattern to the links.
-        this.linkContainer = this.linkContainer.data(this.links);
+        this.linkContainer = this.linkContainer.data(this.links.toArray());
         this.linkContainer.exit().remove();
         this.linkContainer = this.linkContainer.enter().append("line")
             .attr("stroke", function(d) { return getColor(d.value); })
@@ -119,7 +126,7 @@ export default class Graph {
         // Update and restart the simulation.
         this.simulation.nodes(this.nodes.toArray());
         this.simulation
-            .force("link", d3.forceLink<INodeDatum, ILinkDatum>(this.links).distance(200).id(d=>d.id))
+            .force("link", d3.forceLink<INodeDatum, ILinkDatum>(this.links.toArray()).distance(200).id(d=>d.id))
 
         this.simulation.alpha(1).restart();
     }
@@ -164,11 +171,23 @@ export default class Graph {
             .on("end", dragended);
     }
 
-    addNode(nodeDatum: INodeDatum) {
-        this.nodes.add(new Node({nodeDatum}))
+    addNode(nodeDatum: INodeDatum): Node {
+        const node = new Node({nodeDatum});
+        this.nodes.add(node);
+        return node;
+    }
+    removeNode(node:Node){
+        this.nodes.remove(node);
     }
 
     addLink(linkDatum: ILinkDatum): Link {
-        return new Link({linkDatum})
+        const link = new Link({ linkDatum });
+        this.links.add(link);
+        return link;
     }
+    removeLink(link:Link){
+        this.links.remove(link);
+    }
+
+    UNSAFE_restart = this.restart
 }
