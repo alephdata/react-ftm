@@ -9,7 +9,7 @@ const data = {
     ],
     "links": [
         {"source": "Napoleon", "target": "Davit", "value": 1},
-        {"source": "Davit", "target": "Napoleon", "value": 1},
+        {"source": "Davit", "target": "Napoledddon", "value": 2},
     ]
 };
 const links = data.links.map(d => Object.create(d));

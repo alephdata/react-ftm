@@ -1,6 +1,7 @@
 import {Subject, merge, Observable, Observer, from} from "rxjs";
 import {endWith, exhaust, filter, map, tap} from "rxjs/operators";
 import {INodeDatum, Node} from "./Node";
+import CommonCollection from "./CommonCollection";
 
 interface INodeCollectionConfiguration {
     nodeList?: Array<Node>
@@ -15,8 +16,10 @@ interface INodeCollectionEvent {
     type: NodeCollectionEventTypes,
     node: Node
 }
+export default  class NodeCollection extends CommonCollection<INodeDatum, Node>{
+}
 
-export default class NodeCollection {
+export  class NodeCollectionN {
     private nodeStorage: Set<Node> = new Set<Node>();
 
     constructor(configuration: INodeCollectionConfiguration) {
@@ -57,7 +60,7 @@ export default class NodeCollection {
     }
 
     toArray(): Array<INodeDatum> {
-        return Array.from(this.nodeStorage.values()).map(n => n.toObject());
+        return Array.from(this.nodeStorage.values()).map(n => n.toDatum());
     }
     readonly add : Subject<Node> = Reflect.construct(Subject, [])
         // .pipe(map(

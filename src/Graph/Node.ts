@@ -1,4 +1,6 @@
-export interface INode {
+import {IEntity} from "./Entity";
+
+export interface INode<IDatum> extends IEntity<IDatum>{
 
 }
 export interface INodeDatum {
@@ -36,12 +38,12 @@ interface INodeConfiguration {
     nodeDatum: INodeDatum
 }
 
-export class Node implements INode{
+export class Node implements INode<INodeDatum>{
     private nodeDatum: INodeDatum;
     constructor(configuration:INodeConfiguration){
         this.nodeDatum = configuration.nodeDatum;
     }
-    toObject(){
+    toDatum():INodeDatum{
         return this.nodeDatum;
     }
 }
