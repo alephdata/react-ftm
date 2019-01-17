@@ -1,4 +1,5 @@
-import {IEntity} from "./Entity";
+import {Entity, IEntity} from "./Entity";
+import Schema from "../followthemoney/schema";
 
 export interface INode<IDatum> extends IEntity<IDatum>{
 
@@ -35,15 +36,17 @@ export interface INodeDatum {
     fy?: number | null;
 }
 interface INodeConfiguration {
-    nodeDatum: INodeDatum
+    schema:Schema
 }
 
-export class Node implements INode<INodeDatum>{
-    private nodeDatum: INodeDatum;
+export class Node extends Entity{
+    static fromEntity(entity:Entity){
+        return new Node({schema:entity.schema})
+    }
     constructor(configuration:INodeConfiguration){
-        this.nodeDatum = configuration.nodeDatum;
+        super(configuration.schema);
     }
     toDatum():INodeDatum{
-        return this.nodeDatum;
+        return this;
     }
 }

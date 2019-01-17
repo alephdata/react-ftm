@@ -1,33 +1,43 @@
 import Graph from "../Graph/Graph";
 import {Node} from "../Graph/Node";
 import Link from "../Graph/Link";
+import {entity} from "../testData/entity";
+import {Entity} from "../Graph/Entity";
+import { schemata } from './_schemata';
+import {Model} from "../followthemoney/model";
 
 export function start() {
 
-
-    const data = {
-        "nodes": [
-            {"id": "Davit", "group": 1},
-            {"id": "Napoleon", "group": 20},
-            {"id": "Napoledddon", "group": 20},
-
-        ],
-        "links": [
-            {"source": "Napoleon", "target": "Davit", "value": 1},
-            {"source": "Davit", "target": "Napoledddon", "value": 2},
-        ]
-    };
-
-    const links = data.links.map(d => Object.create(d));
-    const nodes = data.nodes.map(d => Object.create(d));
-
     const alephGraph = new Graph({
-        links,
-        nodes,
-        containerSelector: '#app',
-        height: 400,
-        width: 600
-    })
+        nodes:[],
+        width:100,
+        height:100,
+        containerSelector:'#myGraph',
+        links:[],
+        context: new Model(schemata)
+    });
+
+    const company: Entity = alephGraph.emitThing('Company');
+    company.setProperty('name', 'occrp');
+
+    const person: Entity = alephGraph.emitThing('Person');
+    person.setProperty('name', 'Drew');
+
+    // TODO: describe this type of API
+    // const person: Entity = alephGraph.emitThing('Person',{
+    //     properties:[
+    //         ['name','Drew']
+    //     ]
+    // });
+    const connection: Entity = alephGraph.emitEdge('Ownership')
+        .setProperty('owner', person)
+        .setProperty('asset',company);
+    ;
+
+    alephGraph.addNodes(company, person);
+    alephGraph.addLink(connection);
+
+
 
     let node: Node;
     let link: Link;

@@ -1,4 +1,5 @@
-import {IEntity} from "./Entity";
+import {Entity} from "./Entity";
+import Schema from "../followthemoney/schema";
 
 export interface ILinkDatum {
     source:any,
@@ -8,20 +9,25 @@ export interface ILinkDatum {
 }
 
 interface ILinkConfiguration {
-    linkDatum:ILinkDatum
+    linkDatum?:ILinkDatum,
+    schema: Schema
 }
-export default class Link implements IEntity<ILinkDatum>{
-    source: any;
-    target: any;
-    private conf: ILinkDatum;
-    constructor(configuration:ILinkConfiguration){
-        this.source = configuration.linkDatum.source;
-        this.target = configuration.linkDatum.target;
-        this.value = configuration.linkDatum.value;
-        this.conf = configuration.linkDatum;
+export default class Link extends Entity{
+    static fromEntity(entity:Entity, rest?:ILinkConfiguration){
+        return new Link({schema:entity.schema, ...rest})
     }
-    toDatum(){
-        return this.conf;
+    // source: any;
+    // target: any;
+    // private conf: ILinkDatum;
+    constructor(configuration:ILinkConfiguration){
+        super(configuration.schema);
+        // this.source = configuration.linkDatum.source;
+        // this.target = configuration.linkDatum.target;
+        // this.value = configuration.linkDatum.value;
+        // this.conf = configuration.linkDatum;
+    }
+    toDatum():ILinkDatum{
+        return this;
     }
     id: any;
     value: any;

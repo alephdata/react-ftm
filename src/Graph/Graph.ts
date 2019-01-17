@@ -5,15 +5,20 @@ import {BaseType, Simulation} from "d3";
 import Link, {ILinkDatum} from "./Link";
 import NodeCollection from "./NodeCollection";
 import {LinkCollection} from "./LinkCollection";
-import {merge} from "rxjs";
+import {config, merge} from "rxjs";
+import {Model} from "../followthemoney/model";
+import {Entity} from "./Entity";
+import Property from "../followthemoney/property";
+import {schemata} from "../examples/_schemata";
 
 interface IGraphConfiguration {
-    links: ILinkDatum[];
+    links: Entity[];
     containerElement?: Element,
     containerSelector?: string,
     height: number,
     width: number,
-    nodes: INodeDatum[]
+    nodes: Entity[],
+    context: Model
 }
 
 export default class Graph {
@@ -27,6 +32,7 @@ export default class Graph {
     private containerG: Selection<SVGGElement, any, HTMLElement | null, undefined>;
     private linkContainer: Selection<SVGLineElement, any, BaseType, any>;
     private nodeContainer: Selection<SVGCircleElement, any, BaseType, any>;
+    private readonly context: Model;
 
     constructor(configuration: IGraphConfiguration) {
 
@@ -52,22 +58,25 @@ export default class Graph {
 
         if (configuration.links) {
             this.links = new LinkCollection({
-                pureCollection: configuration.links.map((linkDatum) => new Link({
-                    linkDatum
-                }))
+                graph:this,
+                pureCollection: configuration.links.map((entity) => Link.fromEntity(entity))
             })
         } else {
-            this.links = new LinkCollection({})
+            this.links = new LinkCollection({ graph:this })
         }
 
         if (configuration.nodes) {
             this.nodes = new NodeCollection({
-                pureCollection: configuration.nodes.map((nodeDatum) => new Node({
-                    nodeDatum
-                }))
+                graph:this,
+                pureCollection: configuration.links.map((entity) => Node.fromEntity(entity))
             })
         } else {
-            this.nodes = new NodeCollection({})
+            this.nodes = new NodeCollection({ graph : this })
+        }
+        if(configuration.context){
+            this.context = configuration.context; 
+        }else{
+            throw console.error(new Error('Context is required'));
         }
 
         // SETTINGS END ---
@@ -87,7 +96,7 @@ export default class Graph {
         this.nodeContainer = this.containerG.append("g").attr("stroke", "#fff").attr("stroke-width", 1.5).selectAll(".node");
         this.simulation = d3.forceSimulation(this.nodes.toArray())
             .force("charge", d3.forceManyBody().strength(-1000))
-            .force("link", d3.forceLink<INodeDatum, ILinkDatum>(configuration.links).distance(200).id((d) => d.id))
+            .force("link", d3.forceLink<INodeDatum, ILinkDatum>(this.links.toArray()).distance(200).id((d) => d.id))
             .force("x", d3.forceX())
             .force("y", d3.forceY())
             .alphaTarget(1)
@@ -171,22 +180,33 @@ export default class Graph {
             .on("end", dragended);
     }
 
-    addNode(nodeDatum: INodeDatum): Node {
-        const node = new Node({nodeDatum});
+    addNode(entity: Entity): Node {
+        const node = Node.fromEntity(entity);
         this.nodes.add(node);
         return node;
+    }
+    addNodes(...nodes:Array<Entity>):Graph{
+        nodes.forEach(node => this.addNode(node));
+        return this;
     }
     removeNode(node:Node){
         this.nodes.remove(node);
     }
 
-    addLink(linkDatum: ILinkDatum): Link {
-        const link = new Link({ linkDatum });
+    addLink(entity: Entity): Link {
+        const link = Link.fromEntity(entity);
         this.links.add(link);
         return link;
     }
     removeLink(link:Link){
         this.links.remove(link);
+    }
+
+    emitThing(schemaName:string){
+        return Entity.generate(schemaName, this.context);
+    }
+    emitEdge(schemaName:string){
+        return Entity.generate(schemaName, this.context);
     }
 
     UNSAFE_restart = this.restart

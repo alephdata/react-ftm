@@ -1,10 +1,11 @@
 import {Subject, merge, Observable, Observer, from} from "rxjs";
 import {exhaust, filter, map, sample} from "rxjs/operators";
 import {IEntity} from "./Entity";
-import entity from "../testData/entity";
+import Graph from "./Graph";
 
 interface ICommonCollectionConfiguration<EntityType> {
-    pureCollection?: Array<EntityType>
+    pureCollection?: Array<EntityType>,
+    graph: Graph
 }
 
 const enum CommonCollectionEventTypes {
@@ -20,8 +21,14 @@ interface ICommonCollectionEvent <EntityType> {
 export default class CommonCollection<IDatum, EntityType extends IEntity<IDatum>> {
 
     private storage: Set<EntityType> = new Set<EntityType>();
+    private graph: Graph;
 
     constructor(configuration: ICommonCollectionConfiguration<EntityType>) {
+        if(configuration.graph){
+            this.graph = configuration.graph;
+        }else{
+            throw console.error(new Error('property `graph` is required.'))
+        }
         this.addStream
             .pipe(map((entity:EntityType):ICommonCollectionEvent<EntityType> => ({entity, type:CommonCollectionEventTypes.ADDED})))
             .subscribe(this.onAdded);
@@ -58,7 +65,11 @@ export default class CommonCollection<IDatum, EntityType extends IEntity<IDatum>
         return Array.from(this.storage.values()).map(n => n.toDatum());
     }
     readonly addStream : Subject<EntityType> = Reflect.construct(Subject, [])
-        .pipe(filter((entity:EntityType) => !this.has(entity)));
+        .pipe(filter((entity:EntityType) => !this.has(entity)))
+        .pipe(map((entity:EntityType) => {
+            entity.setGraph(this.graph);
+            return entity
+        }));
 
 
     readonly removeStream : Subject<EntityType> = Reflect.construct(Subject,[])

@@ -1,4 +1,4 @@
-import { start } from './examples/ManipulateEntities';
+import { start } from './examples/FtMEntities';
 
 start();
 
