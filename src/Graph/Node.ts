@@ -1,11 +1,10 @@
 import {Entity, IEntity} from "./Entity";
 import Schema from "../followthemoney/schema";
 
-export interface INode<IDatum> extends IEntity<IDatum>{
+export interface INode<IDatum> extends IEntity{
 
 }
 export interface INodeDatum {
-    id:any,
     /**
      * Node’s zero-based index into nodes array. This property is set during the initialization process of a simulation.
      */
@@ -36,17 +35,20 @@ export interface INodeDatum {
     fy?: number | null;
 }
 interface INodeConfiguration {
-    schema:Schema
+    schema:Schema,
+    coordinates?:INodeDatum,
+    entity:Entity
 }
 
-export class Node extends Entity{
+export class Node implements INodeDatum{
+    public x:number = 0;
+    public y:number = 0;
+    public entity: any;
     static fromEntity(entity:Entity){
-        return new Node({schema:entity.schema})
+        return new Node({schema:entity.schema, entity})
     }
     constructor(configuration:INodeConfiguration){
-        super(configuration.schema);
+        this.entity = configuration.entity;
     }
-    toDatum():INodeDatum{
-        return this;
-    }
+
 }

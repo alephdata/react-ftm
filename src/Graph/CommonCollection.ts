@@ -18,7 +18,7 @@ interface ICommonCollectionEvent <EntityType> {
     entity: EntityType
 }
 
-export default class CommonCollection<IDatum, EntityType extends IEntity<IDatum>> {
+export default class CommonCollection<EntityType extends IEntity> {
 
     private storage: Set<EntityType> = new Set<EntityType>();
     private graph: Graph;
@@ -61,15 +61,11 @@ export default class CommonCollection<IDatum, EntityType extends IEntity<IDatum>
         return this.removeStream.next(entity)
     }
 
-    toArray(): Array<IDatum> {
-        return Array.from(this.storage.values()).map(n => n.toDatum());
+    toArray(): Array<EntityType> {
+        return Array.from(this.storage.values());
     }
     readonly addStream : Subject<EntityType> = Reflect.construct(Subject, [])
         .pipe(filter((entity:EntityType) => !this.has(entity)))
-        .pipe(map((entity:EntityType) => {
-            entity.setGraph(this.graph);
-            return entity
-        }));
 
 
     readonly removeStream : Subject<EntityType> = Reflect.construct(Subject,[])

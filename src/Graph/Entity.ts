@@ -2,13 +2,12 @@ import Schema from "../followthemoney/schema";
 import Graph from "./Graph";
 import {Model} from "../followthemoney/model";
 import {PropertyValue} from "./PropertyValue";
+import Property from "../followthemoney/property";
 
-interface IEntity<IDatum> {
-    toDatum(): IDatum,
-    setGraph(graph:Graph):void
+interface IEntity {
 }
 
-interface IEntityDatum{
+interface IEntityDatum {
     schema: string;
     created_at: string;
     properties: { name: string[] };
@@ -24,31 +23,72 @@ interface IEntityDatum{
 
 export {IEntity}
 
-export class Entity  {
-    static generate(schemaName:string, model:Model):Entity{
+interface beh {
+    properties: {[x:string]:any};
+    id: string;
+}
+export class Entity {
+    static generate(schemaName: string, model: Model, behaviour?:beh): Entity {
         const schema = model.getSchema(schemaName);
-        if(!schema){
+        if (!schema) {
             throw console.error(new Error('Schema is not found'))
         }
-        return new Entity(schema)
+        return new Entity(schema, behaviour)
     }
-    public properties:Array<PropertyValue> = [];
+
+    public id:string;
+    public properties: Map<string, PropertyValue> = new Map();
     public schema: Schema;
 
-    constructor(schema:Schema) {
-        if(schema){
+    constructor(schema: Schema, behaviour?:beh ) {
+        if (schema) {
             this.schema = schema;
-        }else{
+        } else {
             throw console.error(new Error('`schema` name is require'))
         }
-    }
-    setProperty(name:string, value: any): Entity{
-        if(this.schema.hasProperty(name)){
-            const propertyValue = new PropertyValue(name, value, this.schema.getProperty(name));
-            this.properties.push(propertyValue);
-            return this;
+        if(behaviour){
+            this.id = behaviour.id;
+            Object.entries(behaviour.properties).forEach((val) => {
+                this.setProperty(val[0],val[1])
+            })
         }else{
-            throw console.error(new Error('no such a property'));
+            this.id = ''+(Math.random()*1000)
         }
+
+    }
+
+    getEdge(): { source: PropertyValue, target: PropertyValue } {
+        const schemaEdge = this.schema.getEdge();
+        if (schemaEdge) {
+            return {
+                source: this.getProperty(schemaEdge.source),
+                target: this.getProperty(schemaEdge.target),
+            }
+        }
+        throw new Error(`The schema '${this.schema.name}' can be link`);
+    }
+
+    setProperty(name: string, value: any): Entity {
+        if (this.schema.hasProperty(name)) {
+            const propertyValue = new PropertyValue(name, value, this.schema.getProperty(name));
+            this.properties.set(name, propertyValue);
+            return this;
+        } else {
+            throw console.error(new Error('This schema doesn"t implement this property'));
+        }
+    }
+
+    getProperty(name: string): PropertyValue {
+        if (this.properties.has(name)) {
+            return <PropertyValue>this.properties.get(name)
+        } else if (this.schema.hasProperty(name)) {
+            return new PropertyValue(name, undefined, this.schema.getProperty(name))
+        } else {
+            throw new Error(`The schema '${this.schema.name}' does not have property ${name}`);
+        }
+    }
+
+    is(schemaName: string) {
+        return !!~this.schema.schemata.indexOf(schemaName);
     }
 }

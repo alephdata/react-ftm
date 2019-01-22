@@ -10,7 +10,7 @@
     "target": "es6",
     "allowJs": true,
     "resolveJsonModule": true,
-    "lib": ["es2015", "dom"]
+    "lib": ["esnext", "dom"]
   },
   "include": [
     "./src/**/*"

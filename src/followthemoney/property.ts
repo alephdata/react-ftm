@@ -35,7 +35,7 @@ export default class Property {
         return this.behaviour.type;
     }
 
-    extends(parentSchema) {
+    extends(parentSchema:string) {
         return this.behaviour.schema === parentSchema;
     }
 }

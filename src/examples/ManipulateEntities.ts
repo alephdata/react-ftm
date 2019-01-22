@@ -21,6 +21,7 @@ export function start() {
     const links = data.links.map(d => Object.create(d));
     const nodes = data.nodes.map(d => Object.create(d));
 
+    // @ts-ignore
     const alephGraph = new Graph({
         links,
         nodes,
@@ -36,7 +37,6 @@ export function start() {
     const addButton = document.createElement('button');
     addButton.innerText = 'Add new node';
     addButton.addEventListener('click', () => {
-        debugger;
         node = alephGraph.addNode(Object.create({id: 'chut'}));
     });
     if (rootContainer) {

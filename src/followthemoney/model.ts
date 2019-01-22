@@ -12,6 +12,7 @@ interface ISchemaList {
 
 interface ISchemaDatum {
     label:string,
+    required:boolean,
     plural:string,
     uri:string,
     schemata: string[],

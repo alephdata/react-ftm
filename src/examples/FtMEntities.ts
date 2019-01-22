@@ -1,7 +1,7 @@
 import Graph from "../Graph/Graph";
 import {Node} from "../Graph/Node";
 import Link from "../Graph/Link";
-import {entity} from "../testData/entity";
+import {data} from "../testData/az_alievs";
 import {Entity} from "../Graph/Entity";
 import { schemata } from './_schemata';
 import {Model} from "../followthemoney/model";
@@ -10,18 +10,36 @@ export function start() {
 
     const alephGraph = new Graph({
         nodes:[],
-        width:100,
-        height:100,
-        containerSelector:'#myGraph',
+        height: 1080,
+        width: 1179,
+        containerSelector:'#app',
         links:[],
         context: new Model(schemata)
     });
 
-    const company: Entity = alephGraph.emitThing('Company');
-    company.setProperty('name', 'occrp');
+    data
+        .map(entityDatum => alephGraph.emitEntity(entityDatum))
+        .filter(entity => entity)
+        .sort((entity1:Entity, entity2:Entity) => {
+            return Number(entity1.is('Interval')) - Number(entity2.is('Interval'))
+        })
+        .forEach((entity:Entity) => {
 
-    const person: Entity = alephGraph.emitThing('Person');
-    person.setProperty('name', 'Drew');
+            if((<Entity>entity).is('Thing')){
+                console.log('entity was added', entity);
+                alephGraph.addNode((<Entity>entity))
+            }else if((<Entity>entity).is('Interval')){
+                console.log('link was added', entity);
+                alephGraph.addLink((<Entity>entity));
+            }else{
+                console.log('nothing was added', entity);
+            }
+        });
+    // const company: Entity = alephGraph.emitThing('Company');
+    // company.setProperty('name', 'occrp');
+    //
+    // const person: Entity = alephGraph.emitThing('Person');
+    // person.setProperty('name', 'Drew');
 
     // TODO: describe this type of API
     // const person: Entity = alephGraph.emitThing('Person',{
@@ -29,13 +47,13 @@ export function start() {
     //         ['name','Drew']
     //     ]
     // });
-    const connection: Entity = alephGraph.emitEdge('Ownership')
-        .setProperty('owner', person)
-        .setProperty('asset',company);
-    ;
-
-    alephGraph.addNodes(company, person);
-    alephGraph.addLink(connection);
+    // const connection: Entity = alephGraph.emitEdge('Ownership')
+    //     .setProperty('owner', person)
+    //     .setProperty('asset',company);
+    // ;
+    //
+    // alephGraph.addNodes(company, person);
+    // alephGraph.addLink(connection);
 
 
 

@@ -26,7 +26,7 @@ export default class Graph {
     private svgContainer: Selection<SVGSVGElement, any, HTMLElement | null, undefined>;
     private readonly width: number;
     private readonly height: number;
-    private readonly simulation: Simulation<INodeDatum, undefined>;
+    private readonly simulation: Simulation<Node, undefined>;
     private links: LinkCollection;
     private nodes: NodeCollection;
     private containerG: Selection<SVGGElement, any, HTMLElement | null, undefined>;
@@ -95,8 +95,10 @@ export default class Graph {
         this.linkContainer = this.containerG.append("g").attr("stroke", "#000").attr("stroke-width", 1.5).selectAll(".link");
         this.nodeContainer = this.containerG.append("g").attr("stroke", "#fff").attr("stroke-width", 1.5).selectAll(".node");
         this.simulation = d3.forceSimulation(this.nodes.toArray())
-            .force("charge", d3.forceManyBody().strength(-1000))
-            .force("link", d3.forceLink<INodeDatum, ILinkDatum>(this.links.toArray()).distance(200).id((d) => d.id))
+            .force("charge", d3.forceManyBody().strength(-200))
+            // .force('center', d3.forceCenter())
+            .force('collide', d3.forceCollide(8 * 1.5).strength(1))
+            .force("link", d3.forceLink<Node, Link>(this.links.toArray()).id((d) => d.entity.id))
             .force("x", d3.forceX())
             .force("y", d3.forceY())
             .alphaTarget(1)
@@ -120,8 +122,9 @@ export default class Graph {
         this.nodeContainer = this.nodeContainer
             .enter()
             .append("circle")
-            .attr("fill", function(d) { return getColor(d.id); })
+            .attr("fill", function(d) { return getColor(d.entity.schema.name); })
             .attr("r", 8)
+
             .merge(this.nodeContainer)
             .call(this.onDrag(this.simulation));
 
@@ -129,19 +132,21 @@ export default class Graph {
         this.linkContainer = this.linkContainer.data(this.links.toArray());
         this.linkContainer.exit().remove();
         this.linkContainer = this.linkContainer.enter().append("line")
-            .attr("stroke", function(d) { return getColor(d.value); })
+            .attr("stroke", function(d) { return getColor(d.entity.schema.name); })
             .merge(this.linkContainer);
 
         // Update and restart the simulation.
         this.simulation.nodes(this.nodes.toArray());
         this.simulation
-            .force("link", d3.forceLink<INodeDatum, ILinkDatum>(this.links.toArray()).distance(200).id(d=>d.id))
+            .force("link", d3.forceLink<Node, Link>(this.links.toArray())
+                .distance(100).id(d=>d.entity.id))
 
         this.simulation.alpha(1).restart();
     }
 
     ticked() {
-        this.nodeContainer.attr("cx", function(d) { return d.x; })
+        this.nodeContainer
+            .attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; })
 
         this.linkContainer
@@ -207,6 +212,13 @@ export default class Graph {
     }
     emitEdge(schemaName:string){
         return Entity.generate(schemaName, this.context);
+    }
+
+    emitEntity(entity:any):Entity{
+        if(entity.schema){
+            return Entity.generate(entity.schema, this.context, entity)
+        }
+        throw new Error('no schem description found')
     }
 
     UNSAFE_restart = this.restart

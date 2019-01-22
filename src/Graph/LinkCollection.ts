@@ -1,4 +1,4 @@
 import CommonCollection from "./CommonCollection";
-import Link, {ILinkDatum} from "./Link";
+import Link from "./Link";
 
-export class LinkCollection extends CommonCollection<ILinkDatum, Link>{ }
+export class LinkCollection extends CommonCollection<Link>{ }
