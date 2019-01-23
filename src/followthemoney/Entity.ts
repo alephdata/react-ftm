@@ -1,8 +1,8 @@
-import Schema from "../followthemoney/schema";
-import Graph from "./Graph";
-import {Model} from "../followthemoney/model";
+import Schema from "./schema";
+import Graph from "../Graph/Graph";
+import {Model} from "./model";
 import {PropertyValue} from "./PropertyValue";
-import Property from "../followthemoney/property";
+import Property from "./property";
 
 interface IEntity {
 }
@@ -40,17 +40,24 @@ export class Entity {
     public properties: Map<string, PropertyValue> = new Map();
     public schema: Schema;
 
-    constructor(schema: Schema, behaviour?:beh ) {
+    constructor(schema: Schema, behaviour?:beh) {
         if (schema) {
             this.schema = schema;
         } else {
             throw console.error(new Error('`schema` name is require'))
         }
         if(behaviour){
-            this.id = behaviour.id;
-            Object.entries(behaviour.properties).forEach((val) => {
-                this.setProperty(val[0],val[1])
-            })
+            if(behaviour.id){
+                this.id = behaviour.id;
+            }else{
+                this.id = ''+(Math.random()*1000)
+            }
+            if(behaviour.properties){
+                Object.entries(behaviour.properties).forEach((val) => {
+                    this.setProperty(val[0],val[1])
+                })
+            }
+
         }else{
             this.id = ''+(Math.random()*1000)
         }

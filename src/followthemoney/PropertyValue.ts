@@ -1,4 +1,4 @@
-import Property from "../followthemoney/property";
+import Property from "./property";
 
 export class PropertyValue{
     name: string;

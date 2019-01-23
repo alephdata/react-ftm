@@ -1,22 +1,32 @@
-import Graph from "../Graph/Graph";
+import {Layout} from "../Graph/Layout";
 import {Node} from "../Graph/Node";
-import Link from "../Graph/Link";
+import {Link} from "../Graph/Link";
 import {data} from "../testData/az_alievs";
-import {Entity} from "../Graph/Entity";
+import {Entity} from "../followthemoney/Entity";
 import { schemata } from './_schemata';
 import {Model} from "../followthemoney/model";
-
+import Renderer from "../Renderer/Renderer";
+import {map} from 'rxjs/operators';
 export function start() {
 
-    const alephGraph = new Graph({
-        nodes:[],
-        height: 1080,
-        width: 1179,
-        containerSelector:'#app',
-        links:[],
+    const alephGraph = new Layout({
         context: new Model(schemata)
     });
 
+    const alephRenderer = new Renderer({
+        height: 1080,
+        width: 1179,
+        containerSelector:'#app',
+    });
+
+    alephGraph.onTick
+        .subscribe(alephRenderer.render);
+    alephGraph.nodes.onChange
+        .pipe(map((event) => event.storage))
+        .subscribe(alephRenderer.restartNodes)
+    alephGraph.links.onChange
+        .pipe(map((event) => event.storage))
+        .subscribe(alephRenderer.restartLinks)
     data
         .map(entityDatum => alephGraph.emitEntity(entityDatum))
         .filter(entity => entity)
@@ -35,11 +45,12 @@ export function start() {
                 console.log('nothing was added', entity);
             }
         });
-    // const company: Entity = alephGraph.emitThing('Company');
-    // company.setProperty('name', 'occrp');
+
+    const company: Entity = alephGraph.emit('Company');
+    company.setProperty('name', ['occrp']);
     //
-    // const person: Entity = alephGraph.emitThing('Person');
-    // person.setProperty('name', 'Drew');
+    const person: Entity = alephGraph.emit('Person');
+    person.setProperty('name', ['Drew']);
 
     // TODO: describe this type of API
     // const person: Entity = alephGraph.emitThing('Person',{
@@ -47,13 +58,13 @@ export function start() {
     //         ['name','Drew']
     //     ]
     // });
-    // const connection: Entity = alephGraph.emitEdge('Ownership')
-    //     .setProperty('owner', person)
-    //     .setProperty('asset',company);
-    // ;
+
+    const connection: Entity = alephGraph.emit('Ownership')
+        .setProperty('owner', [person.id])
+        .setProperty('asset', [company.id]);
+    ;
     //
-    // alephGraph.addNodes(company, person);
-    // alephGraph.addLink(connection);
+
 
 
 
@@ -64,8 +75,7 @@ export function start() {
     const addButton = document.createElement('button');
     addButton.innerText = 'Add new node';
     addButton.addEventListener('click', () => {
-        debugger;
-        node = alephGraph.addNode(Object.create({id: 'chut'}));
+        alephGraph.addNodes(company, person);
     });
     if (rootContainer) {
         rootContainer.appendChild(addButton);
@@ -82,7 +92,7 @@ export function start() {
     const addLink = document.createElement('button');
     addLink.innerText = 'Add new link';
     addLink.addEventListener('click', () => {
-        link = alephGraph.addLink(Object.create({"source": "Davit", "target": "chut", "value": 2}));
+        alephGraph.addLink(connection);
     });
     if (rootContainer) {
         rootContainer.appendChild(addLink);

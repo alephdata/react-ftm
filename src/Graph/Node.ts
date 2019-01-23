@@ -1,4 +1,4 @@
-import {Entity, IEntity} from "./Entity";
+import {Entity, IEntity} from "../followthemoney/Entity";
 import Schema from "../followthemoney/schema";
 
 export interface INode<IDatum> extends IEntity{

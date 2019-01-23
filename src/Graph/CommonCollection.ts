@@ -1,39 +1,40 @@
 import {Subject, merge, Observable, Observer, from} from "rxjs";
-import {exhaust, filter, map, sample} from "rxjs/operators";
-import {IEntity} from "./Entity";
-import Graph from "./Graph";
+import {filter, map} from "rxjs/operators";
+import {IEntity} from "../followthemoney/Entity";
 
-interface ICommonCollectionConfiguration<EntityType> {
-    pureCollection?: Array<EntityType>,
-    graph: Graph
-}
 
 const enum CommonCollectionEventTypes {
     ADDED,
     REMOVED,
 }
 
-interface ICommonCollectionEvent <EntityType> {
+export type CommonCollectionStorage<EntityType> = Set<EntityType>;
+
+export interface ICommonCollectionEvent<EntityType> {
     type: CommonCollectionEventTypes,
-    entity: EntityType
+    entity: EntityType,
+    storage: CommonCollection<EntityType>
 }
+
 
 export default class CommonCollection<EntityType extends IEntity> {
 
-    private storage: Set<EntityType> = new Set<EntityType>();
-    private graph: Graph;
+    private storage: CommonCollectionStorage<EntityType> = new Set<EntityType>();
 
-    constructor(configuration: ICommonCollectionConfiguration<EntityType>) {
-        if(configuration.graph){
-            this.graph = configuration.graph;
-        }else{
-            throw console.error(new Error('property `graph` is required.'))
-        }
+    constructor(pureCollection?: Array<EntityType>,) {
         this.addStream
-            .pipe(map((entity:EntityType):ICommonCollectionEvent<EntityType> => ({entity, type:CommonCollectionEventTypes.ADDED})))
+            .pipe(map((entity: EntityType): ICommonCollectionEvent<EntityType> => ({
+                entity,
+                storage: this,
+                type: CommonCollectionEventTypes.ADDED
+            })))
             .subscribe(this.onAdded);
         this.removeStream
-            .pipe(map((entity:EntityType):ICommonCollectionEvent<EntityType> => ({entity, type:CommonCollectionEventTypes.REMOVED})))
+            .pipe(map((entity: EntityType): ICommonCollectionEvent<EntityType> => ({
+                entity,
+                storage: this,
+                type: CommonCollectionEventTypes.REMOVED
+            })))
             .subscribe(this.onRemoved);
 
         this.onAdded
@@ -42,14 +43,13 @@ export default class CommonCollection<EntityType extends IEntity> {
             .subscribe((event) => this.storage.delete(event.entity));
 
 
-
-        if (configuration.pureCollection) {
-            configuration.pureCollection.forEach(entity => this.add(entity))
+        if (pureCollection) {
+            pureCollection.forEach(entity => this.add(entity))
         }
 
     }
 
-    has(node: EntityType): boolean{
+    has(node: EntityType): boolean {
         return this.storage.has(node);
     }
 
@@ -64,12 +64,13 @@ export default class CommonCollection<EntityType extends IEntity> {
     toArray(): Array<EntityType> {
         return Array.from(this.storage.values());
     }
-    readonly addStream : Subject<EntityType> = Reflect.construct(Subject, [])
-        .pipe(filter((entity:EntityType) => !this.has(entity)))
+
+    readonly addStream: Subject<EntityType> = Reflect.construct(Subject, [])
+        .pipe(filter((entity: EntityType) => !this.has(entity)))
 
 
-    readonly removeStream : Subject<EntityType> = Reflect.construct(Subject,[])
-        .pipe(filter((entity:EntityType) => this.has(entity)));
+    readonly removeStream: Subject<EntityType> = Reflect.construct(Subject, [])
+        .pipe(filter((entity: EntityType) => this.has(entity)));
 
     readonly onAdded: Subject<ICommonCollectionEvent<EntityType>> = new Subject();
 

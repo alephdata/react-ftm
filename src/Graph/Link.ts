@@ -1,6 +1,6 @@
-import {Entity} from "./Entity";
+import {Entity} from "../followthemoney/Entity";
 import Schema from "../followthemoney/schema";
-import {PropertyValue} from "./PropertyValue";
+import {PropertyValue} from "../followthemoney/PropertyValue";
 
 export interface ILinkDatum {
     source: string,
@@ -14,7 +14,7 @@ interface ILinkConfiguration {
     schema: Schema
 }
 
-export default class Link implements ILinkDatum {
+export class Link implements ILinkDatum {
     private edge: { source: PropertyValue; target: PropertyValue };
     public entity: Entity;
     public source: string;
