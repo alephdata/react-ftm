@@ -1,6 +1,6 @@
 import Graph from "../Graph/Graph";
-import {Node} from "../Graph/Node";
-import {Link} from "../Graph/Link";
+import {Node} from "../src/Graph/Node";
+import {Link} from "../src/Graph/Link";
 
 export function start() {
 

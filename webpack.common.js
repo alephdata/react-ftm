@@ -4,15 +4,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const config = {
     entry: './src/index.ts',
-    mode: 'development',
-    devtool: 'inline-source-map',
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].[contenthash].js'
-    },
-    devServer: {
-        contentBase: path.join(__dirname, 'dist'),
-        port: 9000
     },
     module: {
         rules: [
@@ -41,25 +35,6 @@ const config = {
             '.ts',
             '.js'
         ]
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-            template: require('html-webpack-template'),
-            inject: false,
-            appMountId: 'app',
-        })
-    ],
-    optimization: {
-        runtimeChunk: 'single',
-        splitChunks: {
-            cacheGroups: {
-                vendor: {
-                    test: /[\\\/]node_modules[\\\/]/,
-                    name: 'vendors',
-                    chunks: 'all'
-                }
-            }
-        }
     }
 }
 

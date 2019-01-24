@@ -1,5 +1,4 @@
 import Schema from "./schema";
-import Graph from "../Graph/Graph";
 import {Model} from "./model";
 import {PropertyValue} from "./PropertyValue";
 import Property from "./property";

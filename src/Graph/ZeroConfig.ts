@@ -1,6 +1,6 @@
 import {Layout} from "./Layout";
 import {Model} from "../followthemoney/model";
-import {schemata} from "../examples/_schemata";
+import {schemata} from "../../resources/_schemata";
 import Renderer from "../Renderer/Renderer";
 import {map} from "rxjs/operators";
 import {Draggable} from "../extensions";
