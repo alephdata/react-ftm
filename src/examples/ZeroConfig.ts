@@ -3,31 +3,13 @@ import {Node} from "../Graph/Node";
 import {Link} from "../Graph/Link";
 import {data} from "../testData/az_alievs";
 import {Entity} from "../followthemoney/Entity";
-import { schemata } from './_schemata';
-import {Model} from "../followthemoney/model";
-import Renderer from "../Renderer/Renderer";
-import {map} from 'rxjs/operators';
+
+import {ZeroConfig} from "../Graph/ZeroConfig";
 export function start() {
 
-    const alephGraph = new Layout({
-        context: new Model(schemata)
-    });
-
-    const alephRenderer = new Renderer({
-        height: 1080,
-        width: 1179,
-        container: document.querySelector('#app'),
-    });
-
-    alephGraph.onTick
-        .subscribe(alephRenderer.render);
-    alephGraph.nodes.onChange
-        .pipe(map((event) => event.storage))
-        .subscribe(alephRenderer.restartNodes);
-    alephGraph.links.onChange
-        .pipe(map((event) => event.storage))
-        .subscribe(alephRenderer.restartLinks);
-
+    const {layout:alephGraph} = new ZeroConfig({
+        container:<Element>document.querySelector('#app'),
+    })
     data
         .map(entityDatum => alephGraph.emitEntity(entityDatum))
         .filter(entity => entity)
@@ -36,10 +18,8 @@ export function start() {
         })
         .forEach((entity:Entity) => {
             if((<Entity>entity).is('Thing')){
-                console.log('entity was added', entity);
                 alephGraph.addNode((<Entity>entity))
             }else if((<Entity>entity).is('Interval')){
-                console.log('link was added', entity);
                 alephGraph.addLink((<Entity>entity));
             }else{
                 console.log('nothing was added', entity);

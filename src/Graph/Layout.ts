@@ -10,7 +10,8 @@ import {Entity} from "../followthemoney/Entity";
 import CommonCollection, {ICommonCollectionEvent} from "./CommonCollection";
 
 export interface IGraphRenderer {
-    restart(event:ICommonCollectionEvent<Node> | ICommonCollectionEvent<Link>):void,
+    restartNodes(nodes:NodeCollection):void
+    restartLinks(links:LinkCollection):void
     render():void
 }
 interface IGraphConfiguration {
@@ -24,9 +25,9 @@ export class Layout {
     public readonly links: LinkCollection = new LinkCollection();
     public readonly onChange: Observable<ICommonCollectionEvent<Node> | ICommonCollectionEvent<Link>>;
     public readonly onTick = new Subject();
+    public readonly simulation: Simulation<Node, undefined>;
     public readonly nodes: NodeCollection = new NodeCollection();
     private readonly context: Model;
-    private readonly simulation: Simulation<Node, undefined>;
 
     constructor(configuration: IGraphConfiguration) {
 
@@ -66,7 +67,6 @@ export class Layout {
                 .distance(100).id(d => d.entity.id))
         this.simulation.alpha(1).restart();
     }
-
     addNode(entity: Entity): Node {
         const node = Node.fromEntity(entity);
         this.nodes.add(node);

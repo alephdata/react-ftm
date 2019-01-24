@@ -3,33 +3,36 @@ import {Node} from "../Graph/Node";
 import {Selection} from 'd3-selection';
 import {BaseType} from "d3";
 import {IGraphRenderer} from "../Graph/Layout";
-import CommonCollection, {CommonCollectionStorage, ICommonCollectionEvent} from "../Graph/CommonCollection";
+import CommonCollection from "../Graph/CommonCollection";
 import {Link} from "../Graph/Link";
+import {NodeRenderer} from "./NodeRenderer";
+import {LinkRenderer} from "./LinkRenderer";
 
 interface IGraphConfiguration {
-    containerElement?: Element,
-    containerSelector?: string,
+    container: Element | null,
     height: number,
     width: number,
 }
 
+export interface ICollectionRenderer<T> {
+    render(collection:CommonCollection<T>):void,
+    updatePositions():void
+}
 export default class Renderer implements IGraphRenderer {
     private rootContainer: Selection<Element, any, HTMLElement | null, undefined>;
     private svgContainer: Selection<SVGSVGElement, any, HTMLElement | null, undefined>;
+    public nodeRenderer: NodeRenderer;
+    public linkRenderer: LinkRenderer;
     private readonly width: number;
     private readonly height: number;
-    private containerG: Selection<SVGGElement, any, HTMLElement | null, undefined>;
-    private linkContainer: Selection<SVGLineElement, any, BaseType, any>;
-    private nodeContainer: Selection<SVGCircleElement, any, BaseType, any>;
+    private readonly containerG: Selection<SVGGElement, any, HTMLElement | null, undefined>;
 
     constructor(configuration: IGraphConfiguration) {
 
-        if (configuration.containerElement) {
-            this.rootContainer = d3.select(configuration.containerElement);
-        } else if (configuration.containerSelector) {
-            this.rootContainer = d3.select(configuration.containerSelector)
+        if (configuration.container) {
+            this.rootContainer = d3.select(configuration.container);
         } else {
-            throw console.error(new Error('`configuration.containerElement` or `configuration.containerSelector` must be set'))
+            throw console.error(new Error('`configuration.container`must be set'))
         }
 
         if (configuration.width) {
@@ -57,106 +60,30 @@ export default class Renderer implements IGraphRenderer {
         this.containerG = this.svgContainer
             .append("g")
             .attr("transform", "translate(" + configuration.width / 2 + "," + configuration.height / 2 + ")");
-        this.linkContainer = this.containerG.append("g").attr("stroke", "#000").attr("stroke-width", 1.5).selectAll(".link");
-        this.nodeContainer = this.containerG.append("g").attr("stroke", "#fff").attr("stroke-width", 1.5).selectAll(".node");
+
+        this.linkRenderer = new LinkRenderer(this.containerG);
+        this.nodeRenderer = new NodeRenderer(this.containerG);
+
         this.restartLinks = this.restartLinks.bind(this);
         this.restartNodes = this.restartNodes.bind(this);
         this.render = this.render.bind(this);
 
     }
 
-    restart(event:ICommonCollectionEvent<Node> | ICommonCollectionEvent<Link>):void {
-        const {getColor} = this;
-        // Apply the general update pattern to the nodes.
-        if(<ICommonCollectionEvent<Node>>event){
-
-                // .call(this.onDrag(this.simulation));
-        }else if(<ICommonCollectionEvent<Link>>event){
-
-        }
-
-    }
-
     restartNodes(nodes: CommonCollection<Node>){
-        const {getColor} = this;
-        this.nodeContainer = this.nodeContainer
-            .data(nodes.toArray(), function (d) {
-                return d.id;
-            });
-        this.nodeContainer.exit().remove();
-        this.nodeContainer = this.nodeContainer
-            .enter()
-            .append("circle")
-            .attr("fill", function (d) {
-                return getColor(d.entity.schema.name);
-            })
-            .attr("r", 8)
-
-            .merge(this.nodeContainer)
+        this.nodeRenderer
+            .render(nodes);
     }
     restartLinks(links:CommonCollection<Link>){
-        const {getColor} = this;
-
-        // Apply the general update pattern to the links.
-        this.linkContainer = this.linkContainer.data(links.toArray());
-        this.linkContainer.exit().remove();
-        this.linkContainer = this.linkContainer.enter().append("line")
-            .attr("stroke", function (d) {
-                return getColor(d.entity.schema.name);
-            })
-            .merge(this.linkContainer);
+        this.linkRenderer
+            .render(links)
     }
     render() {
-        this.nodeContainer
-            .attr("cx", function (d) {
-                return d.x;
-            })
-            .attr("cy", function (d) {
-                return d.y;
-            })
+        this.nodeRenderer
+            .updatePositions();
 
-        this.linkContainer
-            .attr("x1", function (d) {
-                return d.source.x;
-            })
-            .attr("y1", function (d) {
-                return d.source.y;
-            })
-            .attr("x2", function (d) {
-                return d.target.x;
-            })
-            .attr("y2", function (d) {
-                return d.target.y;
-            });
-    }
-
-    // OOP Methods
-    getColor = d3.scaleOrdinal(d3.schemeCategory10);
-
-    onDrag(simulation: d3.Simulation<any, undefined>) {
-        //TODO" must be refactored
-        function dragstarted(d: { fx: any; x: any; fy: any; y: any; }) {
-            if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-            d.fx = d.x;
-            d.fy = d.y;
-        }
-
-        function dragged(d: { fx: any; fy: any; }) {
-            d.fx = d3.event.x;
-            d.fy = d3.event.y;
-        }
-
-        function dragended(d: { fx: null; fy: null; }) {
-            if (!d3.event.active) simulation.alphaTarget(0);
-            // d.fx = null;
-            // d.fy = null;
-        }
-
-        return d3.drag()
-        // @ts-ignore
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended);
+        this.linkRenderer
+            .updatePositions()
     }
 
 }
