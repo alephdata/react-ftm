@@ -6,8 +6,8 @@ import NodeCollection from "./NodeCollection";
 import {LinkCollection} from "./LinkCollection";
 import {merge, Observable, Subject} from "rxjs";
 import {Model} from "../followthemoney/model";
-import {Entity} from "../followthemoney/Entity";
-import CommonCollection, {ICommonCollectionEvent} from "./CommonCollection";
+import {Entity} from "../followthemoney/entity";
+import {ICommonCollectionEvent} from "./CommonCollection";
 
 export interface IGraphRenderer {
     restartNodes(nodes:NodeCollection):void

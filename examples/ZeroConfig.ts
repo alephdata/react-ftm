@@ -2,7 +2,7 @@ import {Layout} from "../src/Graph/Layout";
 import {Node} from "../src/Graph/Node";
 import {Link} from "../src/Graph/Link";
 import {data} from "../resources/az_alievs";
-import {Entity} from "../src/followthemoney/Entity";
+import {Entity} from "../src/followthemoney/entity";
 
 import {ZeroConfig} from "../src/Graph/ZeroConfig";
 export function start() {
@@ -55,7 +55,7 @@ export function start() {
     const addButton = document.createElement('button');
     addButton.innerText = 'Add new node';
     addButton.addEventListener('click', () => {
-        alephGraph.addNodes(company, person);
+        alephGraph.addNode(person);
     });
     if (rootContainer) {
         rootContainer.appendChild(addButton);

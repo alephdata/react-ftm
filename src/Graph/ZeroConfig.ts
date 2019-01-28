@@ -14,7 +14,7 @@ interface IZeroConfig {
 export class ZeroConfig {
     public layout: Layout;
     public renderer: Renderer;
-    private draggable: Draggable;
+    private draggable?: Draggable;
 
     constructor({
         height = 1080,

@@ -1,7 +1,6 @@
 import Schema from "./schema";
 import {Model} from "./model";
 import {PropertyValue} from "./PropertyValue";
-import Property from "./property";
 
 interface IEntity {
 }

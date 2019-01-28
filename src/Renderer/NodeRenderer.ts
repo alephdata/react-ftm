@@ -6,7 +6,7 @@ import * as d3 from "d3";
 
 export class NodeRenderer implements ICollectionRenderer<Node> {
     private parent: Selection<SVGGElement, any, HTMLElement | null, undefined>;
-    public container: Selection<SVGCircleElement, any, BaseType, any>
+    public container: Selection<SVGCircleElement, Node, BaseType, any>
 
     constructor(parent: Selection<SVGGElement, any, HTMLElement | null, undefined>) {
         this.parent = parent;
@@ -23,7 +23,7 @@ export class NodeRenderer implements ICollectionRenderer<Node> {
         const {getColor} = this;
         this.container = this.container
             .data(nodes.toArray(), function (d) {
-                return d.id;
+                return d.entity.id;
             });
 
         this.container.exit().remove();
@@ -33,16 +33,19 @@ export class NodeRenderer implements ICollectionRenderer<Node> {
             .attr("fill", function (d) {
                 return getColor(d.entity.schema.name);
             })
+            .attr('title', function (d) {
+                return d.entity.getProperty('name').value
+            })
             .attr("r", 8)
-
-            .merge(this.container)
     }
 
     updatePositions() {
-        this.container.attr("cx", function (d) {
-            return d.x;
-        }).attr("cy", function (d) {
-            return d.y;
-        })
+        this.container
+            .attr("cx", function (d) {
+                return d.x;
+            })
+            .attr("cy", function (d) {
+                return d.y;
+            })
     }
 }

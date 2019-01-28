@@ -1,9 +1,6 @@
-import {Entity, IEntity} from "../followthemoney/Entity";
+import {Entity} from "../followthemoney/entity";
 import Schema from "../followthemoney/schema";
 
-export interface INode<IDatum> extends IEntity{
-
-}
 export interface INodeDatum {
     /**
      * Node’s zero-based index into nodes array. This property is set during the initialization process of a simulation.

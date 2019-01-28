@@ -2,31 +2,22 @@ import {Layout} from "../src/Graph/Layout";
 import {Node} from "../src/Graph/Node";
 import {Link} from "../src/Graph/Link";
 import {data} from "../resources/az_alievs";
-import {Entity} from "../src/followthemoney/Entity";
+import {Entity} from "../src/followthemoney/entity";
 import { schemata } from '../resources/_schemata';
 import {Model} from "../src/followthemoney/model";
 import Renderer from "../src/Renderer/Renderer";
 import {map} from 'rxjs/operators';
+import Graph from "../src/Graph/Graph";
 export function start() {
 
-    const alephGraph = new Layout({
+    const alephGraph = new Graph({
+        containerSelector:'#app',
+        width:1000,
+        height:1000,
+        links:[],
+        nodes:[],
         context: new Model(schemata)
-    });
-
-    const alephRenderer = new Renderer({
-        height: 1080,
-        width: 1179,
-        container: document.querySelector('#app'),
-    });
-
-    alephGraph.onTick
-        .subscribe(alephRenderer.render);
-    alephGraph.nodes.onChange
-        .pipe(map((event) => event.storage))
-        .subscribe(alephRenderer.restartNodes);
-    alephGraph.links.onChange
-        .pipe(map((event) => event.storage))
-        .subscribe(alephRenderer.restartLinks);
+    })
 
     data
         .map(entityDatum => alephGraph.emitEntity(entityDatum))

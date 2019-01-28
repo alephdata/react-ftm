@@ -1,4 +1,4 @@
-import {Entity} from "../followthemoney/Entity";
+import {Entity} from "../followthemoney/entity";
 import Schema from "../followthemoney/schema";
 import {PropertyValue} from "../followthemoney/PropertyValue";
 

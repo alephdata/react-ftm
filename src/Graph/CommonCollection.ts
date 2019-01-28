@@ -1,6 +1,6 @@
 import {Subject, merge, Observable, Observer, from} from "rxjs";
 import {filter, map} from "rxjs/operators";
-import {IEntity} from "../followthemoney/Entity";
+import {IEntity} from "../followthemoney/entity";
 
 
 const enum CommonCollectionEventTypes {
