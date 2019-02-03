@@ -1,6 +1,6 @@
 // @ts-ignore
 import Property from './property.ts';
-import {ILinkDatum} from "../Graph/Link";
+import {ILinkDatum} from "../core/Edge";
 
 interface ILabelReadingConfiguration {
     forcePlural: boolean
@@ -41,7 +41,6 @@ export default class Schema {
             this.edge = theImplementation.edge;
         }
     }
-
     getEdge():ILinkDatum | undefined{
         return this.edge;
     }

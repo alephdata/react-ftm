@@ -1,10 +1,10 @@
-import {Layout} from "../src/Graph/Layout";
-import {Node} from "../src/Graph/Node";
-import {Link} from "../src/Graph/Link";
+import {Layout} from "../src/core/Layout";
+import {Vertex} from "../src/core/Vertex";
+import {Edge} from "../src/core/Edge";
 import {data} from "../resources/az_alievs";
 import {Entity} from "../src/followthemoney/entity";
 
-import {ZeroConfig} from "../src/Graph/ZeroConfig";
+import {ZeroConfig} from "../src/ZeroConfig";
 export function start() {
 
     const {layout:alephGraph} = new ZeroConfig({
@@ -17,10 +17,10 @@ export function start() {
             return Number(entity1.is('Interval')) - Number(entity2.is('Interval'))
         })
         .forEach((entity:Entity) => {
-            if((<Entity>entity).is('Thing')){
-                alephGraph.addNode((<Entity>entity))
-            }else if((<Entity>entity).is('Interval')){
-                alephGraph.addLink((<Entity>entity));
+            if((entity).is('Thing')){
+                alephGraph.addNode((entity))
+            }else if((entity).is('Interval')){
+                alephGraph.addLink((entity));
             }else{
                 console.log('nothing was added', entity);
             }
@@ -48,8 +48,8 @@ export function start() {
 
 
 
-    let node: Node;
-    let link: Link;
+    let node: Vertex;
+    let link: Edge;
     const rootContainer = document.querySelector('#app');
 
     const addButton = document.createElement('button');

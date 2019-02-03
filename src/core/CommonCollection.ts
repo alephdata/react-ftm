@@ -13,7 +13,7 @@ export type CommonCollectionStorage<EntityType> = Set<EntityType>;
 export interface ICommonCollectionEvent<EntityType> {
     type: CommonCollectionEventTypes,
     entity: EntityType,
-    storage: CommonCollection<EntityType>
+    collection: CommonCollection<EntityType>
 }
 
 
@@ -25,22 +25,22 @@ export default class CommonCollection<EntityType extends IEntity> {
         this.addStream
             .pipe(map((entity: EntityType): ICommonCollectionEvent<EntityType> => ({
                 entity,
-                storage: this,
+                collection: this,
                 type: CommonCollectionEventTypes.ADDED
             })))
             .subscribe(this.onAdded);
         this.removeStream
             .pipe(map((entity: EntityType): ICommonCollectionEvent<EntityType> => ({
                 entity,
-                storage: this,
+                collection: this,
                 type: CommonCollectionEventTypes.REMOVED
             })))
             .subscribe(this.onRemoved);
 
         this.onAdded
-            .subscribe((event) => this.storage.add(event.entity));
+            .subscribe(event => event.collection.storage.add(event.entity));
         this.onRemoved
-            .subscribe((event) => this.storage.delete(event.entity));
+            .subscribe(event => event.collection.storage.delete(event.entity));
 
 
         if (pureCollection) {

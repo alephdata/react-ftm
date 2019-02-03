@@ -1,8 +1,8 @@
 import * as d3 from 'd3';
-import {Node} from "./Node";
+import {Vertex} from "./Vertex";
 import {Selection} from 'd3-selection';
 import {BaseType, Simulation} from "d3";
-import {Link} from "./Link";
+import {Edge} from "./Edge";
 import NodeCollection from "./NodeCollection";
 import {LinkCollection} from "./LinkCollection";
 import {config, merge} from "rxjs";
@@ -11,8 +11,8 @@ import {Entity} from "../followthemoney/Entity";
 import {ICommonCollectionEvent} from "./CommonCollection";
 
 // interface IGraphRenderer {
-//     restart(event:ICommonCollectionEvent<Node> | ICommonCollectionEvent<Link>):void,
-//     render():void
+//     restart(event:ICommonCollectionEvent<Vertex> | ICommonCollectionEvent<Edge>):void,
+//     updatePositions():void
 // }
 interface IGraphConfiguration {
     links: Entity[];
@@ -29,7 +29,7 @@ export default class Graph {
     private svgContainer: Selection<SVGSVGElement, any, HTMLElement | null, undefined>;
     private readonly width: number;
     private readonly height: number;
-    private readonly simulation: Simulation<Node, undefined>;
+    private readonly simulation: Simulation<Vertex, undefined>;
     private links: LinkCollection;
     private nodes: NodeCollection;
     private containerG: Selection<SVGGElement, any, HTMLElement | null, undefined>;
@@ -60,13 +60,13 @@ export default class Graph {
         }
 
         if (configuration.links) {
-            this.links = new LinkCollection( configuration.links.map((entity) => Link.fromEntity(entity)))
+            this.links = new LinkCollection( configuration.links.map((entity) => Edge.fromEntity(entity)))
         } else {
             this.links = new LinkCollection()
         }
 
         if (configuration.nodes) {
-            this.nodes = new NodeCollection(configuration.links.map((entity) => Node.fromEntity(entity))
+            this.nodes = new NodeCollection(configuration.links.map((entity) => Vertex.fromEntity(entity))
             )
         } else {
             this.nodes = new NodeCollection()
@@ -96,12 +96,12 @@ export default class Graph {
             .force("charge", d3.forceManyBody().strength(-200))
             // .force('center', d3.forceCenter())
             .force('collide', d3.forceCollide(8 * 1.5).strength(1))
-            .force("link", d3.forceLink<Node, Link>(this.links.toArray()).id((d) => d.entity.id))
+            .force("link", d3.forceLink<Vertex, Edge>(this.links.toArray()).id((d) => d.entity.id))
             .force("x", d3.forceX())
             .force("y", d3.forceY())
             .alphaTarget(1)
             .on("tick", this.ticked.bind(this));
-        this.restart();
+        // this.restart();
         merge(this.nodes.onChange, this.links.onChange)
             .subscribe(()=> {
                 console.log('RESTARTING');
@@ -139,7 +139,7 @@ export default class Graph {
         // Update and restart the simulation.
         this.simulation.nodes(this.nodes.toArray());
         this.simulation
-            .force("link", d3.forceLink<Node, Link>(this.links.toArray())
+            .force("link", d3.forceLink<Vertex, Edge>(this.links.toArray())
                 .distance(100).id(d=>d.entity.id));
 
         this.simulation.alpha(1).restart();
@@ -186,8 +186,8 @@ export default class Graph {
             .on("end", dragended);
     }
 
-    addNode(entity: Entity): Node {
-        const node = Node.fromEntity(entity);
+    addNode(entity: Entity): Vertex {
+        const node = Vertex.fromEntity(entity);
         this.nodes.add(node);
         return node;
     }
@@ -195,16 +195,16 @@ export default class Graph {
         nodes.forEach(node => this.addNode(node));
         return this;
     }
-    removeNode(node:Node){
+    removeNode(node:Vertex){
         this.nodes.remove(node);
     }
 
-    addLink(entity: Entity): Link {
-        const link = Link.fromEntity(entity);
+    addLink(entity: Entity): Edge {
+        const link = Edge.fromEntity(entity);
         this.links.add(link);
         return link;
     }
-    removeLink(link:Link){
+    removeLink(link:Edge){
         this.links.remove(link);
     }
 

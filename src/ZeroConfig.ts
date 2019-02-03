@@ -1,9 +1,9 @@
-import {Layout} from "./Layout";
-import {Model} from "../followthemoney/model";
-import {schemata} from "../../resources/_schemata";
-import Renderer from "../Renderer/Renderer";
+import {Layout} from "./core/Layout";
+import {Model} from "./followthemoney/model";
+import {schemata} from "../resources/_schemata";
+import Renderer from "./renderer/Renderer";
 import {map} from "rxjs/operators";
-import {Draggable} from "../extensions";
+import {Draggable} from "./extensions/index";
 
 
 interface IZeroConfig {
@@ -29,15 +29,14 @@ export class ZeroConfig {
             width,
             container,
         });
-        this.layout.onTick
-            .subscribe(this.renderer.render);
         this.layout.nodes.onChange
-            .pipe(map((event) => event.storage))
+            .pipe(map((event) => event.collection))
             .subscribe(this.renderer.restartNodes);
         this.layout.links.onChange
-            .pipe(map((event) => event.storage))
+            .pipe(map((event) => event.collection))
             .subscribe(this.renderer.restartLinks);
-
+        this.layout.onTick
+            .subscribe(this.renderer.updatePositions);
         this.draggable = new Draggable(this.layout, this.renderer)
     }
 }

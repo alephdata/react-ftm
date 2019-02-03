@@ -1,5 +1,6 @@
 import Schema from './schema';
 import {IPropertyDatum} from "./property";
+import {Entity} from "./entity";
 
 
 interface ISchemata {
@@ -85,5 +86,18 @@ export class Model {
         } else {
             return this.schemaCache[schemaName] = new Schema(schemaName, this.schemata[schemaName]);
         }
+    }
+    emit(schemaName: string, entity?: any) {
+        return this.emitEntity({
+            schema: schemaName,
+            ...entity
+        })
+    }
+
+    emitEntity(entity: any): Entity {
+        if (entity.schema) {
+            return Entity.generate(entity.schema, this, entity)
+        }
+        throw new Error('no schem description found')
     }
 }

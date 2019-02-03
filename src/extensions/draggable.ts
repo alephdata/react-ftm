@@ -1,6 +1,6 @@
 import * as d3 from "d3";
-import {Layout} from "../Graph/Layout";
-import Renderer from "../Renderer/Renderer";
+import {Layout} from "../core/Layout";
+import Renderer from "../renderer/Renderer";
 
 export class Draggable{
     private renderer: Renderer;

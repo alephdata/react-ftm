@@ -1,13 +1,13 @@
-import {Layout} from "../src/Graph/Layout";
-import {Node} from "../src/Graph/Node";
-import {Link} from "../src/Graph/Link";
+import {Layout} from "../src/core/Layout";
+import {Vertex} from "../src/core/Vertex";
+import {Edge} from "../src/core/Edge";
 import {data} from "../resources/az_alievs";
 import {Entity} from "../src/followthemoney/entity";
 import { schemata } from '../resources/_schemata';
 import {Model} from "../src/followthemoney/model";
-import Renderer from "../src/Renderer/Renderer";
+import Renderer from "../src/renderer/Renderer";
 import {map} from 'rxjs/operators';
-import Graph from "../src/Graph/Graph";
+import Graph from "../src/core/Graph";
 export function start() {
 
     const alephGraph = new Graph({
@@ -59,8 +59,8 @@ export function start() {
 
 
 
-    let node: Node;
-    let link: Link;
+    let node: Vertex;
+    let link: Edge;
     const rootContainer = document.querySelector('#app');
 
     const addButton = document.createElement('button');

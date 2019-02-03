@@ -1,6 +1,6 @@
-import Graph from "../Graph/Graph";
-import {Node} from "../src/Graph/Node";
-import {Link} from "../src/Graph/Link";
+import Graph from "../core/core";
+import {Vertex} from "../src/core/Vertex";
+import {Edge} from "../src/core/Edge";
 
 export function start() {
 
@@ -30,8 +30,8 @@ export function start() {
         width: 600
     })
 
-    let node: Node;
-    let link: Link;
+    let node: Vertex;
+    let link: Edge;
     const rootContainer = document.querySelector('#app');
 
     const addButton = document.createElement('button');

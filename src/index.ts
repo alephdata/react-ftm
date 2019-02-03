@@ -1,4 +1,4 @@
-import { start } from '../examples/FtMEntities';
+import { start } from '../examples/ZeroConfig';
 
 start();
 

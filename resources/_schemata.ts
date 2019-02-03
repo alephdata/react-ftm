@@ -17827,7 +17827,7 @@ export const schemata: any = {
         }
     },
     "UnknownLink": {
-        "label": "Link",
+        "label": "Edge",
         "plural": "Links",
         "uri": "https://w3id.org/ftm#UnknownLink",
         "schemata": ["UnknownLink", "Interest", "Interval"],

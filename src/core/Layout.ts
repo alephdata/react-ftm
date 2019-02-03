@@ -1,41 +1,41 @@
 import * as d3 from 'd3';
-import {Node} from "./Node";
+import {Vertex} from "./Vertex";
 import {Simulation} from "d3";
-import {Link} from "./Link";
+import {Edge} from "./Edge";
 import NodeCollection from "./NodeCollection";
 import {LinkCollection} from "./LinkCollection";
-import {merge, Observable, Subject} from "rxjs";
-import {Model} from "../followthemoney/model";
+import {BehaviorSubject, merge, Observable} from "rxjs";
 import {Entity} from "../followthemoney/entity";
-import {ICommonCollectionEvent} from "./CommonCollection";
+import {CommonCollectionStorage, ICommonCollectionEvent} from "./CommonCollection";
 
 export interface IGraphRenderer {
-    restartNodes(nodes:NodeCollection):void
-    restartLinks(links:LinkCollection):void
-    render():void
+    restartNodes(nodes:CommonCollectionStorage<Vertex>):void
+    restartLinks(links:CommonCollectionStorage<Edge>):void
+    updatePositions():void
 }
 interface IGraphConfiguration {
-    links?: Entity[];
-    nodes?: Entity[],
-    context: Model
+    links?: Edge[];
+    nodes?: Vertex[],
 }
 
-
+/*
+* @description core's headless engine, holds coordinates of `Nodes` `Links` and core itself{height/width}.
+* Responsible for configuring forces affecting on Layout.
+* */
 export class Layout {
     public readonly links: LinkCollection = new LinkCollection();
-    public readonly onChange: Observable<ICommonCollectionEvent<Node> | ICommonCollectionEvent<Link>>;
-    public readonly onTick = new Subject();
-    public readonly simulation: Simulation<Node, undefined>;
+    public readonly onChange: Observable<ICommonCollectionEvent<Vertex> | ICommonCollectionEvent<Edge>>;
+    public readonly onTick = new BehaviorSubject('ttt');
+    public readonly simulation: Simulation<Vertex, undefined>;
     public readonly nodes: NodeCollection = new NodeCollection();
-    private readonly context: Model;
 
     constructor(configuration: IGraphConfiguration) {
 
-        if (configuration.context) {
-            this.context = configuration.context;
-        } else {
-            throw console.error(new Error('Context is required'));
-        }
+        // if (configuration.context) {
+        //     this.context = configuration.context;
+        // } else {
+        //     throw console.error(new Error('Context is required'));
+        // }
 
         if (configuration.links) {
             this.addLinks(...configuration.links)
@@ -49,7 +49,7 @@ export class Layout {
             .force("charge", d3.forceManyBody().strength(-200))
             // .force('center', d3.forceCenter())
             .force('collide', d3.forceCollide(8 * 1.5).strength(1))
-            .force("link", d3.forceLink<Node, Link>(this.links.toArray()).id((d) => d.entity.id))
+            .force("link", d3.forceLink<Vertex, Edge>(this.links.toArray()).id((d) => d.entity.id))
             .force("x", d3.forceX())
             .force("y", d3.forceY())
             .alphaTarget(1)
@@ -63,12 +63,11 @@ export class Layout {
     private restart() {
         this.simulation.nodes(this.nodes.toArray());
         this.simulation
-            .force("link", d3.forceLink<Node, Link>(this.links.toArray())
+            .force("link", d3.forceLink<Vertex, Edge>(this.links.toArray())
                 .distance(100).id(d => d.entity.id))
         this.simulation.alpha(1).restart();
     }
-    addNode(entity: Entity): Node {
-        const node = Node.fromEntity(entity);
+    addNode(node: Vertex): Vertex {
         this.nodes.add(node);
         return node;
     }
@@ -78,7 +77,7 @@ export class Layout {
         return this;
     }
 
-    removeNode(node: Node) {
+    removeNode(node:Vertex) {
         this.nodes.remove(node);
     }
 
@@ -87,27 +86,21 @@ export class Layout {
         return this;
     }
 
-    addLink(entity: Entity): Link {
-        const link = Link.fromEntity(entity);
+    addLink(link: Edge): Edge {
         this.links.add(link);
         return link;
     }
 
-    removeLink(link: Link) {
+    removeLink(link: Edge) {
         this.links.remove(link);
     }
 
-    emit(schemaName: string, entity?: any) {
-        return this.emitEntity({
-            schema: schemaName,
-            ...entity
-        })
-    }
+    append(entity: Entity) {
+        const edge = entity.getEdge();
+        if(edge){
+            this.addLink(entity);
+        }else {
 
-    emitEntity(entity: any): Entity {
-        if (entity.schema) {
-            return Entity.generate(entity.schema, this.context, entity)
         }
-        throw new Error('no schem description found')
     }
 }

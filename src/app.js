@@ -360,7 +360,7 @@ function fade(opacity) {
     };
 }
 
-//Specific Fade Rules for Link Hover Instances
+//Specific Fade Rules for Edge Hover Instances
 function linkFade(opacity) {
     return d => {
         node.style('stroke-opacity', function(o){
@@ -402,7 +402,7 @@ var legendSequential = d3.legendColor()
     .shapeWidth(30)
     .cells(11)
     .orient("vertical")
-    .title("Link legend:")
+    .title("Edge legend:")
     .titleWidth(100)
     .scale(sequentialScale)
 

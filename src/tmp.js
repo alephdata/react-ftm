@@ -164,7 +164,7 @@ var network = {
                 let node = stack.shift(),
                     existinNodeIndex = this.findNodeInGraph(node.id);
 
-                /* 	Node doesn't exist in graph... add it then! */
+                /* 	Vertex doesn't exist in graph... add it then! */
                 if (existinNodeIndex < 0) {
 
                     findNewLinks(node);
@@ -174,7 +174,7 @@ var network = {
                         nextNode();
                     });
 
-                    /* 	Node exists, buy its connections might not! */
+                    /* 	Vertex exists, buy its connections might not! */
                 } else {
                     findNewLinks(node);
                     updateConnections();
@@ -182,7 +182,7 @@ var network = {
                 }
 
             } else {
-                console.info("Graph done! :D");
+                console.info("core done! :D");
 
                 drawNodes(true);
             }
