@@ -1,8 +1,14 @@
-# IDA
 .idea
-
-# Dynamic content
 dist/
-
-# Dependencies
+.DS_Store
 node_modules
+coverage
+.nyc_output
+*.log
+.vscode
+dist
+compiled
+.awcache
+.rpt2_cache
+docs
+
