@@ -51,9 +51,8 @@ export class Layout {
       // @ts-ignore
       .force(
         'link',
-        d3
-          .forceLink<Vertex, Edge>(this.links.toArray())
-          .id((d: { entity: { id: string } }) => d.entity.id)
+        d3.forceLink<Vertex, Edge>(this.links.toArray())
+        // .id((d) => d.entity.id)
       )
       .force('x', d3.forceX())
       .force('y', d3.forceY())
@@ -74,7 +73,7 @@ export class Layout {
           .forceLink<Vertex, Edge>(this.links.toArray())
           // @ts-ignore
           .distance(100)
-          .id(d => d.entity.id)
+        // .id(d => d.entity.id)
       )
     this.simulation.alpha(1).restart()
   }
