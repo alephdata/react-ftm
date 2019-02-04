@@ -1,5 +1,1 @@
-export class TypeCommon {
-    constructor(){
-
-    }
-}
+export class TypeCommon {}

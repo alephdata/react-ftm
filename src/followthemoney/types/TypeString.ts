@@ -1,7 +1,3 @@
-import {TypeCommon} from "./TypeCommon";
+import { TypeCommon } from './TypeCommon'
 
-export class TypeString extends TypeCommon{
-    toNumber(){
-
-    }
-}
+export class TypeString extends TypeCommon {}
