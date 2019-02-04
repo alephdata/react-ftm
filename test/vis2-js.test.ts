@@ -1,4 +1,4 @@
-import DummyClass from "../src/vis2-js"
+import DummyClass from "../src/vis2"
 
 /**
  * Dummy test

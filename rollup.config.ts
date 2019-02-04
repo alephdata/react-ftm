@@ -7,7 +7,7 @@ import json from 'rollup-plugin-json'
 
 const pkg = require('./package.json')
 
-const libraryName = 'vis2-js'
+const libraryName = 'vis2'
 
 export default {
   input: `src/${libraryName}.ts`,
