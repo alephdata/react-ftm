@@ -5,7 +5,7 @@
 // import {Entity} from "../src/followthemoney/entity";
 // import { schemata } from '../resources/_schemata';
 // import {Model} from "../src/followthemoney/model";
-// import Renderer from "../src/renderer/Renderer";
+// import renderer from "../src/renderer/renderer";
 // import {map} from 'rxjs/operators';
 // import Graph from "../src/core/Graph";
 // export function start() {

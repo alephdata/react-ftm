@@ -1,7 +1,7 @@
 // import {Layout} from "../src/core";
 // import {schemata} from "../resources/_schemata";
 // import {Model} from "../src/followthemoney/model";
-// import Renderer from "../src/renderer/Renderer";
+// import renderer from "../src/renderer/renderer";
 // import {Entity} from "../src/followthemoney/entity";
 // import {Vertex} from "../src/core/Vertex";
 // import {PropertyValue} from "../src/followthemoney/PropertyValue";
@@ -11,7 +11,7 @@
 //     const context =  new Model(schemata);
 //     const layout = new Layout({ });
 //
-//     const renderer = new Renderer({
+//     const renderer = new renderer({
 //         container:document.getElementById('#app'),
 //         height: 1080,
 //         width: 1179,
