@@ -5,9 +5,7 @@ cache:
 notifications:
   email: false
 node_js:
-  - '10'
   - '11'
-  - '8'
 jobs:
   include:
   - stage: lint
@@ -17,9 +15,13 @@ jobs:
   - stage: build
     script: npm run build
   - stage: deploy
-    node_js: 11
-    if: ( branch IN (alpha, master) ) AND type != pull_request
     script: npm run deploy-docs && npm run semantic-release
+stages:
+- lint
+- test
+- build
+- name: deploy
+  if: ( branch IN (alpha, master) ) AND type != pull_request
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
