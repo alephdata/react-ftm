@@ -18,7 +18,7 @@ stages:
 - test
 - build
 - name: deploy
-  if: ( branch IN (alpha, master) ) AND type != pull_request
+  if: branch = master  AND type != pull_request
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/

@@ -16,10 +16,10 @@ interface IGraphConfiguration {
   nodes?: Vertex[]
 }
 
-/*
- * @description core's headless engine, holds coordinates of `Nodes` `Links` and core itself{height/width}.
+/**
+ * core's headless engine, holds coordinates of `Nodes` `Links` and core itself{height/width}.
  * Responsible for configuring forces affecting on Layout.
- * */
+ */
 export class Layout {
   public readonly links: LinkCollection = new LinkCollection()
   public readonly onChange: Observable<
