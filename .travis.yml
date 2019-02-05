@@ -13,11 +13,8 @@ jobs:
   - stage: build
     script: npm run build
   - stage: deploy
-    script: npm run build:docs
-   - script: npm run deploy-docs
-   - script: npm run semantic-release
+    script: npm run build:docs && npm run deploy-docs && npm run semantic-releasenpm
 stages:
-- lint
 - test
 - build
 - name: deploy
