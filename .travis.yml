@@ -8,14 +8,14 @@ node_js:
   - '11'
 jobs:
   include:
-  - stage: lint
-    script: npm run lint
   - stage: test
-    script: npm run test -- --no-cache
+    script: npm run test:prod
   - stage: build
     script: npm run build
   - stage: deploy
-    script: npm run deploy-docs && npm run semantic-release
+    script: npm run build:docs
+   - script: npm run deploy-docs
+   - script: npm run semantic-release
 stages:
 - lint
 - test
