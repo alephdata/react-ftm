@@ -13,7 +13,7 @@ jobs:
   - stage: lint
     script: npm run lint
   - stage: test
-    script: npm run test -- no-cache
+    script: npm run test -- --no-cache
   - stage: build
     script: npm run build
   - stage: deploy

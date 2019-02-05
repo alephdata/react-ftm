@@ -33,7 +33,7 @@
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
     "precommit": "lint-staged"
   },
-  "hooksy": {
+  "husky": {
     "hooks": {
       "pre-push":"npm run test:prod && npm run build",
       "commit-msg":"commitlint -E HUSKY_GIT_PARAMS"
