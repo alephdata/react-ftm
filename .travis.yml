@@ -5,15 +5,18 @@ cache:
 notifications:
   email: false
 node_js:
+  - '8'
+  - '9'
+  - '10'
   - '11'
 jobs:
   include:
   - stage: test
     script: npm run test:prod
   - stage: build
-    script: npm run build
+    script:
   - stage: deploy
-    script: npm run build:docs && npm run deploy-docs && npm run semantic-release
+    script: npm run build && npm run build:docs && npm run deploy-docs && npm run semantic-release
 stages:
 - test
 - build
