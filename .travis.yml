@@ -5,23 +5,28 @@ cache:
 notifications:
   email: false
 node_js:
-  - '8'
   - '9'
   - '10'
   - '11'
 jobs:
   include:
   - stage: test
+    name: Linting and unit-tests
     script: npm run test:prod
   - stage: build
     script: npm run build
-  - stage: deploy
-    script: npm run build && npm run build:docs && npm run deploy-docs && npm run semantic-release
+  - stage: release
+    name: Semantic release
+    script: npm run build && npm run semantic-release
+  - if: branch = master
+    script: npm run build:docs && npm run deploy-docs
+    name: deploying documentation
+
 stages:
 - test
 - build
-- name: deploy
-  if: branch = master  AND type != pull_request
+- name: release
+  if: type != pull_request
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
