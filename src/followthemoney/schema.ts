@@ -1,5 +1,5 @@
 // @ts-ignore
-import Property from './property.ts'
+import { Property } from './property.ts'
 import { ILinkDatum } from '../core/Edge'
 
 interface ILabelReadingConfiguration {
@@ -13,20 +13,6 @@ export default class Schema {
   private readonly label: string
   private readonly plural: string
   private readonly featured: Array<string>
-  private readonly DOCUMENT_SCHEMATA: string[] = [
-    'Document',
-    'Pages',
-    'Folder',
-    'Package',
-    'Email',
-    'HyperText',
-    'Workbook',
-    'Table',
-    'PlainText',
-    'Image',
-    'Video',
-    'Audio'
-  ]
   edge?: ILinkDatum
   schemata: string[]
 
@@ -66,6 +52,10 @@ export default class Schema {
   //     return false;
   // }
 
+  isThing(): boolean {
+    // TBD
+    return this.isA('Thing')
+  }
   getLabel({ forcePlural }: ILabelReadingConfiguration) {
     let label = this.label || this.name
     if (forcePlural || this.plural) {
@@ -87,8 +77,8 @@ export default class Schema {
   //     return !!~this.featured.indexOf(propertyName)
   // }
 
-  isDocumentSchema(): boolean {
-    return !!~this.DOCUMENT_SCHEMATA.indexOf(this.name)
+  isDocument(): boolean {
+    return this.isA('Document')
   }
 
   // getEntityProperties(entity: Schema): Property[] {
@@ -122,5 +112,8 @@ export default class Schema {
     } else {
       throw new Error('there is no such a property set')
     }
+  }
+  isA(schemaName: string) {
+    return !!~this.schemata.indexOf(schemaName)
   }
 }

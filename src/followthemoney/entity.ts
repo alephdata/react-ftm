@@ -92,6 +92,6 @@ export class Entity {
   }
 
   is(schemaName: string) {
-    return !!~this.schema.schemata.indexOf(schemaName)
+    return this.schema.isA(schemaName)
   }
 }

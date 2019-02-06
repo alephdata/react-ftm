@@ -1,33 +1,32 @@
-import Schema from './schema';
-import {IPropertyDatum} from "./property";
-import {Entity} from "./entity";
-
+import Schema from './schema'
+import { IPropertyDatum } from './property'
+import { Entity } from './entity'
 
 interface ISchemata {
-    [schemaName: string]: {}
+  [schemaName: string]: {}
 }
 
 interface ISchemaList {
-    [schemaName: string]: Schema
+  [schemaName: string]: Schema
 }
 
 interface ISchemaDatum {
-    label:string,
-    required:boolean,
-    plural:string,
-    uri:string,
-    schemata: string[],
-    extends:string[],
-    abstract: boolean,
-    matchable:boolean,
-    description: string | null,
-    featured: string[],
-    properties: {
-        [x:string]:IPropertyDatum
-    },
+  label: string
+  required: boolean
+  plural: string
+  uri: string
+  schemata: string[]
+  extends: string[]
+  abstract: boolean
+  matchable: boolean
+  description: string | null
+  featured: string[]
+  properties: {
+    [x: string]: IPropertyDatum
+  }
 }
 export interface ISchemataDatum {
-    [schemaName: string]: ISchemaDatum
+  [schemaName: string]: ISchemaDatum
 }
 
 // export default class Model {
@@ -47,57 +46,57 @@ export interface ISchemataDatum {
 //             }, {})
 //     }
 
-    // _getInstance() {
-    //   return new Proxy(this.schemata, {
-    //     get: (schemata: ISchemata, schemaName: string): Schema => {
-    //       if (this.schemaCache[schemaName]) {
-    //         return this.schemaCache[schemaName];
-    //       } else if (Object.keys(schemata).length) {
-    //         const schema = schemata[schemaName];
-    //         if (schema) {
-    //           return this.schemaCache[schemaName] = new Schema(schemaName, schema);
-    //         }
-    //       } else {
-    //         console.error(
-    //           new Error(`Provide schemas implementation firs via 'Model.constructor' function`)
-    //         )
-    //       }
-    //       return {};
-    //     }
-    //   });
-    // }
+// _getInstance() {
+//   return new Proxy(this.schemata, {
+//     get: (schemata: ISchemata, schemaName: string): Schema => {
+//       if (this.schemaCache[schemaName]) {
+//         return this.schemaCache[schemaName];
+//       } else if (Object.keys(schemata).length) {
+//         const schema = schemata[schemaName];
+//         if (schema) {
+//           return this.schemaCache[schemaName] = new Schema(schemaName, schema);
+//         }
+//       } else {
+//         console.error(
+//           new Error(`Provide schemas implementation firs via 'Model.constructor' function`)
+//         )
+//       }
+//       return {};
+//     }
+//   });
+// }
 // }
 
 interface ISchemeta {
-    [schemaName: string]: {}
+  [schemaName: string]: {}
 }
 
 export class Model {
-    private readonly schemaCache: { [x: string]: Schema } = {};
-    private schemata: any;
+  private readonly schemaCache: { [x: string]: Schema } = {}
+  public readonly schemata: any
 
-    constructor(schemata:ISchemataDatum) {
-        this.schemata = schemata;
-    }
+  constructor(schemata: ISchemataDatum) {
+    this.schemata = schemata
+  }
 
-    getSchema(schemaName: string): Schema {
-        if (this.schemaCache[schemaName]) {
-            return this.schemaCache[schemaName]
-        } else {
-            return this.schemaCache[schemaName] = new Schema(schemaName, this.schemata[schemaName]);
-        }
+  getSchema(schemaName: string): Schema {
+    if (this.schemaCache[schemaName]) {
+      return this.schemaCache[schemaName]
+    } else {
+      return (this.schemaCache[schemaName] = new Schema(schemaName, this.schemata[schemaName]))
     }
-    emit(schemaName: string, entity?: any) {
-        return this.emitEntity({
-            schema: schemaName,
-            ...entity
-        })
-    }
+  }
+  emit(schemaName: string, entity?: any) {
+    return this.emitEntity({
+      schema: schemaName,
+      ...entity
+    })
+  }
 
-    emitEntity(entity: any): Entity {
-        if (entity.schema) {
-            return Entity.generate(entity.schema, this, entity)
-        }
-        throw new Error('no schem description found')
+  emitEntity(entity: any): Entity {
+    if (entity.schema) {
+      return Entity.generate(entity.schema, this, entity)
     }
+    throw new Error('no schem description found')
+  }
 }

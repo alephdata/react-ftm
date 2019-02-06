@@ -1,5 +1,3 @@
-import { ISchemataDatum } from '../src/followthemoney/model'
-
 export const schemata: any = {
   Representation: {
     label: 'Representation',

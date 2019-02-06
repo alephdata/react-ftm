@@ -1,41 +1,28 @@
-import {TypeCommon} from "./types/TypeCommon";
+import { TypeCommon } from './types/TypeCommon'
 
 export interface IPropertyDatum {
-    name:string,
-    qname:string,
-    label: string,
-    description: string | null,
-    caption: boolean,
-    stub: boolean,
-    uri: string,
-    type: string,
-    schema?: string,
-    reverse ?:  string
+  name: string
+  qname: string
+  label: string
+  description: string | null
+  caption: boolean
+  stub: boolean
+  uri: string
+  type: string
+  schema?: string
+  reverse?: string
 }
 
-export default class Property {
-    public readonly name: string;
-    private schema: any;
-    private behaviour: any;
+export class Property {
+  public readonly name: string
+  public readonly label: string
+  public readonly type: string
+  public readonly caption: boolean
 
-    constructor(name: string, value: any, behaviour: any) {
-        this.name = name;
-
-    }
-
-    get caption() {
-        return this.behaviour.caption
-    }
-
-    get label(): string {
-        return this.behaviour.label || this.name;
-    }
-
-    get type(): string {
-        return this.behaviour.type;
-    }
-
-    extends(parentSchema:string) {
-        return this.behaviour.schema === parentSchema;
-    }
+  constructor(property: IPropertyDatum) {
+    this.name = property.name
+    this.label = property.label
+    this.type = property.label
+    this.caption = property.caption
+  }
 }
