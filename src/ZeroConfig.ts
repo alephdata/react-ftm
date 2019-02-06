@@ -1,9 +1,8 @@
-import { Layout } from './core/Layout'
+import { Layout } from './core'
 import { Model } from './followthemoney/model'
-import { schemata } from '../resources/_schemata'
 import Renderer from './renderer/Renderer'
 import { map } from 'rxjs/operators'
-import { Draggable } from './extensions/index'
+import { Draggable } from './extensions'
 
 interface IZeroConfig {
   height?: number

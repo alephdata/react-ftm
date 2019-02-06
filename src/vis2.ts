@@ -1,1 +1,5 @@
 export * from './core'
+export * from './extensions'
+export * from './followthemoney'
+export * from './renderer'
+export { ZeroConfig as Vis2 } from './ZeroConfig'
