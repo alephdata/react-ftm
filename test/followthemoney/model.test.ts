@@ -14,12 +14,12 @@ describe('ftm/Model class', () => {
     it('should exist', () => {
       expect(modelInstance).toHaveProperty('getSchema')
     })
-    it('should return `Schema` for string', () => {
+    it('should return `Schema` instance for associated name', () => {
       const schema = modelInstance.getSchema('Thing')
       expect(schema).toBeInstanceOf(Schema)
     })
   })
-  it('should have property `schemata`', () => {
+  it('should contain `schemata` metadata', () => {
     const model = new Model(schemata)
     expect(model).toHaveProperty('schemata')
     expect(model.schemata).toBe(schemata)

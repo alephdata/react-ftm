@@ -71,13 +71,13 @@ export class Entity {
   //     throw new Error(`The schema '${this.schema.name}' can be link`);
   // }
 
-  setProperty(name: string, value: any): Entity {
+  setProperty(name: string, value: any): PropertyValue {
     if (this.schema.hasProperty(name)) {
       const propertyValue = new PropertyValue(name, value, this.schema.getProperty(name))
       this.properties.set(name, propertyValue)
-      return this
+      return propertyValue
     } else {
-      throw console.error(new Error('This schema doesn"t implement this property'))
+      throw console.error(new Error('This schema does not implement this property'))
     }
   }
 
@@ -85,10 +85,13 @@ export class Entity {
     if (this.properties.has(name)) {
       return this.properties.get(name) as PropertyValue
     } else if (this.schema.hasProperty(name)) {
-      return new PropertyValue(name, undefined, this.schema.getProperty(name))
+      return this.setProperty(name, [])
     } else {
       throw new Error(`The schema '${this.schema.name}' does not have property ${name}`)
     }
+  }
+  getProperties(): Array<PropertyValue> {
+    return Array.from(this.properties.values())
   }
 
   is(schemaName: string) {

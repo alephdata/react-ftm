@@ -1,4 +1,5 @@
 import { TypeCommon } from './types/TypeCommon'
+import { PropertyValue } from './PropertyValue'
 
 export interface IPropertyDatum {
   name: string
@@ -18,7 +19,7 @@ export class Property {
   public readonly label: string
   public readonly type: string
   public readonly caption: boolean
-
+  public readonly value?: PropertyValue
   constructor(property: IPropertyDatum) {
     this.name = property.name
     this.label = property.label
