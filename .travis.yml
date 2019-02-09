@@ -21,6 +21,8 @@ jobs:
   - if: branch = master
     script: npm run build:docs && npm run deploy-docs
     name: deploying documentation
+  - script: npm run test:prod &&  npm run report-coverage
+    name: reporting coverage
 
 stages:
 - test
