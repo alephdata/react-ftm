@@ -6,7 +6,7 @@ interface ILabelReadingConfiguration {
   forcePlural: boolean
 }
 
-export default class Schema {
+export class Schema {
   public readonly icon: string
   public properties: Map<string, Property> = new Map()
   readonly name: string

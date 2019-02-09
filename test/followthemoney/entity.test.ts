@@ -1,5 +1,5 @@
 import * as EntitySet from '../../src/followthemoney/entity'
-import Schema from '../../src/followthemoney/schema'
+import { Schema } from '../../src/followthemoney/schema'
 import { schemata } from './_schemata'
 import { PropertyValue } from '../../src/followthemoney'
 

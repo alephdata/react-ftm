@@ -1,4 +1,4 @@
-import Schema from './schema'
+import { Schema } from './schema'
 import { IPropertyDatum } from './property'
 import { Entity } from './entity'
 

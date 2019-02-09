@@ -1,6 +1,6 @@
 import { Model } from '../../src/followthemoney/model'
 import { schemata } from './_schemata'
-import Schema from '../../src/followthemoney/schema'
+import { Schema } from '../../src/followthemoney/schema'
 describe('ftm/Model class', () => {
   it('should be instantiable', () => {
     expect(new Model({})).toBeInstanceOf(Model)

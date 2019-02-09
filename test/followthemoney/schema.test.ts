@@ -1,5 +1,5 @@
 import { schemata } from './_schemata'
-import Schema from '../../src/followthemoney/schema'
+import { Schema } from '../../src/followthemoney/schema'
 describe('ftm/Schema class', () => {
   /*`Schema`
    * `name`, `label`

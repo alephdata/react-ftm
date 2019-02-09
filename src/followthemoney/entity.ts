@@ -1,7 +1,6 @@
-import Schema from './schema'
+import { Schema } from './schema'
 import { Model } from './model'
 import { PropertyValue } from './PropertyValue'
-import { Edge } from '../core/Edge'
 
 interface IEntity {}
 
