@@ -1,4 +1,3 @@
-import { TypeCommon } from './types/TypeCommon'
 import { PropertyValue } from './PropertyValue'
 
 export interface IPropertyDatum {
@@ -23,7 +22,7 @@ export class Property {
   constructor(property: IPropertyDatum) {
     this.name = property.name
     this.label = property.label
-    this.type = property.label
+    this.type = property.type
     this.caption = property.caption
   }
 }

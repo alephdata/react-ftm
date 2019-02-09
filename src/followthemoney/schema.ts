@@ -35,7 +35,7 @@ export default class Schema {
     this.featured = theImplementation.featured
     this.schemata = theImplementation.schemata
     Object.entries(theImplementation.properties).forEach(([propertyName, property]) => {
-      this.properties.set(propertyName, new Property(propertyName, property, this))
+      this.properties.set(propertyName, new Property(property, this))
     })
 
     if (theImplementation.edge.source && theImplementation.edge.target) {

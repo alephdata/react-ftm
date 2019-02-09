@@ -21,12 +21,12 @@ interface IEntityDatum {
 
 export { IEntity }
 
-interface Beh {
+interface IEnittyBehaviour {
   properties: { [x: string]: any }
   id: string
 }
 export class Entity {
-  static generate(schemaName: string, model: Model, behaviour?: Beh): Entity {
+  static generate(schemaName: string, model: Model, behaviour?: IEnittyBehaviour): Entity {
     const schema = model.getSchema(schemaName)
     if (!schema) {
       throw console.error(new Error('Schema is not found'))
@@ -38,7 +38,7 @@ export class Entity {
   public properties: Map<string, PropertyValue> = new Map()
   public schema: Schema
 
-  constructor(schema: Schema, behaviour?: Beh) {
+  constructor(schema: Schema, behaviour?: IEnittyBehaviour) {
     if (schema) {
       this.schema = schema
     } else {
