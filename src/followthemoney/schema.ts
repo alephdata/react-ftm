@@ -68,8 +68,7 @@ export class Schema {
   //     if (!reference || !reference.property) {
   //         return null;
   //     }
-  //     const prop = reference.property;
-  //     const reverse = this.properties.get(prop.reverse) || prop;
+  //     const reverse = this.properties.get(reference.property.reverse) || reference.property;
   //     return reverse.label;
   // };
 
