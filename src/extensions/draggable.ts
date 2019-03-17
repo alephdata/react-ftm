@@ -1,8 +1,9 @@
 import * as d3 from 'd3'
 import { Layout } from '../core/Layout'
 import Renderer from '../renderer/Renderer'
+import { Extension } from './Extension'
 
-export class Draggable {
+export class Draggable implements Extension {
   private renderer: Renderer
   private layout: Layout
   constructor(layout: Layout, renderer: Renderer) {

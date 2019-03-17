@@ -4,14 +4,9 @@ import { Edge } from './Edge'
 import NodeCollection from './NodeCollection'
 import { LinkCollection } from './LinkCollection'
 import { BehaviorSubject, merge, Observable } from 'rxjs'
-import { CommonCollectionStorage, ICommonCollectionEvent } from './CommonCollection'
+import { ICommonCollectionEvent } from './CommonCollection'
 
-export interface IGraphRenderer {
-  restartNodes(nodes: CommonCollectionStorage<Vertex>): void
-  restartLinks(links: CommonCollectionStorage<Edge>): void
-  updatePositions(): void
-}
-interface IGraphConfiguration {
+export interface ILayoutConfiguration {
   links?: Edge[]
   nodes?: Vertex[]
 }
@@ -29,13 +24,7 @@ export class Layout {
   public readonly simulation: d3.Simulation<Vertex, undefined>
   public readonly nodes: NodeCollection = new NodeCollection()
 
-  constructor(configuration: IGraphConfiguration) {
-    // if (configuration.context) {
-    //     this.context = configuration.context;
-    // } else {
-    //     throw console.error(new Error('Context is required'));
-    // }
-
+  constructor(configuration: ILayoutConfiguration) {
     if (configuration.links) {
       this.addLinks(...configuration.links)
     }
@@ -47,12 +36,11 @@ export class Layout {
       .forceSimulation(this.nodes.toArray())
       .force('charge', d3.forceManyBody().strength(-200))
       // .force('center', d3.forceCenter())
-      .force('collide', d3.forceCollide(8 * 1.5).strength(1))
+      .force('collide', d3.forceCollide(15 * 1.5).strength(1))
       // @ts-ignore
       .force(
         'link',
-        d3.forceLink<Vertex, Edge>(this.links.toArray())
-        // .id((d) => d.entity.id)
+        d3.forceLink<Vertex, Edge>(this.links.toArray()).id(d => d.getIdentification())
       )
       .force('x', d3.forceX())
       .force('y', d3.forceY())
@@ -71,9 +59,8 @@ export class Layout {
         'link',
         d3
           .forceLink<Vertex, Edge>(this.links.toArray())
-          // @ts-ignore
           .distance(100)
-        // .id(d => d.entity.id)
+          .id(d => d.getIdentification())
       )
     this.simulation.alpha(1).restart()
   }

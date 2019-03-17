@@ -1,6 +1,6 @@
-import { Entity } from '../followthemoney/entity'
+import { BaseType, Selection } from 'd3-selection'
 
-export interface INodeDatum {
+export interface IVertex {
   /**
    * Vertex’s zero-based index into nodes array. This property is set during the initialization process of a simulation.
    */
@@ -36,15 +36,23 @@ export interface INodeDatum {
 /*
  * Responsible for holding Vertex coordinates
  * */
-export class Vertex implements INodeDatum {
+export class Vertex implements IVertex {
   public x: number = 0
   public y: number = 0
   public index: number = 0
-  static ofType<T>(payload: T) {
-    return new Vertex()
-  }
 
   getIdentification() {
     return this.index as any
+  }
+
+  render(parent: Selection<SVGGElement, any, BaseType, any>) {
+    parent.append('circle').attr('r', 8)
+  }
+
+  position(self: Selection<SVGGElement, any, BaseType, any>) {
+    self
+      .select('circle')
+      .attr('cx', this.x)
+      .attr('cy', this.y)
   }
 }

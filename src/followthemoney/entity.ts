@@ -59,16 +59,16 @@ export class Entity {
     }
   }
 
-  // getEdge(): { source: PropertyValue, target: PropertyValue } {
-  //     const schemaEdge = this.schema.getEdge();
-  //     if (schemaEdge) {
-  //         return {
-  //             source: this.getProperty(schemaEdge.source),
-  //             target: this.getProperty(schemaEdge.target),
-  //         }
-  //     }
-  //     throw new Error(`The schema '${this.schema.name}' can be link`);
-  // }
+  getEdge(): { source: PropertyValue; target: PropertyValue } {
+    const schemaEdge = this.schema.getEdge()
+    if (schemaEdge) {
+      return {
+        source: this.getProperty(schemaEdge.source),
+        target: this.getProperty(schemaEdge.target)
+      }
+    }
+    throw new Error(`The schema '${this.schema.name}' can be link`)
+  }
 
   setProperty(name: string, value: any): PropertyValue {
     if (this.schema.hasProperty(name)) {
