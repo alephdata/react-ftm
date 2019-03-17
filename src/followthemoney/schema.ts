@@ -58,7 +58,7 @@ export class Schema {
   }
   getLabel({ forcePlural }: ILabelReadingConfiguration) {
     let label = this.label || this.name
-    if (forcePlural || this.plural) {
+    if (forcePlural && this.plural) {
       label = this.plural || label
     }
     return label
