@@ -42,7 +42,7 @@ export class Schema {
       this.edge = theImplementation.edge
     }
   }
-  getEdge(): ILinkDatum | undefined {
+  getEdge(): any {
     return this.edge
   }
   // static hasSchemata(document, schemata: string[]): boolean {

@@ -1,12 +1,11 @@
 import { ICollectionRenderer } from './Renderer'
-import { Vertex } from '../core/Vertex'
+import { Vertex, CommonCollection } from '../core'
 import { BaseType, Selection } from 'd3-selection'
-import CommonCollection, { CommonCollectionStorage } from '../core/CommonCollection'
 import * as d3 from 'd3'
 
 export class NodeRenderer implements ICollectionRenderer<Vertex> {
   private parent: Selection<SVGGElement, any, HTMLElement | null, undefined>
-  public container: Selection<SVGCircleElement, Vertex, BaseType, any>
+  public container: Selection<SVGGElement, Vertex, BaseType, any>
 
   constructor(parent: Selection<SVGGElement, any, HTMLElement | null, undefined>) {
     this.parent = parent
@@ -17,27 +16,22 @@ export class NodeRenderer implements ICollectionRenderer<Vertex> {
       .selectAll('.node')
   }
 
-  getColor = d3.scaleOrdinal(d3.schemeCategory10)
-
-  render(nodes: CommonCollectionStorage<Vertex>) {
-    const { getColor } = this
-    this.container = this.container.data(Array.from(nodes.values()))
+  render(nodes: CommonCollection<Vertex>) {
+    this.container = this.container.data(nodes.toArray())
 
     this.container.exit().remove()
     this.container = this.container
       .enter()
-      .append('circle')
-
-      .attr('r', 8)
+      .append('g')
+      .each(function(vertex) {
+        vertex.render(d3.select(this))
+      })
       .merge(this.container)
   }
+
   updatePositions() {
-    this.container
-      .attr('cx', function(d) {
-        return d.x
-      })
-      .attr('cy', function(d) {
-        return d.y
-      })
+    this.container.each(function(vertex) {
+      vertex.position(d3.select(this))
+    })
   }
 }

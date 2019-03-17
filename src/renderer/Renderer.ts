@@ -1,11 +1,9 @@
 import * as d3 from 'd3'
-import { Vertex } from '../core/Vertex'
+import { Vertex, Edge, CommonCollection } from '../core'
 import { Selection } from 'd3-selection'
-import { IGraphRenderer } from '../core/Layout'
-import { CommonCollectionStorage } from '../core/CommonCollection'
-import { Edge } from '../core/Edge'
 import { NodeRenderer } from './NodeRenderer'
 import { LinkRenderer } from './LinkRenderer'
+import { IGraphRenderer } from '../ZeroConfig'
 
 interface IGraphConfiguration {
   container: Element | null
@@ -14,7 +12,7 @@ interface IGraphConfiguration {
 }
 
 export interface ICollectionRenderer<T> {
-  render(collection: CommonCollectionStorage<T>): void
+  render(collection: CommonCollection<T>): void
   updatePositions(): void
 }
 export default class Renderer implements IGraphRenderer {
@@ -65,20 +63,19 @@ export default class Renderer implements IGraphRenderer {
     this.linkRenderer = new LinkRenderer(this.containerG)
     this.nodeRenderer = new NodeRenderer(this.containerG)
 
-    this.restartLinks = this.restartLinks.bind(this)
-    this.restartNodes = this.restartNodes.bind(this)
-    this.updatePositions = this.updatePositions.bind(this)
+    this.edges = this.edges.bind(this)
+    this.vertices = this.vertices.bind(this)
+    this.positionOnly = this.positionOnly.bind(this)
   }
 
-  restartNodes(nodes: CommonCollectionStorage<Vertex>) {
-    this.nodeRenderer.render(nodes)
+  vertices(list: CommonCollection<Vertex>) {
+    this.nodeRenderer.render(list)
   }
-  restartLinks(links: CommonCollectionStorage<Edge>) {
-    this.linkRenderer.render(links)
+  edges(list: CommonCollection<Edge>) {
+    this.linkRenderer.render(list)
   }
-  updatePositions() {
+  positionOnly() {
     this.nodeRenderer.updatePositions()
-
     this.linkRenderer.updatePositions()
   }
 }
