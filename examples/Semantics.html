@@ -14,11 +14,14 @@
     })
 
 
-    const [node1, node2, ...rest] = Array.from({ length: 2 }).map(() => new Vertex())
+    const [node1, node2, ...rest] = Array.from({ length: 10 })
+      .map(() => new Vertex())
 
     graph.layout.addNodes(
       ...[node1, node2, ...rest]
     )
+
+
 
     graph.layout
       .addLink(new Edge({

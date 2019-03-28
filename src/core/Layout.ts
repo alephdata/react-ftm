@@ -62,7 +62,7 @@ export class Layout {
           .distance(100)
           .id(d => d.getIdentification())
       )
-    this.simulation.alpha(1).restart()
+    // this.simulation.alpha(1).restart()
   }
   addNode(node: Vertex): Vertex {
     this.nodes.add(node)

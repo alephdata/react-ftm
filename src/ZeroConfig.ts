@@ -1,5 +1,5 @@
+import { ISchemataDatum, Model } from '@alephdata/followthemoney'
 import { CommonCollection, Edge, Layout, Vertex } from './core'
-import { ISchemataDatum, Model } from './followthemoney'
 import Renderer from './renderer/Renderer'
 import { map } from 'rxjs/operators'
 import { Draggable } from './extensions'

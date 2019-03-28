@@ -1,5 +1,6 @@
-import { Vertex } from '../core/Vertex'
-import { Entity } from '../followthemoney'
+import { Entity } from '../../../followthemoney.js/dist'
+
+import { Vertex } from '../core'
 import { BaseType, Selection } from 'd3-selection'
 import * as d3 from 'd3'
 
@@ -19,7 +20,7 @@ export class EntityVertex extends Vertex {
   }
 
   getLabel() {
-    return this.entity.schema.getLabel({ forcePlural: true })
+    return this.entity.schema.label
   }
 
   render(parent: EntityVertexElement) {

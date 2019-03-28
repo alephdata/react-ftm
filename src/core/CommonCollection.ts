@@ -1,6 +1,5 @@
 import { Subject, merge, Observable } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
-import { IEntity } from '../followthemoney/entity'
 
 const enum CommonCollectionEventTypes {
   ADDED,
@@ -15,7 +14,7 @@ export interface ICommonCollectionEvent<EntityType> {
   collection: CommonCollection<EntityType>
 }
 
-export class CommonCollection<EntityType extends IEntity> {
+export class CommonCollection<EntityType> {
   private storage: CommonCollectionStorage<EntityType> = new Set<EntityType>()
 
   constructor(pureCollection?: Array<EntityType>) {
