@@ -18,6 +18,12 @@ master|alpha
 
 Supports both ES5 or UMB modules
 
+#### peerDependencies
+
+1. Rx.js
+2. @alephdata/followthemoney
+TBD;
+
 #### Basic usage
 See `examples/Semantics.html`
 
