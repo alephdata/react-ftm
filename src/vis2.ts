@@ -1,5 +1,12 @@
-export * from './core'
-export * from './extensions'
-export * from './followthemoney'
-export * from './renderer'
-export { ZeroConfig as Vis2 } from './ZeroConfig'
+import DReact from 'react'
+import DReactDOM from 'react-dom'
+export const React = DReact
+export const ReactDOM = DReactDOM
+// TODO: remove above
+
+export * from './Edge'
+export * from './EdgeRenderer'
+export * from './Graph'
+export * from './Layout'
+export * from './Vertex'
+export * from './VertexRenderer'
