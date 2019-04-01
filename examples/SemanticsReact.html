@@ -5,16 +5,29 @@
   <title>Semantics</title>
   <script>process = {env:{}};</script>
   <script type="module">
-    import {  Layout, Graph, React, ReactDOM, Vertex } from '../dist/vis2.es5.js';
-
+    import {  Layout, Graph, React, ReactDOM, Vertex, Edge } from '../dist/vis2.es5.js';
+    function useGraph(){
+      const [graph, setGraph] = React.useState(new Graph());
+      const metaSetGraph = function(){
+        setGraph({...graph});
+      }
+      return [graph, metaSetGraph, function (){
+        graph.vertices.push(new Vertex('12','12','12'+Math.random()));
+        if(graph.vertices.length-1){
+          graph.edges.push(new Edge(graph.vertices[0], graph.vertices[graph.vertices.length-1], '123'+Math.random()))
+        }
+        metaSetGraph(graph);
+      }]
+    }
     function App(){
-      const [graph, setGraph ] = React.useState(new Graph());
+      const [graph, setGraph, addVertex] = useGraph();
       return React.createElement('div', null,
         React.createElement('div', null,
+          React.createElement('button', { onClick:()=> Array.from({length:300}).forEach(addVertex)}, 'addVertex'),
           React.createElement('button', { onClick:()=>{
-                graph.vertices.push(new Vertex('12','12','12'));
-                setGraph({...graph});
-              } }, 'addMee'
+              graph.edges.push(new Edge(graph.vertices[0], graph.vertices[graph.vertices.length-1], '123'))
+              setGraph(graph);
+            } }, 'add edge'
           )
         ),
         React.createElement('div', null,
