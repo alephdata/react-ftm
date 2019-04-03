@@ -21,13 +21,13 @@
     }
     function App(){
       const [graph, setGraph, addVertex] = useGraph();
+      const [count, setCount] =  React.useState(1);
       return React.createElement('div', null,
         React.createElement('div', null,
-          React.createElement('button', { onClick:()=> Array.from({length:300}).forEach(addVertex)}, 'addVertex'),
-          React.createElement('button', { onClick:()=>{
-              graph.edges.push(new Edge(graph.vertices[0], graph.vertices[graph.vertices.length-1], '123'))
-              setGraph(graph);
-            } }, 'add edge'
+          React.createElement('button', { onClick:()=> Array.from({length:count}).forEach(addVertex)}, 'addVertex'),
+          React.createElement('input', { value:count, onChange:({target})=>{
+              setCount(target.value)
+            } }
           )
         ),
         React.createElement('div', null,

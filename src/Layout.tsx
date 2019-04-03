@@ -2,24 +2,10 @@ import React from 'react'
 import { Graph } from './Graph'
 import { VertexRenderer } from './VertexRenderer'
 import { EdgeRenderer } from './EdgeRenderer'
+import { getPositionByIndex } from './utils'
 
 interface ILayoutProps {
   graph: Graph
-}
-interface ICoordinates {
-  x:number
-  y:number
-}
-
-function getPositionByIndex(index:number):ICoordinates{
-  const RADIUS = 12;
-  const ANGEL = Math.PI * (3 - Math.sqrt(5));
-  const angelPer = ANGEL * index;
-  const radiusPer = RADIUS * Math.sqrt(index)
-  return {
-    x:radiusPer * Math.cos(angelPer),
-    y:radiusPer * Math.sin(angelPer)
-  }
 }
 
 export function Layout(props: ILayoutProps){
@@ -27,25 +13,30 @@ export function Layout(props: ILayoutProps){
   const UNIT = 10;
 
   return (<svg viewBox={`${scale  * -.75 } ${scale  * -.33} ${scale * 1.5} ${scale / 1.5}`}>
+    <defs>
+      <pattern id="smallGrid" width="10" height="10" patternUnits="userSpaceOnUse">
+        <path d="M 10 0 L 0 0 0 10" fill="none" stroke="gray" stroke-width="0.5"/>
+      </pattern>
+      <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
+        <rect width="100" height="100" fill="url(#smallGrid)"/>
+        <path d="M 100 0 L 0 0 0 100" fill="none" stroke="gray" stroke-width="1"/>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#grid)" />
     <g>
       {props.graph.edges
         .map(edge =>  {
-          const sourceCords = getPositionByIndex(props.graph.vertices.findIndex(edge.source.equals))
-          const targetCords = getPositionByIndex(props.graph.vertices.findIndex(edge.target.equals))
           return <EdgeRenderer
             key={edge.id}
-            x1={sourceCords.x}
-            y1={sourceCords.y}
-            x2={targetCords.x}
-            y2={targetCords.y}
             edge={edge}
-        />})}
+            vertices={props.graph.vertices}
+          />})}
     </g>
     <g>
       {props.graph.vertices.map((vertex, i) =>  <VertexRenderer
         key={vertex.id}
         vertex={vertex}
-        {...getPositionByIndex(i)}
+        index={i}
       />)}
     </g>
   </svg>)

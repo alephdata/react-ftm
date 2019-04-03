@@ -1,17 +1,18 @@
 import React from 'react';
 import { Vertex } from './Vertex'
+import { getPositionByIndex } from './utils'
 
 interface IVertexRendererProps{
   vertex: Vertex
-  x: number
-  y: number
+  index:number
 }
 
 export function VertexRenderer(props:IVertexRendererProps){
+  const {x, y} = getPositionByIndex(props.index);
   return <g>
     <circle
-      cx={props.x}
-      cy={props.y}
+      cx={x}
+      cy={y}
       r={5}
       fill="red"
     />
