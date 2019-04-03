@@ -6,6 +6,10 @@
   <script>process = {env:{}};</script>
   <script type="module">
     import {  Layout, Graph, React, ReactDOM, Vertex, Edge } from '../dist/vis2.es5.js';
+    import { schemata } from '../resources/_schemata.js'
+    import { data } from '../resources/az_alievs.js'
+
+
     function useGraph(){
       const [graph, setGraph] = React.useState(new Graph());
       const metaSetGraph = function(){
@@ -28,7 +32,13 @@
           React.createElement('input', { value:count, onChange:({target})=>{
               setCount(target.value)
             } }
-          )
+          ),
+          React.createElement('button',{
+            onClick:()=>{
+              data
+                .map(rawEntity=>  )
+            }
+          },'add our friends')
         ),
         React.createElement('div', null,
           React.createElement(Layout, {graph})

@@ -9,20 +9,17 @@ interface ILayoutProps {
 }
 
 export function Layout(props: ILayoutProps){
-  const scale = 500;
-  const UNIT = 10;
+  const UNIT = 5;
+  const RATIO = 1.4;
+  const scale = UNIT * 1e2;
+  const height = scale * RATIO;
+  const width = scale / RATIO;
 
-  return (<svg viewBox={`${scale  * -.75 } ${scale  * -.33} ${scale * 1.5} ${scale / 1.5}`}>
-    <defs>
-      <pattern id="smallGrid" width="10" height="10" patternUnits="userSpaceOnUse">
-        <path d="M 10 0 L 0 0 0 10" fill="none" stroke="gray" stroke-width="0.5"/>
-      </pattern>
-      <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
-        <rect width="100" height="100" fill="url(#smallGrid)"/>
-        <path d="M 100 0 L 0 0 0 100" fill="none" stroke="gray" stroke-width="1"/>
-      </pattern>
-    </defs>
-    <rect width="100%" height="100%" fill="url(#grid)" />
+  return (<svg viewBox={`${-(height/2) } ${-(width/2)} ${height} ${width}`} fill="url(#grid)" style={{
+    backgroundSize:`${UNIT}% ${UNIT*(Math.pow(RATIO,2)) }%`,
+    backgroundImage: 'linear-gradient(to right, black 1px, transparent 1px), linear-gradient(to bottom, grey 1px, transparent 1px)'
+  }}>
+
     <g>
       {props.graph.edges
         .map(edge =>  {
