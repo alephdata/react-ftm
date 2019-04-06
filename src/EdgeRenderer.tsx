@@ -11,7 +11,7 @@ export const EdgeRenderer = React.memo(function EdgeRenderer(props:IEdgeRenderer
   const {edge} = props;
   const sourceCords = getPositionByIndex(props.vertices.findIndex(edge.source.equals))
   const targetCords = getPositionByIndex(props.vertices.findIndex(edge.target.equals))
-  return <g stroke="green">
+  return <g>
     <line
       x1={sourceCords.x}
       y1={sourceCords.y}

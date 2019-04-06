@@ -20,7 +20,7 @@ export function Layout(props: ILayoutProps){
     backgroundImage: 'linear-gradient(to right, black 1px, transparent 1px), linear-gradient(to bottom, grey 1px, transparent 1px)'
   }}>
 
-    <g>
+    <g stroke="green">
       {props.graph.edges
         .map(edge =>  {
           return <EdgeRenderer
@@ -29,7 +29,7 @@ export function Layout(props: ILayoutProps){
             vertices={props.graph.vertices}
           />})}
     </g>
-    <g>
+    <g fill="red">
       {props.graph.vertices.map((vertex, i) =>  <VertexRenderer
         key={vertex.id}
         vertex={vertex}

@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <title>Semantics</title>
-  <script>process = {env:{}};</script>
+  <script>
+    process = {env:{}};
+    window.cryptoBrowserify = {}
+  </script>
   <script type="module">
-    import {  Layout, Graph, React, ReactDOM, Vertex, Edge } from '../dist/vis2.es5.js';
-    import { schemata } from '../resources/_schemata.js'
-    import { data } from '../resources/az_alievs.js'
+    import {  Layout, Graph, React, ReactDOM, Vertex, Edge, Model } from '../dist/vis2.es5.js';
+    import {data} from './resources/az_alievs.js'
+    import {schemata} from './resources/_schemata.js'
 
-
+    const model = new Model(schemata)
     function useGraph(){
       const [graph, setGraph] = React.useState(new Graph());
       const metaSetGraph = function(){
@@ -35,8 +38,12 @@
           ),
           React.createElement('button',{
             onClick:()=>{
-              data
-                .map(rawEntity=>  )
+                data
+                  // .slice(0,3)
+                  .map(rawEntity=>  model.getEntity(rawEntity))
+                  .forEach(entity => graph.addEntity(entity))
+              setGraph(graph)
+
             }
           },'add our friends')
         ),

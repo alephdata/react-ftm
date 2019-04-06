@@ -14,7 +14,6 @@ export function VertexRenderer(props:IVertexRendererProps){
       cx={x}
       cy={y}
       r={5}
-      fill="red"
     />
   </g>
 }
