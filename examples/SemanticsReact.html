@@ -17,11 +17,10 @@
     }
   </style>
   <script type="module">
-    import {  Layout, Graph, React, ReactDOM, Vertex, Edge, Model } from '../dist/vis2.es5.js';
-    import {data} from './resources/az_alievs.js'
-    import {schemata} from './resources/_schemata.js'
+    import {  Layout, Graph, React, ReactDOM, Vertex, Edge, Model, defaultModel } from '../dist/vis2.es5.js';
+    import { data } from './resources/az_alievs.js'
 
-    const model = new Model(schemata)
+    const model = new Model(defaultModel)
     function useGraph(){
       const [graph, setGraph] = React.useState(new Graph());
       const metaSetGraph = function(){
