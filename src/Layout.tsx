@@ -11,7 +11,7 @@ interface ILayoutProps {
 export function Layout(props: ILayoutProps){
   const UNIT = 5;
   const RATIO = 1.4;
-  const scale = UNIT * 1e2;
+  const scale = UNIT * 150;
   const height = scale * RATIO;
   const width = scale / RATIO;
 
@@ -21,16 +21,15 @@ export function Layout(props: ILayoutProps){
   }}>
 
     <g stroke="green">
-      {props.graph.edges
+      {Array.from(props.graph.edges.values())
         .map(edge =>  {
           return <EdgeRenderer
             key={edge.id}
             edge={edge}
-            vertices={props.graph.vertices}
           />})}
     </g>
     <g fill="red">
-      {props.graph.vertices
+      {Array.from(props.graph.vertices.values())
         .map((vertex, i) =>  <VertexRenderer
         key={vertex.id}
         vertex={vertex}

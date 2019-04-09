@@ -7,6 +7,15 @@
     process = {env:{}};
     window.cryptoBrowserify = {}
   </script>
+  <style>
+
+    .vertex > .label{
+      display: none;
+    }
+    .vertex:hover > .label{
+      display: initial;
+    }
+  </style>
   <script type="module">
     import {  Layout, Graph, React, ReactDOM, Vertex, Edge, Model } from '../dist/vis2.es5.js';
     import {data} from './resources/az_alievs.js'
@@ -19,9 +28,9 @@
         setGraph({...graph});
       }
       return [graph, metaSetGraph, function (){
-        graph.vertices.push(new Vertex('12','12','12'+Math.random()));
+        graph.addVertex(new Vertex('12','12','12'+Math.random()));
         if(graph.vertices.length-1){
-          graph.edges.push(new Edge(graph.vertices[0], graph.vertices[graph.vertices.length-1], '123'+Math.random()))
+          graph.addEdge(new Edge(graph.vertices[0], graph.vertices[graph.vertices.length-1], '123'+Math.random()))
         }
         metaSetGraph(graph);
       }]
@@ -41,7 +50,7 @@
                 data
                   // .slice(0,3)
                   .map(rawEntity=>  model.getEntity(rawEntity))
-                  .forEach(entity => graph.addEntity(entity))
+                  .forEach(graph.addEntity, graph)
               setGraph(graph)
 
             }

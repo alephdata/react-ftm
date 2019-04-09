@@ -1,4 +1,7 @@
+import { Point } from './Point'
+
 export class Vertex {
+  public point = new Point()
   type: string
   label: string
   id: string
@@ -7,6 +10,7 @@ export class Vertex {
     this.type = type
     this.label = label
     this.id = id
+
     this.equals = this.equals.bind(this)
   }
 

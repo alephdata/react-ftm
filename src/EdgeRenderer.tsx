@@ -1,16 +1,14 @@
 import React from 'react';
 import { Edge } from './Edge'
-import { getPositionByIndex } from './utils'
-import { Vertex } from './Vertex'
+import { Graph } from './Graph'
 
 interface IEdgeRendererProps {
   edge: Edge,
-  vertices: Array<Vertex>
 }
-export const EdgeRenderer = React.memo(function EdgeRenderer(props:IEdgeRendererProps){
+export function EdgeRenderer(props:IEdgeRendererProps){
   const {edge} = props;
-  const sourceCords = getPositionByIndex(props.vertices.findIndex(edge.source.equals))
-  const targetCords = getPositionByIndex(props.vertices.findIndex(edge.target.equals))
+  const sourceCords = edge.source.point;
+  const targetCords = edge.target.point;
   return <g>
     <line
       x1={sourceCords.x}
@@ -19,6 +17,6 @@ export const EdgeRenderer = React.memo(function EdgeRenderer(props:IEdgeRenderer
       y2={targetCords.y}
     />
   </g>
-})
+}
 
 
