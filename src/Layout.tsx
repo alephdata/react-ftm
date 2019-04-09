@@ -30,7 +30,8 @@ export function Layout(props: ILayoutProps){
           />})}
     </g>
     <g fill="red">
-      {props.graph.vertices.map((vertex, i) =>  <VertexRenderer
+      {props.graph.vertices
+        .map((vertex, i) =>  <VertexRenderer
         key={vertex.id}
         vertex={vertex}
         index={i}

@@ -1,52 +1,46 @@
-import { Entity, PropertyType } from '@alephdata/followthemoney'
+import { Entity, PropertyType, Value } from '@alephdata/followthemoney'
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
 
 export class Graph {
-  vertices: Array<Vertex> = []
-  edges: Array<Edge> = []
-  entities: Array<Entity> = []
+  vertices: Map<string, Vertex> = new Map()
+  edges: Map<string, Edge> = new Map()
+  entities: Map<string, Entity> = new Map()
   constructor() {
     this.addVertex = this.addVertex.bind(this)
     this.addEdge = this.addEdge.bind(this)
   }
   addVertex(vertex: Vertex): Vertex {
-    const existingVertex = this.vertices.find(vertex.equals)
-    if (existingVertex) {
-      return existingVertex
+    if (this.vertices.has(vertex.id)) {
+      return this.vertices.get(vertex.id) as Vertex
     }
-    this.vertices.push(vertex)
+    this.vertices.set(vertex.id, vertex)
     return vertex
   }
   addEdge(edge: Edge): Edge {
-    const existingEdge = this.edges.find(edge.equals)
-    if (existingEdge) {
-      return existingEdge
+    if (this.edges.has(edge.id)) {
+      return this.edges.get(edge.id) as Edge
     }
-    this.edges.push(edge)
+    this.edges.set(edge.id, edge)
     return edge
   }
   addEntity(entity: Entity): void {
-    this.entities.push(entity)
+    this.entities.set(entity.id, entity)
     if (entity.schema.edge) {
+      const convertEntityToPropertyVertex = (value: Value): Vertex => {
+        const propEntity = this.entities.get(value instanceof Entity ? value.id : value)
+        if (propEntity) {
+          return new Vertex('entity', propEntity.toString(), propEntity.id)
+        } else throw new Error('No such an entity found' + value)
+      }
       const sources = entity
         .getProperty(entity.schema.edge.source)
-        .map(value => {
-          const propEntity = this.entities.find(e => e.id === value)
-          if (propEntity) {
-            return new Vertex('entity', propEntity.toString(), propEntity.id)
-          } else throw new Error('No such an entity found' + value)
-        })
+        .map(convertEntityToPropertyVertex)
         .map(this.addVertex)
 
       const targets = entity
         .getProperty(entity.schema.edge.target)
-        .map(value => {
-          const propEntity = this.entities.find(e => e.id === value)
-          if (propEntity) {
-            return new Vertex('entity', propEntity.toString(), propEntity.id)
-          } else throw new Error('No such an entity found' + value)
-        })
+        .map(convertEntityToPropertyVertex)
         .map(this.addVertex)
 
       sources
@@ -77,7 +71,7 @@ export class Graph {
         )
         .map(this.addVertex)
         .forEach(prop => {
-          this.edges.push(new Edge(mainVertex, prop, entity.id + prop.id))
+          this.addEdge(new Edge(mainVertex, prop, entity.id + prop.id))
         })
     }
   }
