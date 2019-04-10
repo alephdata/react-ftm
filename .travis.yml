@@ -15,9 +15,6 @@ jobs:
     script: npm run test:prod &&  npm run report-coverage
   - stage: build
     script: npm run build
-  - stage: release
-    name: Semantic release
-    script: npm run build && npm run semantic-release
   - if: branch = master
     script: npm run build:docs && npm run deploy-docs
     name: deploying documentation
@@ -25,8 +22,6 @@ jobs:
 stages:
 - test
 - build
-- name: release
-  if: type != pull_request
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
