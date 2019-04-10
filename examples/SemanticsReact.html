@@ -5,7 +5,6 @@
   <title>Semantics</title>
   <script>
     process = {env:{}};
-    window.cryptoBrowserify = {}
   </script>
   <style>
 
@@ -31,7 +30,7 @@
         if(graph.vertices.length-1){
           graph.addEdge(new Edge(graph.vertices[0], graph.vertices[graph.vertices.length-1], '123'+Math.random()))
         }
-        metaSetGraph(graph);
+        setGraph(graph);
       }]
     }
     function App(){
@@ -56,7 +55,7 @@
           },'add our friends')
         ),
         React.createElement('div', null,
-          React.createElement(Layout, {graph})
+          React.createElement(Layout, {graph,s:graph.generation})
         )
       )
     }

@@ -1,4 +1,5 @@
-import { Entity, PropertyType, Value } from '@alephdata/followthemoney'
+import { Entity, Value } from '@alephdata/followthemoney'
+import { Map, Record } from 'immutable';
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
 import { EntityVertex } from './EntityVertex'
@@ -6,33 +7,47 @@ import { ValueVertex } from './ValueVertex'
 import { EntityEdge } from './EntityEdge'
 import { PropertyEdge } from './PropertyEdge'
 
+export interface IGraphStorage {
+  vertices: Map<string, Vertex>
+  edges: Map<string, Edge>
+  entities: Map<string, Entity>
+}
+
 export class Graph {
-  vertices: Map<string, Vertex> = new Map()
-  edges: Map<string, Edge> = new Map()
-  entities: Map<string, Entity> = new Map()
-  constructor() {
-    this.addVertex = this.addVertex.bind(this)
-    this.addEdge = this.addEdge.bind(this)
+  static StorageRecord = Record<IGraphStorage>({
+    vertices: Map<string, Vertex>(),
+    edges: Map<string, Edge>(),
+    entities: Map<string, Entity>()
+  })
+  storage = Graph.StorageRecord()
+  listeners : Array<Function> = [];
+  addEventListener(listener:Function):void{
+    this.listeners.push(listener)
+  }
+  emitEvent(){
+    this.listeners.forEach(listener => listener(this.storage))
   }
   addVertex<V extends Vertex>(vertex: V): V {
-    if (this.vertices.has(vertex.id)) {
-      return this.vertices.get(vertex.id) as V
+    const keyPath = ['vertices', vertex.id];
+    if (!this.storage.hasIn(keyPath)) {
+      this.storage = this.storage.setIn(keyPath, vertex)
     }
-    this.vertices.set(vertex.id, vertex)
-    return vertex
+    this.emitEvent();
+    return this.storage.getIn(keyPath) as V;
   }
-  addEdge<E extends Edge>(edge: E): E {
-    if (this.edges.has(edge.id)) {
-      return this.edges.get(edge.id) as E
+  addEdge<E extends Edge>(edge: E): E  {
+    const keyPath = ['edges', edge.id];
+    if (!this.storage.hasIn(keyPath)) {
+      this.storage = this.storage.setIn(keyPath, edge);
     }
-    this.edges.set(edge.id, edge)
-    return edge
+    this.emitEvent();
+    return this.storage.getIn(keyPath) as E;
   }
   addEntity(entity: Entity): void {
-    this.entities.set(entity.id, entity)
+    this.storage = this.storage.setIn(['entities',entity.id], entity);
     if (entity.schema.edge) {
       const convertEntityToPropertyVertex = (value: Value): Vertex => {
-        const propEntity = this.entities.get(value instanceof Entity ? value.id : value)
+        const propEntity = this.storage.getIn(['entities', value instanceof Entity ? value.id : value])
         if (propEntity) {
           return new EntityVertex(propEntity)
         } else throw new Error('No such an entity found' + value)
@@ -48,7 +63,6 @@ export class Graph {
         .map(this.addVertex, this)
 
       sources
-        // construction edges from vertices
         .reduce(
           (edges, source) => [
             ...edges,
@@ -74,9 +88,8 @@ export class Graph {
           [] as Array<ValueVertex>
         )
         .map(this.addVertex, this)
-        .forEach(prop => {
-          this.addEdge(new PropertyEdge(mainVertex, prop))
-        })
+        .forEach(prop => this.addEdge(new PropertyEdge(mainVertex, prop)))
     }
   }
+
 }
