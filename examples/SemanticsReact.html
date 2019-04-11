@@ -16,7 +16,7 @@
     }
   </style>
   <script type="module">
-    import {  Layout, Graph, React, ReactDOM, Vertex, Edge, Model, defaultModel } from '../dist/vis2.es5.js';
+    import {  Layout, Graph, React, ReactDOM, Vertex, Point, Edge, Model, defaultModel } from '../dist/vis2.es5.js';
     import { data } from './resources/az_alievs.js'
     const model = new Model(defaultModel)
     const ggraph = new Graph()
@@ -33,6 +33,9 @@
     function App(){
       const [graph, setGraph, addVertex] = useGraph();
       const [count, setCount] =  React.useState(1);
+      const [X, setX] = React.useState(0);
+      const [Y, setY] = React.useState(0);
+      const [zoom, setZoom] = React.useState(0);
       return React.createElement('div', null,
         React.createElement('div', null,
           React.createElement('button', { onClick:()=> Array.from({length:count}).forEach(addVertex)}, 'addVertex'),
@@ -52,7 +55,30 @@
           },'add our friends')
         ),
         React.createElement('div', null,
-          React.createElement(Layout, {graph,s:graph.generation})
+          React.createElement('label', null,
+            React.createElement('span',null,'X:'),
+            React.createElement('input', { type:'number',value:X, step:"10",onChange:({target})=>{
+                setX(target.value)
+              } }
+            ),
+          ),
+          React.createElement('label', null,
+            React.createElement('span',null,'Y:'),
+            React.createElement('input', { type:'number', value:Y,step:"10", onChange:({target})=>{
+                setY(target.value)
+              } }
+            ),
+          ),
+          React.createElement('label', null,
+            React.createElement('span',null,'Zoom:'),
+            React.createElement('input', { type:'number', value:zoom,step:"13", max:149, onChange:({target})=>{
+                setZoom(target.value)
+              } }
+            ),
+          ),
+        ),
+        React.createElement('div', null,
+          React.createElement(Layout, {graph,zoomFactor: zoom, center:new Point({x:X,y:Y})})
         )
       )
     }

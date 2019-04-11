@@ -17,7 +17,7 @@ export class Vertex{
   }
   onAddedToGraph(graph:Graph){
     this.graph = graph;
-    this.point.set(getPositionByIndex(graph.vertices.size));
+    this.point.set(getPositionByIndex(graph.vertices.size - 1));
   }
   equals(vertex: Vertex): boolean {
     return this.id === vertex.id
