@@ -1,7 +1,7 @@
 {
   "name": "@alephdata/vis2",
   "version": "1.0.1",
-  "description": "Graph network visualisiation tool for aleph/followthemoney ",
+  "description": "Graph network visualisation tool for aleph/followthemoney ",
   "keywords": [],
   "main": "dist/vis2.umd.js",
   "module": "dist/vis2.es5.js",

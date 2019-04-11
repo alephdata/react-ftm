@@ -20,9 +20,6 @@ let stringToColour = function(str: string) {
   return colour;
 }
 export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
-  componentWillMount(): void {
-    this.props.vertex.point.set(getPositionByIndex(this.props.index));
-  }
   render() {
     const {vertex } = this.props;
     const {x, y} = vertex.point;

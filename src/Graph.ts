@@ -30,9 +30,10 @@ export class Graph {
   addVertex<V extends Vertex>(vertex: V): V {
     const keyPath = ['vertices', vertex.id];
     if (!this.storage.hasIn(keyPath)) {
+      this.emitEvent();
+      vertex.onAddedToGraph(this);
       this.storage = this.storage.setIn(keyPath, vertex)
     }
-    this.emitEvent();
     return this.storage.getIn(keyPath) as V;
   }
   addEdge<E extends Edge>(edge: E): E  {

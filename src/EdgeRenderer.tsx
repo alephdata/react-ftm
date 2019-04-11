@@ -1,6 +1,5 @@
 import React from 'react';
 import { Edge } from './Edge'
-import { Graph } from './Graph'
 
 interface IEdgeRendererProps {
   edge: Edge,
