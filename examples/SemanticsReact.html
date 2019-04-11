@@ -18,16 +18,16 @@
   <script type="module">
     import {  Layout, Graph, React, ReactDOM, Vertex, Edge, Model, defaultModel } from '../dist/vis2.es5.js';
     import { data } from './resources/az_alievs.js'
-
     const model = new Model(defaultModel)
+    const ggraph = new Graph()
     function useGraph(){
-      const [graph, setGraph] = React.useState(new Graph());
+      const [graph, setGraph] = React.useState(ggraph);
       return [graph, setGraph, function (){
         graph.addVertex(new Vertex('12','12','12'+Math.random()));
-        if(graph.vertices.length-1){
+        // if(graph.vertices.length-1){
           // graph.addEdge(new Edge(graph.vertices[0], graph.vertices[graph.vertices.size-1], '123'+Math.random()))
-        }
-        setGraph(graph);
+        // }
+        // setGraph(graph);
       }]
     }
     function App(){
@@ -58,6 +58,7 @@
     }
 
     ReactDOM.render( React.createElement(App), document.querySelector('#app') )
+    window.w={Layout, Graph, React, ReactDOM, Vertex, Edge, Model, defaultModel, graph:ggraph, model };
 
 
   </script>

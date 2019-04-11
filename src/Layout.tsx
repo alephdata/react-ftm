@@ -2,7 +2,6 @@ import React from 'react'
 import { Graph, IGraphEvent } from './Graph'
 import { VertexRenderer } from './VertexRenderer'
 import { EdgeRenderer } from './EdgeRenderer'
-import { Edge } from './Edge'
 
 interface ILayoutProps {
   graph: Graph
@@ -23,7 +22,6 @@ export class Layout extends React.PureComponent<ILayoutProps, ILayoutState> {
     const height = scale * RATIO
     const width = scale / RATIO
     const { edges, vertices } = this.state;
-
     return (<svg viewBox={`${-(height / 2)} ${-(width / 2)} ${height} ${width}`} fill="url(#grid)" style={{
       backgroundSize: `${UNIT}% ${UNIT * (Math.pow(RATIO, 2))}%`,
       backgroundImage: 'linear-gradient(to right, black 1px, transparent 1px), linear-gradient(to bottom, grey 1px, transparent 1px)'
@@ -38,9 +36,9 @@ export class Layout extends React.PureComponent<ILayoutProps, ILayoutState> {
       </g>
       <g fill="red">
         {vertices.map(vertex => <VertexRenderer
-            key={vertex.id}
-            vertex={vertex}
-          />)}
+          key={vertex.id}
+          vertex={vertex}
+        />)}
       </g>
     </svg>)
   }
