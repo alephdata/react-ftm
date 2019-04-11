@@ -1,5 +1,4 @@
 import { Entity, Value } from '@alephdata/followthemoney'
-import { Map, Record } from 'immutable';
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
 import { EntityVertex } from './EntityVertex'
@@ -7,48 +6,57 @@ import { ValueVertex } from './ValueVertex'
 import { EntityEdge } from './EntityEdge'
 import { PropertyEdge } from './PropertyEdge'
 
-export interface IGraphStorage {
-  vertices: Map<string, Vertex>
-  edges: Map<string, Edge>
-  entities: Map<string, Entity>
+export interface IGraphEvent {
+  vertices: Array<Vertex>,
+  edges: Array<Edge>
 }
-
+export type GraphEventListener = (event: IGraphEvent) => void
 export class Graph {
-  static StorageRecord = Record<IGraphStorage>({
-    vertices: Map<string, Vertex>(),
-    edges: Map<string, Edge>(),
-    entities: Map<string, Entity>()
-  })
-  storage = Graph.StorageRecord()
-  listeners : Array<Function> = [];
-  addEventListener(listener:Function):void{
-    this.listeners.push(listener)
+  vertices: Map<string, Vertex> = new Map()
+  edges: Map<string, Edge> = new Map()
+  entities: Map<string, Entity> = new Map()
+  listeners : Set<GraphEventListener> = new Set();
+  constructor() {
+    this.addVertex = this.addVertex.bind(this)
+    this.addEdge = this.addEdge.bind(this)
   }
-  emitEvent(){
-    this.listeners.forEach(listener => listener(this.storage))
+  addEventListener(listener:GraphEventListener, context?:any):void{
+    if(context){
+      this.listeners.add(listener.bind(context))
+    } else this.listeners.add(listener)
+  }
+  removeEventListener(listener:GraphEventListener):void{
+    this.listeners.delete(listener)
+  }
+  emitEvent() {
+    const event = {
+      vertices: Array.from(this.vertices.values()),
+      edges: Array.from(this.edges.values())
+    }
+    this.listeners.forEach(listener => listener(event))
   }
   addVertex<V extends Vertex>(vertex: V): V {
-    const keyPath = ['vertices', vertex.id];
-    if (!this.storage.hasIn(keyPath)) {
-      this.emitEvent();
-      vertex.onAddedToGraph(this);
-      this.storage = this.storage.setIn(keyPath, vertex)
+    if (this.vertices.has(vertex.id)) {
+      return this.vertices.get(vertex.id) as V
     }
-    return this.storage.getIn(keyPath) as V;
-  }
-  addEdge<E extends Edge>(edge: E): E  {
-    const keyPath = ['edges', edge.id];
-    if (!this.storage.hasIn(keyPath)) {
-      this.storage = this.storage.setIn(keyPath, edge);
-    }
+    this.vertices.set(vertex.id, vertex)
+    vertex.onAddedToGraph(this);
     this.emitEvent();
-    return this.storage.getIn(keyPath) as E;
+    return vertex
+  }
+  addEdge<E extends Edge>(edge: E): E {
+    if (this.edges.has(edge.id)) {
+      return this.edges.get(edge.id) as E
+    }
+    this.edges.set(edge.id, edge)
+    this.emitEvent();
+    return edge
   }
   addEntity(entity: Entity): void {
-    this.storage = this.storage.setIn(['entities',entity.id], entity);
+    this.entities.set(entity.id, entity)
     if (entity.schema.edge) {
       const convertEntityToPropertyVertex = (value: Value): Vertex => {
-        const propEntity = this.storage.getIn(['entities', value instanceof Entity ? value.id : value])
+        const propEntity = this.entities.get(value instanceof Entity ? value.id : value)
         if (propEntity) {
           return new EntityVertex(propEntity)
         } else throw new Error('No such an entity found' + value)
@@ -64,6 +72,7 @@ export class Graph {
         .map(this.addVertex, this)
 
       sources
+        // construction edges from vertices
         .reduce(
           (edges, source) => [
             ...edges,
@@ -89,8 +98,9 @@ export class Graph {
           [] as Array<ValueVertex>
         )
         .map(this.addVertex, this)
-        .forEach(prop => this.addEdge(new PropertyEdge(mainVertex, prop)))
+        .forEach(prop => {
+          this.addEdge(new PropertyEdge(mainVertex, prop))
+        })
     }
   }
-
 }

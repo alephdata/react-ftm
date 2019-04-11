@@ -1,27 +1,19 @@
 import React from 'react'
-import {Record} from 'immutable';
-import { Graph, IGraphStorage } from './Graph'
+import { Graph, IGraphEvent } from './Graph'
 import { VertexRenderer } from './VertexRenderer'
 import { EdgeRenderer } from './EdgeRenderer'
+import { Edge } from './Edge'
 
 interface ILayoutProps {
   graph: Graph
 }
-interface ILayoutState {
-  graphStorage:Record<IGraphStorage>
-}
+interface ILayoutState extends IGraphEvent{}
 
 export class Layout extends React.PureComponent<ILayoutProps, ILayoutState> {
-  static getDerivedStateFromProps(props:ILayoutProps){
-    return ({ graphStorage: props.graph.storage })
-  }
-  state = {
-    graphStorage: Graph.StorageRecord()
-  }
+  state:ILayoutState = { vertices: [], edges: [] }
+
   componentDidMount(): void {
-    this.props.graph.addEventListener((state:any) => {
-      this.setState(state)
-    });
+    this.props.graph.addEventListener(this.setState, this);
   }
 
   render() {
@@ -30,28 +22,29 @@ export class Layout extends React.PureComponent<ILayoutProps, ILayoutState> {
     const scale = UNIT * 150
     const height = scale * RATIO
     const width = scale / RATIO
-    const { edges, vertices } = this.state.graphStorage;
+    const { edges, vertices } = this.state;
+
     return (<svg viewBox={`${-(height / 2)} ${-(width / 2)} ${height} ${width}`} fill="url(#grid)" style={{
       backgroundSize: `${UNIT}% ${UNIT * (Math.pow(RATIO, 2))}%`,
       backgroundImage: 'linear-gradient(to right, black 1px, transparent 1px), linear-gradient(to bottom, grey 1px, transparent 1px)'
     }}>
 
       <g stroke="green">
-        {edges.valueSeq().toArray()
-          .map(edge => <EdgeRenderer
+        {edges.map(edge => <EdgeRenderer
               key={edge.id}
               edge={edge}
             />
           )}
       </g>
       <g fill="red">
-        {vertices.valueSeq().toArray()
-          .map((vertex, i) => <VertexRenderer
+        {vertices.map(vertex => <VertexRenderer
             key={vertex.id}
             vertex={vertex}
-            index={i}
           />)}
       </g>
     </svg>)
+  }
+  componentWillUnmount(): void {
+    this.props.graph.removeEventListener(this.setState)
   }
 }

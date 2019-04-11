@@ -1,10 +1,8 @@
 import React from 'react'
 import { Vertex } from './Vertex'
-import { getPositionByIndex } from './utils'
 
 interface IVertexRendererProps {
   vertex: Vertex,
-  index: number
 }
 
 let stringToColour = function(str: string) {

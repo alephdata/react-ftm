@@ -2,12 +2,12 @@ import { Point } from './Point'
 import { Graph } from './Graph'
 import { getPositionByIndex } from './utils'
 
-export class Vertex {
+export class Vertex{
   public point = new Point();
   public graph?: Graph
+  public id: string
   type: string
   label: string
-  id: string
 
   constructor( type: string, label: string, id: string) {
     this.type = type
@@ -17,7 +17,7 @@ export class Vertex {
   }
   onAddedToGraph(graph:Graph){
     this.graph = graph;
-    this.point.set(getPositionByIndex(graph.storage.get('vertices').size));
+    this.point.set(getPositionByIndex(graph.vertices.size));
   }
   equals(vertex: Vertex): boolean {
     return this.id === vertex.id

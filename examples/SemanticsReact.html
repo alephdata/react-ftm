@@ -22,13 +22,10 @@
     const model = new Model(defaultModel)
     function useGraph(){
       const [graph, setGraph] = React.useState(new Graph());
-      const metaSetGraph = function(){
-        setGraph({...graph});
-      }
-      return [graph, metaSetGraph, function (){
+      return [graph, setGraph, function (){
         graph.addVertex(new Vertex('12','12','12'+Math.random()));
         if(graph.vertices.length-1){
-          graph.addEdge(new Edge(graph.vertices[0], graph.vertices[graph.vertices.length-1], '123'+Math.random()))
+          // graph.addEdge(new Edge(graph.vertices[0], graph.vertices[graph.vertices.size-1], '123'+Math.random()))
         }
         setGraph(graph);
       }]
