@@ -7,10 +7,7 @@ export class Point implements ICoordinates{
   x = 0
   y = 0
   constructor(coordinates?:ICoordinates){
-    if(coordinates){
-      this.x = coordinates.x;
-      this.y = coordinates.y;
-    }
+    if(coordinates){ this.set(coordinates) }
   }
   set({ x = this.x, y = this.y }): Point {
     this.x = x

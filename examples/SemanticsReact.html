@@ -71,7 +71,7 @@
           ),
           React.createElement('label', null,
             React.createElement('span',null,'Zoom:'),
-            React.createElement('input', { type:'number', value:zoom,step:"13", max:149, onChange:({target})=>{
+            React.createElement('input', { type:'number', value:zoom, min:0, onChange:({target})=>{
                 setZoom(target.value)
               } }
             ),
