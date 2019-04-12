@@ -5,7 +5,6 @@
   <title>Semantics</title>
   <script>
     process = {env:{}};
-    window.cryptoBrowserify = {}
   </script>
   <style>
 
@@ -17,26 +16,26 @@
     }
   </style>
   <script type="module">
-    import {  Layout, Graph, React, ReactDOM, Vertex, Edge, Model, defaultModel } from '../dist/vis2.es5.js';
+    import {  Layout, Graph, React, ReactDOM, Vertex, Point, Edge, Model, defaultModel } from '../dist/vis2.es5.js';
     import { data } from './resources/az_alievs.js'
-
     const model = new Model(defaultModel)
+    const ggraph = new Graph()
     function useGraph(){
-      const [graph, setGraph] = React.useState(new Graph());
-      const metaSetGraph = function(){
-        setGraph({...graph});
-      }
-      return [graph, metaSetGraph, function (){
+      const [graph, setGraph] = React.useState(ggraph);
+      return [graph, setGraph, function (){
         graph.addVertex(new Vertex('12','12','12'+Math.random()));
-        if(graph.vertices.length-1){
-          graph.addEdge(new Edge(graph.vertices[0], graph.vertices[graph.vertices.length-1], '123'+Math.random()))
-        }
-        metaSetGraph(graph);
+        // if(graph.vertices.length-1){
+          // graph.addEdge(new Edge(graph.vertices[0], graph.vertices[graph.vertices.size-1], '123'+Math.random()))
+        // }
+        // setGraph(graph);
       }]
     }
     function App(){
       const [graph, setGraph, addVertex] = useGraph();
       const [count, setCount] =  React.useState(1);
+      const [X, setX] = React.useState(0);
+      const [Y, setY] = React.useState(0);
+      const [zoom, setZoom] = React.useState(0);
       return React.createElement('div', null,
         React.createElement('div', null,
           React.createElement('button', { onClick:()=> Array.from({length:count}).forEach(addVertex)}, 'addVertex'),
@@ -50,18 +49,42 @@
                   // .slice(0,3)
                   .map(rawEntity=>  model.getEntity(rawEntity))
                   .forEach(graph.addEntity, graph)
-              setGraph(graph)
+              // setGraph(graph)
 
             }
           },'add our friends')
         ),
         React.createElement('div', null,
-          React.createElement(Layout, {graph})
+          React.createElement('label', null,
+            React.createElement('span',null,'X:'),
+            React.createElement('input', { type:'number',value:X, step:"10",onChange:({target})=>{
+                setX(target.value)
+              } }
+            ),
+          ),
+          React.createElement('label', null,
+            React.createElement('span',null,'Y:'),
+            React.createElement('input', { type:'number', value:Y,step:"10", onChange:({target})=>{
+                setY(target.value)
+              } }
+            ),
+          ),
+          React.createElement('label', null,
+            React.createElement('span',null,'Zoom:'),
+            React.createElement('input', { type:'number', value:zoom, min:0, onChange:({target})=>{
+                setZoom(target.value)
+              } }
+            ),
+          ),
+        ),
+        React.createElement('div', null,
+          React.createElement(Layout, {graph,zoomFactor: zoom, center:new Point({x:X,y:Y})})
         )
       )
     }
 
     ReactDOM.render( React.createElement(App), document.querySelector('#app') )
+    window.w={Layout, Graph, React, ReactDOM, Vertex, Edge, Model, defaultModel, graph:ggraph, model };
 
 
   </script>

@@ -1,4 +1,4 @@
-import { Entity, PropertyType, Value } from '@alephdata/followthemoney'
+import { Entity, Value } from '@alephdata/followthemoney'
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
 import { EntityVertex } from './EntityVertex'
@@ -6,19 +6,42 @@ import { ValueVertex } from './ValueVertex'
 import { EntityEdge } from './EntityEdge'
 import { PropertyEdge } from './PropertyEdge'
 
+export interface IGraphEvent {
+  vertices: Array<Vertex>,
+  edges: Array<Edge>
+}
+export type GraphEventListener = (event: IGraphEvent) => void
 export class Graph {
   vertices: Map<string, Vertex> = new Map()
   edges: Map<string, Edge> = new Map()
   entities: Map<string, Entity> = new Map()
+  listeners : Set<GraphEventListener> = new Set();
   constructor() {
     this.addVertex = this.addVertex.bind(this)
     this.addEdge = this.addEdge.bind(this)
+  }
+  addEventListener(listener:GraphEventListener, context?:any):void{
+    if(context){
+      this.listeners.add(listener.bind(context))
+    } else this.listeners.add(listener)
+  }
+  removeEventListener(listener:GraphEventListener):void{
+    this.listeners.delete(listener)
+  }
+  emitEvent() {
+    const event = {
+      vertices: Array.from(this.vertices.values()),
+      edges: Array.from(this.edges.values())
+    }
+    this.listeners.forEach(listener => listener(event))
   }
   addVertex<V extends Vertex>(vertex: V): V {
     if (this.vertices.has(vertex.id)) {
       return this.vertices.get(vertex.id) as V
     }
     this.vertices.set(vertex.id, vertex)
+    vertex.onAddedToGraph(this);
+    this.emitEvent();
     return vertex
   }
   addEdge<E extends Edge>(edge: E): E {
@@ -26,6 +49,7 @@ export class Graph {
       return this.edges.get(edge.id) as E
     }
     this.edges.set(edge.id, edge)
+    this.emitEvent();
     return edge
   }
   addEntity(entity: Entity): void {

@@ -1,9 +1,9 @@
 import { Vertex } from './Vertex'
 
-export class Edge {
+export class Edge{
+  public id: string
   source: Vertex
   target: Vertex
-  id: string
   constructor(source: Vertex, target: Vertex, id: string) {
     this.id = id
     this.source = source
@@ -11,7 +11,8 @@ export class Edge {
 
     this.equals = this.equals.bind(this)
   }
-  equals(vertex: Edge): boolean {
-    return this.id === vertex.id
+  equals(edge: Edge): boolean {
+    return this.id === edge.id
   }
+
 }

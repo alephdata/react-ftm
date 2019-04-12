@@ -1,10 +1,9 @@
 import React from 'react'
 import { Vertex } from './Vertex'
-import { getPositionByIndex } from './utils'
 
 interface IVertexRendererProps {
   vertex: Vertex,
-  index: number
+  viewUnit: number
 }
 
 let stringToColour = function(str: string) {
@@ -20,19 +19,16 @@ let stringToColour = function(str: string) {
   return colour;
 }
 export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
-  componentWillMount(): void {
-    this.props.vertex.point.set(getPositionByIndex(this.props.index));
-  }
   render() {
-    const {vertex } = this.props;
+    const { vertex, viewUnit } = this.props;
     const {x, y} = vertex.point;
     return <g
       className="vertex"
-      transform={`translate(${x} ${y})`}
+      transform={`translate(${x * viewUnit} ${y * viewUnit})`}
       fill={stringToColour(vertex.type)}
     >
       <circle
-        r={5}
+        r={viewUnit/2}
       />
       <text
         className="label"
