@@ -1,7 +1,4 @@
-export interface ICoordinates {
-  x: number
-  y: number
-}
+import { ICoordinates } from '../Point'
 
 export function getPositionByIndex(index: number): ICoordinates {
   const RADIUS = 1;

@@ -12,11 +12,11 @@
       display: none;
     }
     .vertex:hover > .label{
-      display: initial;
+      /*display: initial;*/
     }
   </style>
   <script type="module">
-    import {  Layout, Graph, React, ReactDOM, Vertex, Point, Edge, Model, defaultModel } from '../dist/vis2.es5.js';
+    import {  Layout, Graph, React, ReactDOM, Vertex, Pan,Viewport, Point, Edge, Model, defaultModel } from '../dist/vis2.es5.js';
     import { data } from './resources/az_alievs.js'
     const model = new Model(defaultModel)
     const ggraph = new Graph()
@@ -57,28 +57,35 @@
         React.createElement('div', null,
           React.createElement('label', null,
             React.createElement('span',null,'X:'),
-            React.createElement('input', { type:'number',value:X, step:"10",onChange:({target})=>{
+            React.createElement('input', { type:'range', min:-500 , max:500, value:X,onChange:({target})=>{
                 setX(target.value)
               } }
             ),
           ),
           React.createElement('label', null,
             React.createElement('span',null,'Y:'),
-            React.createElement('input', { type:'number', value:Y,step:"10", onChange:({target})=>{
+            React.createElement('input', {
+              type:'range', value:Y, min:-500 , max:500,
+              onChange:({target})=>{
                 setY(target.value)
               } }
             ),
           ),
           React.createElement('label', null,
             React.createElement('span',null,'Zoom:'),
-            React.createElement('input', { type:'number', value:zoom, min:0, onChange:({target})=>{
+            React.createElement('input', { type:'range', value:zoom, min:0, max:500, onChange:({target})=>{
                 setZoom(target.value)
               } }
             ),
           ),
         ),
         React.createElement('div', null,
-          React.createElement(Layout, {graph,zoomFactor: zoom, center:new Point({x:X,y:Y})})
+          React.createElement(Pan, {
+            zoomFactor: zoom,
+            children:(panCenter, zoomFactor) => React.createElement(Viewport, {zoomFactor, panCenter},
+              React.createElement(Layout, {graph})
+            )
+          })
         )
       )
     }
