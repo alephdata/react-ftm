@@ -1,7 +1,10 @@
 import React from 'react'
 import { Graph, IGraphEvent } from './Graph'
-import { VertexRenderer } from './VertexRenderer'
-import { EdgeRenderer } from './EdgeRenderer'
+import { Point } from './Point'
+import { Viewport } from './Viewport'
+import { EdgesRenderer } from './EdgesRenderer'
+import { VerticesRenderer } from './VerticesRenderer'
+import { Pan } from './Pan'
 
 export interface ILayoutProps {
   graph: Graph
@@ -12,6 +15,8 @@ export class Layout extends React.PureComponent<ILayoutProps, ILayoutState> {
   state:ILayoutState = {
     vertices: [],
     edges: [],
+    zoomFactor: 1,
+    panCenter: Point.from(0,0)
   }
 
   componentDidMount(): void {
@@ -19,26 +24,29 @@ export class Layout extends React.PureComponent<ILayoutProps, ILayoutState> {
   }
 
   render(){
+    const UNIT = 5;
+    const RATIO = 1;
     const {edges, vertices} = this.state;
-    // TODO: Must do more rendering optimisation, to get immutable data from graph.addEventListener so CollectionRenderer  can be build
-    return <React.Fragment>
-      <g stroke="green">
-        {edges.map(edge => <EdgeRenderer
-            key={edge.id}
-            viewUnit={5}
-            edge={edge}
-          />
-        )}
-      </g>
-      <g fill="red">
-        {vertices.map(vertex => <VertexRenderer
-          key={vertex.id}
-          viewUnit={5}
-          vertex={vertex}
-        />)}
-      </g>
-    </React.Fragment>
+    return <Pan
+      UNIT={UNIT}
+      RATIO={RATIO}
+      zoomFactor={this.state.zoomFactor}
+      panCenter={this.state.panCenter}
+      onZoomChanged={this.props.graph.setZoomFactor}
+      onPanChanged={this.props.graph.setPanCenter}
+    >
+      <Viewport
+        UNIT={UNIT}
+        RATIO={RATIO}
+        zoomFactor={this.state.zoomFactor}
+        panCenter={this.state.panCenter}
+      >
+        <EdgesRenderer edges={edges}/>
+        <VerticesRenderer vertices={vertices}/>
+      </Viewport>
+    </Pan>
   }
+
   componentWillUnmount(): void {
     this.props.graph.removeEventListener(this.setState)
   }

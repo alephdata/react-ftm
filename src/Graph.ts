@@ -5,13 +5,18 @@ import { EntityVertex } from './EntityVertex'
 import { ValueVertex } from './ValueVertex'
 import { EntityEdge } from './EntityEdge'
 import { PropertyEdge } from './PropertyEdge'
+import { Point } from './Point'
 
 export interface IGraphEvent {
   vertices: Array<Vertex>,
-  edges: Array<Edge>
+  edges: Array<Edge>,
+  zoomFactor: number,
+  panCenter: Point
 }
 export type GraphEventListener = (event: IGraphEvent) => void
 export class Graph {
+  panCenter = new Point({x:0, y:0})
+  zoomFactor = 1;
   vertices: Map<string, Vertex> = new Map()
   edges: Map<string, Edge> = new Map()
   entities: Map<string, Entity> = new Map()
@@ -19,11 +24,22 @@ export class Graph {
   constructor() {
     this.addVertex = this.addVertex.bind(this)
     this.addEdge = this.addEdge.bind(this)
+    this.setPanCenter = this.setPanCenter.bind(this)
+    this.setZoomFactor = this.setZoomFactor.bind(this)
+  }
+  setPanCenter(nextPanCenter: Point){
+    this.panCenter = nextPanCenter;
+    this.emitEvent();
+  }
+  setZoomFactor(nextZoomFactor:number){
+    this.zoomFactor = nextZoomFactor > 0 ? nextZoomFactor : 1;
+    this.emitEvent();
   }
   addEventListener(listener:GraphEventListener, context?:any):void{
     if(context){
       this.listeners.add(listener.bind(context))
     } else this.listeners.add(listener)
+    this.emitEvent();
   }
   removeEventListener(listener:GraphEventListener):void{
     this.listeners.delete(listener)
@@ -31,7 +47,9 @@ export class Graph {
   emitEvent() {
     const event = {
       vertices: Array.from(this.vertices.values()),
-      edges: Array.from(this.edges.values())
+      edges: Array.from(this.edges.values()),
+      zoomFactor: this.zoomFactor,
+      panCenter: this.panCenter
     }
     this.listeners.forEach(listener => listener(event))
   }
