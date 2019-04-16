@@ -23,7 +23,7 @@
     "test:prod": "npm run lint && npm run test -- --no-cache",
     "deploy-docs": "ts-node tools/gh-pages-publish",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
-    "serve": "npx serve ./public",
+    "serve": "npx serve -l 5005 ./public",
     "analyze": "rollup -c rollup.config.analyze.ts"
   },
   "jest": {
