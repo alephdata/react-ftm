@@ -27,17 +27,13 @@ export class Graph {
     this.setPanCenter = this.setPanCenter.bind(this)
     this.setZoomFactor = this.setZoomFactor.bind(this)
   }
-  setZoomFactor(p:Point, z:number){
-    this.panCenter = p;
-    this.zoomFactor = z > 0 ? z : 1;
+  setZoomFactor(zoomFactor:number, panCenter:Point = this.panCenter,){
+    this.panCenter = panCenter;
+    this.zoomFactor = zoomFactor > 0 ? zoomFactor : 1;
     this.emitEvent();
   }
   setPanCenter(nextPanCenter: Point){
     this.panCenter = nextPanCenter;
-    this.emitEvent();
-  }
-  _setZoomFactor(nextZoomFactor:number){
-    this.zoomFactor = nextZoomFactor > 0 ? nextZoomFactor : 1;
     this.emitEvent();
   }
   addEventListener(listener:GraphEventListener, context?:any):void{
