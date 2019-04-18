@@ -6,13 +6,14 @@ import { EdgesRenderer } from './EdgesRenderer'
 import { VerticesRenderer } from './VerticesRenderer'
 import { Pan } from './Pan'
 
-export interface ILayoutProps {
+export interface IGraphRendererProps {
   graph: Graph
 }
-export interface ILayoutState extends IGraphEvent{}
 
-export class Layout extends React.PureComponent<ILayoutProps, ILayoutState> {
-  state:ILayoutState = {
+export interface IGraphRendererState extends IGraphEvent{}
+
+export class GraphRenderer extends React.PureComponent<IGraphRendererProps, IGraphRendererState> {
+  state: IGraphRendererState = {
     vertices: [],
     edges: [],
     zoomFactor: 1,

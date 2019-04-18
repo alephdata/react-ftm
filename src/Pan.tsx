@@ -82,6 +82,7 @@ export class Pan extends React.Component<IPanProps, IPanState> {
       );
     }
   }
+
   stop() {
     this.setState({ moving: false })
   }

@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Layout } from './Layout'
+import { GraphRenderer } from './GraphRenderer'
 import { defaultModel, Model } from '@alephdata/followthemoney'
 import { Vertex } from './Vertex'
 import { Graph } from './Graph'
@@ -17,7 +17,7 @@ function useGraph() {
 }
 
 function Vis2() {
-  const [graph, , addVertex] = useGraph()
+  const [graph, addVertex] = useGraph()
   const [count, setCount] = React.useState(1)
   return <div>
     <div>
@@ -40,7 +40,7 @@ function Vis2() {
       </button>
     </div>
     <div>
-      <Layout graph={graph as Graph}/>
+      <GraphRenderer graph={graph as Graph}/>
     </div>
   </div>
 }
