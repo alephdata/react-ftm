@@ -6,7 +6,7 @@ export interface ICoordinates {
 export class Point implements ICoordinates{
   x = 0
   y = 0
-  static from(x:number, y:number){
+  static from(x:number, y:number = x){
     return new Point({x, y})
   }
   constructor(coordinates?:ICoordinates){
@@ -17,16 +17,28 @@ export class Point implements ICoordinates{
     this.y = y
     return this
   }
-  add(term:Point):Point{
+  addition(addend:ICoordinates):Point{
     return new Point({
-      x:this.x + term.x,
-      y:this.y + term.y,
+      x:this.x + addend.x,
+      y:this.y + addend.y,
     })
   }
-  subtract(term:Point):Point {
+  subtract(term:ICoordinates):Point {
     return new Point({
       x: this.x - term.x,
       y: this.y - term.y
+    })
+  }
+  divide(divisor:ICoordinates):Point{
+    return new Point({
+      x:this.x / divisor.x,
+      y:this.y / divisor.y,
+    })
+  }
+  multiply(term:ICoordinates) : Point{
+    return new Point({
+      x: this.x * term.x,
+      y: this.y * term.y,
     })
   }
 }

@@ -16,7 +16,7 @@ export interface IGraphEvent {
 export type GraphEventListener = (event: IGraphEvent) => void
 export class Graph {
   panCenter = new Point({x:0, y:0})
-  zoomFactor = 1;
+  zoomFactor = 4;
   vertices: Map<string, Vertex> = new Map()
   edges: Map<string, Edge> = new Map()
   entities: Map<string, Entity> = new Map()
@@ -27,11 +27,16 @@ export class Graph {
     this.setPanCenter = this.setPanCenter.bind(this)
     this.setZoomFactor = this.setZoomFactor.bind(this)
   }
+  setZoomFactor(p:Point, z:number){
+    this.panCenter = p;
+    this.zoomFactor = z > 0 ? z : 1;
+    this.emitEvent();
+  }
   setPanCenter(nextPanCenter: Point){
     this.panCenter = nextPanCenter;
     this.emitEvent();
   }
-  setZoomFactor(nextZoomFactor:number){
+  _setZoomFactor(nextZoomFactor:number){
     this.zoomFactor = nextZoomFactor > 0 ? nextZoomFactor : 1;
     this.emitEvent();
   }
