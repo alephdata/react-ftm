@@ -1,10 +1,12 @@
 import { Vertex } from './Vertex'
-import { Entity } from '@alephdata/followthemoney'
+import { Entity, PropertyType } from '@alephdata/followthemoney'
 
 export class EntityVertex extends Vertex {
   public entity: Entity
+
   constructor(entity: Entity) {
-    super('entity', entity.getProperty('name').toString(), entity.id)
+    const label = entity.getCaption() || entity.id;
+    super(PropertyType.ENTITY, label, entity.id)
     this.entity = entity
   }
 }

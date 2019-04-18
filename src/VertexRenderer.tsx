@@ -18,6 +18,7 @@ let stringToColour = function(str: string) {
   }
   return colour;
 }
+
 export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
   render() {
     const { vertex, viewUnit } = this.props;
