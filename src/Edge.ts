@@ -9,10 +9,10 @@ export class Edge {
     this.id = id
     this.source = source
     this.target = target
-    this.equals = this.equals.bind(this)
+    // this.equals = this.equals.bind(this)
   }
 
-  equals(edge: Edge): boolean {
-    return this.id === edge.id
-  }
+  // equals(edge: Edge): boolean {
+  //   return this.id === edge.id
+  // }
 }

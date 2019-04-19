@@ -1,7 +1,7 @@
 import React from 'react'
 import { Graph, IGraphEvent } from './Graph'
 import { Point } from './Point'
-import { Viewport } from './Viewport'
+import { Canvas } from './Canvas'
 import { EdgesRenderer } from './EdgesRenderer'
 import { VerticesRenderer } from './VerticesRenderer'
 import { Pan } from './Pan'
@@ -36,7 +36,7 @@ export class GraphRenderer extends React.PureComponent<IGraphRendererProps, IGra
       onZoomChanged={this.props.graph.setZoomFactor}
       onPanChanged={this.props.graph.setPanCenter}
     >
-      <Viewport
+      <Canvas
         UNIT={UNIT}
         RATIO={RATIO}
         zoomFactor={this.state.zoomFactor}
@@ -44,7 +44,7 @@ export class GraphRenderer extends React.PureComponent<IGraphRendererProps, IGra
       >
         <EdgesRenderer edges={edges}/>
         <VerticesRenderer vertices={vertices}/>
-      </Viewport>
+      </Canvas>
     </Pan>
   }
 

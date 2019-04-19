@@ -1,8 +1,8 @@
 import React, { MouseEvent } from 'react'
-import { ICoordinates, Point } from './Point'
-import { IViewport } from './Viewport'
+import { Point } from './Point'
+import { ICanvas } from './Canvas'
 
-interface IPanProps extends IViewport {
+interface IPanProps extends ICanvas {
   onZoomChanged: (zoomFactor: number, panCenter?:Point) => any,
   onPanChanged: (panCenter: Point) => any,
 }
@@ -40,7 +40,7 @@ export class Pan extends React.Component<IPanProps, IPanState> {
     }
   }
 
-  getPixelInUnits(pixelPoint: Point, rect: ClientRect, viewPort: IViewport = this.props): Point {
+  getPixelInUnits(pixelPoint: Point, rect: ClientRect, viewPort: ICanvas = this.props): Point {
     const { zoomFactor, RATIO } = viewPort
     return pixelPoint.divide({
       x: (rect.width / (zoomFactor / RATIO)),

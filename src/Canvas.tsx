@@ -1,16 +1,16 @@
 import React from 'react'
 import { Point } from './Point'
 
-export interface IViewport {
+export interface ICanvas {
   zoomFactor: number
   panCenter: Point
   UNIT: number
   RATIO:number
 }
 
-interface IViewportProps extends IViewport {}
+interface ICanvasProps extends ICanvas {}
 
-export class Viewport extends React.PureComponent <IViewportProps> {
+export class Canvas extends React.PureComponent <ICanvasProps> {
   state = { zoomFactor: 0, panCenter: new Point() }
 
   render() {
