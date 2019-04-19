@@ -1,46 +1,37 @@
 import React from 'react'
-import { Graph, GraphUpdateHandler, IGraphEvent } from './Graph'
-import { Point } from './Point'
+import { Graph, GraphUpdateHandler } from './Graph'
 import { Canvas } from './Canvas'
 import { EdgesRenderer } from './EdgesRenderer'
 import { VerticesRenderer } from './VerticesRenderer'
 import { Pan } from './Pan'
+import { Viewport } from './Viewport';
 
 export interface IGraphRendererProps {
   graph: Graph,
   updateGraph: GraphUpdateHandler
 }
 
-export interface IGraphRendererState extends IGraphEvent{}
-
-export class GraphRenderer extends React.Component<IGraphRendererProps, IGraphRendererState> {
-  state: IGraphRendererState = {
-    vertices: [],
-    edges: [],
-    zoomFactor: 1,
-    panCenter: Point.from(0,0)
+export class GraphRenderer extends React.Component<IGraphRendererProps> {
+  constructor(props: any) {
+    super(props)
+    this.updateViewport = this.updateViewport.bind(this);
   }
 
-  componentDidMount(): void {
-    this.props.graph.addEventListener(this.setState, this);
+  updateViewport(viewport: Viewport) {
+    const { graph } = this.props;
+    graph.viewport = viewport
+    this.props.updateGraph(graph)
   }
 
   render(){
     const { graph } = this.props;
-    const { edges, vertices } = this.state;
-    return <Pan
-      viewport={graph.viewport}
-      onZoomChanged={this.props.graph.setZoomFactor}
-      onPanChanged={this.props.graph.setPanCenter}
-    >
+    const vertices = Array.from(graph.vertices.values())
+    const edges =  Array.from(graph.edges.values())
+    return <Pan viewport={graph.viewport} updateViewport={this.updateViewport}>
       <Canvas viewport={graph.viewport}>
-        <EdgesRenderer edges={edges}/>
-        <VerticesRenderer vertices={vertices}/>
+        <EdgesRenderer edges={edges} viewport={graph.viewport} />
+        <VerticesRenderer vertices={vertices} viewport={graph.viewport} />
       </Canvas>
     </Pan>
-  }
-
-  componentWillUnmount(): void {
-    this.props.graph.removeEventListener(this.setState)
   }
 }

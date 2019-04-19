@@ -1,9 +1,10 @@
 import React from 'react'
 import { Vertex } from './Vertex'
+import { Viewport } from './Viewport';
 
 interface IVertexRendererProps {
   vertex: Vertex,
-  viewUnit: number
+  viewport: Viewport
 }
 
 let stringToColour = function(str: string) {
@@ -21,20 +22,20 @@ let stringToColour = function(str: string) {
 
 export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
   render() {
-    const { vertex, viewUnit } = this.props;
-    const {x, y} = vertex.point;
+    const { vertex, viewport } = this.props;
+    const {x, y} = viewport.gridToPixel(vertex.point);
     return <g
       className="vertex"
-      transform={`translate(${x * viewUnit} ${y * viewUnit})`}
+      transform={`translate(${x} ${y})`}
       fill={stringToColour(vertex.type)}
     >
       <circle
-        r={viewUnit/2}
+        r={viewport.gridUnit/2}
       />
       <text
         className="label"
         fill="black"
-      >{vertex.type + vertex.label}</text>
+      >{vertex.label}</text>
     </g>
   }
 }

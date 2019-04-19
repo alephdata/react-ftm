@@ -1,21 +1,22 @@
 import React from 'react';
 import { Edge } from './Edge'
+import { Viewport } from './Viewport';
 
 interface IEdgeRendererProps {
   edge: Edge,
-  viewUnit:number
+  viewport: Viewport
 }
 export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
   render(){
-    const { edge, viewUnit } = this.props;
-    const sourceCords = edge.source.point;
-    const targetCords = edge.target.point;
+    const { edge, viewport } = this.props;
+    const sourceCenter = viewport.gridToPixel(edge.source.point);
+    const targetCenter = viewport.gridToPixel(edge.target.point);
     return <g>
       <line
-        x1={sourceCords.x * viewUnit}
-        y1={sourceCords.y * viewUnit}
-        x2={targetCords.x * viewUnit}
-        y2={targetCords.y * viewUnit}
+        x1={sourceCenter.x}
+        y1={sourceCenter.y}
+        x2={targetCenter.x}
+        y2={targetCenter.y}
       />
     </g>
   }

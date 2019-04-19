@@ -4,8 +4,7 @@ import { Viewport } from './Viewport';
 
 interface IPanProps {
   viewport: Viewport
-  onZoomChanged: (zoomLevel: number, panCenter?:Point) => any,
-  onPanChanged: (panCenter: Point) => any,
+  updateViewport: (viewport: Viewport) => any,
 }
 
 interface IPanState {
@@ -24,6 +23,7 @@ export class Pan extends React.Component<IPanProps, IPanState> {
   }
 
   private move(e: MouseEvent) {
+    const { viewport } = this.props
     const { moving } = this.state
     if (moving) {
       /*
@@ -31,13 +31,12 @@ export class Pan extends React.Component<IPanProps, IPanState> {
       * (((e.movementX / bBox.width) * 100) / 100) * (this.props.zoomLevel * this.props.RATIO)
       * (((e.movementY / bBox.height) * 100) / 100) * ((this.props.zoomLevel) / this.props.RATIO),
       * */
-      this.props.onPanChanged(
-        this.getPixelInUnits(
-          Point.from(e.movementX, e.movementY),
-          e.currentTarget.getBoundingClientRect()
-        )
-          .addition(this.props.viewport.center)
+      const offset = this.getPixelInUnits(
+        Point.from(e.movementX, e.movementY),
+        e.currentTarget.getBoundingClientRect()
       )
+      viewport.center = offset.addition(viewport.center);
+      this.props.updateViewport(viewport);
     }
   }
 
@@ -80,10 +79,9 @@ export class Pan extends React.Component<IPanProps, IPanState> {
       const nextPan = viewport.center.subtract(
         mousePosition.subtract(nextMousePosition)
       )
-      this.props.onZoomChanged(
-        zoomLevel,
-        nextPan,
-      );
+      viewport.zoomLevel = zoomLevel
+      viewport.center = nextPan
+      this.props.updateViewport(viewport)
     }
   }
 
