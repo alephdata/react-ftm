@@ -27,11 +27,11 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     const { graph } = this.props;
     const vertices = Array.from(graph.vertices.values())
     const edges =  Array.from(graph.edges.values())
-    return <Pan viewport={graph.viewport} updateViewport={this.updateViewport}>
-      <Canvas viewport={graph.viewport}>
+    return (
+      <Canvas viewport={graph.viewport} updateViewport={this.updateViewport}>
         <EdgesRenderer edges={edges} viewport={graph.viewport} />
         <VerticesRenderer vertices={vertices} viewport={graph.viewport} />
       </Canvas>
-    </Pan>
+    );
   }
 }
