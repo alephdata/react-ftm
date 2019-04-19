@@ -1,12 +1,12 @@
-import { ICoordinates } from '../Point'
+import { Point } from '../Point'
 
-export function getPositionByIndex(index: number): ICoordinates {
+export function getPositionByIndex(index: number): Point {
   const RADIUS = 1;
   const ANGEL = Math.PI * (3 - Math.sqrt(5))
   const angelPer = ANGEL * index
   const radiusPer = RADIUS * Math.sqrt(index)
-  return {
-    x: radiusPer * Math.cos(angelPer),
-    y: radiusPer * Math.sin(angelPer)
-  }
+  return new Point(
+    radiusPer * Math.cos(angelPer),
+    radiusPer * Math.sin(angelPer)
+  )
 }
