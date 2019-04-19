@@ -1,6 +1,7 @@
 import { Entity, Value } from '@alephdata/followthemoney'
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
+import { Viewport } from './Viewport'
 import { EntityVertex } from './EntityVertex'
 import { ValueVertex } from './ValueVertex'
 import { EntityEdge } from './EntityEdge'
@@ -17,29 +18,31 @@ export interface IGraphEvent {
 
 export type GraphEventListener = (event: IGraphEvent) => void
 
+export type GraphUpdateHandler = (graph: Graph) => void
+
 export class Graph {
-  panCenter = new Point({x:0, y:0})
-  zoomFactor = 4;
+  viewport: Viewport;
   vertices: Map<string, Vertex> = new Map()
   edges: Map<string, Edge> = new Map()
   entities: Map<string, Entity> = new Map()
   listeners : Set<GraphEventListener> = new Set();
 
   constructor() {
+    this.viewport = new Viewport(4)
     this.addVertex = this.addVertex.bind(this)
     this.addEdge = this.addEdge.bind(this)
     this.setPanCenter = this.setPanCenter.bind(this)
     this.setZoomFactor = this.setZoomFactor.bind(this)
   }
 
-  setZoomFactor(zoomFactor:number, panCenter:Point = this.panCenter,){
-    this.panCenter = panCenter;
-    this.zoomFactor = zoomFactor > 0 ? zoomFactor : 1;
+  setZoomFactor(zoomLevel: number, panCenter: Point = this.viewport.center,){
+    this.viewport.center = panCenter;
+    this.viewport.zoomLevel = zoomLevel > 0 ? zoomLevel : 1;
     this.emitEvent();
   }
 
-  setPanCenter(nextPanCenter: Point){
-    this.panCenter = nextPanCenter;
+  setPanCenter(center: Point){
+    this.viewport.center = center;
     this.emitEvent();
   }
 
@@ -58,8 +61,8 @@ export class Graph {
     const event = {
       vertices: Array.from(this.vertices.values()),
       edges: Array.from(this.edges.values()),
-      zoomFactor: this.zoomFactor,
-      panCenter: this.panCenter
+      zoomFactor: this.viewport.zoomLevel,
+      panCenter: this.viewport.center
     }
     this.listeners.forEach(listener => listener(event))
   }

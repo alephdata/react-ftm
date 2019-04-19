@@ -1,9 +1,10 @@
 import React, { MouseEvent } from 'react'
 import { Point } from './Point'
-import { ICanvas } from './Canvas'
+import { Viewport } from './Viewport';
 
-interface IPanProps extends ICanvas {
-  onZoomChanged: (zoomFactor: number, panCenter?:Point) => any,
+interface IPanProps {
+  viewport: Viewport
+  onZoomChanged: (zoomLevel: number, panCenter?:Point) => any,
   onPanChanged: (panCenter: Point) => any,
 }
 
@@ -27,42 +28,45 @@ export class Pan extends React.Component<IPanProps, IPanState> {
     if (moving) {
       /*
       * detailed math
-      * (((e.movementX / bBox.width) * 100) / 100) * (this.props.zoomFactor * this.props.RATIO)
-      * (((e.movementY / bBox.height) * 100) / 100) * ((this.props.zoomFactor) / this.props.RATIO),
+      * (((e.movementX / bBox.width) * 100) / 100) * (this.props.zoomLevel * this.props.RATIO)
+      * (((e.movementY / bBox.height) * 100) / 100) * ((this.props.zoomLevel) / this.props.RATIO),
       * */
       this.props.onPanChanged(
         this.getPixelInUnits(
           Point.from(e.movementX, e.movementY),
           e.currentTarget.getBoundingClientRect()
         )
-          .addition(this.props.panCenter)
+          .addition(this.props.viewport.center)
       )
     }
   }
 
-  getPixelInUnits(pixelPoint: Point, rect: ClientRect, viewPort: ICanvas = this.props): Point {
-    const { zoomFactor, RATIO } = viewPort
+  getPixelInUnits(pixelPoint: Point, rect: ClientRect): Point {
+    const { zoomLevel } = this.props.viewport;
+    const RATIO = 1;
     return pixelPoint.divide({
-      x: (rect.width / (zoomFactor / RATIO)),
-      y: (rect.height / (zoomFactor * RATIO))
+      x: (rect.width / (zoomLevel / RATIO)),
+      y: (rect.height / (zoomLevel * RATIO))
     })
   }
 
-  private zoom(event: MouseEvent) {
+  private zoom(event: React.MouseEvent) {
     // TODO: according to docs `event.deltaY` is not stable, but it works fine so i've tested so far, consider using scroll events if anybody will experience improper behaviour
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event
     // @ts-ignore
     const zoomChange = event.deltaY < 0 ? -1 : 1;
-    let zoomFactor = this.props.zoomFactor + zoomChange
-    if (zoomFactor !== 0 && (zoomFactor !== this.props.zoomFactor)) {
+    const { viewport } = this.props;
+    const RATIO = 1;
+    let zoomLevel = viewport.zoomLevel + zoomChange
+    if (zoomLevel !== 0 && (zoomLevel !== viewport.zoomLevel)) {
       const clientRect = event.currentTarget.getBoundingClientRect();
       // the position of mouse inside the container in pixels
       const internalPosition = Point.from(
         event.clientX - clientRect.left,
         event.clientY - clientRect.top
       )
-      const widthInUnits = this.props.zoomFactor * this.props.RATIO;
-      const heightInUnits = this.props.zoomFactor / this.props.RATIO;
+      const widthInUnits = viewport.zoomLevel * RATIO;
+      const heightInUnits = viewport.zoomLevel / RATIO;
       const mousePosition = this.getPixelInUnits(internalPosition, clientRect)
         .subtract(Point.from(
           (widthInUnits / 2),
@@ -71,13 +75,13 @@ export class Pan extends React.Component<IPanProps, IPanState> {
 
       // mouse position in the next zoom scale
       const nextMousePosition = mousePosition
-        .divide(Point.from(this.props.zoomFactor/zoomFactor))
+        .divide(Point.from(viewport.zoomLevel/zoomLevel))
 
-      const nextPan = this.props.panCenter.subtract(
+      const nextPan = viewport.center.subtract(
         mousePosition.subtract(nextMousePosition)
       )
       this.props.onZoomChanged(
-        zoomFactor,
+        zoomLevel,
         nextPan,
       );
     }

@@ -1,6 +1,6 @@
 import { Point } from './Point'
 
-export class ViewPort {
+export class Viewport {
   public center: Point
   public zoomLevel: number
   public gridUnit: number
@@ -8,5 +8,18 @@ export class ViewPort {
   constructor(zoomLevel: number, center?: Point){
     this.zoomLevel = zoomLevel
     this.center = center || new Point()
+    this.gridUnit = 6;
   }
+
+  gridToPixel(point: Point): Point {
+    return new Point({
+      x: point.x * this.gridUnit,
+      y: point.y * this.gridUnit
+    })
+  }
+
+  // pixelToGrid(point: Point): Point {
+  //   return new Point({
+  //   })
+  // }
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, IGraphEvent } from './Graph'
+import { Graph, GraphUpdateHandler, IGraphEvent } from './Graph'
 import { Point } from './Point'
 import { Canvas } from './Canvas'
 import { EdgesRenderer } from './EdgesRenderer'
@@ -7,12 +7,13 @@ import { VerticesRenderer } from './VerticesRenderer'
 import { Pan } from './Pan'
 
 export interface IGraphRendererProps {
-  graph: Graph
+  graph: Graph,
+  updateGraph: GraphUpdateHandler
 }
 
 export interface IGraphRendererState extends IGraphEvent{}
 
-export class GraphRenderer extends React.PureComponent<IGraphRendererProps, IGraphRendererState> {
+export class GraphRenderer extends React.Component<IGraphRendererProps, IGraphRendererState> {
   state: IGraphRendererState = {
     vertices: [],
     edges: [],
@@ -25,23 +26,14 @@ export class GraphRenderer extends React.PureComponent<IGraphRendererProps, IGra
   }
 
   render(){
-    const UNIT = 5;
-    const RATIO = 1;
-    const {edges, vertices} = this.state;
+    const { graph } = this.props;
+    const { edges, vertices } = this.state;
     return <Pan
-      UNIT={UNIT}
-      RATIO={RATIO}
-      zoomFactor={this.state.zoomFactor}
-      panCenter={this.state.panCenter}
+      viewport={graph.viewport}
       onZoomChanged={this.props.graph.setZoomFactor}
       onPanChanged={this.props.graph.setPanCenter}
     >
-      <Canvas
-        UNIT={UNIT}
-        RATIO={RATIO}
-        zoomFactor={this.state.zoomFactor}
-        panCenter={this.state.panCenter}
-      >
+      <Canvas viewport={graph.viewport}>
         <EdgesRenderer edges={edges}/>
         <VerticesRenderer vertices={vertices}/>
       </Canvas>
