@@ -53,10 +53,9 @@ export class Canvas extends React.Component <ICanvasProps, ICanvasState> {
 
   getPixelInUnits(pixelPoint: Point, rect: ClientRect): Point {
     const { zoomLevel } = this.props.viewport;
-    const RATIO = 1;
     return pixelPoint.divide({
-      x: (rect.width / (zoomLevel / RATIO)),
-      y: (rect.height / (zoomLevel * RATIO))
+      x: (rect.width / zoomLevel),
+      y: (rect.height / zoomLevel)
     })
   }
 
@@ -66,7 +65,6 @@ export class Canvas extends React.Component <ICanvasProps, ICanvasState> {
     // @ts-ignore
     const zoomChange = event.deltaY < 0 ? -1 : 1;
     const { viewport } = this.props;
-    const RATIO = 1;
     let zoomLevel = viewport.zoomLevel + zoomChange
     if (zoomLevel !== 0 && (zoomLevel !== viewport.zoomLevel)) {
       const clientRect = event.currentTarget.getBoundingClientRect();
@@ -75,12 +73,10 @@ export class Canvas extends React.Component <ICanvasProps, ICanvasState> {
         event.clientX - clientRect.left,
         event.clientY - clientRect.top
       )
-      const widthInUnits = viewport.zoomLevel * RATIO;
-      const heightInUnits = viewport.zoomLevel / RATIO;
       const mousePosition = this.getPixelInUnits(internalPosition, clientRect)
         .subtract(Point.from(
-          (widthInUnits / 2),
-          (heightInUnits / 2)
+          (viewport.zoomLevel / 2),
+          (viewport.zoomLevel / 2)
         ));
 
       // mouse position in the next zoom scale
@@ -102,13 +98,10 @@ export class Canvas extends React.Component <ICanvasProps, ICanvasState> {
     //   const bbox = this.gRef.current.getBBox()
     //   console.log(bbox.width, bbox.height);
     // }
-    const RATIO = 1;
     const scale = viewport.gridUnit * viewport.zoomLevel;
-    const height = scale * RATIO;
-    const width = scale / RATIO;
-    const viewportY = -((height / 2) + (viewport.gridUnit * viewport.center.y))
-    const viewportX = -((width / 2) + (viewport.gridUnit * viewport.center.x))
-    const viewBox = `${viewportX} ${viewportY} ${height} ${width}`
+    const viewportY = -((scale / 2) + (viewport.gridUnit * viewport.center.y))
+    const viewportX = -((scale / 2) + (viewport.gridUnit * viewport.center.x))
+    const viewBox = `${viewportX} ${viewportY} ${scale} ${scale}`
     return (
       <div
         onMouseUp={this.onPanEnd}
@@ -119,7 +112,7 @@ export class Canvas extends React.Component <ICanvasProps, ICanvasState> {
       >
         <svg viewBox={viewBox} ref={this.svgRef} style={{
           fontSize: '1em',
-          backgroundSize: `${100/viewport.zoomLevel}% ${(100/viewport.zoomLevel) * (Math.pow(RATIO, 2))}%`,
+          backgroundSize: `${100/viewport.zoomLevel}% ${100/viewport.zoomLevel}%`,
           backgroundPositionX: (50 * viewport.center.x) + '%',
           backgroundPositionY: (50 * viewport.center.y) + '%',
           backgroundImage: 'linear-gradient(to right, black 1px, transparent 1px), linear-gradient(to bottom, grey 1px, transparent 1px)'

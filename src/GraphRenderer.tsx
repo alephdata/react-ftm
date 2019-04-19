@@ -3,7 +3,6 @@ import { Graph, GraphUpdateHandler } from './Graph'
 import { Canvas } from './Canvas'
 import { EdgesRenderer } from './EdgesRenderer'
 import { VerticesRenderer } from './VerticesRenderer'
-import { Pan } from './Pan'
 import { Viewport } from './Viewport';
 
 export interface IGraphRendererProps {
