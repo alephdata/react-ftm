@@ -1,6 +1,7 @@
 import React from 'react'
 import { Point } from './Point'
 import { Viewport } from './Viewport';
+import { emitKeypressEvents } from 'readline';
 
 interface ICanvasProps {
   viewport: Viewport
@@ -8,13 +9,14 @@ interface ICanvasProps {
 }
 
 interface ICanvasState {
-  panning: boolean,
+
 }
 
 export class Canvas extends React.Component <ICanvasProps, ICanvasState> {
   svgRef: React.RefObject<SVGSVGElement>
   gRef: React.RefObject<SVGGElement>
-  state: ICanvasState = { panning: false }
+  panActive: boolean = false
+  panOrigin: Point | null = null
 
   constructor(props: Readonly<ICanvasProps>) {
     super(props)
@@ -26,101 +28,79 @@ export class Canvas extends React.Component <ICanvasProps, ICanvasState> {
     this.gRef = React.createRef();
   }
 
-  private onPanMove(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+  private onPanMove(e: React.MouseEvent<SVGGElement, MouseEvent>) {
     const { viewport } = this.props
-    if (this.state.panning && e.currentTarget) {
-      /*
-      * detailed math
-      * (((e.movementX / bBox.width) * 100) / 100) * (this.props.zoomLevel * this.props.RATIO)
-      * (((e.movementY / bBox.height) * 100) / 100) * ((this.props.zoomLevel) / this.props.RATIO),
-      * */
-      const offset = this.getPixelInUnits(
-        Point.from(e.movementX, e.movementY),
-        e.currentTarget.getBoundingClientRect()
+    if (this.panActive && e.currentTarget) {
+      viewport.center = new Point(
+        viewport.center.x + ((e.movementX / viewport.gridUnit)),
+        viewport.center.y + ((e.movementY / viewport.gridUnit))
       )
-      viewport.center = offset.addition(viewport.center);
       this.props.updateViewport(viewport);
     }
   }
 
   onPanEnd() {
-    this.setState({ panning: false })
+    this.panActive = false;
+    this.panOrigin = null;
   }
 
   onPanStart() {
-    this.setState({ panning: true })
+    const { viewport } = this.props
+    this.panActive = true
+    this.panOrigin = viewport.center
   }
 
-  getPixelInUnits(pixelPoint: Point, rect: ClientRect): Point {
-    const { zoomLevel } = this.props.viewport;
-    return pixelPoint.divide({
-      x: (rect.width / zoomLevel),
-      y: (rect.height / zoomLevel)
-    })
-  }
-
-  private onZoom(event: React.MouseEvent) {
+  private onZoom(event: React.MouseEvent<SVGGElement, MouseEvent>) {
+    const { viewport } = this.props;
     // TODO: according to docs `event.deltaY` is not stable, but it works fine so i've tested so far, consider using scroll events if anybody will experience improper behaviour
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event
+    const factor = 1 / viewport.gridUnit
     // @ts-ignore
-    const zoomChange = event.deltaY < 0 ? -1 : 1;
-    const { viewport } = this.props;
-    let zoomLevel = viewport.zoomLevel + zoomChange
-    if (zoomLevel !== 0 && (zoomLevel !== viewport.zoomLevel)) {
-      const clientRect = event.currentTarget.getBoundingClientRect();
-      // the position of mouse inside the container in pixels
-      const internalPosition = Point.from(
-        event.clientX - clientRect.left,
-        event.clientY - clientRect.top
+    const zoomChange = (event.deltaY < 0 ? 1 : -1) * factor;
+    const zoomLevel = Math.max(factor, viewport.zoomLevel + zoomChange);
+    if (zoomLevel !== viewport.zoomLevel && this.svgRef.current !== null) {
+      const clientRect = this.svgRef.current.getBoundingClientRect();
+      const center = new Point(clientRect.width / 2, clientRect.height / 2)
+      const scaleChange = (1 / zoomLevel) - (1 / viewport.zoomLevel)
+      const offset = new Point(
+        ((event.clientX - center.x) * scaleChange * -1),
+        ((event.clientY - center.y) * scaleChange * -1),
       )
-      const mousePosition = this.getPixelInUnits(internalPosition, clientRect)
-        .subtract(Point.from(
-          (viewport.zoomLevel / 2),
-          (viewport.zoomLevel / 2)
-        ));
-
-      // mouse position in the next zoom scale
-      const nextMousePosition = mousePosition
-        .divide(Point.from(viewport.zoomLevel/zoomLevel))
-
-      const nextPan = viewport.center.subtract(
-        mousePosition.subtract(nextMousePosition)
-      )
+      const gridOffset = viewport.pixelToGrid(offset)
+      viewport.center = viewport.center.addition(gridOffset);
       viewport.zoomLevel = zoomLevel
-      viewport.center = nextPan
       this.props.updateViewport(viewport)
     }
   }
 
+  // componentDidMount() {
+  //   if (this.svgRef.current !== null) {
+  //     console.log(this.svgRef.current.getBoundingClientRect())
+  //   }
+  // }
+
   render() {
     const { viewport } = this.props
-    // if (this.gRef.current !== null) {
-    //   const bbox = this.gRef.current.getBBox()
-    //   console.log(bbox.width, bbox.height);
-    // }
-    const scale = viewport.gridUnit * viewport.zoomLevel;
-    const viewportY = -((scale / 2) + (viewport.gridUnit * viewport.center.y))
-    const viewportX = -((scale / 2) + (viewport.gridUnit * viewport.center.x))
-    const viewBox = `${viewportX} ${viewportY} ${scale} ${scale}`
+    let viewBox = viewport.getViewBox(100, 100);
+    if (this.svgRef.current !== null) {
+      const bbox = this.svgRef.current.getBoundingClientRect()
+      viewBox = viewport.getViewBox(bbox.width, bbox.height)
+    }
+
     return (
-      <div
-        onMouseUp={this.onPanEnd}
-        onMouseLeave={this.onPanEnd}
-        onMouseDown={this.onPanStart}
-        onMouseMove={this.onPanMove}
-        onWheel={this.onZoom}
-      >
-        <svg viewBox={viewBox} ref={this.svgRef} style={{
-          fontSize: '1em',
-          backgroundSize: `${100/viewport.zoomLevel}% ${100/viewport.zoomLevel}%`,
-          backgroundPositionX: (50 * viewport.center.x) + '%',
-          backgroundPositionY: (50 * viewport.center.y) + '%',
-          backgroundImage: 'linear-gradient(to right, black 1px, transparent 1px), linear-gradient(to bottom, grey 1px, transparent 1px)'
-        }}>
-          <g ref={this.gRef}>
-            {this.props.children}
-          </g>
-        </svg>
-      </div>)
+      <svg width={800} height={600} viewBox={viewBox} ref={this.svgRef}>
+        <g
+          ref={this.gRef}
+          onMouseUp={this.onPanEnd}
+          onMouseLeave={this.onPanEnd}
+          onMouseDown={this.onPanStart}
+          onMouseMove={this.onPanMove}
+          onWheel={this.onZoom}
+        >
+          <rect id="canvas-handle" x="-5000" y="-5000" width="10000" height="10000" fill="#eee" />
+          {this.props.children}
+        </g>
+      </svg>
+    )
   }
 }
