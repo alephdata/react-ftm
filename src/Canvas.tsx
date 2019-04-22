@@ -16,7 +16,6 @@ export class Canvas extends React.Component <ICanvasProps, ICanvasState> {
   svgRef: React.RefObject<SVGSVGElement>
   gRef: React.RefObject<SVGGElement>
   panActive: boolean = false
-  panOrigin: Point | null = null
 
   constructor(props: Readonly<ICanvasProps>) {
     super(props)
@@ -41,13 +40,10 @@ export class Canvas extends React.Component <ICanvasProps, ICanvasState> {
 
   onPanEnd() {
     this.panActive = false;
-    this.panOrigin = null;
   }
 
   onPanStart() {
-    const { viewport } = this.props
     this.panActive = true
-    this.panOrigin = viewport.center
   }
 
   private onZoom(event: React.MouseEvent<SVGGElement, MouseEvent>) {
