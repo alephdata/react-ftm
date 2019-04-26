@@ -1,46 +1,60 @@
 import { Point } from './Point'
 
 export class Viewport {
+  static DEFAULT_ZOOM = 4
   public center: Point
   public zoomLevel: number
-  public gridUnit: number
+  /* gridUnits indicates the conversion rate between internal UNIT's and svg pixels*/
+  public gridUnit: number = 5
+  public ratio = 1 // square
 
-  constructor(zoomLevel: number, center?: Point){
+  constructor(zoomLevel: number = new.target.DEFAULT_ZOOM, center: Point = new Point()) {
     this.zoomLevel = zoomLevel
-    this.center = center || new Point()
-    this.gridUnit = 10;
+    this.center = center
   }
+
+
+  setRatioByWidthAndHeight(width: number, height: number): number {
+    this.ratio = width / height
+    return this.ratio
+  }
+
 
   gridToPixel(point: Point): Point {
-    return new Point(
-      point.x * this.gridUnit,
-      point.y * this.gridUnit
+    return point.multiply(new Point(this.gridUnit))
+  }
+
+  pixelToGrid(pixelPoint: Point, rect: ClientRect, zoomLevel:number = this.zoomLevel): Point {
+    return pixelPoint.divide(
+      Reflect.construct(Point,[rect.width, rect.height])
+        .divide(this.getScale(zoomLevel))
     )
   }
 
-  pixelToGrid(point: Point): Point {
+  getScale(zoomLevel = this.zoomLevel):Point {
     return new Point(
-      point.x / this.gridUnit,
-      point.y / this.gridUnit
+      zoomLevel * this.ratio,
+      zoomLevel / this.ratio
     )
   }
 
-  zoomedPixelToGrid(point: Point): Point {
-    const zoomed = this.pixelToGrid(point)
-    return new Point(
-      zoomed.x / this.zoomLevel,
-      zoomed.y / this.zoomLevel
-    )
+  /*
+  * returns the viewport in units based on scale, and pan-center
+  * viewport = scale/2 + pan-center
+  * */
+  getComputedCenter() {
+    return this.getScale()
+      .divide(new Point(-2))
+      .addition(this.center)
   }
 
-  getViewBox(width: number, height: number): string {
-    // const heightCount = width / this.gridUnit
-    // const widthCount = heightCount * (height / width)
-    const scaleX = width * this.zoomLevel;
-    const scaleY = height * this.zoomLevel;
-    const gridCenter = this.gridToPixel(this.center);
-    const thisX = -((scaleX / 2) + (gridCenter.x * this.zoomLevel))
-    const thisY = -((scaleY / 2) + (gridCenter.y * this.zoomLevel))
-    return `${thisX} ${thisY} ${scaleX} ${scaleY}`
+  getViewBox(): string {
+    const {
+      x: thisXInPixels, y: thisYInPixels
+    } = this.gridToPixel(this.getComputedCenter())
+    const {
+      x: scaleXInPixels, y: scaleYInPixels
+    } = this.gridToPixel(this.getScale())
+    return `${thisXInPixels} ${thisYInPixels} ${scaleXInPixels} ${scaleYInPixels}`
   }
 }

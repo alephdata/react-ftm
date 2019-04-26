@@ -80,6 +80,7 @@
   "dependencies": {
     "@alephdata/followthemoney": "^1.11.11",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "react-draggable": "^3.3.0"
   }
 }
