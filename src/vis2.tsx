@@ -1,49 +1,53 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { GraphRenderer } from './GraphRenderer'
-import { defaultModel, Model } from '@alephdata/followthemoney'
-import { Vertex } from './Vertex'
+import { defaultModel, Model, IEntityDatum } from '@alephdata/followthemoney'
 import { Graph } from './Graph'
 import { data } from '../resources/az_alievs.js'
 
 const model = new Model(defaultModel)
-const ggraph = new Graph()
 
-function useGraph() {
-  const [graph, setGraph] = React.useState(ggraph)
-  return [graph, setGraph, function() {
-    graph.addVertex(new Vertex('12', '12', '12' + Math.random()))
-  }]
+interface IVisState {
+  graph: Graph
 }
 
-function Vis2() {
-  const [graph, addVertex] = useGraph()
-  const [count, setCount] = React.useState(1)
-  return <div>
-    <div>
-      <button onClick={() => Array.from({ length: count })
-      // @ts-ignore
-        .forEach(addVertex)}>
-        add vertex
-      </button>
-      <input type="text" value={count} onChange={({ target }) => {
-        setCount(Number(target.value))
-      }}
-      />
-      <button onClick={() => {
-        data
-        // @ts-ignore
-          .map(rawEntity => model.getEntity(rawEntity))
-          // @ts-ignore
-          .forEach(graph.addEntity, graph)
-      }}>add our friends
-      </button>
-    </div>
-    <div>
-      <GraphRenderer graph={graph as Graph}/>
-    </div>
-  </div>
+export class Vis2 extends React.Component {
+  state: IVisState = {
+    graph: new Graph()
+  }
+
+  constructor(props: any) {
+    super(props)
+    this.addSampleData = this.addSampleData.bind(this)
+    this.updateGraph = this.updateGraph.bind(this)
+  }
+
+  addSampleData() {
+    const { graph } = this.state;
+    const entities = data.map(rawEntity => model.getEntity(rawEntity as unknown as IEntityDatum));
+    entities.forEach((entity) => graph.addEntity(entity))
+    this.updateGraph(graph)
+  }
+
+  updateGraph(graph: Graph) {
+    this.setState({ graph })
+  }
+
+  render() {
+    const { graph } = this.state;
+    return (
+      <div>
+        <div>
+          <button onClick={this.addSampleData}>add our friends</button>
+        </div>
+        <div>
+          <GraphRenderer graph={graph} updateGraph={this.updateGraph} />
+        </div>
+      </div>
+    );
+  }
 }
+
 
 ReactDOM.render(
   <Vis2/>,

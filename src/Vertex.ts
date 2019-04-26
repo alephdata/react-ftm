@@ -13,15 +13,10 @@ export class Vertex {
     this.type = type
     this.label = label
     this.id = id
-    this.equals = this.equals.bind(this)
   }
 
   onAddedToGraph(graph: Graph){
     this.graph = graph;
-    this.point.set(getPositionByIndex(graph.vertices.size - 1));
-  }
-
-  equals(vertex: Vertex): boolean {
-    return this.id === vertex.id
+    this.point = getPositionByIndex(graph.vertices.size - 1);
   }
 }

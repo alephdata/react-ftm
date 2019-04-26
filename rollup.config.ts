@@ -15,7 +15,6 @@ export default {
     include: 'src/**',
   },
   plugins: [
-
     json(),
     // Allow node_modules resolution, so you can use 'external' to control
     // which external modules to include in the bundle

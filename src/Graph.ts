@@ -1,67 +1,24 @@
 import { Entity, Value } from '@alephdata/followthemoney'
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
+import { Viewport } from './Viewport'
 import { EntityVertex } from './EntityVertex'
 import { ValueVertex } from './ValueVertex'
 import { EntityEdge } from './EntityEdge'
 import { PropertyEdge } from './PropertyEdge'
-import { Point } from './Point'
 
-
-export interface IGraphEvent {
-  vertices: Array<Vertex>,
-  edges: Array<Edge>,
-  zoomFactor: number,
-  panCenter: Point
-}
-
-export type GraphEventListener = (event: IGraphEvent) => void
+export type GraphUpdateHandler = (graph: Graph) => void
 
 export class Graph {
-  panCenter = new Point({x:0, y:0})
-  zoomFactor = 4;
+  viewport: Viewport;
   vertices: Map<string, Vertex> = new Map()
   edges: Map<string, Edge> = new Map()
   entities: Map<string, Entity> = new Map()
-  listeners : Set<GraphEventListener> = new Set();
 
   constructor() {
+    this.viewport = new Viewport(1)
     this.addVertex = this.addVertex.bind(this)
     this.addEdge = this.addEdge.bind(this)
-    this.setPanCenter = this.setPanCenter.bind(this)
-    this.setZoomFactor = this.setZoomFactor.bind(this)
-  }
-
-  setZoomFactor(zoomFactor:number, panCenter:Point = this.panCenter,){
-    this.panCenter = panCenter;
-    this.zoomFactor = zoomFactor > 0 ? zoomFactor : 1;
-    this.emitEvent();
-  }
-
-  setPanCenter(nextPanCenter: Point){
-    this.panCenter = nextPanCenter;
-    this.emitEvent();
-  }
-
-  addEventListener(listener:GraphEventListener, context?:any):void{
-    if(context){
-      this.listeners.add(listener.bind(context))
-    } else this.listeners.add(listener)
-    this.emitEvent();
-  }
-
-  removeEventListener(listener:GraphEventListener):void{
-    this.listeners.delete(listener)
-  }
-
-  emitEvent() {
-    const event = {
-      vertices: Array.from(this.vertices.values()),
-      edges: Array.from(this.edges.values()),
-      zoomFactor: this.zoomFactor,
-      panCenter: this.panCenter
-    }
-    this.listeners.forEach(listener => listener(event))
   }
 
   addVertex<V extends Vertex>(vertex: V): V {
@@ -70,7 +27,6 @@ export class Graph {
     }
     this.vertices.set(vertex.id, vertex)
     vertex.onAddedToGraph(this);
-    this.emitEvent();
     return vertex
   }
 
@@ -79,7 +35,6 @@ export class Graph {
       return this.edges.get(edge.id) as E
     }
     this.edges.set(edge.id, edge)
-    this.emitEvent();
     return edge
   }
 
