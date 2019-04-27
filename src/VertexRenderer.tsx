@@ -2,6 +2,7 @@ import React from 'react'
 import { Point } from './Point'
 import { Vertex } from './Vertex'
 import { Viewport } from './Viewport';
+import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
 
 interface IVertexRendererProps {
   vertex: Vertex,
@@ -32,51 +33,52 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
     this.onPanEnd = this.onPanEnd.bind(this)
   }
 
-  private onPanMove(e: React.MouseEvent<SVGGElement, MouseEvent>) {
+  private onPanMove(e: DraggableEvent, data: DraggableData) {
     const { vertex, viewport } = this.props
-    if (this.panActive && e.currentTarget) {
-      e.stopPropagation()
+    if (this.panActive) {
       vertex.point = new Point(
-        vertex.point.x + ((e.movementX / viewport.gridUnit)),
-        vertex.point.y + ((e.movementY / viewport.gridUnit))
+        vertex.point.x + ((data.deltaX / viewport.gridUnit)),
+        vertex.point.y + ((data.deltaY / viewport.gridUnit))
       )
       console.log(vertex.point, e)
       this.props.updateVertex(vertex);
     }
   }
 
-  onPanEnd(e: React.MouseEvent<SVGGElement, MouseEvent>) {
-    if (this.panActive) {
-      e.stopPropagation()
-    }
+  onPanEnd(e: DraggableEvent, data: DraggableData) {
+    // if (this.panActive) {
+    //   e.stopPropagation()
+    // }
     this.panActive = false;
   }
 
-  onPanStart(e: React.MouseEvent<SVGGElement, MouseEvent>) {
+  onPanStart(e: DraggableEvent, data: DraggableData) {
     this.panActive = true
     console.log("Pan start", this.props.vertex)
-    e.stopPropagation()
+    // e.stopPropagation()
   }
 
   render() {
     const { vertex, viewport } = this.props;
-    const {x, y} = viewport.gridToPixel(vertex.point);
-    return <g
-      className="vertex"
-      transform={`translate(${x} ${y})`}
-      fill={stringToColour(vertex.type)}
-      onMouseUp={this.onPanEnd}
-      onMouseLeave={this.onPanEnd}
-      onMouseDown={this.onPanStart}
-      onMouseMove={this.onPanMove}
-    >
-      <circle
-        r={viewport.gridUnit/2}
-      />
-      <text
-        className="label"
-        fill="black"
-      >{vertex.label}</text>
-    </g>
+    const { x, y } = viewport.gridToPixel(vertex.point);
+    const translate = `translate(${x} ${y})`
+    return (
+      <DraggableCore
+        handle='.handle'
+        onStart={this.onPanStart}
+        onDrag={this.onPanMove}
+        onStop={this.onPanEnd} >
+        <g
+          className="vertex"
+          transform={translate}
+          fill={stringToColour(vertex.type)} >
+          <circle className="handle" r={viewport.gridUnit/2} />
+          <text
+            className="label"
+            fill="black"
+          >{vertex.label}</text>
+        </g>
+      </DraggableCore>
+    );
   }
 }

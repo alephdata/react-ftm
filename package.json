@@ -16,12 +16,10 @@
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf public/dist/vis2.*",
     "build": "rollup -c rollup.config.ts",
-    "build:docs": "typedoc --out docs --target es6 --excludeExternals  --theme minimal --mode file src",
     "start": "rollup -c rollup.config.ts -w",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",
     "test:prod": "npm run lint && npm run test -- --no-cache",
-    "deploy-docs": "ts-node tools/gh-pages-publish",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "serve": "npx serve -l 5005 ./public",
     "analyze": "rollup -c rollup.config.analyze.ts"
@@ -80,6 +78,7 @@
   "dependencies": {
     "@alephdata/followthemoney": "^1.11.11",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "react-draggable": "^3.3.0"
   }
 }
