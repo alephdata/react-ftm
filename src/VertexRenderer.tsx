@@ -1,8 +1,9 @@
 import React from 'react'
+import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
 import { Point } from './Point'
 import { Vertex } from './Vertex'
 import { Viewport } from './Viewport';
-import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
+import { LabelRenderer } from './LabelRenderer';
 
 interface IVertexRendererProps {
   vertex: Vertex,
@@ -57,24 +58,19 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
   }
 
   render() {
-    const { vertex, viewport } = this.props;
-    const { x, y } = viewport.gridToPixel(vertex.position);
+    const { vertex, viewport } = this.props
+    const { x, y } = viewport.gridToPixel(vertex.position)
     const translate = `translate(${x} ${y})`
+    const labelPosition = new Point(0, viewport.gridUnit)
     return (
       <DraggableCore
         handle='.handle'
         onStart={this.onPanStart}
         onDrag={this.onPanMove}
         onStop={this.onPanEnd} >
-        <g
-          className="vertex"
-          transform={translate}
-          fill={stringToColour(vertex.type)} >
-          <circle className="handle" r={viewport.gridUnit * Vertex.RADIUS} />
-          <text
-            className="label"
-            fill="black"
-          >{vertex.label}</text>
+        <g className="vertex" transform={translate}>
+          <circle className="handle" r={viewport.gridUnit * Vertex.RADIUS} fill={stringToColour(vertex.type)} />
+          <LabelRenderer center={labelPosition} label={vertex.label} />
         </g>
       </DraggableCore>
     );

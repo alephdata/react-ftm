@@ -109,6 +109,10 @@ export class Canvas extends React.Component <ICanvasProps> {
           <pattern id="grid" width={viewport.gridUnit} height={viewport.gridUnit} patternUnits="userSpaceOnUse">
             <path d={grid} fill="none" stroke="#ccc" strokeWidth="0.5"/>
           </pattern>
+          <filter x="0" y="0" width="1" height="1" id="solid">
+            <feFlood floodColor="#ffffff"/>
+            <feComposite in="SourceGraphic" operator="xor" />
+          </filter>
         </defs>
       </svg>
     )
