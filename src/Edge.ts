@@ -33,6 +33,10 @@ export class Edge {
     this.propertyQName = data.propertyQName
   }
 
+  clone(): Edge {
+    return Edge.fromJSON(this.graph, this.toJSON())
+  }
+
   toJSON(): IEdgeData {
     return {
       id: this.id,

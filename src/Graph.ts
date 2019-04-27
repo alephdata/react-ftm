@@ -1,4 +1,4 @@
-import { Entity } from '@alephdata/followthemoney'
+import { Entity, Model } from '@alephdata/followthemoney'
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
 import { Viewport } from './Viewport'
@@ -6,12 +6,14 @@ import { Viewport } from './Viewport'
 export type GraphUpdateHandler = (graph: Graph) => void
 
 export class Graph {
+  public readonly model: Model
   viewport: Viewport;
   vertices: Map<string, Vertex> = new Map()
   edges: Map<string, Edge> = new Map()
   entities: Map<string, Entity> = new Map()
 
-  constructor() {
+  constructor(model: Model) {
+    this.model = model
     this.viewport = new Viewport()
     this.addVertex = this.addVertex.bind(this)
     this.addEdge = this.addEdge.bind(this)
@@ -67,6 +69,12 @@ export class Graph {
           this.addEdge(propertyEdge)
         })
       })
+    }
+  }
+
+  toJSON(): any {
+    return {
+      viewport: this.viewport.toJSON()
     }
   }
 }

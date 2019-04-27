@@ -33,6 +33,10 @@ export class Vertex {
     this.point = getPositionByIndex(this.graph.vertices.size - 1);
   }
 
+  clone(): Vertex {
+    return Vertex.fromJSON(this.graph, this.toJSON())
+  }
+
   toJSON(): IVertexData {
     return {
       id: this.id,

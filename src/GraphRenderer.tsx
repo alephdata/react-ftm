@@ -20,13 +20,13 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
 
   updateViewport(viewport: Viewport) {
     const { graph } = this.props;
-    graph.viewport = viewport
+    graph.viewport = viewport.clone()
     this.props.updateGraph(graph)
   }
 
-  updateVertex<V extends Vertex>(vertex: V) {
+  updateVertex(vertex: Vertex) {
     const { graph } = this.props;
-    graph.vertices.set(vertex.id, vertex)
+    graph.vertices.set(vertex.id, vertex.clone())
     this.props.updateGraph(graph)
   }
 

@@ -44,6 +44,10 @@ export class Viewport {
     return `${thisX} ${thisY} ${scaleX} ${scaleY}`
   }
 
+  clone(): Viewport {
+    return Viewport.fromJSON(this.toJSON())
+  }
+
   toJSON(): any {
     // not storing gridUnit, seems to be constant so far. This
     // will probably need review some times.

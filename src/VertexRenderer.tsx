@@ -40,7 +40,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
         vertex.point.x + ((data.deltaX / viewport.gridUnit)),
         vertex.point.y + ((data.deltaY / viewport.gridUnit))
       )
-      console.log(vertex.point, e)
+      // console.log(vertex.point, e)
       this.props.updateVertex(vertex);
     }
   }
@@ -54,7 +54,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
 
   onPanStart(e: DraggableEvent, data: DraggableData) {
     this.panActive = true
-    console.log("Pan start", this.props.vertex)
+    // console.log("Pan start", this.props.vertex)
     // e.stopPropagation()
   }
 

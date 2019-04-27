@@ -13,7 +13,7 @@ interface IVisState {
 
 export class Vis2 extends React.Component {
   state: IVisState = {
-    graph: new Graph()
+    graph: new Graph(model)
   }
 
   constructor(props: any) {
@@ -31,6 +31,7 @@ export class Vis2 extends React.Component {
 
   updateGraph(graph: Graph) {
     this.setState({ graph })
+    console.log(graph.toJSON())
   }
 
   render() {
