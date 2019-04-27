@@ -17,7 +17,7 @@ export class Vertex {
   public readonly id: string
   public readonly type: string
   public readonly label: string
-  public point: Point
+  public position: Point
   public readonly entityId?: string
 
   constructor(layout: GraphLayout, data: IVertexData) {
@@ -25,16 +25,22 @@ export class Vertex {
     this.type = data.type
     this.label = data.label
     this.id = data.id
-    this.point = data.point ? Point.fromJSON(data.point) : new Point()
+    this.position = data.point ? Point.fromJSON(data.point) : new Point()
     this.entityId = data.entityId
   }
 
   onAddedToGraph(){
-    this.point = getPositionByIndex(this.layout.vertices.size - 1);
+    this.position = getPositionByIndex(this.layout.vertices.size - 1);
   }
 
   clone(): Vertex {
     return Vertex.fromJSON(this.layout, this.toJSON())
+  }
+
+  setPosition(position: Point): Vertex {
+    const vertex = this.clone()
+    vertex.position = position
+    return vertex
   }
 
   toJSON(): IVertexData {
@@ -42,7 +48,7 @@ export class Vertex {
       id: this.id,
       type: this.type,
       label: this.label,
-      point: this.point.toJSON(),
+      point: this.position.toJSON(),
       entityId: this.entityId
     }
   }

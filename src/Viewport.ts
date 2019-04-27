@@ -4,11 +4,15 @@ export class Viewport {
   public center: Point
   public zoomLevel: number
   public gridUnit: number
+  public width?: number
+  public height?: number
+  public viewBox?: string
 
   constructor(zoomLevel: number = 1, center?: Point){
     this.zoomLevel = zoomLevel
     this.center = center || new Point()
     this.gridUnit = 10;
+    this.viewBox = undefined
   }
 
   gridToPixel(point: Point): Point {
@@ -33,19 +37,46 @@ export class Viewport {
     )
   }
 
-  getViewBox(width: number, height: number): string {
-    // const heightCount = width / this.gridUnit
-    // const widthCount = heightCount * (height / width)
-    const scaleX = width * this.zoomLevel;
-    const scaleY = height * this.zoomLevel;
-    const gridCenter = this.gridToPixel(this.center);
-    const thisX = -((scaleX / 2) + (gridCenter.x * this.zoomLevel))
-    const thisY = -((scaleY / 2) + (gridCenter.y * this.zoomLevel))
-    return `${thisX} ${thisY} ${scaleX} ${scaleY}`
+  computeViewBox() {
+    if (this.width && this.height) {
+      const scaleX = this.width * this.zoomLevel;
+      const scaleY = this.height * this.zoomLevel;
+      const gridCenter = this.gridToPixel(this.center);
+      const thisX = -((scaleX / 2) + (gridCenter.x * this.zoomLevel))
+      const thisY = -((scaleY / 2) + (gridCenter.y * this.zoomLevel))
+      this.viewBox = `${thisX} ${thisY} ${scaleX} ${scaleY}`
+    }
   }
 
   clone(): Viewport {
-    return Viewport.fromJSON(this.toJSON())
+    const clone = Viewport.fromJSON(this.toJSON())
+    clone.width = this.width
+    clone.height = this.height
+    clone.viewBox = this.viewBox
+    return clone
+  }
+
+  setRect(rect: ClientRect | DOMRect): Viewport {
+    const viewport = this.clone()
+    viewport.width = rect.width
+    viewport.height = rect.height
+    viewport.computeViewBox()
+    return viewport
+  }
+
+  setCenter(center: Point): Viewport {
+    const viewport = this.clone()
+    viewport.center = center
+    viewport.computeViewBox()
+    return viewport
+  }
+
+  setZoom(center: Point, zoomLevel: number): Viewport {
+    const viewport = this.clone()
+    viewport.center = center
+    viewport.zoomLevel = zoomLevel
+    viewport.computeViewBox()
+    return viewport
   }
 
   toJSON(): any {

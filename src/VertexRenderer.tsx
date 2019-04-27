@@ -36,12 +36,11 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
   private onPanMove(e: DraggableEvent, data: DraggableData) {
     const { vertex, viewport } = this.props
     if (this.panActive) {
-      vertex.point = new Point(
-        vertex.point.x + ((data.deltaX / viewport.gridUnit)),
-        vertex.point.y + ((data.deltaY / viewport.gridUnit))
+      const position = new Point(
+        vertex.position.x + ((data.deltaX / viewport.gridUnit) * viewport.zoomLevel),
+        vertex.position.y + ((data.deltaY / viewport.gridUnit) * viewport.zoomLevel)
       )
-      // console.log(vertex.point, e)
-      this.props.updateVertex(vertex);
+      this.props.updateVertex(vertex.setPosition(position));
     }
   }
 
@@ -60,7 +59,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
 
   render() {
     const { vertex, viewport } = this.props;
-    const { x, y } = viewport.gridToPixel(vertex.point);
+    const { x, y } = viewport.gridToPixel(vertex.position);
     const translate = `translate(${x} ${y})`
     return (
       <DraggableCore

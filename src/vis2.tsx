@@ -31,7 +31,7 @@ export class Vis2 extends React.Component {
 
   updateLayout(layout: GraphLayout) {
     this.setState({ layout })
-    console.log(layout.toJSON())
+    // console.log(layout.toJSON())
   }
 
   render() {
