@@ -77,6 +77,8 @@
   },
   "dependencies": {
     "@alephdata/followthemoney": "^1.11.11",
+    "@types/d3": "^5.7.2",
+    "d3": "^5.9.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-draggable": "^3.3.0"
