@@ -4,8 +4,7 @@ export class Viewport {
   public center: Point
   public zoomLevel: number
   public gridUnit: number
-  public width?: number
-  public height?: number
+  public svg?: SVGSVGElement
   public viewBox?: string
 
   constructor(zoomLevel: number = 1, center?: Point){
@@ -37,29 +36,36 @@ export class Viewport {
     )
   }
 
-  computeViewBox() {
-    if (this.width && this.height) {
-      const scaleX = this.width * this.zoomLevel;
-      const scaleY = this.height * this.zoomLevel;
-      const gridCenter = this.gridToPixel(this.center);
-      const thisX = -((scaleX / 2) + (gridCenter.x * this.zoomLevel))
-      const thisY = -((scaleY / 2) + (gridCenter.y * this.zoomLevel))
-      this.viewBox = `${thisX} ${thisY} ${scaleX} ${scaleY}`
+  private computeViewBox() {
+    const scaleX = 100 * this.gridUnit * this.zoomLevel;
+    const scaleY = 100 * this.gridUnit * this.zoomLevel;
+    const gridCenter = this.gridToPixel(this.center);
+    const thisX = -((scaleX / 2) + (gridCenter.x * this.zoomLevel))
+    const thisY = -((scaleY / 2) + (gridCenter.y * this.zoomLevel))
+    this.viewBox = `${thisX} ${thisY} ${scaleX} ${scaleY}`
+  }
+
+  applyMatrix(x: number, y: number): Point {
+    if (this.svg) {
+      const ctm = this.svg.getScreenCTM() as DOMMatrix
+      return new Point(
+        (x - ctm.e) / ctm.a,
+        (y - ctm.f) / ctm.d
+      )
     }
+    return new Point(0, 0)
   }
 
   clone(): Viewport {
     const clone = Viewport.fromJSON(this.toJSON())
-    clone.width = this.width
-    clone.height = this.height
+    clone.svg = this.svg
     clone.viewBox = this.viewBox
     return clone
   }
 
-  setRect(rect: ClientRect | DOMRect): Viewport {
+  setSvg(svg: SVGSVGElement): Viewport {
     const viewport = this.clone()
-    viewport.width = rect.width
-    viewport.height = rect.height
+    viewport.svg = svg
     viewport.computeViewBox()
     return viewport
   }

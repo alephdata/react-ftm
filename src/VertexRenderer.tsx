@@ -24,7 +24,6 @@ let stringToColour = function(str: string) {
 }
 
 export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
-  panActive: boolean = false
 
   constructor(props: Readonly<IVertexRendererProps>) {
     super(props)
@@ -35,13 +34,14 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
 
   private onPanMove(e: DraggableEvent, data: DraggableData) {
     const { vertex, viewport } = this.props
-    if (this.panActive) {
-      const position = new Point(
-        vertex.position.x + ((data.deltaX / viewport.gridUnit) * viewport.zoomLevel),
-        vertex.position.y + ((data.deltaY / viewport.gridUnit) * viewport.zoomLevel)
-      )
-      this.props.updateVertex(vertex.setPosition(position));
-    }
+    const current = viewport.applyMatrix(data.x, data.y)
+    const last = viewport.applyMatrix(data.lastX, data.lastY)
+    const offset = current.subtract(last)
+    const position = new Point(
+      vertex.position.x + ((offset.x / viewport.gridUnit)),
+      vertex.position.y + ((offset.y / viewport.gridUnit))
+    )
+    this.props.updateVertex(vertex.setPosition(position));
   }
 
   onPanEnd(e: DraggableEvent, data: DraggableData) {
@@ -51,11 +51,9 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
       Math.round(vertex.position.y)
     )
     this.props.updateVertex(vertex.setPosition(position));
-    this.panActive = false;
   }
 
   onPanStart(e: DraggableEvent, data: DraggableData) {
-    this.panActive = true
   }
 
   render() {
