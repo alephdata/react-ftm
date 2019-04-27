@@ -45,16 +45,17 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
   }
 
   onPanEnd(e: DraggableEvent, data: DraggableData) {
-    // if (this.panActive) {
-    //   e.stopPropagation()
-    // }
+    const { vertex } = this.props
+    const position = new Point(
+      Math.round(vertex.position.x),
+      Math.round(vertex.position.y)
+    )
+    this.props.updateVertex(vertex.setPosition(position));
     this.panActive = false;
   }
 
   onPanStart(e: DraggableEvent, data: DraggableData) {
     this.panActive = true
-    // console.log("Pan start", this.props.vertex)
-    // e.stopPropagation()
   }
 
   render() {
@@ -71,7 +72,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
           className="vertex"
           transform={translate}
           fill={stringToColour(vertex.type)} >
-          <circle className="handle" r={viewport.gridUnit/2} />
+          <circle className="handle" r={viewport.gridUnit * Vertex.RADIUS} />
           <text
             className="label"
             fill="black"

@@ -98,14 +98,18 @@ export class GraphLayout {
     })
 
     const simulation = forceSimulation(nodes)
-      .force('links', forceLink(links).distance(Vertex.SIZE * 5))
-      .force('collide', forceCollide(Vertex.SIZE))
+      .force('links', forceLink(links))
+      .force('collide', forceCollide(Vertex.RADIUS * 2))
     simulation.stop()
     simulation.tick(200)
     nodes.forEach((node) => {
       if (!node.fixed) {
         const vertex = this.vertices.get(node.id) as Vertex
-        const positioned = vertex.setPosition(new Point(node.x, node.y))
+        const position = new Point(
+          Math.round(node.x),
+          Math.round(node.y)
+        )
+        const positioned = vertex.setPosition(position)
         this.vertices.set(positioned.id, positioned)
       }
     })

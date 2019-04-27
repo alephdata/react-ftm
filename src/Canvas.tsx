@@ -89,18 +89,24 @@ export class Canvas extends React.Component <ICanvasProps> {
 
   render() {
     const { viewport } = this.props
+    const smallGrid = `M ${viewport.gridUnit} 0 L 0 0 0 ${viewport.gridUnit}`
     return (
-      <svg width={800} height={600} viewBox={viewport.viewBox} ref={this.svgRef}>
+      <svg viewBox={viewport.viewBox} ref={this.svgRef}>
         <DraggableCore
           handle="#canvas-handle"
           onStart={this.onPanStart}
           onDrag={this.onPanMove}
           onStop={this.onPanEnd}>
           <g id="zoom">
-            <rect id="canvas-handle" x="-5000" y="-5000" width="10000" height="10000" fill="#eee" />
+            <rect id="canvas-handle" x="-5000" y="-5000" width="10000" height="10000" fill="url(#grid)" />
             {this.props.children}
           </g>
         </DraggableCore>
+        <defs>
+          <pattern id="grid" width={viewport.gridUnit} height={viewport.gridUnit} patternUnits="userSpaceOnUse">
+            <path d={smallGrid} fill="none" stroke="#ccc" stroke-width="0.5"/>
+          </pattern>
+        </defs>
       </svg>
     )
   }
