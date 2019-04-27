@@ -3,9 +3,9 @@ import { Vertex } from './Vertex'
 import { Edge } from './Edge'
 import { Viewport } from './Viewport'
 
-export type GraphUpdateHandler = (graph: Graph) => void
+export type GraphUpdateHandler = (graph: GraphLayout) => void
 
-export class Graph {
+export class GraphLayout {
   public readonly model: Model
   viewport: Viewport;
   vertices: Map<string, Vertex> = new Map()

@@ -2,47 +2,47 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { GraphRenderer } from './GraphRenderer'
 import { defaultModel, Model, IEntityDatum } from '@alephdata/followthemoney'
-import { Graph } from './Graph'
+import { GraphLayout } from './GraphLayout'
 import { data } from '../resources/az_alievs.js'
 
 const model = new Model(defaultModel)
 
 interface IVisState {
-  graph: Graph
+  layout: GraphLayout
 }
 
 export class Vis2 extends React.Component {
   state: IVisState = {
-    graph: new Graph(model)
+    layout: new GraphLayout(model)
   }
 
   constructor(props: any) {
     super(props)
     this.addSampleData = this.addSampleData.bind(this)
-    this.updateGraph = this.updateGraph.bind(this)
+    this.updateLayout = this.updateLayout.bind(this)
   }
 
   addSampleData() {
-    const { graph } = this.state;
+    const { layout } = this.state;
     const entities = data.map(rawEntity => model.getEntity(rawEntity as unknown as IEntityDatum));
-    entities.forEach((entity) => graph.addEntity(entity))
-    this.updateGraph(graph)
+    entities.forEach((entity) => layout.addEntity(entity))
+    this.updateLayout(layout)
   }
 
-  updateGraph(graph: Graph) {
-    this.setState({ graph })
-    console.log(graph.toJSON())
+  updateLayout(layout: GraphLayout) {
+    this.setState({ layout })
+    console.log(layout.toJSON())
   }
 
   render() {
-    const { graph } = this.state;
+    const { layout } = this.state;
     return (
       <div>
         <div>
           <button onClick={this.addSampleData}>add our friends</button>
         </div>
         <div>
-          <GraphRenderer graph={graph} updateGraph={this.updateGraph} />
+          <GraphRenderer layout={layout} updateLayout={this.updateLayout} />
         </div>
       </div>
     );

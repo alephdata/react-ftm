@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, GraphUpdateHandler } from './Graph'
+import { GraphLayout, GraphUpdateHandler } from './GraphLayout'
 import { Canvas } from './Canvas'
 import { EdgeRenderer } from './EdgeRenderer'
 import { VertexRenderer } from './VertexRenderer'
@@ -7,8 +7,8 @@ import { Viewport } from './Viewport';
 import { Vertex } from './Vertex';
 
 export interface IGraphRendererProps {
-  graph: Graph,
-  updateGraph: GraphUpdateHandler
+  layout: GraphLayout,
+  updateLayout: GraphUpdateHandler
 }
 
 export class GraphRenderer extends React.Component<IGraphRendererProps> {
@@ -19,38 +19,38 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   updateViewport(viewport: Viewport) {
-    const { graph } = this.props;
-    graph.viewport = viewport.clone()
-    this.props.updateGraph(graph)
+    const { layout } = this.props;
+    layout.viewport = viewport.clone()
+    this.props.updateLayout(layout)
   }
 
   updateVertex(vertex: Vertex) {
-    const { graph } = this.props;
-    graph.vertices.set(vertex.id, vertex.clone())
-    this.props.updateGraph(graph)
+    const { layout } = this.props;
+    layout.vertices.set(vertex.id, vertex.clone())
+    this.props.updateLayout(layout)
   }
 
   renderEdges() {
-    const { graph } = this.props;
-    const edges = Array.from(graph.edges.values());
+    const { layout } = this.props;
+    const edges = Array.from(layout.edges.values());
     return edges.map((edge) =>
       <EdgeRenderer
         key={edge.id}
-        viewport={graph.viewport}
+        viewport={layout.viewport}
         edge={edge}
-        source={graph.vertices.get(edge.sourceId)}
-        target={graph.vertices.get(edge.targetId)}
+        source={layout.vertices.get(edge.sourceId)}
+        target={layout.vertices.get(edge.targetId)}
       />
     )
   }
 
   renderVertices() {
-    const { graph } = this.props;
-    const vertices = Array.from(graph.vertices.values());
+    const { layout } = this.props;
+    const vertices = Array.from(layout.vertices.values());
     return vertices.map((vertex) =>
       <VertexRenderer
         key={vertex.id}
-        viewport={graph.viewport}
+        viewport={layout.viewport}
         vertex={vertex}
         updateVertex={this.updateVertex}
       />
@@ -58,9 +58,9 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   render(){
-    const { graph } = this.props;
+    const { layout } = this.props;
     return (
-      <Canvas viewport={graph.viewport} updateViewport={this.updateViewport}>
+      <Canvas viewport={layout.viewport} updateViewport={this.updateViewport}>
         {this.renderEdges()}
         {this.renderVertices()}
       </Canvas>

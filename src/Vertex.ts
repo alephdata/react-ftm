@@ -1,7 +1,7 @@
 import { Entity, Property, PropertyType, Value } from '@alephdata/followthemoney';
 
 import { Point, IPointData } from './Point'
-import { Graph } from './Graph'
+import { GraphLayout } from './GraphLayout'
 import { getPositionByIndex } from './utils'
 
 interface IVertexData {
@@ -13,15 +13,15 @@ interface IVertexData {
 }
 
 export class Vertex {
-  public readonly graph: Graph
+  public readonly layout: GraphLayout
   public readonly id: string
   public readonly type: string
   public readonly label: string
   public point: Point
   public readonly entityId?: string
 
-  constructor(graph: Graph, data: IVertexData) {
-    this.graph = graph
+  constructor(layout: GraphLayout, data: IVertexData) {
+    this.layout = layout
     this.type = data.type
     this.label = data.label
     this.id = data.id
@@ -30,11 +30,11 @@ export class Vertex {
   }
 
   onAddedToGraph(){
-    this.point = getPositionByIndex(this.graph.vertices.size - 1);
+    this.point = getPositionByIndex(this.layout.vertices.size - 1);
   }
 
   clone(): Vertex {
-    return Vertex.fromJSON(this.graph, this.toJSON())
+    return Vertex.fromJSON(this.layout, this.toJSON())
   }
 
   toJSON(): IVertexData {
@@ -47,16 +47,16 @@ export class Vertex {
     }
   }
 
-  static fromJSON(graph: Graph, data: any): Vertex {
-    return new Vertex(graph, data as IVertexData)
+  static fromJSON(layout: GraphLayout, data: any): Vertex {
+    return new Vertex(layout, data as IVertexData)
   }
 
-  static fromEntity(graph: Graph, entity: Entity): Vertex {
+  static fromEntity(layout: GraphLayout, entity: Entity): Vertex {
     const type = PropertyType.ENTITY;
     if (entity.schema.isEdge) {
       throw new Error("Cannot make vertex from edge entity.")
     }
-    return new Vertex(graph, {
+    return new Vertex(layout, {
       id: `${type}:${entity.id}`,
       type: type,
       label: entity.getCaption() || entity.schema.label,
@@ -64,19 +64,19 @@ export class Vertex {
     });
   }
 
-  static fromValue(graph: Graph, property: Property, value: Value): Vertex {
+  static fromValue(layout: GraphLayout, property: Property, value: Value): Vertex {
     if (property.type.name === PropertyType.ENTITY || value instanceof Entity) {
       if (value instanceof Entity) {
-        return Vertex.fromEntity(graph, value);
+        return Vertex.fromEntity(layout, value);
       }
-      const entity = graph.entities.get(value)
+      const entity = layout.entities.get(value)
       if (!entity) {
         throw new Error("Dangling entity reference.")
       }
-      return Vertex.fromEntity(graph, entity);
+      return Vertex.fromEntity(layout, entity);
     }
     const type = property.type.name;
-    return new Vertex(graph, {
+    return new Vertex(layout, {
       id: `${type}:${value}`,
       type: type,
       label: value

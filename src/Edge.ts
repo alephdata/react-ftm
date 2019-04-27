@@ -1,6 +1,6 @@
 import { Vertex } from './Vertex'
 import { Entity, PropertyType, Property, Value } from '@alephdata/followthemoney';
-import { Graph } from './Graph';
+import { GraphLayout } from './GraphLayout';
 
 interface IEdgeData {
   id: string
@@ -13,7 +13,7 @@ interface IEdgeData {
 }
 
 export class Edge {
-  private readonly graph: Graph
+  private readonly layout: GraphLayout
   public readonly id: string
   public readonly type: string
   public readonly label: string
@@ -22,8 +22,8 @@ export class Edge {
   public readonly entityId?: string
   public readonly propertyQName?: string
 
-  constructor(graph: Graph, data: IEdgeData) {
-    this.graph = graph
+  constructor(layout: GraphLayout, data: IEdgeData) {
+    this.layout = layout
     this.id = data.id
     this.type = data.type
     this.label = data.label
@@ -34,7 +34,7 @@ export class Edge {
   }
 
   clone(): Edge {
-    return Edge.fromJSON(this.graph, this.toJSON())
+    return Edge.fromJSON(this.layout, this.toJSON())
   }
 
   toJSON(): IEdgeData {
@@ -49,12 +49,12 @@ export class Edge {
     }
   }
 
-  static fromJSON(graph: Graph, data: any): Edge {
-    return new Edge(graph, data as IEdgeData)
+  static fromJSON(layout: GraphLayout, data: any): Edge {
+    return new Edge(layout, data as IEdgeData)
   }
 
-  static fromEntity(graph: Graph, entity: Entity, source: Vertex, target: Vertex): Edge {
-    return new Edge(graph, {
+  static fromEntity(layout: GraphLayout, entity: Entity, source: Vertex, target: Vertex): Edge {
+    return new Edge(layout, {
       id: `${entity.id}(${source.id}, ${target.id})`,
       type: PropertyType.ENTITY,
       label: entity.getCaption() || entity.schema.label,
@@ -64,11 +64,11 @@ export class Edge {
     })
   }
 
-  static fromValue(graph: Graph, property: Property, source: Vertex, target: Vertex) {
+  static fromValue(layout: GraphLayout, property: Property, source: Vertex, target: Vertex) {
     if (!source.entityId) {
       throw new Error('No source entity for value edge.')
     }
-    return new Edge(graph, {
+    return new Edge(layout, {
       id: `${source.entityId}:${property.qname}(${target.id})`,
       type: property.type.name,
       label: property.label,
