@@ -5,7 +5,7 @@ export class Viewport {
   public zoomLevel: number
   public gridUnit: number
 
-  constructor(zoomLevel: number, center?: Point){
+  constructor(zoomLevel: number = 1, center?: Point){
     this.zoomLevel = zoomLevel
     this.center = center || new Point()
     this.gridUnit = 10;
