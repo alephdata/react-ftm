@@ -23,11 +23,7 @@ export default {
     // Compile TypeScript files
     typescript({ useTsconfigDeclarationDir : true, objectHashIgnoreUnknownHack:true}),
     // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
-    commonjs({
-      namedExports:{
-        "react-draggable":['DraggableCore']
-      }
-    }),
+    commonjs(),
     // Resolve source maps to the original source
     sourceMaps()
   ],

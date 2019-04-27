@@ -16,7 +16,7 @@ export class Graph {
   entities: Map<string, Entity> = new Map()
 
   constructor() {
-    this.viewport = new Viewport()
+    this.viewport = new Viewport(1)
     this.addVertex = this.addVertex.bind(this)
     this.addEdge = this.addEdge.bind(this)
   }

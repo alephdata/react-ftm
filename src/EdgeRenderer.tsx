@@ -7,7 +7,7 @@ interface IEdgeRendererProps {
   viewport: Viewport
 }
 
-export class EdgeRenderer extends React.Component<IEdgeRendererProps>{
+export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
   render(){
     const { edge, viewport } = this.props;
     const sourceCenter = viewport.gridToPixel(edge.source.point);
