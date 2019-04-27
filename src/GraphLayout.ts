@@ -1,7 +1,9 @@
 import { Entity, Model } from '@alephdata/followthemoney'
+import { forceSimulation, forceLink, forceCollide } from 'd3';
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
 import { Viewport } from './Viewport'
+import { Point } from './Point';
 
 export type GraphUpdateHandler = (graph: GraphLayout) => void
 
@@ -25,7 +27,6 @@ export class GraphLayout {
       return this.vertices.get(vertex.id) as Vertex
     }
     this.vertices.set(vertex.id, vertex)
-    vertex.onAddedToGraph();
     return vertex
   }
 
@@ -70,6 +71,44 @@ export class GraphLayout {
         })
       })
     }
+  }
+
+  layout() {
+    this.layoutPositions()
+  }
+
+  layoutPositions() {
+    const vertices = Array.from(this.vertices.values())
+    // const byIndex = new Map<number, string>();
+    const nodes = vertices.map((vertex, index) => {
+      const n = {id: vertex.id, fixed: vertex.fixed} as any
+      if (vertex.fixed) {
+        n.fx = vertex.position.x;
+        n.fy = vertex.position.y;
+      }
+      // byIndex.set(index, vertex.id)
+      return n
+    })
+    const edges = Array.from(this.edges.values());
+    const links = edges.map((edge, index) => {
+      return {
+        source: nodes.find((n) => n.id == edge.sourceId),
+        target: nodes.find((n) => n.id == edge.targetId)
+      }
+    })
+
+    const simulation = forceSimulation(nodes)
+      .force('links', forceLink(links).distance(Vertex.SIZE * 5))
+      .force('collide', forceCollide(Vertex.SIZE))
+    simulation.stop()
+    simulation.tick(200)
+    nodes.forEach((node) => {
+      if (!node.fixed) {
+        const vertex = this.vertices.get(node.id) as Vertex
+        const positioned = vertex.setPosition(new Point(node.x, node.y))
+        this.vertices.set(positioned.id, positioned)
+      }
+    })
   }
 
   toJSON(): any {

@@ -26,6 +26,7 @@ export class Vis2 extends React.Component {
     const { layout } = this.state;
     const entities = data.map(rawEntity => model.getEntity(rawEntity as unknown as IEntityDatum));
     entities.forEach((entity) => layout.addEntity(entity))
+    layout.layout()
     this.updateLayout(layout)
   }
 

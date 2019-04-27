@@ -9,11 +9,7 @@ interface ICanvasProps {
   updateViewport: (viewport: Viewport) => any,
 }
 
-interface ICanvasState {
-
-}
-
-export class Canvas extends React.Component <ICanvasProps, ICanvasState> {
+export class Canvas extends React.Component <ICanvasProps> {
   svgRef: React.RefObject<SVGSVGElement>
 
   constructor(props: Readonly<ICanvasProps>) {

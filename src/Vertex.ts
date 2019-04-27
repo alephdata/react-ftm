@@ -1,5 +1,4 @@
 import { Entity, Property, PropertyType, Value } from '@alephdata/followthemoney';
-
 import { Point, IPointData } from './Point'
 import { GraphLayout } from './GraphLayout'
 import { getPositionByIndex } from './utils'
@@ -8,29 +7,30 @@ interface IVertexData {
   id: string
   type: string
   label: string
+  fixed: boolean
   point?: IPointData
   entityId?: string
 }
 
 export class Vertex {
+  static SIZE = 2;
+
   public readonly layout: GraphLayout
   public readonly id: string
   public readonly type: string
   public readonly label: string
+  public fixed: boolean
   public position: Point
   public readonly entityId?: string
 
   constructor(layout: GraphLayout, data: IVertexData) {
     this.layout = layout
+    this.id = data.id
     this.type = data.type
     this.label = data.label
-    this.id = data.id
+    this.fixed = data.fixed
     this.position = data.point ? Point.fromJSON(data.point) : new Point()
     this.entityId = data.entityId
-  }
-
-  onAddedToGraph(){
-    this.position = getPositionByIndex(this.layout.vertices.size - 1);
   }
 
   clone(): Vertex {
@@ -40,6 +40,7 @@ export class Vertex {
   setPosition(position: Point): Vertex {
     const vertex = this.clone()
     vertex.position = position
+    vertex.fixed = true
     return vertex
   }
 
@@ -48,6 +49,7 @@ export class Vertex {
       id: this.id,
       type: this.type,
       label: this.label,
+      fixed: this.fixed,
       point: this.position.toJSON(),
       entityId: this.entityId
     }
@@ -66,6 +68,7 @@ export class Vertex {
       id: `${type}:${entity.id}`,
       type: type,
       label: entity.getCaption() || entity.schema.label,
+      fixed: false,
       entityId: entity.id
     });
   }
@@ -85,7 +88,8 @@ export class Vertex {
     return new Vertex(layout, {
       id: `${type}:${value}`,
       type: type,
-      label: value
+      label: value,
+      fixed: false
     });
   }
 }
