@@ -38,6 +38,8 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
         key={edge.id}
         viewport={graph.viewport}
         edge={edge}
+        source={graph.vertices.get(edge.sourceId)}
+        target={graph.vertices.get(edge.targetId)}
       />
     )
   }

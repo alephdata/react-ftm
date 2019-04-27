@@ -1,11 +1,7 @@
-import { Entity, Value } from '@alephdata/followthemoney'
+import { Entity } from '@alephdata/followthemoney'
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
 import { Viewport } from './Viewport'
-import { EntityVertex } from './EntityVertex'
-import { ValueVertex } from './ValueVertex'
-import { EntityEdge } from './EntityEdge'
-import { PropertyEdge } from './PropertyEdge'
 
 export type GraphUpdateHandler = (graph: Graph) => void
 
@@ -19,20 +15,21 @@ export class Graph {
     this.viewport = new Viewport()
     this.addVertex = this.addVertex.bind(this)
     this.addEdge = this.addEdge.bind(this)
+    this.addEntity = this.addEntity.bind(this)
   }
 
-  addVertex<V extends Vertex>(vertex: V): V {
+  addVertex(vertex: Vertex): Vertex {
     if (this.vertices.has(vertex.id)) {
-      return this.vertices.get(vertex.id) as V
+      return this.vertices.get(vertex.id) as Vertex
     }
     this.vertices.set(vertex.id, vertex)
-    vertex.onAddedToGraph(this);
+    vertex.onAddedToGraph();
     return vertex
   }
 
-  addEdge<E extends Edge>(edge: E): E {
+  addEdge(edge: Edge): Edge {
     if (this.edges.has(edge.id)) {
-      return this.edges.get(edge.id) as E
+      return this.edges.get(edge.id) as Edge
     }
     this.edges.set(edge.id, edge)
     return edge
@@ -41,52 +38,35 @@ export class Graph {
   addEntity(entity: Entity): void {
     this.entities.set(entity.id, entity)
     if (entity.schema.edge) {
-      const convertEntityToPropertyVertex = (value: Value): Vertex => {
-        const propEntity = this.entities.get(value instanceof Entity ? value.id : value)
-        if (propEntity) {
-          return new EntityVertex(propEntity)
-        } else throw new Error('No such an entity found' + value)
-      }
-      const sources = entity
-        .getProperty(entity.schema.edge.source)
-        .map(convertEntityToPropertyVertex)
-        .map(this.addVertex, this)
+      const sourceProperty = entity.schema.getProperty(entity.schema.edge.source)
+      const targetProperty = entity.schema.getProperty(entity.schema.edge.target)
 
-      const targets = entity
-        .getProperty(entity.schema.edge.target)
-        .map(convertEntityToPropertyVertex)
-        .map(this.addVertex, this)
-
-      sources
-        // construction edges from vertices
-        .reduce(
-          (edges, source) => [
-            ...edges,
-            ...targets.map(target => new EntityEdge(entity, source, target))
-          ],
-          [] as Array<Edge>
-        )
-        .forEach(this.addEdge, this)
+      entity.getProperty(sourceProperty).forEach((source) => {
+        entity.getProperty(targetProperty).forEach((target) => {
+          const sourceVertex = Vertex.fromValue(this, sourceProperty, source)
+          const targetVertex = Vertex.fromValue(this, targetProperty, target)
+          this.addVertex(sourceVertex)
+          this.addVertex(targetVertex)
+          this.addEdge(Edge.fromEntity(this, entity, sourceVertex, targetVertex))
+        })
+      })
     } else {
-      const mainVertex = new EntityVertex(entity)
+      const mainVertex = Vertex.fromEntity(this, entity);
       this.addVertex(mainVertex)
 
-      entity
-        // array of Property instances existing in a schema
-        .getProperties()
-        // removing properties which should cant be represented as a vertex
-        .filter(property => property.type.grouped)
-        .reduce(
-          (vertices, property) => [
-            ...vertices,
-            ...entity.getProperty(property).map(value => new ValueVertex(entity, property, value))
-          ],
-          [] as Array<ValueVertex>
-        )
-        .map(this.addVertex, this)
-        .forEach(prop => {
-          this.addEdge(new PropertyEdge(mainVertex, prop))
+      // TODO: make "typesConfig" part of the layout.
+      const properties = entity.getProperties()
+          // removing properties which should cant be represented as a vertex
+          .filter(property => property.type.grouped)
+
+      properties.forEach((prop) => {
+        entity.getProperty(prop).forEach((value) => {
+          const propertyVertex = Vertex.fromValue(this, prop, value);
+          this.addVertex(propertyVertex)
+          const propertyEdge = Edge.fromValue(this, prop, mainVertex, propertyVertex)
+          this.addEdge(propertyEdge)
         })
+      })
     }
   }
 }

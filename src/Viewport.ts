@@ -43,4 +43,18 @@ export class Viewport {
     const thisY = -((scaleY / 2) + (gridCenter.y * this.zoomLevel))
     return `${thisX} ${thisY} ${scaleX} ${scaleY}`
   }
+
+  toJSON(): any {
+    // not storing gridUnit, seems to be constant so far. This
+    // will probably need review some times.
+    return {
+      center: this.center.toJSON(),
+      zoomLevel: this.zoomLevel
+    }
+  }
+
+  static fromJSON(data: any): Viewport {
+    const center = Point.fromJSON(data.center)
+    return new Viewport(data.zoomLevel, center)
+  }
 }

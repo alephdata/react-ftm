@@ -1,7 +1,12 @@
 
-export class Point {
-  x: number
+export interface IPointData {
+  x: number,
   y: number
+}
+
+export class Point {
+  readonly x: number
+  readonly y: number
 
   constructor(x: number = 0, y: number = 0){
     this.x = x
@@ -34,5 +39,13 @@ export class Point {
       this.x * term.x,
       this.y * term.y,
     )
+  }
+
+  toJSON(): IPointData {
+    return {x: this.x, y: this.y}
+  }
+
+  static fromJSON(data: any): Point {
+    return new Point(data.x, data.y)
   }
 }
