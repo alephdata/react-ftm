@@ -13,6 +13,7 @@ export class GraphEditor extends React.Component<IGraphEditorProps> {
   constructor(props: any) {
     super(props)
     this.onZoom = this.onZoom.bind(this)
+    this.onToggleSelectionMode = this.onToggleSelectionMode.bind(this)
   }
 
   onZoom(factor: number) {
@@ -27,16 +28,27 @@ export class GraphEditor extends React.Component<IGraphEditorProps> {
     updateLayout(layout)
   }
 
+  onToggleSelectionMode() {
+    const { layout, updateLayout } = this.props
+    layout.selectionMode = !layout.selectionMode
+    updateLayout(layout)
+  }
+
   render() {
     const { layout, updateLayout } = this.props;
     return (
-      <div style={{borderWidth: 1, borderColor: '#000', borderStyle: 'solid', position: 'relative'}}>
-        <div style={{position: 'absolute', top: '2em', right: '2em'}}>
-          <button onClick={() => this.onZoom(0.8)}>+</button>
-          <button onClick={() => this.onZoom(1.2)}>-</button>
+      <React.Fragment>
+        <div>
+          <button onClick={this.onToggleSelectionMode}>s-mode: {layout.selectionMode + ''}</button>
         </div>
-        <GraphRenderer layout={layout} updateLayout={updateLayout} />
-      </div>
+        <div style={{borderWidth: 1, borderColor: '#000', borderStyle: 'solid', position: 'relative'}}>
+          <div style={{position: 'absolute', top: '2em', right: '2em'}}>
+            <button onClick={() => this.onZoom(0.8)}>+</button>
+            <button onClick={() => this.onZoom(1.2)}>-</button>
+          </div>
+          <GraphRenderer layout={layout} updateLayout={updateLayout} />
+        </div>
+      </React.Fragment>
     );
   }
 }

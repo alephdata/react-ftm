@@ -4,6 +4,7 @@ import { Vertex } from './Vertex'
 import { Edge } from './Edge'
 import { Viewport } from './Viewport'
 import { Point } from './Point';
+import { Rectangle } from './Rectangle';
 
 export type GraphUpdateHandler = (graph: GraphLayout) => void
 
@@ -14,6 +15,7 @@ export class GraphLayout {
   edges: Map<string, Edge> = new Map()
   entities: Map<string, Entity> = new Map()
   selection: Array<string> = new Array()
+  selectionMode: boolean = true
 
   constructor(model: Model) {
     this.model = model
@@ -85,6 +87,18 @@ export class GraphLayout {
     console.log('selection', this.selection)
   }
 
+  selectArea(area: Rectangle) {
+    const vertices = Array.from(this.vertices.values())
+    const selected = vertices.filter((vertex) => area.contains(vertex.position))
+    this.selection = selected.map((vertex) => vertex.id)
+  }
+
+  getSelection(): Vertex[] {
+    return this.selection
+      .filter((vertexId) => this.vertices.has(vertexId))
+      .map((vertexId) => this.vertices.get(vertexId)) as Vertex[]
+  }
+
   clearSelection() {
     this.selection = [];
   }
@@ -94,25 +108,15 @@ export class GraphLayout {
   }
 
   dragSelection(offset: Point) {
-    this.selection.forEach((vertexId) => {
-      const vertex = this.vertices.get(vertexId)
-      if (vertex) {
-        const position = vertex.position.addition(offset)
-        this.vertices.set(vertexId, vertex.setPosition(position))
-      }
+    this.getSelection().forEach((vertex) => {
+      const position = vertex.position.addition(offset)
+      this.vertices.set(vertex.id, vertex.setPosition(position))
     })
   }
 
   dropSelection() {
-    this.selection.forEach((vertexId) => {
-      const vertex = this.vertices.get(vertexId)
-      if (vertex) {
-        const position = new Point(
-          Math.round(vertex.position.x),
-          Math.round(vertex.position.y)
-        )
-        this.vertices.set(vertexId, vertex.setPosition(position))
-      }
+    this.getSelection().forEach((vertex) => {
+      this.vertices.set(vertex.id, vertex.snapPosition(vertex.position))
     })
   }
 
@@ -151,12 +155,8 @@ export class GraphLayout {
     nodes.forEach((node) => {
       if (!node.fixed) {
         const vertex = this.vertices.get(node.id) as Vertex
-        const position = new Point(
-          Math.round(node.x),
-          Math.round(node.y)
-        )
-        const positioned = vertex.setPosition(position)
-        this.vertices.set(positioned.id, positioned)
+        const position = new Point(node.x, node.y)
+        this.vertices.set(vertex.id, vertex.snapPosition(position))
       }
     })
   }
@@ -164,7 +164,8 @@ export class GraphLayout {
   toJSON(): any {
     return {
       viewport: this.viewport.toJSON(),
-      selection: this.selection
+      selection: this.selection,
+      selectionMode: this.selectionMode
     }
   }
 }

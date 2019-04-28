@@ -2,7 +2,7 @@ import React from 'react';
 import { Edge } from './Edge'
 import { Viewport } from './Viewport';
 import { Vertex } from './Vertex';
-import { Point } from './Point'
+import { Rectangle } from './Rectangle'
 import { LabelRenderer } from './LabelRenderer';
 
 
@@ -21,14 +21,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     }
     const sourcePosition = viewport.gridToPixel(source.position)
     const targetPosition = viewport.gridToPixel(target.position)
-    const minX = Math.min(targetPosition.x, sourcePosition.x)
-    const minY = Math.min(targetPosition.y, sourcePosition.y)
-    const maxX = Math.max(targetPosition.x, sourcePosition.x)
-    const maxY = Math.max(targetPosition.y, sourcePosition.y)
-    const labelPosition = new Point(
-      minX + ((maxX - minX) / 2),
-      minY + ((maxY - minY) / 2),
-    )
+    const center = Rectangle.fromPoints(sourcePosition, targetPosition).getCenter()
     return <g className="edge">
       <line
         x1={sourcePosition.x}
@@ -36,7 +29,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
         x2={targetPosition.x}
         y2={targetPosition.y}
       />
-      <LabelRenderer center={labelPosition} label={edge.label} />
+      <LabelRenderer center={center} label={edge.label} />
     </g>
   }
 }

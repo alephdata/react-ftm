@@ -52,6 +52,13 @@ export class Vertex {
     return vertex
   }
 
+  snapPosition(fuzzy: Point): Vertex {
+    return this.setPosition(new Point(
+      Math.round(fuzzy.x),
+      Math.round(fuzzy.y)
+    ))
+  }
+
   toJSON(): IVertexData {
     return {
       id: this.id,

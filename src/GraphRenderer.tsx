@@ -6,6 +6,7 @@ import { VertexRenderer } from './VertexRenderer'
 import { Viewport } from './Viewport';
 import { Vertex } from './Vertex';
 import { Point } from './Point';
+import { Rectangle } from './Rectangle';
 
 export interface IGraphRendererProps {
   layout: GraphLayout,
@@ -17,6 +18,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     super(props)
     this.updateViewport = this.updateViewport.bind(this);
     this.selectVertex = this.selectVertex.bind(this);
+    this.selectArea = this.selectArea.bind(this);
     this.dragSelection = this.dragSelection.bind(this);
     this.dropSelection = this.dropSelection.bind(this);
     this.clearSelection = this.clearSelection.bind(this);
@@ -49,6 +51,12 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   selectVertex(vertex: Vertex, additional: boolean = false) {
     const { layout } = this.props;
     layout.selectVertex(vertex, additional)
+    this.props.updateLayout(layout)
+  }
+
+  selectArea(area: Rectangle) {
+    const { layout } = this.props;
+    layout.selectArea(area)
     this.props.updateLayout(layout)
   }
 
@@ -86,6 +94,8 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     const { layout } = this.props;
     return (
       <Canvas viewport={layout.viewport}
+              selectArea={this.selectArea}
+              selectionMode={layout.selectionMode}
               clearSelection={this.clearSelection}
               updateViewport={this.updateViewport}>
         {this.renderEdges()}

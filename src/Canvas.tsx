@@ -1,16 +1,23 @@
 import React from 'react'
 import { Viewport } from './Viewport';
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
+import { Point } from './Point';
+import { Rectangle } from './Rectangle';
 
 
 interface ICanvasProps {
   viewport: Viewport,
+  selectionMode: boolean,
+  selectArea: (area: Rectangle) => any,
   clearSelection: () => any,
   updateViewport: (viewport: Viewport) => any,
 }
 
 export class Canvas extends React.Component <ICanvasProps> {
   svgRef: React.RefObject<SVGSVGElement>
+  selectionRef: React.RefObject<SVGRectElement>
+  panInitial: Point
+  panExtent: Point
 
   constructor(props: Readonly<ICanvasProps>) {
     super(props)
@@ -19,7 +26,10 @@ export class Canvas extends React.Component <ICanvasProps> {
     this.onPanEnd = this.onPanEnd.bind(this)
     this.onZoom = this.onZoom.bind(this)
     this.onResize = this.onResize.bind(this)
-    this.svgRef = React.createRef();
+    this.svgRef = React.createRef()
+    this.selectionRef = React.createRef()
+    this.panInitial = new Point(0, 0)
+    this.panExtent = new Point(0, 0)
   }
 
   componentDidMount() {
@@ -47,22 +57,57 @@ export class Canvas extends React.Component <ICanvasProps> {
     }
   }
 
+  private getDragArea() {
+    return Rectangle.fromPoints(this.panInitial, this.panExtent)
+  }
+
+  private resizeSelection() {
+    const selection = this.selectionRef.current
+    if (selection) {
+      const rect = this.getDragArea()
+      selection.setAttribute('x', rect.x + '')
+      selection.setAttribute('y', rect.y + '')
+      selection.setAttribute('width', rect.width + '')
+      selection.setAttribute('height', rect.height + '')
+    }
+  }
+
   private onPanMove(e: DraggableEvent, data: DraggableData) {
-    const { viewport } = this.props
+    const { viewport, selectionMode } = this.props
     const current = viewport.applyMatrix(data.x, data.y)
     const last = viewport.applyMatrix(data.lastX, data.lastY)
-    const offset = viewport.zoomedPixelToGrid(current.subtract(last))
-    if (offset.x || offset.y) {
-      const center = viewport.center.addition(offset)
+    const offset = current.subtract(last)
+    if (selectionMode) {
+      this.panExtent = new Point(
+        this.panExtent.x + offset.x,
+        this.panExtent.y + offset.y
+      )
+      this.resizeSelection()
+    } else if (offset.x || offset.y) {
+      const gridOffset = viewport.zoomedPixelToGrid(offset)
+      const center = viewport.center.addition(gridOffset)
       this.props.updateViewport(viewport.setCenter(center));
     }
   }
 
   onPanEnd(e: DraggableEvent, data: DraggableData) {
+    const { selectionMode, viewport } = this.props
+    if (selectionMode) {
+      const initial = viewport.pixelToGrid(this.panInitial)
+      const extent = viewport.pixelToGrid(this.panExtent)
+      const area = Rectangle.fromPoints(initial, extent)
+      this.props.selectArea(area)
+    }
+    this.panInitial = new Point(0, 0)
+    this.panExtent = new Point(0, 0)
+    this.resizeSelection()
   }
 
-  onPanStart() {
+  onPanStart(e: DraggableEvent, data: DraggableData) {
+    const { viewport } = this.props;
     this.props.clearSelection()
+    this.panInitial = viewport.applyMatrix(data.x, data.y)
+    this.panExtent = this.panInitial
   }
 
   private onZoom(event: MouseWheelEvent) {
@@ -84,6 +129,7 @@ export class Canvas extends React.Component <ICanvasProps> {
   render() {
     const { viewport } = this.props
     const grid = `M ${viewport.gridUnit} 0 L 0 0 0 ${viewport.gridUnit}`
+    const rect = this.getDragArea()
     return (
       <svg viewBox={viewport.viewBox} width="100%" height="100%" ref={this.svgRef} xmlns="http://www.w3.org/2000/svg">
         <DraggableCore
@@ -92,8 +138,23 @@ export class Canvas extends React.Component <ICanvasProps> {
           onDrag={this.onPanMove}
           onStop={this.onPanEnd}>
           <g id="zoom">
-            <rect id="canvas-handle" x="-5000" y="-5000" width="10000" height="10000" fill="url(#grid)" />
+            <rect id="canvas-handle"
+                  x="-5000"
+                  y="-5000"
+                  width="10000"
+                  height="10000"
+                  fill="url(#grid)" />
             {this.props.children}
+            <rect id="selection"
+                  ref={this.selectionRef}
+                  x={rect.x}
+                  y={rect.y}
+                  width={rect.width}
+                  height={rect.height}
+                  stroke="black"
+                  strokeWidth="0.5px"
+                  strokeDasharray="2"
+                  fillOpacity="0" />
           </g>
         </DraggableCore>
         <defs>
