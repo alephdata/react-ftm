@@ -8,6 +8,7 @@ interface IVertexData {
   type: string
   label: string
   fixed: boolean
+  hidden: boolean
   point?: IPointData
   entityId?: string
 }
@@ -20,6 +21,7 @@ export class Vertex {
   public readonly type: string
   public readonly label: string
   public fixed: boolean
+  public hidden: boolean
   public position: Point
   public readonly entityId?: string
 
@@ -29,8 +31,15 @@ export class Vertex {
     this.type = data.type
     this.label = data.label
     this.fixed = data.fixed
+    this.hidden = data.hidden
     this.position = data.point ? Point.fromJSON(data.point) : new Point()
     this.entityId = data.entityId
+  }
+
+  getDegree(): number {
+    return Array.from(this.layout.edges.values())
+      .filter((edge) => edge.sourceId == this.id || edge.targetId == this.id)
+      .length;
   }
 
   clone(): Vertex {
@@ -50,6 +59,7 @@ export class Vertex {
       type: this.type,
       label: this.label,
       fixed: this.fixed,
+      hidden: this.hidden,
       point: this.position.toJSON(),
       entityId: this.entityId
     }
@@ -69,6 +79,7 @@ export class Vertex {
       type: type,
       label: entity.getCaption() || entity.schema.label,
       fixed: false,
+      hidden: false,
       entityId: entity.id
     });
   }
@@ -89,7 +100,8 @@ export class Vertex {
       id: `${type}:${value}`,
       type: type,
       label: value,
-      fixed: false
+      fixed: false,
+      hidden: false
     });
   }
 }

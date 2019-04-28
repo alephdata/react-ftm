@@ -16,7 +16,7 @@ interface IEdgeRendererProps {
 export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
   render(){
     const { edge, source, target, viewport } = this.props;
-    if (!source || !target) {
+    if (!source || !target || source.hidden || target.hidden) {
       return null;
     }
     const sourcePosition = viewport.gridToPixel(source.position)

@@ -1,4 +1,4 @@
-import { Entity, Model } from '@alephdata/followthemoney'
+import { Entity, Model, PropertyType } from '@alephdata/followthemoney'
 import { forceSimulation, forceLink, forceCollide } from 'd3';
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
@@ -74,28 +74,31 @@ export class GraphLayout {
   }
 
   layout() {
+    this.vertices.forEach((vertex) => {
+      vertex.hidden = vertex.type !== PropertyType.ENTITY && vertex.getDegree() <= 1;
+    })
     this.layoutPositions()
   }
 
   layoutPositions() {
     const vertices = Array.from(this.vertices.values())
-    // const byIndex = new Map<number, string>();
-    const nodes = vertices.map((vertex, index) => {
+    const nodes = vertices
+      .filter((vertex) => !vertex.hidden)
+      .map((vertex) => {
       const n = {id: vertex.id, fixed: vertex.fixed} as any
       if (vertex.fixed) {
         n.fx = vertex.position.x;
         n.fy = vertex.position.y;
       }
-      // byIndex.set(index, vertex.id)
       return n
     })
     const edges = Array.from(this.edges.values());
-    const links = edges.map((edge, index) => {
+    const links = edges.map((edge) => {
       return {
         source: nodes.find((n) => n.id == edge.sourceId),
         target: nodes.find((n) => n.id == edge.targetId)
       }
-    })
+    }).filter((link) => (link.source && link.target))
 
     const simulation = forceSimulation(nodes)
       .force('links', forceLink(links))

@@ -52,6 +52,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
       Math.round(vertex.position.y)
     )
     this.props.updateVertex(vertex.setPosition(position));
+    console.log('new post', position)
   }
 
   onPanStart(e: DraggableEvent, data: DraggableData) {
@@ -59,6 +60,9 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
 
   render() {
     const { vertex, viewport } = this.props
+    if (vertex.hidden) {
+      return null;
+    }
     const { x, y } = viewport.gridToPixel(vertex.position)
     const translate = `translate(${x} ${y})`
     const labelPosition = new Point(0, viewport.gridUnit)
