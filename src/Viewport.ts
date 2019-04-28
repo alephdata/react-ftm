@@ -77,10 +77,19 @@ export class Viewport {
     return viewport
   }
 
-  setZoom(center: Point, zoomLevel: number): Viewport {
+  setZoom(target: Point, zoomLevel: number): Viewport {
     const viewport = this.clone()
-    viewport.center = center
-    viewport.zoomLevel = zoomLevel
+    const boundedZoomLevel = Math.max(0.1, Math.min(2, zoomLevel))
+    if (boundedZoomLevel === viewport.zoomLevel) {
+      return this
+    }
+    const scaleChange = (1 / boundedZoomLevel) - (1 / this.zoomLevel)
+    const offset = new Point(
+      (target.x * scaleChange * -1),
+      (target.y * scaleChange * -1),
+    )
+    viewport.center = this.center.addition(offset);
+    viewport.zoomLevel = boundedZoomLevel
     viewport.computeViewBox()
     return viewport
   }

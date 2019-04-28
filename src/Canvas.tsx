@@ -1,8 +1,6 @@
 import React from 'react'
-import { Point } from './Point'
 import { Viewport } from './Viewport';
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { GraphLayout } from './GraphLayout';
 
 
 interface ICanvasProps {
@@ -76,16 +74,10 @@ export class Canvas extends React.Component <ICanvasProps> {
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event
     const zoomChange = (event.deltaY < 0 ? 1 : -1) * factor
     const zoomLevel = viewport.zoomLevel * (1 + zoomChange)
-    if (zoomLevel !== viewport.zoomLevel && zoomLevel > factor) {
-      const scaleChange = (1 / zoomLevel) - (1 / viewport.zoomLevel)
+    if (zoomLevel !== viewport.zoomLevel) {
       const target = viewport.applyMatrix(event.clientX, event.clientY)
       const gridTarget = viewport.pixelToGrid(target)
-      const offset = new Point(
-        (gridTarget.x * scaleChange * -1),
-        (gridTarget.y * scaleChange * -1),
-      )
-      const center = viewport.center.addition(offset);
-      this.props.updateViewport(viewport.setZoom(center, zoomLevel))
+      this.props.updateViewport(viewport.setZoom(gridTarget, zoomLevel))
     }
   }
 
