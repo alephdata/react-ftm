@@ -1,7 +1,6 @@
 import { Entity, Property, PropertyType, Value } from '@alephdata/followthemoney';
 import { Point, IPointData } from './Point'
 import { GraphLayout } from './GraphLayout'
-import { getPositionByIndex } from './utils'
 
 interface IVertexData {
   id: string
