@@ -13,6 +13,7 @@ export class GraphLayout {
   vertices: Map<string, Vertex> = new Map()
   edges: Map<string, Edge> = new Map()
   entities: Map<string, Entity> = new Map()
+  selection: Array<string> = new Array()
 
   constructor(model: Model) {
     this.model = model
@@ -73,6 +74,48 @@ export class GraphLayout {
     }
   }
 
+  selectVertex(vertex: Vertex, additional: boolean = false) {
+    if (!this.isVertexSelected(vertex)) {
+      if (additional) {
+        this.selection = [vertex.id, ...this.selection]
+      } else {
+        this.selection = [vertex.id]
+      }
+    }
+    console.log('selection', this.selection)
+  }
+
+  clearSelection() {
+    this.selection = [];
+  }
+
+  isVertexSelected(vertex: Vertex): boolean {
+    return this.selection.indexOf(vertex.id) !== -1;
+  }
+
+  dragSelection(offset: Point) {
+    this.selection.forEach((vertexId) => {
+      const vertex = this.vertices.get(vertexId)
+      if (vertex) {
+        const position = vertex.position.addition(offset)
+        this.vertices.set(vertexId, vertex.setPosition(position))
+      }
+    })
+  }
+
+  dropSelection() {
+    this.selection.forEach((vertexId) => {
+      const vertex = this.vertices.get(vertexId)
+      if (vertex) {
+        const position = new Point(
+          Math.round(vertex.position.x),
+          Math.round(vertex.position.y)
+        )
+        this.vertices.set(vertexId, vertex.setPosition(position))
+      }
+    })
+  }
+
   layout() {
     this.vertices.forEach((vertex) => {
       vertex.hidden = vertex.type !== PropertyType.ENTITY && vertex.getDegree() <= 1;
@@ -120,7 +163,8 @@ export class GraphLayout {
 
   toJSON(): any {
     return {
-      viewport: this.viewport.toJSON()
+      viewport: this.viewport.toJSON(),
+      selection: this.selection
     }
   }
 }

@@ -2,10 +2,12 @@ import React from 'react'
 import { Point } from './Point'
 import { Viewport } from './Viewport';
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
+import { GraphLayout } from './GraphLayout';
 
 
 interface ICanvasProps {
-  viewport: Viewport
+  viewport: Viewport,
+  clearSelection: () => any,
   updateViewport: (viewport: Viewport) => any,
 }
 
@@ -62,6 +64,7 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   onPanStart() {
+    this.props.clearSelection()
   }
 
   private onZoom(event: MouseWheelEvent) {

@@ -5,6 +5,7 @@ import { EdgeRenderer } from './EdgeRenderer'
 import { VertexRenderer } from './VertexRenderer'
 import { Viewport } from './Viewport';
 import { Vertex } from './Vertex';
+import { Point } from './Point';
 
 export interface IGraphRendererProps {
   layout: GraphLayout,
@@ -15,7 +16,10 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   constructor(props: any) {
     super(props)
     this.updateViewport = this.updateViewport.bind(this);
-    this.updateVertex = this.updateVertex.bind(this);
+    this.selectVertex = this.selectVertex.bind(this);
+    this.dragSelection = this.dragSelection.bind(this);
+    this.dropSelection = this.dropSelection.bind(this);
+    this.clearSelection = this.clearSelection.bind(this);
   }
 
   updateViewport(viewport: Viewport) {
@@ -24,9 +28,27 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     this.props.updateLayout(layout)
   }
 
-  updateVertex(vertex: Vertex) {
+  dragSelection(offset: Point) {
     const { layout } = this.props;
-    layout.vertices.set(vertex.id, vertex)
+    layout.dragSelection(offset)
+    this.props.updateLayout(layout)
+  }
+
+  dropSelection() {
+    const { layout } = this.props;
+    layout.dropSelection()
+    this.props.updateLayout(layout)
+  }
+
+  clearSelection() {
+    const { layout } = this.props;
+    layout.clearSelection()
+    this.props.updateLayout(layout)
+  }
+
+  selectVertex(vertex: Vertex, additional: boolean = false) {
+    const { layout } = this.props;
+    layout.selectVertex(vertex, additional)
     this.props.updateLayout(layout)
   }
 
@@ -51,8 +73,11 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
       <VertexRenderer
         key={vertex.id}
         viewport={layout.viewport}
+        selected={layout.isVertexSelected(vertex)}
         vertex={vertex}
-        updateVertex={this.updateVertex}
+        selectVertex={this.selectVertex}
+        dragSelection={this.dragSelection}
+        dropSelection={this.dropSelection}
       />
     )
   }
@@ -60,7 +85,9 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   render(){
     const { layout } = this.props;
     return (
-      <Canvas viewport={layout.viewport} updateViewport={this.updateViewport}>
+      <Canvas viewport={layout.viewport}
+              clearSelection={this.clearSelection}
+              updateViewport={this.updateViewport}>
         {this.renderEdges()}
         {this.renderVertices()}
       </Canvas>

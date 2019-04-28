@@ -6,9 +6,12 @@ import { Viewport } from './Viewport';
 import { LabelRenderer } from './LabelRenderer';
 
 interface IVertexRendererProps {
-  vertex: Vertex,
-  viewport: Viewport,
-  updateVertex: (vertex: Vertex) => any
+  vertex: Vertex
+  viewport: Viewport
+  selected: boolean
+  selectVertex: (vertex: Vertex, additional?: boolean) => any
+  dragSelection: (offset: Point) => any
+  dropSelection: () => any
 }
 
 let stringToColour = function(str: string) {
@@ -39,32 +42,28 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
     const last = viewport.applyMatrix(data.lastX, data.lastY)
     const offset = viewport.pixelToGrid(current.subtract(last))
     if (offset.x || offset.y) {
-      const position = vertex.position.addition(offset)
-      this.props.updateVertex(vertex.setPosition(position));
+      this.props.dragSelection(offset)
     }
   }
 
   onPanEnd(e: DraggableEvent, data: DraggableData) {
-    const { vertex } = this.props
-    const position = new Point(
-      Math.round(vertex.position.x),
-      Math.round(vertex.position.y)
-    )
-    this.props.updateVertex(vertex.setPosition(position));
-    console.log('new post', position)
+    this.props.dropSelection()
   }
 
   onPanStart(e: DraggableEvent, data: DraggableData) {
+    const { vertex, selectVertex } = this.props
+    selectVertex(vertex, e.shiftKey)
   }
 
   render() {
-    const { vertex, viewport } = this.props
+    const { vertex, viewport, selected } = this.props
     if (vertex.hidden) {
       return null;
     }
     const { x, y } = viewport.gridToPixel(vertex.position)
     const translate = `translate(${x} ${y})`
     const labelPosition = new Point(0, viewport.gridUnit)
+    const color = selected ? 'red' : stringToColour(vertex.type);
     return (
       <DraggableCore
         handle='.handle'
@@ -72,7 +71,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
         onDrag={this.onPanMove}
         onStop={this.onPanEnd} >
         <g className="vertex" transform={translate}>
-          <circle className="handle" r={viewport.gridUnit * Vertex.RADIUS} fill={stringToColour(vertex.type)} />
+          <circle className="handle" r={viewport.gridUnit * Vertex.RADIUS} fill={color} />
           <LabelRenderer center={labelPosition} label={vertex.label} />
         </g>
       </DraggableCore>
