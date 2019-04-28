@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { GraphRenderer } from './GraphRenderer'
+import { GraphEditor } from './GraphEditor'
 import { defaultModel, Model, IEntityDatum } from '@alephdata/followthemoney'
 import { GraphLayout } from './GraphLayout'
 import { data } from '../resources/az_alievs.js'
@@ -43,7 +43,7 @@ export class Vis2 extends React.Component {
           <button onClick={this.addSampleData}>add our friends</button>
         </div>
         <div>
-          <GraphRenderer layout={layout} updateLayout={this.updateLayout} />
+          <GraphEditor layout={layout} updateLayout={this.updateLayout} />
         </div>
       </div>
     );
