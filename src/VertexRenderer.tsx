@@ -37,12 +37,11 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
     const { vertex, viewport } = this.props
     const current = viewport.applyMatrix(data.x, data.y)
     const last = viewport.applyMatrix(data.lastX, data.lastY)
-    const offset = current.subtract(last)
-    const position = new Point(
-      vertex.position.x + ((offset.x / viewport.gridUnit)),
-      vertex.position.y + ((offset.y / viewport.gridUnit))
-    )
-    this.props.updateVertex(vertex.setPosition(position));
+    const offset = viewport.pixelToGrid(current.subtract(last))
+    if (offset.x || offset.y) {
+      const position = vertex.position.addition(offset)
+      this.props.updateVertex(vertex.setPosition(position));
+    }
   }
 
   onPanEnd(e: DraggableEvent, data: DraggableData) {

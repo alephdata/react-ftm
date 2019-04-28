@@ -51,12 +51,9 @@ export class Canvas extends React.Component <ICanvasProps> {
     const { viewport } = this.props
     const current = viewport.applyMatrix(data.x, data.y)
     const last = viewport.applyMatrix(data.lastX, data.lastY)
-    const offset = current.subtract(last)
+    const offset = viewport.zoomedPixelToGrid(current.subtract(last))
     if (offset.x || offset.y) {
-      const center = new Point(
-        viewport.center.x + ((offset.x / viewport.gridUnit) / viewport.zoomLevel),
-        viewport.center.y + ((offset.y / viewport.gridUnit) / viewport.zoomLevel)
-      )
+      const center = viewport.center.addition(offset)
       this.props.updateViewport(viewport.setCenter(center));
     }
   }
@@ -76,19 +73,16 @@ export class Canvas extends React.Component <ICanvasProps> {
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event
     const zoomChange = (event.deltaY < 0 ? 1 : -1) * factor
     const zoomLevel = viewport.zoomLevel * (1 + zoomChange)
-    if (zoomLevel !== viewport.zoomLevel && zoomLevel > (factor * 2)) {
+    if (zoomLevel !== viewport.zoomLevel && zoomLevel > factor) {
       const scaleChange = (1 / zoomLevel) - (1 / viewport.zoomLevel)
       const target = viewport.applyMatrix(event.clientX, event.clientY)
-      const gridTarget = new Point(
-        ((target.x / viewport.gridUnit)),
-        ((target.y / viewport.gridUnit))
-      )
+      const gridTarget = viewport.pixelToGrid(target)
       const offset = new Point(
         (gridTarget.x * scaleChange * -1),
         (gridTarget.y * scaleChange * -1),
       )
-      const newCenter = viewport.center.addition(offset);
-      this.props.updateViewport(viewport.setZoom(newCenter, zoomLevel))
+      const center = viewport.center.addition(offset);
+      this.props.updateViewport(viewport.setZoom(center, zoomLevel))
     }
   }
 
