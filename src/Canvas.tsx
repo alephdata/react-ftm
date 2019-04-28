@@ -74,18 +74,20 @@ export class Canvas extends React.Component <ICanvasProps> {
     event.stopPropagation()
     // TODO: according to docs `event.deltaY` is not stable, but it works fine so i've tested so far, consider using scroll events if anybody will experience improper behaviour
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event
-    // @ts-ignore
-    const zoomChange = (event.deltaY < 0 ? 1 : -1) * factor;
-    const zoomLevel = viewport.zoomLevel + zoomChange;
+    const zoomChange = (event.deltaY < 0 ? 1 : -1) * factor
+    const zoomLevel = viewport.zoomLevel * (1 + zoomChange)
     if (zoomLevel !== viewport.zoomLevel && zoomLevel > (factor * 2)) {
-      const target = viewport.applyMatrix(event.clientX, event.clientY)
       const scaleChange = (1 / zoomLevel) - (1 / viewport.zoomLevel)
-      const offset = new Point(
-        ((target.x - viewport.center.x) * scaleChange * -1),
-        ((target.y - viewport.center.y) * scaleChange * -1),
+      const target = viewport.applyMatrix(event.clientX, event.clientY)
+      const gridTarget = new Point(
+        ((target.x / viewport.gridUnit)),
+        ((target.y / viewport.gridUnit))
       )
-      const gridOffset = viewport.pixelToGrid(offset)
-      const newCenter = viewport.center.addition(gridOffset);
+      const offset = new Point(
+        (gridTarget.x * scaleChange * -1),
+        (gridTarget.y * scaleChange * -1),
+      )
+      const newCenter = viewport.center.addition(offset);
       this.props.updateViewport(viewport.setZoom(newCenter, zoomLevel))
     }
   }
