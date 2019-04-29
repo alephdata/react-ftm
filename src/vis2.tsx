@@ -6,6 +6,7 @@ import { GraphLayout } from './GraphLayout'
 import { data } from '../resources/az_alievs.js'
 
 const model = new Model(defaultModel)
+const demoKey = 'LS_v1'
 
 interface IVisState {
   layout: GraphLayout
@@ -15,9 +16,15 @@ export class Vis2 extends React.Component {
   state: IVisState = {
     layout: new GraphLayout(model)
   }
+  saveTimeout: any
 
   constructor(props: any) {
     super(props)
+    const jsonLayout = localStorage.getItem(demoKey)
+    if (jsonLayout) {
+
+      this.state.layout = GraphLayout.fromJSON(model, JSON.parse(jsonLayout))
+    }
     this.addSampleData = this.addSampleData.bind(this)
     this.updateLayout = this.updateLayout.bind(this)
   }
@@ -32,7 +39,10 @@ export class Vis2 extends React.Component {
 
   updateLayout(layout: GraphLayout) {
     this.setState({ layout })
-    // console.log(JSON.stringify(layout.toJSON()))
+    clearTimeout(this.saveTimeout)
+    this.saveTimeout = setTimeout(() => {
+      localStorage.setItem(demoKey, JSON.stringify(layout.toJSON()))
+    }, 1000)
   }
 
   render() {
