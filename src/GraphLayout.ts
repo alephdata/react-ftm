@@ -33,12 +33,20 @@ export class GraphLayout {
     return vertex
   }
 
+  getVertices(): Vertex[] {
+    return Array.from(this.vertices.values())
+  }
+
   addEdge(edge: Edge): Edge {
     if (this.edges.has(edge.id)) {
       return this.edges.get(edge.id) as Edge
     }
     this.edges.set(edge.id, edge)
     return edge
+  }
+
+  getEdges(): Edge[] {
+    return Array.from(this.edges.values())
   }
 
   addEntity(entity: Entity): void {
@@ -76,6 +84,10 @@ export class GraphLayout {
     }
   }
 
+  getEntities(): Entity[] {
+    return Array.from(this.entities.values())
+  }
+
   selectVertex(vertex: Vertex, additional: boolean = false) {
     if (!this.isVertexSelected(vertex)) {
       if (additional) {
@@ -88,8 +100,7 @@ export class GraphLayout {
   }
 
   selectArea(area: Rectangle) {
-    const vertices = Array.from(this.vertices.values())
-    const selected = vertices.filter((vertex) => area.contains(vertex.position))
+    const selected = this.getVertices().filter((vertex) => area.contains(vertex.position))
     this.selection = selected.map((vertex) => vertex.id)
   }
 
@@ -128,8 +139,7 @@ export class GraphLayout {
   }
 
   layoutPositions() {
-    const vertices = Array.from(this.vertices.values())
-    const nodes = vertices
+    const nodes = this.getVertices()
       .filter((vertex) => !vertex.hidden)
       .map((vertex) => {
       const n = {id: vertex.id, fixed: vertex.fixed} as any
@@ -139,8 +149,7 @@ export class GraphLayout {
       }
       return n
     })
-    const edges = Array.from(this.edges.values());
-    const links = edges.map((edge) => {
+    const links = this.getEdges().map((edge) => {
       return {
         source: nodes.find((n) => n.id == edge.sourceId),
         target: nodes.find((n) => n.id == edge.targetId)
@@ -149,9 +158,9 @@ export class GraphLayout {
 
     const simulation = forceSimulation(nodes)
       .force('links', forceLink(links))
-      .force('collide', forceCollide(Vertex.RADIUS * 2))
+      .force('collide', forceCollide(Vertex.RADIUS))
     simulation.stop()
-    simulation.tick(200)
+    simulation.tick(500)
     nodes.forEach((node) => {
       if (!node.fixed) {
         const vertex = this.vertices.get(node.id) as Vertex
@@ -164,6 +173,9 @@ export class GraphLayout {
   toJSON(): any {
     return {
       viewport: this.viewport.toJSON(),
+      // entities: this.getEntities().map((entity) => entity.)
+      vertices: this.getVertices().map((vertex) => vertex.toJSON()),
+      edges: this.getEdges().map((edge) => edge.toJSON()),
       selection: this.selection,
       selectionMode: this.selectionMode
     }

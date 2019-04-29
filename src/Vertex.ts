@@ -36,7 +36,7 @@ export class Vertex {
   }
 
   getDegree(): number {
-    return Array.from(this.layout.edges.values())
+    return this.layout.getEdges()
       .filter((edge) => edge.sourceId == this.id || edge.targetId == this.id)
       .length;
   }
