@@ -8,7 +8,7 @@ interface IVertexData {
   label: string
   fixed: boolean
   hidden: boolean
-  point?: IPointData
+  position?: IPointData
   entityId?: string
 }
 
@@ -31,7 +31,7 @@ export class Vertex {
     this.label = data.label
     this.fixed = data.fixed
     this.hidden = data.hidden
-    this.position = data.point ? Point.fromJSON(data.point) : new Point()
+    this.position = data.position ? Point.fromJSON(data.position) : new Point()
     this.entityId = data.entityId
   }
 
@@ -66,7 +66,7 @@ export class Vertex {
       label: this.label,
       fixed: this.fixed,
       hidden: this.hidden,
-      point: this.position.toJSON(),
+      position: this.position.toJSON(),
       entityId: this.entityId
     }
   }

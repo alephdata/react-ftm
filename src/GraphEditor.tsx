@@ -41,7 +41,7 @@ export class GraphEditor extends React.Component<IGraphEditorProps> {
         <div>
           <button onClick={this.onToggleSelectionMode}>s-mode: {layout.selectionMode + ''}</button>
         </div>
-        <div style={{borderWidth: 1, borderColor: '#000', borderStyle: 'solid', position: 'relative'}}>
+        <div style={{borderWidth: 1, borderColor: '#000', borderStyle: 'solid', position: 'relative', width: '100%'}}>
           <div style={{position: 'absolute', top: '2em', right: '2em'}}>
             <button onClick={() => this.onZoom(0.8)}>+</button>
             <button onClick={() => this.onZoom(1.2)}>-</button>

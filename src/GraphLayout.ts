@@ -1,10 +1,19 @@
-import { Entity, Model, PropertyType } from '@alephdata/followthemoney'
+import { Entity, Model, PropertyType, IEntityDatum } from '@alephdata/followthemoney'
 import { forceSimulation, forceLink, forceCollide } from 'd3';
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
 import { Viewport } from './Viewport'
 import { Point } from './Point';
 import { Rectangle } from './Rectangle';
+
+interface IGraphLayoutData {
+  viewport: any
+  entities: Array<IEntityDatum>
+  vertices: Array<any>
+  edges: Array<any>
+  selection: Array<string>
+  selectionMode: boolean
+}
 
 export type GraphUpdateHandler = (graph: GraphLayout) => void
 
@@ -170,14 +179,35 @@ export class GraphLayout {
     })
   }
 
-  toJSON(): any {
+  toJSON(): IGraphLayoutData {
     return {
       viewport: this.viewport.toJSON(),
-      // entities: this.getEntities().map((entity) => entity.)
+      // entities: this.getEntities().map((entity) => entity.toJSON()),
+      entities: [],
       vertices: this.getVertices().map((vertex) => vertex.toJSON()),
       edges: this.getEdges().map((edge) => edge.toJSON()),
       selection: this.selection,
       selectionMode: this.selectionMode
     }
+  }
+
+  static fromJSON(model: Model, data: any): GraphLayout {
+    const layoutData = data as IGraphLayoutData
+    const layout = new GraphLayout(model)
+    layoutData.entities.forEach((edata) => {
+      layout.addEntity(model.getEntity(edata))
+    })
+    layoutData.vertices.forEach((vdata) => {
+      const vertex = Vertex.fromJSON(layout, vdata)
+      layout.vertices.set(vertex.id, vertex)
+    })
+    layoutData.edges.forEach((edata) => {
+      const edge = Edge.fromJSON(layout, edata)
+      layout.edges.set(edge.id, edge)
+    })
+    layout.viewport = Viewport.fromJSON(layoutData.viewport)
+    layout.selectionMode = layoutData.selectionMode
+    layout.selection = layoutData.selection
+    return layout
   }
 }

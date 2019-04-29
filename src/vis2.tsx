@@ -32,17 +32,17 @@ export class Vis2 extends React.Component {
 
   updateLayout(layout: GraphLayout) {
     this.setState({ layout })
-    // console.log(layout.toJSON())
+    // console.log(JSON.stringify(layout.toJSON()))
   }
 
   render() {
     const { layout } = this.state;
     return (
-      <div>
+      <div style={{width: "100%"}}>
         <div>
           <button onClick={this.addSampleData}>add our friends</button>
         </div>
-        <div>
+        <div style={{width: "100%"}}>
           <GraphEditor layout={layout} updateLayout={this.updateLayout} />
         </div>
       </div>
