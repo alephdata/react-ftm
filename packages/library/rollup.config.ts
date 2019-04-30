@@ -10,7 +10,7 @@ export default {
   output: [
     { file: 'public/dist/vis2.js', name:'vis2', format: 'iife', sourcemap: true },
   ],
-  external: [],
+  external: [ ],
   watch: {
     include: 'src/**',
   },
