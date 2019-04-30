@@ -1,0 +1,23 @@
+body {
+  padding: 0;
+  margin: 0;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+#canvas-handle {
+  cursor: hand;
+}
+
+svg {
+  width: 1000px;
+  height: 700px;
+}
+
+.vertex > .label {
+  display: none;
+}
+
+.edge line {
+  stroke: #666;
+}

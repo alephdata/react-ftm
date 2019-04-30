@@ -60,6 +60,7 @@ export class Viewport {
     const clone = Viewport.fromJSON(this.toJSON())
     clone.svg = this.svg
     clone.viewBox = this.viewBox
+    console.log(clone)
     return clone
   }
 

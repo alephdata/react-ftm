@@ -1,9 +1,12 @@
 {
-  "name": "@alephdata/vis2",
+  "name": "@alephdata/vis2-lib",
   "version": "1.0.1",
   "description": "Graph network visualisation tool for aleph/followthemoney ",
   "keywords": [],
   "author": "OCCRP Data <data@occrp.org>",
+  "main": "dist/vis2.umd.js",
+  "module": "dist/vis2.es5.js",
+  "typings": "dist/types/vis2.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/alephdata/vis2.js"
@@ -75,10 +78,10 @@
     "typescript": "^3.4.2"
   },
   "dependencies": {
-    "@alephdata/followthemoney": "^1.11.20",
     "d3": "^5.9.2",
+    "react-draggable": "^3.3.0",
+    "@alephdata/followthemoney": "^1.11.20",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-draggable": "^3.3.0"
+    "react-dom": "^16.8.6"
   }
 }

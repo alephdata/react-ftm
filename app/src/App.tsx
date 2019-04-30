@@ -1,9 +1,8 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { GraphEditor } from './GraphEditor'
-import { defaultModel, Model, IEntityDatum } from '@alephdata/followthemoney'
-import { GraphLayout } from './GraphLayout'
-import { data } from '../resources/az_alievs.js'
+import * as React from 'react'
+import {GraphLayout, GraphEditor} from '@alephdata/vis2-lib';
+import {defaultModel, Model, IEntityDatum} from '@alephdata/followthemoney'
+import {Button} from "@blueprintjs/core";
+import {data} from './resources/az_alievs.js'
 
 const model = new Model(defaultModel)
 const demoKey = 'LS_v1'
@@ -12,7 +11,7 @@ interface IVisState {
   layout: GraphLayout
 }
 
-export class Vis2 extends React.Component {
+export default class Vis2 extends React.Component {
   state: IVisState = {
     layout: new GraphLayout(model)
   }
@@ -30,7 +29,7 @@ export class Vis2 extends React.Component {
   }
 
   addSampleData() {
-    const { layout } = this.state;
+    const {layout} = this.state;
     const entities = data.map(rawEntity => model.getEntity(rawEntity as unknown as IEntityDatum));
     entities.forEach((entity) => layout.addEntity(entity))
     layout.layout()
@@ -38,7 +37,7 @@ export class Vis2 extends React.Component {
   }
 
   updateLayout(layout: GraphLayout) {
-    this.setState({ layout })
+    this.setState({layout})
     clearTimeout(this.saveTimeout)
     this.saveTimeout = setTimeout(() => {
       localStorage.setItem(demoKey, JSON.stringify(layout.toJSON()))
@@ -46,23 +45,16 @@ export class Vis2 extends React.Component {
   }
 
   render() {
-    const { layout } = this.state;
+    const {layout} = this.state;
     return (
-      <div style={{width: "100%"}}>
-        <div>
-          <button onClick={this.addSampleData}>add our friends</button>
-        </div>
         <div style={{width: "100%"}}>
-          <GraphEditor layout={layout} updateLayout={this.updateLayout} />
+          <div>
+            <Button onClick={this.addSampleData}>add our friends</Button>
+          </div>
+          <div style={{width: "100%"}}>
+            <GraphEditor layout={layout} updateLayout={this.updateLayout}/>
+          </div>
         </div>
-      </div>
     );
   }
 }
-
-
-ReactDOM.render(
-  <Vis2/>,
-  document.querySelector('#app')
-)
-

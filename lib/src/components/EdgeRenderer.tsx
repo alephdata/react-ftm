@@ -1,8 +1,8 @@
-import React from 'react';
-import { Edge } from './Edge'
-import { Viewport } from './Viewport';
-import { Vertex } from './Vertex';
-import { Rectangle } from './Rectangle'
+import * as React from 'react'
+import { Edge } from '../Edge'
+import { Viewport } from '../Viewport';
+import { Vertex } from '../Vertex';
+import { Rectangle } from '../Rectangle'
 import { LabelRenderer } from './LabelRenderer';
 
 

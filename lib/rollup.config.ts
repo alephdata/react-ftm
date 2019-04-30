@@ -4,13 +4,15 @@ import sourceMaps from 'rollup-plugin-sourcemaps'
 import typescript from 'rollup-plugin-typescript2'
 import json from 'rollup-plugin-json'
 
+const pkg = require('./package.json');
 
 export default {
-  input: `src/vis2.tsx`,
+  input: `src/vis2.ts`,
   output: [
-    { file: 'public/dist/vis2.js', name:'vis2', format: 'iife', sourcemap: true },
+    { file: pkg.main, name:'vis2', format: 'umd', sourcemap: true },
+    { file: pkg.module, format: 'es', sourcemap: true },
   ],
-  external: [],
+  external: [ 'react', 'react-dom', '@alephdata/followthemoney' ],
   watch: {
     include: 'src/**',
   },
@@ -19,7 +21,7 @@ export default {
     // Allow node_modules resolution, so you can use 'external' to control
     // which external modules to include in the bundle
     // https://github.com/rollup/rollup-plugin-node-resolve#usage
-    resolve({ browser:true }),
+    resolve({ browser:true,}),
     // Compile TypeScript files
     typescript({ useTsconfigDeclarationDir : true, objectHashIgnoreUnknownHack:true}),
     // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
