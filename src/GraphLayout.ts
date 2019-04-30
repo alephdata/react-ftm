@@ -105,7 +105,6 @@ export class GraphLayout {
         this.selection = [vertex.id]
       }
     }
-    console.log('selection', this.selection)
   }
 
   selectArea(area: Rectangle) {

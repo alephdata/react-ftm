@@ -16,20 +16,20 @@ interface ICanvasProps {
 export class Canvas extends React.Component <ICanvasProps> {
   svgRef: React.RefObject<SVGSVGElement>
   selectionRef: React.RefObject<SVGRectElement>
-  panInitial: Point
-  panExtent: Point
+  dragInitial: Point
+  dragExtent: Point
 
   constructor(props: Readonly<ICanvasProps>) {
     super(props)
-    this.onPanStart = this.onPanStart.bind(this)
-    this.onPanMove = this.onPanMove.bind(this)
-    this.onPanEnd = this.onPanEnd.bind(this)
+    this.onDragStart = this.onDragStart.bind(this)
+    this.onDragMove = this.onDragMove.bind(this)
+    this.onDragEnd = this.onDragEnd.bind(this)
     this.onZoom = this.onZoom.bind(this)
     this.onResize = this.onResize.bind(this)
     this.svgRef = React.createRef()
     this.selectionRef = React.createRef()
-    this.panInitial = new Point(0, 0)
-    this.panExtent = new Point(0, 0)
+    this.dragInitial = new Point(0, 0)
+    this.dragExtent = new Point(0, 0)
   }
 
   componentDidMount() {
@@ -58,7 +58,7 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   private getDragArea() {
-    return Rectangle.fromPoints(this.panInitial, this.panExtent)
+    return Rectangle.fromPoints(this.dragInitial, this.dragExtent)
   }
 
   private resizeSelection() {
@@ -72,15 +72,15 @@ export class Canvas extends React.Component <ICanvasProps> {
     }
   }
 
-  private onPanMove(e: DraggableEvent, data: DraggableData) {
+  private onDragMove(e: DraggableEvent, data: DraggableData) {
     const { viewport, selectionMode } = this.props
     const current = viewport.applyMatrix(data.x, data.y)
     const last = viewport.applyMatrix(data.lastX, data.lastY)
     const offset = current.subtract(last)
     if (selectionMode) {
-      this.panExtent = new Point(
-        this.panExtent.x + offset.x,
-        this.panExtent.y + offset.y
+      this.dragExtent = new Point(
+        this.dragExtent.x + offset.x,
+        this.dragExtent.y + offset.y
       )
       this.resizeSelection()
     } else if (offset.x || offset.y) {
@@ -90,24 +90,24 @@ export class Canvas extends React.Component <ICanvasProps> {
     }
   }
 
-  onPanEnd(e: DraggableEvent, data: DraggableData) {
+  onDragEnd(e: DraggableEvent, data: DraggableData) {
     const { selectionMode, viewport } = this.props
     if (selectionMode) {
-      const initial = viewport.pixelToGrid(this.panInitial)
-      const extent = viewport.pixelToGrid(this.panExtent)
+      const initial = viewport.pixelToGrid(this.dragInitial)
+      const extent = viewport.pixelToGrid(this.dragExtent)
       const area = Rectangle.fromPoints(initial, extent)
       this.props.selectArea(area)
     }
-    this.panInitial = new Point(0, 0)
-    this.panExtent = new Point(0, 0)
+    this.dragInitial = new Point(0, 0)
+    this.dragExtent = new Point(0, 0)
     this.resizeSelection()
   }
 
-  onPanStart(e: DraggableEvent, data: DraggableData) {
+  onDragStart(e: DraggableEvent, data: DraggableData) {
     const { viewport } = this.props;
     this.props.clearSelection()
-    this.panInitial = viewport.applyMatrix(data.x, data.y)
-    this.panExtent = this.panInitial
+    this.dragInitial = viewport.applyMatrix(data.x, data.y)
+    this.dragExtent = this.dragInitial
   }
 
   private onZoom(event: MouseWheelEvent) {
@@ -134,9 +134,9 @@ export class Canvas extends React.Component <ICanvasProps> {
       <svg viewBox={viewport.viewBox} style={{width: "100%"}} ref={this.svgRef} xmlns="http://www.w3.org/2000/svg">
         <DraggableCore
           handle="#canvas-handle"
-          onStart={this.onPanStart}
-          onDrag={this.onPanMove}
-          onStop={this.onPanEnd}>
+          onStart={this.onDragStart}
+          onDrag={this.onDragMove}
+          onStop={this.onDragEnd}>
           <g id="zoom">
             <rect id="canvas-handle"
                   x="-5000"
