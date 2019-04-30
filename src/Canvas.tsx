@@ -35,6 +35,7 @@ export class Canvas extends React.Component <ICanvasProps> {
   componentDidMount() {
     const svg = this.svgRef.current;
     if (svg !== null) {
+      console.log(svg.getBoundingClientRect())
       svg.addEventListener('resize', this.onResize)
       svg.addEventListener('wheel', this.onZoom)
       this.onResize()
@@ -130,8 +131,9 @@ export class Canvas extends React.Component <ICanvasProps> {
     const { viewport } = this.props
     const grid = `M ${viewport.gridUnit} 0 L 0 0 0 ${viewport.gridUnit}`
     const rect = this.getDragArea()
+    const style = {width: "100%", height: "100%"}
     return (
-      <svg viewBox={viewport.viewBox} style={{width: "100%"}} ref={this.svgRef} xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox={viewport.viewBox} style={style} ref={this.svgRef} xmlns="http://www.w3.org/2000/svg">
         <DraggableCore
           handle="#canvas-handle"
           onStart={this.onDragStart}

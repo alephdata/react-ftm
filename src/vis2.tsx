@@ -22,19 +22,13 @@ export class Vis2 extends React.Component {
     super(props)
     const jsonLayout = localStorage.getItem(demoKey)
     if (jsonLayout) {
-
       this.state.layout = GraphLayout.fromJSON(model, JSON.parse(jsonLayout))
+    } else {
+      const entities = data.map(rawEntity => model.getEntity(rawEntity as unknown as IEntityDatum));
+      entities.forEach((entity) => this.state.layout.addEntity(entity))
+      this.state.layout.layout()
     }
-    this.addSampleData = this.addSampleData.bind(this)
     this.updateLayout = this.updateLayout.bind(this)
-  }
-
-  addSampleData() {
-    const { layout } = this.state;
-    const entities = data.map(rawEntity => model.getEntity(rawEntity as unknown as IEntityDatum));
-    entities.forEach((entity) => layout.addEntity(entity))
-    layout.layout()
-    this.updateLayout(layout)
   }
 
   updateLayout(layout: GraphLayout) {
@@ -47,16 +41,7 @@ export class Vis2 extends React.Component {
 
   render() {
     const { layout } = this.state;
-    return (
-      <div style={{width: "100%"}}>
-        <div>
-          <button onClick={this.addSampleData}>add our friends</button>
-        </div>
-        <div style={{width: "100%"}}>
-          <GraphEditor layout={layout} updateLayout={this.updateLayout} />
-        </div>
-      </div>
-    );
+    return <GraphEditor layout={layout} updateLayout={this.updateLayout} />;
   }
 }
 
