@@ -28,16 +28,7 @@ export default class Vis2 extends React.Component {
 
       this.state.layout = GraphLayout.fromJSON(model, JSON.parse(jsonLayout))
     }
-    this.addSampleData = this.addSampleData.bind(this)
     this.updateLayout = this.updateLayout.bind(this)
-  }
-
-  addSampleData() {
-    const {layout} = this.state;
-    const entities = data.map(rawEntity => model.getEntity(rawEntity as unknown as IEntityDatum));
-    entities.forEach((entity) => layout.addEntity(entity))
-    layout.layout()
-    this.updateLayout(layout)
   }
 
   updateLayout(layout: GraphLayout) {
@@ -52,9 +43,6 @@ export default class Vis2 extends React.Component {
     const {layout} = this.state;
     return (
       <div style={{width: "100%"}}>
-        <div>
-          <Button onClick={this.addSampleData}>add our friends</Button>
-        </div>
         <div style={{width: "100%"}}>
           <GraphEditor layout={layout} updateLayout={this.updateLayout}/>
         </div>

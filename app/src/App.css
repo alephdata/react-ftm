@@ -9,10 +9,6 @@ body {
   cursor: hand;
 }
 
-svg.canvas {
-  width: 1000px;
-  height: 700px;
-}
 
 .vertex > .label {
   display: none;
