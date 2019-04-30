@@ -1,67 +1,12 @@
-import * as React from 'react'
-import ReactDOM from 'react-dom'
-import {GraphLayout, GraphEditor} from '@alephdata/vis2';
-import {defaultModel, Model, IEntityDatum} from '@alephdata/followthemoney'
-import {data} from '../resources/az_alievs.js'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import * as serviceWorker from './serviceWorker';
 
-const model = new Model(defaultModel)
-const demoKey = 'LS_v1'
+ReactDOM.render(<App />, document.getElementById('root'));
 
-interface IVisState {
-  layout: GraphLayout
-}
-
-export class Vis2 extends React.Component {
-  state: IVisState = {
-    layout: new GraphLayout(model)
-  }
-  saveTimeout: any
-
-  constructor(props: any) {
-    super(props)
-    const jsonLayout = localStorage.getItem(demoKey)
-    if (jsonLayout) {
-
-      this.state.layout = GraphLayout.fromJSON(model, JSON.parse(jsonLayout))
-    }
-    this.addSampleData = this.addSampleData.bind(this)
-    this.updateLayout = this.updateLayout.bind(this)
-  }
-
-  addSampleData() {
-    const {layout} = this.state;
-    const entities = data.map(rawEntity => model.getEntity(rawEntity as unknown as IEntityDatum));
-    entities.forEach((entity) => layout.addEntity(entity))
-    layout.layout()
-    this.updateLayout(layout)
-  }
-
-  updateLayout(layout: GraphLayout) {
-    this.setState({layout})
-    clearTimeout(this.saveTimeout)
-    this.saveTimeout = setTimeout(() => {
-      localStorage.setItem(demoKey, JSON.stringify(layout.toJSON()))
-    }, 1000)
-  }
-
-  render() {
-    const {layout} = this.state;
-    return (
-      <div style={{width: "100%"}}>
-        <div>
-          <button onClick={this.addSampleData}>add our friends</button>
-        </div>
-        <div style={{width: "100%"}}>
-          <GraphEditor layout={layout} updateLayout={this.updateLayout}/>
-        </div>
-      </div>
-    );
-  }
-}
-
-
-ReactDOM.render(
-  <Vis2/>,
-  document.querySelector('#app')
-)
-
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();
