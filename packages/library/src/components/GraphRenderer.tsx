@@ -1,12 +1,12 @@
 import React from 'react'
-import { GraphLayout, GraphUpdateHandler } from './GraphLayout'
+import { GraphLayout, GraphUpdateHandler } from '../GraphLayout'
 import { Canvas } from './Canvas'
 import { EdgeRenderer } from './EdgeRenderer'
 import { VertexRenderer } from './VertexRenderer'
-import { Viewport } from './Viewport';
-import { Vertex } from './Vertex';
-import { Point } from './Point';
-import { Rectangle } from './Rectangle';
+import { Viewport } from '../Viewport';
+import { Vertex } from '../Vertex';
+import { Point } from '../Point';
+import { Rectangle } from '../Rectangle';
 
 export interface IGraphRendererProps {
   layout: GraphLayout,

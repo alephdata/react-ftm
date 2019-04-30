@@ -1,8 +1,8 @@
 import React from 'react'
-import { Viewport } from './Viewport';
+import { Viewport } from '../Viewport';
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { Point } from './Point';
-import { Rectangle } from './Rectangle';
+import { Point } from '../Point';
+import { Rectangle } from '../Rectangle';
 
 
 interface ICanvasProps {

@@ -1,8 +1,8 @@
 import React from 'react'
 // import { Button, ButtonGroup } from "@blueprintjs/core";
-import { GraphLayout, GraphUpdateHandler } from './GraphLayout'
+import { GraphLayout, GraphUpdateHandler } from '../GraphLayout'
 import { GraphRenderer } from './GraphRenderer'
-import { Point } from './Point';
+import { Point } from '../Point';
 
 export interface IGraphEditorProps {
   layout: GraphLayout,
