@@ -9,7 +9,7 @@ body {
   cursor: hand;
 }
 
-svg {
+svg.canvas {
   width: 1000px;
   height: 700px;
 }

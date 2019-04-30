@@ -1,5 +1,5 @@
 {
-  "name": "@alephdata/vis2-standalone",
+  "name": "@alephdata/vis2",
   "version": "0.1.0",
   "description": "standalone use case of @alephdata/vis2",
   "repository": {

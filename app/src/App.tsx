@@ -1,8 +1,12 @@
-import * as React from 'react'
-import {GraphLayout, GraphEditor} from '@alephdata/vis2-lib';
+import React from 'react'
+import '@blueprintjs/core/lib/css/blueprint.css';
+import {GraphLayout} from '@alephdata/vis2-lib';
 import {defaultModel, Model, IEntityDatum} from '@alephdata/followthemoney'
 import {Button} from "@blueprintjs/core";
 import {data} from './resources/az_alievs.js'
+import {GraphEditor} from './GraphEditor';
+
+import './App.css';
 
 const model = new Model(defaultModel)
 const demoKey = 'LS_v1'
@@ -47,14 +51,14 @@ export default class Vis2 extends React.Component {
   render() {
     const {layout} = this.state;
     return (
-        <div style={{width: "100%"}}>
-          <div>
-            <Button onClick={this.addSampleData}>add our friends</Button>
-          </div>
-          <div style={{width: "100%"}}>
-            <GraphEditor layout={layout} updateLayout={this.updateLayout}/>
-          </div>
+      <div style={{width: "100%"}}>
+        <div>
+          <Button onClick={this.addSampleData}>add our friends</Button>
         </div>
+        <div style={{width: "100%"}}>
+          <GraphEditor layout={layout} updateLayout={this.updateLayout}/>
+        </div>
+      </div>
     );
   }
 }

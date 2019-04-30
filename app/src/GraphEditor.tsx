@@ -1,7 +1,6 @@
-import * as React from 'react'
-import { GraphLayout, GraphUpdateHandler } from '../GraphLayout'
-import { GraphRenderer } from './GraphRenderer'
-import { Point } from '../Point';
+import React from 'react'
+import {Button, ButtonGroup} from "@blueprintjs/core";
+import { GraphLayout , GraphUpdateHandler, Point, GraphRenderer } from '@alephdata/vis2-lib'
 
 export interface IGraphEditorProps {
   layout: GraphLayout,
@@ -42,8 +41,10 @@ export class GraphEditor extends React.Component<IGraphEditorProps> {
         </div>
         <div style={{borderWidth: 1, borderColor: '#000', borderStyle: 'solid', position: 'relative', width: '100%'}}>
           <div style={{position: 'absolute', top: '2em', right: '2em'}}>
-            <button onClick={() => this.onZoom(0.8)}>+</button>
-            <button onClick={() => this.onZoom(1.2)}>-</button>
+            <ButtonGroup minimal={true} vertical>
+              <Button icon="zoom-in" onClick={() => this.onZoom(0.8)}/>
+              <Button icon="zoom-out" onClick={() => this.onZoom(1.2)}/>
+            </ButtonGroup>
           </div>
           <GraphRenderer layout={layout} updateLayout={updateLayout} />
         </div>
