@@ -1,0 +1,47 @@
+{
+  "name": "@alephdata/vis2-app",
+  "version": "0.0.0-development",
+  "description": "standalone use case of @alephdata/vis2",
+  "main": "index.js",
+  "scripts": {
+    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "prebuild": "rimraf public/dist/index.*",
+    "build": "rollup -c rollup.config.ts",
+    "start": "rollup -c rollup.config.ts -w",
+    "serve": "npx serve -l 5005 ./public",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alephdata/vis2.js.git"
+  },
+  "author": "OCCRP Data <data@occrp.org>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alephdata/vis2.js/issues"
+  },
+  "homepage": "https://github.com/alephdata/vis2.js#readme",
+  "devDependencies": {
+    "@types/node": "^10.14.4",
+    "@types/react": "^16.8.13",
+    "@types/react-dom": "^16.8.3",
+    "rimraf": "^2.6.2",
+    "rollup": "^1.9.0",
+    "rollup-plugin-commonjs": "^9.3.4",
+    "rollup-plugin-json": "^3.1.0",
+    "rollup-plugin-node-resolve": "^4.2.1",
+    "rollup-plugin-sourcemaps": "^0.4.2",
+    "rollup-plugin-typescript2": "^0.20.1",
+    "ts-node": "^8.0.3",
+    "tslint": "^5.15.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-config-standard": "^8.0.1",
+    "typescript": "^3.4.2"
+  },
+  "dependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "@alephdata/followthemoney": "^1.11.20",
+    "@alephdata/vis2": "^1.1.1"
+  }
+}

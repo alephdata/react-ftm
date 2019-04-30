@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
 import { Point } from '../Point'
 import { Vertex } from '../Vertex'

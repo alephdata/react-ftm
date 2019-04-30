@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { Point } from '../Point'
 
 interface ILabelRendererProps {

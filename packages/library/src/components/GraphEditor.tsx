@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 // import { Button, ButtonGroup } from "@blueprintjs/core";
 import { GraphLayout, GraphUpdateHandler } from '../GraphLayout'
 import { GraphRenderer } from './GraphRenderer'
