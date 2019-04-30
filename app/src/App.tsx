@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {GraphLayout, GraphEditor} from '@alephdata/vis2';
+import {GraphLayout, GraphEditor} from '@alephdata/vis2-lib';
 import {defaultModel, Model, IEntityDatum} from '@alephdata/followthemoney'
 import {Button} from "@blueprintjs/core";
 import {data} from './resources/az_alievs.js'

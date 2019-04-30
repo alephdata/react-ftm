@@ -1,5 +1,5 @@
 {
-  "name": "@alephdata/vis2",
+  "name": "@alephdata/vis2-lib",
   "version": "1.0.1",
   "description": "Graph network visualisation tool for aleph/followthemoney ",
   "keywords": [],

@@ -1,5 +1,5 @@
 {
-  "name": "app2",
+  "name": "@alephdata/vis2-standalone",
   "version": "0.1.0",
   "description": "standalone use case of @alephdata/vis2",
   "repository": {
@@ -22,7 +22,7 @@
     "react-scripts": "3.0.0",
     "typescript": "3.4.5",
     "@alephdata/followthemoney": "^1.11.20",
-    "@alephdata/vis2": "^1.1.1",
+    "@alephdata/vis2-lib": "../lib",
     "@blueprintjs/core": "^3.15.1"
   },
   "scripts": {
