@@ -1,5 +1,5 @@
 import React from 'react'
-import {Slider, Button, ButtonGroup} from "@blueprintjs/core";
+import { Button, ButtonGroup} from "@blueprintjs/core";
 import {GraphLayout, GraphUpdateHandler, Point, GraphRenderer} from '@alephdata/vis2-lib'
 import Toolbar from "./Toolbar";
 

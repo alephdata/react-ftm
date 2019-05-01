@@ -1,9 +1,7 @@
 import React from 'react'
 import '@blueprintjs/core/lib/css/blueprint.css';
 import {GraphLayout} from '@alephdata/vis2-lib';
-import {defaultModel, Model, IEntityDatum} from '@alephdata/followthemoney'
-import {Button} from "@blueprintjs/core";
-import {data} from './resources/az_alievs.js'
+import {defaultModel, Model} from '@alephdata/followthemoney'
 import {GraphEditor} from './GraphEditor';
 
 import './App.css';

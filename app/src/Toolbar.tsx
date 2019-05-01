@@ -34,8 +34,8 @@ export default class Toolbar extends Component<IToolbarProps> {
   render() {
     return (<Callout>
       <ButtonGroup>
-        <Tooltip content="Navigate around using mouse">
-          <Button icon="hand" active={!this.props.layout.selectionMode} onClick={this.onToggleSelectionMode}/>
+        <Tooltip content="Select multiple vertices using the mouse">
+          <Button icon="select" active={this.props.layout.selectionMode} onClick={this.onToggleSelectionMode}/>
         </Tooltip>
         <Divider/>
         <Button onClick={this.addSampleData}>add our friends</Button>
