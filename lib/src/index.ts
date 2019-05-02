@@ -1,9 +1,8 @@
-export * from './components';
-export * from './Edge';
-export * from './GraphLayout'
-export * from './GraphEditor'
-export * from './Point'
-export * from './Rectangle'
-export * from './Vertex'
-export * from './Viewport'
+export * from './layout/Edge';
+export * from './layout/Point'
+export * from './layout/Rectangle'
+export * from './layout/Vertex'
+export * from './layout/Viewport'
+export * from './layout/GraphLayout'
 
+export * from './GraphEditor'

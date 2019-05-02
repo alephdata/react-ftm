@@ -1,5 +1,5 @@
 export * from './Canvas';
-export * from './EdgeRenderer';
+export * from './GraphLayout';
 export * from './GraphRenderer';
 export * from './LabelRenderer';
 export * from './VertexRenderer';

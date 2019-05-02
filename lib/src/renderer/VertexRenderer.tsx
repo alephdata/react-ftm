@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { Point } from '../Point'
-import { Vertex } from '../Vertex'
-import { Viewport } from '../Viewport';
+import { Point } from '../layout/Point'
+import { Vertex } from '../layout/Vertex'
+import { Viewport } from '../layout/Viewport';
 import { LabelRenderer } from './LabelRenderer';
 
 interface IVertexRendererProps {

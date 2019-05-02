@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Point } from '../Point'
+import { Point } from '../layout/Point'
 
 interface ILabelRendererProps {
   label: string,

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Component } from 'react';
-import {Button, ButtonGroup, Callout, Divider, Tooltip} from "@blueprintjs/core";
-import {GraphLayout, GraphUpdateHandler} from "./GraphLayout";
+import {Button, ButtonGroup, Divider, Tooltip} from "@blueprintjs/core";
+import {GraphLayout, GraphUpdateHandler} from "./layout/GraphLayout";
 
 
 interface IToolbarProps {
