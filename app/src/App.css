@@ -1,8 +1,8 @@
 body {
   padding: 0;
   margin: 0;
-  max-height: 100%;
-  overflow: hidden;
+  height: 100%;
+  display: flex;
 
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -11,15 +11,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-#canvas-handle {
-  cursor: hand;
-}
-
-
-.vertex > .label {
-  display: none;
-}
-
-.edge line {
-  stroke: #666;
+#root {
+  position: fixed;
+  min-height: 100%;
+  min-width: 100%;
+  height: 100%;
 }

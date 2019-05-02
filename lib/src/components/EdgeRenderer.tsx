@@ -24,6 +24,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     const center = Rectangle.fromPoints(sourcePosition, targetPosition).getCenter()
     return <g className="edge">
       <line
+        fill="#666666"
         x1={sourcePosition.x}
         y1={sourcePosition.y}
         x2={targetPosition.x}

@@ -1,11 +1,14 @@
 import React from 'react'
 import '@blueprintjs/core/lib/css/blueprint.css';
-
-import {GraphLayout} from '@alephdata/vislib';
-import {defaultModel, Model} from '@alephdata/followthemoney'
-import {GraphEditor} from './GraphEditor';
+import { FocusStyleManager } from '@blueprintjs/core';
+import { IEntityDatum } from '@alephdata/followthemoney';
+import { GraphLayout, GraphEditor } from '@alephdata/vislib';
+import { defaultModel, Model } from '@alephdata/followthemoney'
+import { data } from './resources/az_alievs';
 
 import './App.css';
+
+FocusStyleManager.onlyShowFocusOnTabs();
 
 const model = new Model(defaultModel)
 const demoKey = 'LS_v1'
@@ -25,6 +28,10 @@ export default class Vis2 extends React.Component {
     const jsonLayout = localStorage.getItem(demoKey)
     if (jsonLayout) {
       this.state.layout = GraphLayout.fromJSON(model, JSON.parse(jsonLayout))
+    } else {
+      const entities = data.map(rawEntity => this.state.layout.model.getEntity(rawEntity as unknown as IEntityDatum));
+      entities.forEach((entity) => this.state.layout.addEntity(entity))
+      this.state.layout.layout()
     }
     this.updateLayout = this.updateLayout.bind(this)
   }
@@ -38,13 +45,7 @@ export default class Vis2 extends React.Component {
   }
 
   render() {
-    const {layout} = this.state;
-    return (
-      <div style={{width: "100%"}}>
-        <div style={{width: "100%"}}>
-          <GraphEditor layout={layout} updateLayout={this.updateLayout}/>
-        </div>
-      </div>
-    );
+    const { layout } = this.state;
+    return <GraphEditor layout={layout} updateLayout={this.updateLayout}/>
   }
 }

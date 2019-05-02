@@ -129,9 +129,10 @@ export class Canvas extends React.Component <ICanvasProps> {
   render() {
     const { viewport } = this.props
     const grid = `M ${viewport.gridUnit} 0 L 0 0 0 ${viewport.gridUnit}`
+    const style = {width: "100%", height: "100%"}
     const rect = this.getDragArea()
     return (
-      <svg viewBox={viewport.viewBox}  ref={this.svgRef} xmlns="http://www.w3.org/2000/svg" className="canvas">
+      <svg viewBox={viewport.viewBox} style={style} ref={this.svgRef} xmlns="http://www.w3.org/2000/svg" className="canvas">
         <DraggableCore
           handle="#canvas-handle"
           onStart={this.onDragStart}
