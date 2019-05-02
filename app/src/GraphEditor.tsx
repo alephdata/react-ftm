@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, ButtonGroup} from "@blueprintjs/core";
-import {GraphLayout, GraphUpdateHandler, Point, GraphRenderer} from '@alephdata/vis2-lib'
+import {GraphLayout, GraphUpdateHandler, Point, GraphRenderer} from '@alephdata/vislib'
 import Toolbar from "./Toolbar";
 
 export interface IGraphEditorProps {

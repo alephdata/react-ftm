@@ -7,12 +7,12 @@ import json from 'rollup-plugin-json'
 const pkg = require('./package.json');
 
 export default {
-  input: `src/vis2.ts`,
+  input: `src/index.ts`,
   output: [
-    { file: pkg.main, name:'vis2', format: 'umd', sourcemap: true },
+    { file: pkg.main, name:'vislib', format: 'umd', sourcemap: true },
     { file: pkg.module, format: 'es', sourcemap: true },
   ],
-  external: [ 'react', 'react-dom', '@alephdata/followthemoney' ],
+  external: [ 'react', 'react-dom', '@alephdata/followthemoney', 'd3' ],
   watch: {
     include: 'src/**',
   },

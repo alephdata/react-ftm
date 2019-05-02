@@ -1,12 +1,12 @@
 {
-  "name": "@alephdata/vis2-lib",
+  "name": "@alephdata/vislib",
   "version": "1.0.1",
   "description": "Graph network visualisation tool for aleph/followthemoney ",
   "keywords": [],
   "author": "OCCRP Data <data@occrp.org>",
-  "main": "dist/vis2.umd.js",
-  "module": "dist/vis2.es5.js",
-  "typings": "dist/types/vis2.d.ts",
+  "main": "dist/vislib.umd.js",
+  "module": "dist/vislib.es5.js",
+  "typings": "dist/types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/alephdata/vis2.js"
@@ -17,14 +17,13 @@
   },
   "scripts": {
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "prebuild": "rimraf public/dist/vis2.*",
+    "prebuild": "rimraf dist/vislib.*",
     "build": "rollup -c rollup.config.ts",
     "start": "rollup -c rollup.config.ts -w",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",
     "test:prod": "npm run lint && npm run test -- --no-cache",
-    "report-coverage": "cat ./coverage/lcov.info | coveralls",
-    "serve": "npx serve -l 5005 ./public"
+    "report-coverage": "cat ./coverage/lcov.info | coveralls"
   },
   "jest": {
     "transform": {
@@ -77,7 +76,7 @@
     "tslint-config-standard": "^8.0.1",
     "typescript": "^3.4.2"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@alephdata/followthemoney": "^1.11.20",
     "@blueprintjs/core": "^3.15.1",
     "d3": "^5.9.2",

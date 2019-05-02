@@ -1,6 +1,7 @@
 import React from 'react'
 import '@blueprintjs/core/lib/css/blueprint.css';
-import {GraphLayout} from '@alephdata/vis2-lib';
+
+import {GraphLayout} from '@alephdata/vislib';
 import {defaultModel, Model} from '@alephdata/followthemoney'
 import {GraphEditor} from './GraphEditor';
 
@@ -23,7 +24,6 @@ export default class Vis2 extends React.Component {
     super(props)
     const jsonLayout = localStorage.getItem(demoKey)
     if (jsonLayout) {
-
       this.state.layout = GraphLayout.fromJSON(model, JSON.parse(jsonLayout))
     }
     this.updateLayout = this.updateLayout.bind(this)

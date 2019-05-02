@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Button, ButtonGroup, Callout, Divider, Tooltip} from "@blueprintjs/core";
-import {GraphLayout, GraphUpdateHandler} from "@alephdata/vis2-lib";
+import {GraphLayout, GraphUpdateHandler} from "@alephdata/vislib";
 import {data} from "./resources/az_alievs";
 import {IEntityDatum} from "@alephdata/followthemoney";
 

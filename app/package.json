@@ -7,7 +7,7 @@
     "url": "git+https://github.com/alephdata/vis2.js.git"
   },
   "author": "OCCRP Data <data@occrp.org>",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/alephdata/vis2.js/issues"
   },
@@ -20,10 +20,12 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.0",
+    "react-draggable": "^3.3.0",
     "typescript": "3.4.5",
     "@alephdata/followthemoney": "^1.11.20",
-    "@alephdata/vis2-lib": "../lib",
-    "@blueprintjs/core": "^3.15.1"
+    "@alephdata/vislib": "file:../lib",
+    "@blueprintjs/core": "^3.15.1",
+    "d3": "^5.9.2"
   },
   "scripts": {
     "start": "react-scripts start",
