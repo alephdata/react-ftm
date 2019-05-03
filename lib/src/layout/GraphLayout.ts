@@ -79,8 +79,8 @@ export class GraphLayout {
 
       // TODO: make "typesConfig" part of the layout.
       const properties = entity.getProperties()
-          // removing properties which should cant be represented as a vertex
-          .filter(property => property.type.grouped)
+          // removing properties which should not be represented as a vertex
+          .filter(property => property.type.grouped);
 
       properties.forEach((prop) => {
         entity.getProperty(prop).forEach((value) => {
@@ -91,6 +91,10 @@ export class GraphLayout {
         })
       })
     }
+  }
+
+  updateEntity(entity:Entity, nextEntity:Entity){
+    this.addEntity(nextEntity)
   }
 
   getEntities(): Entity[] {
