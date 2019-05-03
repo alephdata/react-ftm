@@ -5,6 +5,7 @@ import { Edge } from './Edge'
 import { Viewport } from './Viewport'
 import { Point } from './Point';
 import { Rectangle } from './Rectangle';
+import {element} from "prop-types";
 
 interface IGraphLayoutData {
   viewport: any
@@ -58,8 +59,11 @@ export class GraphLayout {
     return Array.from(this.edges.values())
   }
 
-  addEntity(entity: Entity): void {
-    this.entities.set(entity.id, entity)
+  convertEntityToElements(entity:Entity){
+    const returnValue = {
+      vertices : [] as Vertex[],
+      edges:[] as Edge[]
+    };
     if (entity.schema.edge) {
       const sourceProperty = entity.schema.getProperty(entity.schema.edge.source)
       const targetProperty = entity.schema.getProperty(entity.schema.edge.target)
@@ -68,33 +72,83 @@ export class GraphLayout {
         entity.getProperty(targetProperty).forEach((target) => {
           const sourceVertex = Vertex.fromValue(this, sourceProperty, source)
           const targetVertex = Vertex.fromValue(this, targetProperty, target)
-          this.addVertex(sourceVertex)
-          this.addVertex(targetVertex)
-          this.addEdge(Edge.fromEntity(this, entity, sourceVertex, targetVertex))
+          returnValue.vertices.push(
+            sourceVertex,
+            targetVertex
+          )
+          returnValue.edges.push(
+            Edge.fromEntity(this, entity, sourceVertex, targetVertex)
+          )
+
         })
       })
     } else {
       const mainVertex = Vertex.fromEntity(this, entity);
-      this.addVertex(mainVertex)
+      returnValue.vertices.push(mainVertex)
 
       // TODO: make "typesConfig" part of the layout.
       const properties = entity.getProperties()
-          // removing properties which should not be represented as a vertex
-          .filter(property => property.type.grouped);
+      // removing properties which should not be represented as a vertex
+        .filter(property => property.type.grouped);
 
       properties.forEach((prop) => {
         entity.getProperty(prop).forEach((value) => {
           const propertyVertex = Vertex.fromValue(this, prop, value);
-          this.addVertex(propertyVertex)
-          const propertyEdge = Edge.fromValue(this, prop, mainVertex, propertyVertex)
-          this.addEdge(propertyEdge)
+          returnValue.vertices.push(propertyVertex)
+          returnValue.edges.push(
+            Edge.fromValue(this, prop, mainVertex, propertyVertex)
+          )
         })
       })
     }
+    return returnValue
+  }
+
+  addEntity(entity: Entity): void {
+    this.entities.set(entity.id, entity)
+    const {edges, vertices} = this.convertEntityToElements(entity);
+    vertices.forEach(this.addVertex, this)
+    edges.forEach(this.addEdge, this);
+  }
+
+  removeEdge(edge:Edge){
+    this.edges.delete(edge.id);
+  }
+  removeVertex(vertex:Vertex){
+    // removing connected edges
+    vertex.getOwnEdges()
+      .forEach(this.removeEdge, this);
+    this.vertices.delete(vertex.id)
   }
 
   updateEntity(entity:Entity, nextEntity:Entity){
-    this.addEntity(nextEntity)
+    const elements = this.convertEntityToElements(entity);
+    const nextElements = this.convertEntityToElements(nextEntity);
+
+    // next 4 lines for optimisation purpose only
+    const verticesID = elements.vertices.map(v=>v.id);
+    const edgesID = elements.edges.map(e => e.id);
+    const nextVerticesID = nextElements.vertices.map(v=>v.id);
+    const nextEdgesID = nextElements.edges.map(e=>e.id);
+
+    // all the NEW elements which doesn't exist in old must be added
+    nextElements.vertices
+      .filter(v => verticesID.indexOf(v.id) === -1)
+      .forEach(this.addVertex, this);
+
+    nextElements.edges
+      .filter(e => edgesID.indexOf(e.id) ===-1)
+      .forEach(this.addEdge, this)
+
+    // all the OLD elements which doesn't exist in new must be deleted
+    elements.vertices
+      .filter(v => nextVerticesID.indexOf(v.id) === -1) // if it was deleted
+      .filter(v=> !v.getDegree()) // if it got no other edges pointing to it
+      .forEach(this.removeVertex, this);
+    elements.edges
+      .filter(e => nextEdgesID.indexOf(e.id) === -1)
+      .forEach(this.removeEdge, this)
+    this.entities.set(entity.id, nextEntity)
   }
 
   getEntities(): Entity[] {

@@ -1,6 +1,7 @@
 import { Entity, Property, PropertyType, Value } from '@alephdata/followthemoney';
 import { Point, IPointData } from './Point'
 import { GraphLayout } from './GraphLayout'
+import {Edge} from "./Edge";
 
 interface IVertexData {
   id: string
@@ -35,9 +36,12 @@ export class Vertex {
     this.entityId = data.entityId
   }
 
-  getDegree(): number {
+  getOwnEdges(): Edge[]{
     return this.layout.getEdges()
-      .filter((edge) => edge.sourceId == this.id || edge.targetId == this.id)
+      .filter((edge) => edge.sourceId === this.id || edge.targetId === this.id)
+  }
+  getDegree(): number {
+    return this.getOwnEdges()
       .length;
   }
 
