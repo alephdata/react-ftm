@@ -73,6 +73,14 @@ export class Canvas extends React.Component <ICanvasProps> {
     }
   }
 
+  private moveViewport(viewport: Viewport) {
+    const svg = this.svgRef.current
+    this.nextViewport = viewport
+    if (svg && viewport.viewBox) {
+      svg.setAttribute('viewBox', viewport.viewBox)
+    }
+  }
+
   private onDragMove(e: DraggableEvent, data: DraggableData) {
     const { selectionMode } = this.props
     const viewport = this.nextViewport || this.props.viewport;
@@ -89,11 +97,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     } else if (offset.x || offset.y) {
       const gridOffset = viewport.zoomedPixelToGrid(offset)
       const center = viewport.center.addition(gridOffset)
-      this.nextViewport = viewport.setCenter(center)
-      const svg = this.svgRef.current
-      if (svg && this.nextViewport.viewBox) {
-        svg.setAttribute('viewBox', this.nextViewport.viewBox)
-      }
+      this.moveViewport(viewport.setCenter(center))
     }
   }
 
@@ -135,7 +139,8 @@ export class Canvas extends React.Component <ICanvasProps> {
       const matrix = getRefMatrix(this.svgRef)
       const target = applyMatrix(matrix, event.clientX, event.clientY)
       const gridTarget = viewport.pixelToGrid(target)
-      this.props.updateViewport(viewport.setZoom(gridTarget, zoomLevel))
+      const newViewport = viewport.setZoom(gridTarget, zoomLevel)
+      this.props.updateViewport(newViewport)
     }
   }
 
