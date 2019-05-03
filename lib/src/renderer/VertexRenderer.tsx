@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Colors } from '@blueprintjs/core';
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
 import { Point } from '../layout/Point'
 import { Vertex } from '../layout/Vertex'
@@ -63,7 +64,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
     const { x, y } = viewport.gridToPixel(vertex.position)
     const translate = `translate(${x} ${y})`
     const labelPosition = new Point(0, viewport.gridUnit)
-    const color = selected ? 'red' : stringToColour(vertex.type);
+    const color = selected ? Colors.BLUE2 : Colors.BLUE5;
     return (
       <DraggableCore
         handle='.handle'

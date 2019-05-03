@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Colors } from '@blueprintjs/core';
 import { Edge } from '../layout/Edge'
 import { Viewport } from '../layout/Viewport';
 import { Vertex } from '../layout/Vertex';
@@ -24,7 +25,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     const center = Rectangle.fromPoints(sourcePosition, targetPosition).getCenter()
     return <g className="edge">
       <line
-        fill="#666666"
+        stroke={Colors.GRAY2}
         x1={sourcePosition.x}
         y1={sourcePosition.y}
         x2={targetPosition.x}

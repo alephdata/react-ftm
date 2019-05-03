@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Colors } from '@blueprintjs/core';
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
 import { Viewport } from './Viewport';
 import { Point } from './Point';
@@ -160,7 +161,7 @@ export class Canvas extends React.Component <ICanvasProps> {
         </DraggableCore>
         <defs>
           <pattern id="grid" width={viewport.gridUnit} height={viewport.gridUnit} patternUnits="userSpaceOnUse">
-            <path d={grid} fill="none" stroke="#ccc" strokeWidth="0.5"/>
+            <path d={grid} fill="none" stroke={Colors.LIGHT_GRAY3} strokeWidth="0.5"/>
           </pattern>
           <filter x="0" y="0" width="1" height="1" id="solid">
             <feFlood floodColor="#ffffff"/>
