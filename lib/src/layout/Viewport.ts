@@ -4,11 +4,12 @@ export class Viewport {
   public center: Point
   public zoomLevel: number
   public gridUnit: number
-  public svg?: SVGSVGElement
+  public ratio: number
   public viewBox?: string
 
-  constructor(zoomLevel: number = 1, center?: Point){
+  constructor(zoomLevel: number = 1, ratio: number = 1, center?: Point) {
     this.zoomLevel = zoomLevel
+    this.ratio = ratio
     this.center = center || new Point()
     this.gridUnit = 10;
     this.viewBox = undefined
@@ -38,34 +39,22 @@ export class Viewport {
 
   private computeViewBox() {
     const scaleX = 100 * this.gridUnit * this.zoomLevel;
-    const scaleY = 100 * this.gridUnit * this.zoomLevel;
+    const scaleY = 100 * this.gridUnit * this.zoomLevel * this.ratio;
     const gridCenter = this.gridToPixel(this.center);
     const thisX = -((scaleX / 2) + (gridCenter.x * this.zoomLevel))
     const thisY = -((scaleY / 2) + (gridCenter.y * this.zoomLevel))
     this.viewBox = `${thisX} ${thisY} ${scaleX} ${scaleY}`
   }
 
-  applyMatrix(x: number, y: number): Point {
-    if (this.svg) {
-      const ctm = this.svg.getScreenCTM() as DOMMatrix
-      return new Point(
-        (x - ctm.e) / ctm.a,
-        (y - ctm.f) / ctm.d
-      )
-    }
-    return new Point(0, 0)
-  }
-
   clone(): Viewport {
     const clone = Viewport.fromJSON(this.toJSON())
-    clone.svg = this.svg
     clone.viewBox = this.viewBox
     return clone
   }
 
-  setSvg(svg: SVGSVGElement): Viewport {
+  setRatio(ratio: number): Viewport {
     const viewport = this.clone()
-    viewport.svg = svg
+    viewport.ratio = ratio
     viewport.computeViewBox()
     return viewport
   }
@@ -98,13 +87,14 @@ export class Viewport {
     // not storing gridUnit, seems to be constant so far. This
     // will probably need review some times.
     return {
+      zoomLevel: this.zoomLevel,
+      ratio: this.ratio,
       center: this.center.toJSON(),
-      zoomLevel: this.zoomLevel
     }
   }
 
   static fromJSON(data: any): Viewport {
     const center = Point.fromJSON(data.center)
-    return new Viewport(data.zoomLevel, center)
+    return new Viewport(data.zoomLevel, data.ratio, center)
   }
 }

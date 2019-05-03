@@ -4,6 +4,7 @@ import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
 import { Viewport } from '../layout/Viewport';
 import { Point } from '../layout/Point';
 import { Rectangle } from '../layout/Rectangle';
+import { getRefMatrix, applyMatrix } from './utils';
 
 
 interface ICanvasProps {
@@ -35,19 +36,19 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   componentDidMount() {
+    this.onResize()
     const svg = this.svgRef.current;
     if (svg !== null) {
-      svg.addEventListener('resize', this.onResize)
       svg.addEventListener('wheel', this.onZoom)
-      this.onResize()
+      window.addEventListener('resize', this.onResize)
     }
   }
 
   componentWillUnmount() {
     const svg = this.svgRef.current;
     if (svg !== null) {
-      svg.removeEventListener('resize', this.onResize)
       svg.removeEventListener('wheel', this.onZoom)
+      window.removeEventListener('resize', this.onResize)
     }
   }
 
@@ -55,7 +56,9 @@ export class Canvas extends React.Component <ICanvasProps> {
     const { viewport } = this.props;
     const svg = this.svgRef.current;
     if (svg !== null) {
-      this.props.updateViewport(viewport.setSvg(svg));
+      const rect = svg.getBoundingClientRect()
+      const ratio = rect.height / rect.width
+      this.props.updateViewport(viewport.setRatio(ratio));
     }
   }
 
@@ -77,8 +80,9 @@ export class Canvas extends React.Component <ICanvasProps> {
   private onDragMove(e: DraggableEvent, data: DraggableData) {
     const { selectionMode } = this.props
     const viewport = this.nextViewport || this.props.viewport;
-    const current = viewport.applyMatrix(data.x, data.y)
-    const last = viewport.applyMatrix(data.lastX, data.lastY)
+    const matrix = getRefMatrix(this.svgRef)
+    const current = applyMatrix(matrix, data.x, data.y)
+    const last = applyMatrix(matrix, data.lastX, data.lastY)
     const offset = current.subtract(last)
     if (selectionMode) {
       this.dragExtent = new Point(
@@ -116,7 +120,8 @@ export class Canvas extends React.Component <ICanvasProps> {
   onDragStart(e: DraggableEvent, data: DraggableData) {
     const { viewport } = this.props;
     this.props.clearSelection()
-    this.dragInitial = viewport.applyMatrix(data.x, data.y)
+    const matrix = getRefMatrix(this.svgRef)
+    this.dragInitial = applyMatrix(matrix, data.x, data.y)
     this.dragExtent = this.dragInitial
     this.nextViewport = viewport
   }
@@ -131,7 +136,8 @@ export class Canvas extends React.Component <ICanvasProps> {
     const zoomChange = (event.deltaY < 0 ? 1 : -1) * factor
     const zoomLevel = viewport.zoomLevel * (1 + zoomChange)
     if (zoomLevel !== viewport.zoomLevel) {
-      const target = viewport.applyMatrix(event.clientX, event.clientY)
+      const matrix = getRefMatrix(this.svgRef)
+      const target = applyMatrix(matrix, event.clientX, event.clientY)
       const gridTarget = viewport.pixelToGrid(target)
       this.props.updateViewport(viewport.setZoom(gridTarget, zoomLevel))
     }
@@ -167,6 +173,7 @@ export class Canvas extends React.Component <ICanvasProps> {
                   strokeWidth="0.5px"
                   strokeDasharray="2"
                   fillOpacity="0" />
+            {/* <circle r="5" x={0} y={0} fill="red" /> */}
           </g>
         </DraggableCore>
         <defs>
