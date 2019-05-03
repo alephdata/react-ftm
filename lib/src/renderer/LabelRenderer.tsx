@@ -11,17 +11,12 @@ export class LabelRenderer extends React.PureComponent<ILabelRendererProps> {
     const { label, center } = this.props;
     const style = {
       fontSize: "5px",
-      fontFamily: "sans-serif",
+      fontFamily: "sans-serif"
     }
     return (
-      <React.Fragment>
-        <text x={center.x} y={center.y} textAnchor="middle" alignmentBaseline="middle" filter="url(#solid)" style={style}>
-          {label}
-        </text>
-        <text x={center.x} y={center.y} textAnchor="middle" alignmentBaseline="middle" style={style}>
-          {label}
-        </text>
-      </React.Fragment>
-    )
+      <text x={center.x} y={center.y} textAnchor="middle" alignmentBaseline="middle" filter="url(#solid)" style={style}>
+        {label}
+      </text>
+    );
   }
 }

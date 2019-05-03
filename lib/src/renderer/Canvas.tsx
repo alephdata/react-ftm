@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { Colors } from '@blueprintjs/core';
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { Viewport } from './Viewport';
-import { Point } from './Point';
-import { Rectangle } from './Rectangle';
+import { Viewport } from '../layout/Viewport';
+import { Point } from '../layout/Point';
+import { Rectangle } from '../layout/Rectangle';
 
 
 interface ICanvasProps {
@@ -165,7 +165,7 @@ export class Canvas extends React.Component <ICanvasProps> {
           </pattern>
           <filter x="0" y="0" width="1" height="1" id="solid">
             <feFlood floodColor="#ffffff"/>
-            <feComposite in="SourceGraphic" operator="xor" />
+            <feComposite in="SourceGraphic"/>
           </filter>
         </defs>
       </svg>
