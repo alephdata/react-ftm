@@ -1,13 +1,16 @@
 import { Point } from './Point'
+import { GraphConfig } from '../GraphConfig';
 
 export class Viewport {
+  public readonly config: GraphConfig
   public center: Point
   public zoomLevel: number
   public gridUnit: number
   public ratio: number
   public viewBox?: string
 
-  constructor(zoomLevel: number = 1, ratio: number = 1, center?: Point) {
+  constructor(config: GraphConfig, zoomLevel: number = 1, ratio: number = 1, center?: Point) {
+    this.config = config
     this.zoomLevel = zoomLevel
     this.ratio = ratio
     this.center = center || new Point()
@@ -15,22 +18,8 @@ export class Viewport {
     this.viewBox = undefined
   }
 
-  gridToPixel(point: Point): Point {
-    return new Point(
-      point.x * this.gridUnit,
-      point.y * this.gridUnit
-    )
-  }
-
-  pixelToGrid(point: Point): Point {
-    return new Point(
-      point.x / this.gridUnit,
-      point.y / this.gridUnit
-    )
-  }
-
   zoomedPixelToGrid(point: Point): Point {
-    const zoomed = this.pixelToGrid(point)
+    const zoomed = this.config.pixelToGrid(point)
     return new Point(
       zoomed.x / this.zoomLevel,
       zoomed.y / this.zoomLevel
@@ -40,14 +29,14 @@ export class Viewport {
   private computeViewBox() {
     const scaleX = 100 * this.gridUnit * this.zoomLevel;
     const scaleY = 100 * this.gridUnit * this.zoomLevel * this.ratio;
-    const gridCenter = this.gridToPixel(this.center);
+    const gridCenter = this.config.gridToPixel(this.center);
     const thisX = -((scaleX / 2) + (gridCenter.x * this.zoomLevel))
     const thisY = -((scaleY / 2) + (gridCenter.y * this.zoomLevel))
     this.viewBox = `${thisX} ${thisY} ${scaleX} ${scaleY}`
   }
 
   clone(): Viewport {
-    const clone = Viewport.fromJSON(this.toJSON())
+    const clone = Viewport.fromJSON(this.config, this.toJSON())
     clone.viewBox = this.viewBox
     return clone
   }
@@ -93,8 +82,8 @@ export class Viewport {
     }
   }
 
-  static fromJSON(data: any): Viewport {
+  static fromJSON(config: GraphConfig, data: any): Viewport {
     const center = Point.fromJSON(data.center)
-    return new Viewport(data.zoomLevel, data.ratio, center)
+    return new Viewport(config, data.zoomLevel, data.ratio, center)
   }
 }

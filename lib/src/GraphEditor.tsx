@@ -3,6 +3,7 @@ import { Button, ButtonGroup } from '@blueprintjs/core';
 import { GraphLayout, GraphUpdateHandler } from './layout/GraphLayout'
 import { GraphRenderer } from './renderer/GraphRenderer'
 import { Toolbar } from './Toolbar';
+import { GraphConfig } from './GraphConfig';
 
 export interface IGraphEditorProps {
   layout: GraphLayout,

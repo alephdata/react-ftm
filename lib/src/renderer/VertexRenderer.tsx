@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Colors } from '@blueprintjs/core';
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
+import { GraphConfig } from '../GraphConfig';
 import { Point } from '../layout/Point'
 import { Vertex } from '../layout/Vertex'
 import { Viewport } from '../layout/Viewport';
@@ -9,24 +10,11 @@ import { LabelRenderer } from './LabelRenderer';
 
 interface IVertexRendererProps {
   vertex: Vertex
-  viewport: Viewport
+  config: GraphConfig
   selected: boolean
   selectVertex: (vertex: Vertex, additional?: boolean) => any
   dragSelection: (offset: Point) => any
   dropSelection: () => any
-}
-
-let stringToColour = function(str: string) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  let colour = '#';
-  for (let i = 0; i < 3; i++) {
-    let value = (hash >> (i * 8)) & 0xFF;
-    colour += ('00' + value.toString(16)).substr(-2);
-  }
-  return colour;
 }
 
 export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
@@ -41,11 +29,11 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
   }
 
   private onPanMove(e: DraggableEvent, data: DraggableData) {
-    const { viewport } = this.props
+    const { config } = this.props
     const matrix = getRefMatrix(this.gRef)
     const current = applyMatrix(matrix, data.x, data.y)
     const last = applyMatrix(matrix, data.lastX, data.lastY)
-    const offset = viewport.pixelToGrid(current.subtract(last))
+    const offset = config.pixelToGrid(current.subtract(last))
     if (offset.x || offset.y) {
       this.props.dragSelection(offset)
     }
@@ -61,14 +49,15 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
   }
 
   render() {
-    const { vertex, viewport, selected } = this.props
+    const { vertex, config, selected } = this.props
     if (vertex.hidden) {
       return null;
     }
-    const { x, y } = viewport.gridToPixel(vertex.position)
+    // console.log('vertex')
+    const { x, y } = config.gridToPixel(vertex.position)
     const translate = `translate(${x} ${y})`
-    const labelPosition = new Point(0, viewport.gridUnit)
-    const color = selected ? Colors.BLUE2 : Colors.BLUE5;
+    const labelPosition = new Point(0, config.vertexRadius * config.gridUnit)
+    const color = selected ? config.selectedColor : config.vertexColor;
     return (
       <DraggableCore
         handle='.handle'
@@ -76,7 +65,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
         onDrag={this.onPanMove}
         onStop={this.onPanEnd} >
         <g className="vertex" transform={translate} ref={this.gRef}>
-          <circle className="handle" r={viewport.gridUnit * Vertex.RADIUS} fill={color} />
+          <circle className="handle" r={config.gridUnit * config.vertexRadius} fill={color} />
           <LabelRenderer center={labelPosition} label={vertex.label} />
         </g>
       </DraggableCore>

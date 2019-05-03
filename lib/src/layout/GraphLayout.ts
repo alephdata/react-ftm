@@ -5,6 +5,7 @@ import { Edge } from './Edge'
 import { Viewport } from './Viewport'
 import { Point } from './Point';
 import { Rectangle } from './Rectangle';
+import { GraphConfig } from '../GraphConfig';
 
 interface IGraphLayoutData {
   viewport: any
@@ -18,6 +19,7 @@ interface IGraphLayoutData {
 export type GraphUpdateHandler = (graph: GraphLayout) => void
 
 export class GraphLayout {
+  public readonly config: GraphConfig
   public readonly model: Model
   viewport: Viewport;
   vertices: Map<string, Vertex> = new Map()
@@ -26,9 +28,10 @@ export class GraphLayout {
   selection: Array<string> = new Array()
   selectionMode: boolean = true
 
-  constructor(model: Model) {
+  constructor(config: GraphConfig, model: Model) {
+    this.config = config
     this.model = model
-    this.viewport = new Viewport()
+    this.viewport = new Viewport(config)
     this.addVertex = this.addVertex.bind(this)
     this.addEdge = this.addEdge.bind(this)
     this.addEntity = this.addEntity.bind(this)
@@ -190,9 +193,9 @@ export class GraphLayout {
     }
   }
 
-  static fromJSON(model: Model, data: any): GraphLayout {
+  static fromJSON(config: GraphConfig, model: Model, data: any): GraphLayout {
     const layoutData = data as IGraphLayoutData
-    const layout = new GraphLayout(model)
+    const layout = new GraphLayout(config, model)
     layoutData.entities.forEach((edata) => {
       layout.addEntity(model.getEntity(edata))
     })
@@ -204,7 +207,7 @@ export class GraphLayout {
       const edge = Edge.fromJSON(layout, edata)
       layout.edges.set(edge.id, edge)
     })
-    layout.viewport = Viewport.fromJSON(layoutData.viewport)
+    layout.viewport = Viewport.fromJSON(config, layoutData.viewport)
     layout.selectionMode = layoutData.selectionMode
     layout.selection = layoutData.selection
     return layout

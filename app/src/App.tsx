@@ -2,7 +2,7 @@ import React from 'react'
 import '@blueprintjs/core/lib/css/blueprint.css';
 import { FocusStyleManager } from '@blueprintjs/core';
 import { IEntityDatum } from '@alephdata/followthemoney';
-import { GraphLayout, GraphEditor } from '@alephdata/vislib';
+import { GraphLayout, GraphEditor, GraphConfig } from '@alephdata/vislib';
 import { defaultModel, Model } from '@alephdata/followthemoney'
 import { data } from './resources/az_alievs';
 
@@ -11,6 +11,7 @@ import './App.css';
 FocusStyleManager.onlyShowFocusOnTabs();
 
 const model = new Model(defaultModel)
+const config = new GraphConfig()
 const demoKey = 'LS_v1'
 
 interface IVisState {
@@ -19,7 +20,7 @@ interface IVisState {
 
 export default class Vis2 extends React.Component {
   state: IVisState = {
-    layout: new GraphLayout(model)
+    layout: new GraphLayout(config, model)
   }
   saveTimeout: any
 
@@ -27,7 +28,7 @@ export default class Vis2 extends React.Component {
     super(props)
     const jsonLayout = localStorage.getItem(demoKey)
     if (jsonLayout) {
-      this.state.layout = GraphLayout.fromJSON(model, JSON.parse(jsonLayout))
+      this.state.layout = GraphLayout.fromJSON(config, model, JSON.parse(jsonLayout))
     } else {
       const entities = data.map(rawEntity => this.state.layout.model.getEntity(rawEntity as unknown as IEntityDatum));
       entities.forEach((entity) => this.state.layout.addEntity(entity))

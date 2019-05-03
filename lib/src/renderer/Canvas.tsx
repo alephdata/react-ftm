@@ -104,8 +104,8 @@ export class Canvas extends React.Component <ICanvasProps> {
   onDragEnd(e: DraggableEvent, data: DraggableData) {
     const { selectionMode, viewport } = this.props
     if (selectionMode) {
-      const initial = viewport.pixelToGrid(this.dragInitial)
-      const extent = viewport.pixelToGrid(this.dragExtent)
+      const initial = viewport.config.pixelToGrid(this.dragInitial)
+      const extent = viewport.config.pixelToGrid(this.dragExtent)
       const area = Rectangle.fromPoints(initial, extent)
       this.props.selectArea(area)
     } else if (this.nextViewport) {
@@ -138,7 +138,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     if (zoomLevel !== viewport.zoomLevel) {
       const matrix = getRefMatrix(this.svgRef)
       const target = applyMatrix(matrix, event.clientX, event.clientY)
-      const gridTarget = viewport.pixelToGrid(target)
+      const gridTarget = viewport.config.pixelToGrid(target)
       const newViewport = viewport.setZoom(gridTarget, zoomLevel)
       this.props.updateViewport(newViewport)
     }

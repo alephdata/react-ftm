@@ -13,8 +13,6 @@ interface IVertexData {
 }
 
 export class Vertex {
-  static RADIUS = 1;
-
   public readonly layout: GraphLayout
   public readonly id: string
   public readonly type: string
