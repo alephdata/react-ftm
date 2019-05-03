@@ -5,7 +5,6 @@ export class Viewport {
   public readonly config: GraphConfig
   public center: Point
   public zoomLevel: number
-  public gridUnit: number
   public ratio: number
   public viewBox?: string
 
@@ -14,7 +13,6 @@ export class Viewport {
     this.zoomLevel = zoomLevel
     this.ratio = ratio
     this.center = center || new Point()
-    this.gridUnit = 10;
     this.viewBox = undefined
   }
 
@@ -27,8 +25,8 @@ export class Viewport {
   }
 
   private computeViewBox() {
-    const scaleX = 100 * this.gridUnit * this.zoomLevel;
-    const scaleY = 100 * this.gridUnit * this.zoomLevel * this.ratio;
+    const scaleX = 100 * this.config.gridUnit * this.zoomLevel;
+    const scaleY = 100 * this.config.gridUnit * this.zoomLevel * this.ratio;
     const gridCenter = this.config.gridToPixel(this.center);
     const thisX = -((scaleX / 2) + (gridCenter.x * this.zoomLevel))
     const thisY = -((scaleY / 2) + (gridCenter.y * this.zoomLevel))

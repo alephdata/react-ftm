@@ -128,7 +128,7 @@ export class Canvas extends React.Component <ICanvasProps> {
 
   private onZoom(event: MouseWheelEvent) {
     const viewport = this.nextViewport || this.props.viewport
-    const factor = 1 / viewport.gridUnit
+    const factor = 1 / viewport.config.gridUnit
     event.preventDefault()
     event.stopPropagation()
     // TODO: according to docs `event.deltaY` is not stable, but it works fine so i've tested so far, consider using scroll events if anybody will experience improper behaviour
@@ -146,7 +146,7 @@ export class Canvas extends React.Component <ICanvasProps> {
 
   render() {
     const viewport = this.nextViewport || this.props.viewport
-    const grid = `M ${viewport.gridUnit} 0 L 0 0 0 ${viewport.gridUnit}`
+    const grid = `M ${viewport.config.gridUnit} 0 L 0 0 0 ${viewport.config.gridUnit}`
     const style = {width: "100%", height: "100%"}
     return (
       <svg viewBox={viewport.viewBox} style={style} ref={this.svgRef} xmlns="http://www.w3.org/2000/svg" className="canvas">
@@ -173,7 +173,7 @@ export class Canvas extends React.Component <ICanvasProps> {
           </g>
         </DraggableCore>
         <defs>
-          <pattern id="grid" width={viewport.gridUnit} height={viewport.gridUnit} patternUnits="userSpaceOnUse">
+          <pattern id="grid" width={viewport.config.gridUnit} height={viewport.config.gridUnit} patternUnits="userSpaceOnUse">
             <path d={grid} fill="none" stroke={Colors.LIGHT_GRAY3} strokeWidth="0.5"/>
           </pattern>
           <filter x="0" y="0" width="1" height="1" id="solid">
