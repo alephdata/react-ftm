@@ -19,6 +19,7 @@ export class Canvas extends React.Component <ICanvasProps> {
   selectionRef: React.RefObject<SVGRectElement>
   dragInitial: Point
   dragExtent: Point
+  nextViewport?: Viewport
 
   constructor(props: Readonly<ICanvasProps>) {
     super(props)
@@ -74,7 +75,8 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   private onDragMove(e: DraggableEvent, data: DraggableData) {
-    const { viewport, selectionMode } = this.props
+    const { selectionMode } = this.props
+    const viewport = this.nextViewport || this.props.viewport;
     const current = viewport.applyMatrix(data.x, data.y)
     const last = viewport.applyMatrix(data.lastX, data.lastY)
     const offset = current.subtract(last)
@@ -87,7 +89,11 @@ export class Canvas extends React.Component <ICanvasProps> {
     } else if (offset.x || offset.y) {
       const gridOffset = viewport.zoomedPixelToGrid(offset)
       const center = viewport.center.addition(gridOffset)
-      this.props.updateViewport(viewport.setCenter(center));
+      this.nextViewport = viewport.setCenter(center)
+      const svg = this.svgRef.current
+      if (svg && this.nextViewport.viewBox) {
+        svg.setAttribute('viewBox', this.nextViewport.viewBox)
+      }
     }
   }
 
@@ -98,9 +104,12 @@ export class Canvas extends React.Component <ICanvasProps> {
       const extent = viewport.pixelToGrid(this.dragExtent)
       const area = Rectangle.fromPoints(initial, extent)
       this.props.selectArea(area)
+    } else if (this.nextViewport) {
+      this.props.updateViewport(this.nextViewport);
     }
     this.dragInitial = new Point(0, 0)
     this.dragExtent = new Point(0, 0)
+    this.nextViewport = undefined
     this.resizeSelection()
   }
 
@@ -109,10 +118,11 @@ export class Canvas extends React.Component <ICanvasProps> {
     this.props.clearSelection()
     this.dragInitial = viewport.applyMatrix(data.x, data.y)
     this.dragExtent = this.dragInitial
+    this.nextViewport = viewport
   }
 
   private onZoom(event: MouseWheelEvent) {
-    const { viewport } = this.props;
+    const viewport = this.nextViewport || this.props.viewport
     const factor = 1 / viewport.gridUnit
     event.preventDefault()
     event.stopPropagation()
@@ -128,7 +138,7 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   render() {
-    const { viewport } = this.props
+    const viewport = this.nextViewport || this.props.viewport
     const grid = `M ${viewport.gridUnit} 0 L 0 0 0 ${viewport.gridUnit}`
     const style = {width: "100%", height: "100%"}
     const rect = this.getDragArea()
