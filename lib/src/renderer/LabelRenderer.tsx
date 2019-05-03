@@ -14,7 +14,13 @@ export class LabelRenderer extends React.PureComponent<ILabelRendererProps> {
       fontFamily: "sans-serif"
     }
     return (
-      <text x={center.x} y={center.y} textAnchor="middle" alignmentBaseline="middle" filter="url(#solid)" style={style}>
+      <text x={center.x}
+            y={center.y}
+            textAnchor="middle"
+            alignmentBaseline="middle"
+            filter="url(#solid)"
+            style={style}
+            pointerEvents="none">
         {label}
       </text>
     );
