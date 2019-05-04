@@ -30,6 +30,17 @@ export class Rectangle {
     )
   }
 
+  pad(padding: number): Rectangle {
+    const center = this.getCenter()
+    const width = this.width + (padding * 2)
+    const height = this.height + (padding * 2)
+    return new Rectangle(center.x - (width / 2), center.y - (height / 2), width, height)
+  }
+
+  toString(): string {
+    return `Rectangle(${this.x} ${this.y} ${this.width} ${this.height})`
+  }
+
   static fromPoints(...points: Point[]): Rectangle {
     if (points.length) {
       const xs = points.map((p) => p.x)
@@ -38,7 +49,9 @@ export class Rectangle {
       const y = Math.min(...ys)
       const mx = Math.max(...xs)
       const my = Math.max(...ys)
-      return new Rectangle(x, y, mx - x, my - y)
+      const width = Math.abs(x - mx)
+      const height = Math.abs(y - my)
+      return new Rectangle(x, y, width, height)
     }
     return new Rectangle(0, 0, 0, 0)
   }

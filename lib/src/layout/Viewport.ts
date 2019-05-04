@@ -1,7 +1,9 @@
 import { Point } from './Point'
 import { GraphConfig } from '../GraphConfig';
+import { Rectangle } from './Rectangle';
 
 export class Viewport {
+  private static readonly BASE_SIZE = 100
   public readonly config: GraphConfig
   public center: Point
   public zoomLevel: number
@@ -25,12 +27,12 @@ export class Viewport {
   }
 
   private computeViewBox() {
-    const scaleX = 100 * this.config.gridUnit * this.zoomLevel;
-    const scaleY = 100 * this.config.gridUnit * this.zoomLevel * this.ratio;
-    const gridCenter = this.config.gridToPixel(this.center);
-    const thisX = -((scaleX / 2) + (gridCenter.x * this.zoomLevel))
-    const thisY = -((scaleY / 2) + (gridCenter.y * this.zoomLevel))
-    this.viewBox = `${thisX} ${thisY} ${scaleX} ${scaleY}`
+    const unit = this.config.gridUnit * this.zoomLevel
+    const widthX = Viewport.BASE_SIZE * unit
+    const widthY = Viewport.BASE_SIZE * unit * this.ratio
+    const minX = (this.center.x * this.config.gridUnit) - (widthX / 2)
+    const minY = (this.center.y * this.config.gridUnit) - (widthY / 2)
+    this.viewBox = `${minX} ${minY} ${widthX} ${widthY}`
   }
 
   clone(): Viewport {
@@ -53,21 +55,44 @@ export class Viewport {
     return viewport
   }
 
-  setZoom(target: Point, zoomLevel: number): Viewport {
+  private getBoundedZoomLevel(zoomLevel: number) {
+    return Math.max(0.1, Math.min(3, zoomLevel))
+  }
+
+  zoomToPoint(target: Point, direction: number): Viewport {
+    const factor = 1 / this.config.gridUnit
+    const zoomChange = direction * factor
+    const zoomLevel = this.zoomLevel * (1 + zoomChange)
+    const boundedZoomLevel = this.getBoundedZoomLevel(zoomLevel)
+    if (boundedZoomLevel === this.zoomLevel) {
+      return this
+    }
+    const offset = new Point(
+      ((target.x - this.center.x) * zoomChange * -1),
+      ((target.y - this.center.y) * zoomChange * -1),
+    )
+    const center = this.center.addition(offset);
+    return this.setZoom(center, zoomLevel)
+  }
+
+  setZoom(center: Point, zoomLevel: number): Viewport {
     const viewport = this.clone()
-    const boundedZoomLevel = Math.max(0.1, Math.min(2, zoomLevel))
+    const boundedZoomLevel = this.getBoundedZoomLevel(zoomLevel)
     if (boundedZoomLevel === viewport.zoomLevel) {
       return this
     }
-    const scaleChange = (1 / boundedZoomLevel) - (1 / this.zoomLevel)
-    const offset = new Point(
-      (target.x * scaleChange * -1),
-      (target.y * scaleChange * -1),
-    )
-    viewport.center = this.center.addition(offset);
+    viewport.center = center
     viewport.zoomLevel = boundedZoomLevel
     viewport.computeViewBox()
     return viewport
+  }
+
+  fitToRect(rect: Rectangle): Viewport {
+    const outer = rect.pad(3)
+    const zoomX = outer.width / Viewport.BASE_SIZE
+    const zoomY = outer.height / (Viewport.BASE_SIZE * this.ratio)
+    const zoomLevel = this.getBoundedZoomLevel(Math.max(zoomX, zoomY))
+    return this.setZoom(outer.getCenter(), zoomLevel)
   }
 
   toJSON(): any {
