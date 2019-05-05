@@ -32,8 +32,8 @@ export class GraphEditor extends React.Component<IGraphEditorProps> {
           <Toolbar layout={layout} updateLayout={updateLayout}/>
         </div>
         <div style={{flexGrow: 1, flexShrink: 1, flexBasis: '100%', position: 'relative'}}>
-          <div style={{position: 'absolute', top: '10px', right: '10px'}}>
-            <ButtonGroup minimal={true} vertical>
+          <div style={{position: 'absolute', top: '5px', right: '10px'}}>
+            <ButtonGroup vertical>
               <Button icon="zoom-in" onClick={() => this.onZoom(0.8)}/>
               <Button icon="zoom-out" onClick={() => this.onZoom(1.2)}/>
             </ButtonGroup>

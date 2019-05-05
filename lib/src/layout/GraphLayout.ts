@@ -17,6 +17,7 @@ interface IGraphLayoutData {
 }
 
 export type GraphUpdateHandler = (graph: GraphLayout) => void
+export type VertexPredicate = (vertex: Vertex) => boolean
 
 export class GraphLayout {
   public readonly config: GraphConfig
@@ -108,6 +109,10 @@ export class GraphLayout {
         this.selection = [vertex.id]
       }
     }
+  }
+
+  selectVerticesByFilter(predicate: VertexPredicate) {
+    this.selection = this.getVertices().filter(predicate).map((v) => v.id)
   }
 
   selectArea(area: Rectangle) {
