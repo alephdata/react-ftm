@@ -60,8 +60,9 @@ export class Toolbar extends Component<IToolbarProps, IToolbarState> {
   }
 
   render() {
+    const toolbarStyle = {backgroundColor: Colors.LIGHT_GRAY5, width: '100%', padding: '3px'}
     return (
-      <ButtonGroup style={{backgroundColor: Colors.LIGHT_GRAY5, width: '100%'}} className={Classes.ELEVATION_1}>
+      <ButtonGroup style={toolbarStyle} className={Classes.ELEVATION_1}>
         <Tooltip content="Select a group of nodes">
           <Button icon="select" active={this.props.layout.selectionMode} onClick={this.onToggleSelectionMode}/>
         </Tooltip>
