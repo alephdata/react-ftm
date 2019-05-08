@@ -47,7 +47,7 @@ export default class Vis2 extends React.Component {
 
   render() {
     const { layout } = this.state;
-    const theEntity = Array.from(layout.entities.values())[2]
+    const theEntity = Array.from(layout.entities.values())[1]
     console.log(theEntity, layout.entities)
     return <div>
       <GraphEditor layout={layout} updateLayout={this.updateLayout}/>
