@@ -7,11 +7,13 @@ import {
   MenuItem,
   NonIdealState,
 } from '@blueprintjs/core'
-import { Suggest} from "@blueprintjs/select";
+import {Suggest} from "@blueprintjs/select";
+import {DateInput, IDateFormatProps} from "@blueprintjs/datetime";
 import '@blueprintjs/select/lib/css/blueprint-select.css'
 import {Entity, Property, Values} from "@alephdata/followthemoney";
 import {GraphLayout} from "@alephdata/vislib";
 import {highlightText} from "../../utils";
+import '@blueprintjs/datetime/lib/css/blueprint-datetime.css'
 
 interface ITypeProps {
   values: Values
@@ -20,9 +22,34 @@ interface ITypeProps {
   onPropertyChanged: (values: Values, property: Property) => void
 }
 
+class DateType extends PureComponent<ITypeProps> {
+  static group = new Set(['date'])
+  onChange = (value: Date) => {
+    this.props.onPropertyChanged([value.toString()] as unknown as Values, this.props.property)
+  };
+  jsDateFormatter: IDateFormatProps = {
+    formatDate: date => date.toLocaleDateString(),
+    parseDate: str => new Date(str),
+    placeholder: "M/D/YYYY",
+  };
+
+  render() {
+    const {property, values} = this.props;
+
+    return <FormGroup
+      label={property.description || property.label || property.name}
+    >
+      <DateInput
+        {...this.jsDateFormatter}
+        value={values[0] ? new Date(values[0] as string) : undefined}
+        onChange={this.onChange}
+      />
+    </FormGroup>
+  }
+}
 
 class TextType extends PureComponent<ITypeProps> {
-  static group = ['text', 'string']
+  static group = new Set(['text', 'string'])
 
   onChange = (values: Array<string | ReactNode>) => {
     // TODO: @pudo maybe we need to implement Entity.removeProperty in FTM?
@@ -65,15 +92,22 @@ class PropertyEditor extends PureComponent<IPropertyProps> {
   render() {
     const {entity, property} = this.props;
     const values = entity.getProperty(property);
-    //
+    const commonProps = {
+      onPropertyChanged: this.onPropertyChanged,
+      values: values,
+      property: property,
+      entity: entity
+    };
 
+    if (DateType.group.has(property.type.name)) {
+      return <DateType
+        {...commonProps}
+      />;
+    }
 
     // fallback
     return <TextType
-      onPropertyChanged={this.onPropertyChanged}
-      values={values}
-      property={property}
-      entity={entity}
+      {...commonProps}
     />;
   }
 }
