@@ -9,11 +9,9 @@ import {
 } from '@blueprintjs/core'
 import {Suggest} from "@blueprintjs/select";
 import {DateInput, IDateFormatProps} from "@blueprintjs/datetime";
-import '@blueprintjs/select/lib/css/blueprint-select.css'
 import {Entity, Property, Values} from "@alephdata/followthemoney";
 import {GraphLayout} from "@alephdata/vislib";
 import {highlightText} from "../../utils";
-import '@blueprintjs/datetime/lib/css/blueprint-datetime.css'
 
 interface ITypeProps {
   values: Values
