@@ -21,6 +21,7 @@ export class Edge {
   public readonly targetId: string
   public readonly entityId?: string
   public readonly propertyQName?: string
+  public garbage : boolean = false
 
   constructor(layout: GraphLayout, data: IEdgeData) {
     this.layout = layout
@@ -32,6 +33,7 @@ export class Edge {
     this.entityId = data.entityId
     this.propertyQName = data.propertyQName
   }
+
 
   clone(): Edge {
     return Edge.fromJSON(this.layout, this.toJSON())
@@ -63,7 +65,6 @@ export class Edge {
       entityId: entity.id
     })
   }
-
   static fromValue(layout: GraphLayout, property: Property, source: Vertex, target: Vertex) {
     if (!source.entityId) {
       throw new Error('No source entity for value edge.')

@@ -24,6 +24,7 @@ export class Vertex {
   public hidden: boolean
   public position: Point
   public readonly entityId?: string
+  public garbage : boolean = false;
 
   constructor(layout: GraphLayout, data: IVertexData) {
     this.layout = layout
@@ -61,6 +62,16 @@ export class Vertex {
       Math.round(fuzzy.x),
       Math.round(fuzzy.y)
     ))
+  }
+
+  updateFromEntity(vertex:Vertex){
+    return Object.assign(this,
+      {
+        hidden: vertex.hidden,
+        position: vertex.position,
+      }
+    )
+
   }
 
   toJSON(): IVertexData {
@@ -114,4 +125,5 @@ export class Vertex {
       hidden: false
     });
   }
+
 }
