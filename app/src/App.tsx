@@ -35,7 +35,7 @@ export default class Vis2 extends React.Component {
     // this.state.layout = GraphLayout.fromJSON(model, JSON.parse(jsonLayout))
     // } else {
     const entities = data.map(rawEntity => this.state.layout.model.getEntity(rawEntity as unknown as IEntityDatum));
-    entities.forEach((entity) => this.state.layout.addEntity(entity))
+    entities.forEach((entity) => this.state.layout.appendEntity(entity))
     this.state.layout.layout()
     // }
     this.updateLayout = this.updateLayout.bind(this)
@@ -57,13 +57,7 @@ export default class Vis2 extends React.Component {
       <Drawer isOpen={!!theEntity} lazy={true} usePortal={false} hasBackdrop={false} className={Classes.CALLOUT}>
         <div className={Classes.DRAWER_BODY}>
           <div className={Classes.DIALOG_BODY}>
-            <PanelStack initialPanel={{
-              component:EntityEditor,
-              props:{
-                entity:theEntity,
-                updateLayout:this.updateLayout,
-                layout
-            }}} />
+            <EntityEditor entity={theEntity} layout={layout} updateLayout={this.updateLayout} />
           </div>
         </div>
       </Drawer>

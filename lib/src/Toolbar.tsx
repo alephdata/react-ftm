@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { Component } from 'react';
-import {Button, ButtonGroup, Divider, Tooltip} from "@blueprintjs/core";
+import {Button, ButtonGroup, Callout, Divider, Tooltip} from "@blueprintjs/core";
 import {GraphLayout, GraphUpdateHandler} from "./layout/GraphLayout";
 
 
@@ -9,7 +8,7 @@ interface IToolbarProps {
   updateLayout: GraphUpdateHandler
 }
 
-export class Toolbar extends Component<IToolbarProps> {
+export class Toolbar extends React.Component<IToolbarProps> {
   constructor(props: Readonly<IToolbarProps>) {
     super(props);
     this.onToggleSelectionMode = this.onToggleSelectionMode.bind(this)

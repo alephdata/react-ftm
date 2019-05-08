@@ -63,6 +63,7 @@ class TextType extends PureComponent<ITypeProps> {
         vertical
       >
         <TagInput
+          addOnPaste
           onChange={this.onChange}
           values={this.props.values}
         />
@@ -123,12 +124,12 @@ interface IEntityEditorState {
 }
 
 export default class EntityEditor extends PureComponent<IEntityEditorProps, IEntityEditorState> {
+  private schemaProperties: Property[];
 
   onEntityChanged = (nextEntity: Entity) => {
-    this.props.layout.updateEntity(this.props.entity, nextEntity);
+    this.props.layout.appendEntity(nextEntity);
     this.props.updateLayout(this.props.layout)
   }
-  private schemaProperties: Property[];
 
   constructor(props: IEntityEditorProps) {
     super(props);
