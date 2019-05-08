@@ -1,17 +1,15 @@
 import React from 'react'
 import '@blueprintjs/core/lib/css/blueprint.css';
-import {Classes, Drawer, FocusStyleManager, PanelStack} from '@blueprintjs/core';
+import {Classes, Drawer, FocusStyleManager} from '@blueprintjs/core';
 import {IEntityDatum} from '@alephdata/followthemoney';
 import {GraphLayout, GraphEditor} from '@alephdata/vislib';
 import {defaultModel, Model} from '@alephdata/followthemoney'
 import {data} from './resources/az_alievs';
-import EntityEditor from "./components/ftm/EntityEditor";
 
 import '@blueprintjs/select/lib/css/blueprint-select.css'
 import '@blueprintjs/datetime/lib/css/blueprint-datetime.css'
 import './App.css';
-import {SelectSchema} from "./components/ftm/SelectSchema";
-import {CreateEntityStack} from "./components/CreateEntityStack";
+import {CreateEntity} from "./components/CreateEntity";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -57,7 +55,11 @@ export default class Vis2 extends React.Component {
       <Drawer isOpen={!!theEntity} lazy={true} usePortal={false} hasBackdrop={false} className={Classes.CALLOUT}>
         <div className={Classes.DRAWER_BODY}>
           <div className={Classes.DIALOG_BODY}>
-            <EntityEditor entity={theEntity} layout={layout} updateLayout={this.updateLayout} />
+            <CreateEntity
+              layout={layout}
+              subsequentOf={layout.model.getSchema('Thing')}
+              updateLayout={this.updateLayout}
+            />
           </div>
         </div>
       </Drawer>

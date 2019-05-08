@@ -18,7 +18,7 @@ export class SelectSchema extends PureComponent<ISelectSchemaProps> {
   constructor(props: ISelectSchemaProps) {
     super(props);
     this.schemataToShow = Object.values(props.model.schemata)
-      .filter(schema => schema && schema.isA(props.subsequentOf)) as Schema[]
+      .filter(schema => schema && (schema.name !== Schema.THING) && schema.isA(props.subsequentOf)) as Schema[]
 
   }
 

@@ -133,19 +133,32 @@ export default class EntityEditor extends PureComponent<IEntityEditorProps, IEnt
 
   constructor(props: IEntityEditorProps) {
     super(props);
-    const propsToEdit = new Set();
     this.schemaProperties = Array.from(props.entity.schema.getProperties().values());
-    props.entity.schema.getFeaturedProperties()
-      .forEach(propsToEdit.add, propsToEdit)
-    // then the ones which has a value
-    props.entity.getProperties()
-      .forEach(propsToEdit.add, propsToEdit)
-
 
     this.state = {
-      propsToEdit
+      propsToEdit:this.getEditableProperties(props)
     }
 
+  }
+
+  getEditableProperties(props = this.props){
+    const {entity} = props;
+    const propsToEdit = new Set();
+    entity.schema.getFeaturedProperties()
+      .forEach(propsToEdit.add, propsToEdit)
+    // then the ones which has a value
+    entity.getProperties()
+      .forEach(propsToEdit.add, propsToEdit)
+    return propsToEdit;
+  }
+
+  componentWillReceiveProps(nextProps: Readonly<IEntityEditorProps>, nextContext: any): void {
+    if(this.props.entity !== nextProps.entity){
+      this.schemaProperties = Array.from(nextProps.entity.schema.getProperties().values());
+      this.setState({
+        propsToEdit:this.getEditableProperties(nextProps)
+      })
+    }
   }
 
   render() {
