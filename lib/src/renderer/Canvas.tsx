@@ -125,9 +125,9 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   render() {
-    const { viewport } = this.props
+    const { viewport, selectionMode} = this.props
     const grid = `M ${viewport.config.gridUnit} 0 L 0 0 0 ${viewport.config.gridUnit}`
-    const style = {width: "100%", height: "100%"}
+    const style:React.CSSProperties = {width: "100%", height: "100%", cursor: selectionMode ? 'crosshair' : 'grab'}
     return (
       <svg viewBox={viewport.viewBox} style={style} ref={this.svgRef} xmlns="http://www.w3.org/2000/svg">
         <DraggableCore
