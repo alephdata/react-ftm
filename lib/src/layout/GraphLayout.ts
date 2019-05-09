@@ -113,7 +113,6 @@ export class GraphLayout {
   }
 
   appendEntity(entity: Entity) {
-    console.log('num of verx pre', this.vertices.size, 'num of edg pre', this.edges.size);
     this.collectGarbage();
     this.entities.set(entity.id, entity);
     this.entities
@@ -123,7 +122,6 @@ export class GraphLayout {
         edges.forEach(this.addEdge, this);
       }, this);
     this.disposeGarbage();
-    console.log('num of ver post', this.vertices.size, 'num of edg post', this.edges.size)
   }
 
   collectGarbage() {

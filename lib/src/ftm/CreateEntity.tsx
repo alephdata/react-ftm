@@ -61,7 +61,6 @@ export class CreateEntity extends Component<ICreateEntityProps, ICreateEntitySta
   render() {
     const {layout, subsequentOf} = this.props;
     const {entity} = this.state;
-    console.log(entity)
     return <div>
       <SelectSchema
         disabled={!!entity && !!entity.getProperties().length}

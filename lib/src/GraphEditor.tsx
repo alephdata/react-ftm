@@ -31,6 +31,17 @@ export class GraphEditor extends React.Component<IGraphEditorProps> {
       <div style={{flex: 1, display: 'flex', flexFlow: 'column', height: '100%'}}>
         <div style={{flexGrow: 0, flexShrink: 1, flexBasis: 'auto'}}>
           <Toolbar layout={layout} updateLayout={updateLayout}/>
+          <Drawer isOpen={true} lazy={true}  size="360p" hasBackdrop={false} className={Classes.CALLOUT}>
+            <div className={Classes.DRAWER_BODY}>
+              <div className={Classes.DIALOG_BODY}>
+                <CreateEntity
+                  layout={layout}
+                  subsequentOf={layout.model.getSchema('Interval')}
+                  updateLayout={this.props.updateLayout}
+                />
+              </div>
+            </div>
+          </Drawer>
         </div>
         <div style={{flexGrow: 1, flexShrink: 1, flexBasis: '100%', position: 'relative'}}>
           <div style={{position: 'absolute', top: '5px', right: '10px'}}>
@@ -41,17 +52,6 @@ export class GraphEditor extends React.Component<IGraphEditorProps> {
           </div>
           <GraphRenderer layout={layout} updateLayout={updateLayout}/>
         </div>
-        <Drawer isOpen={true} lazy={true} usePortal={false} size="360p" hasBackdrop={false} className={Classes.CALLOUT}>
-          <div className={Classes.DRAWER_BODY}>
-            <div className={Classes.DIALOG_BODY}>
-              <CreateEntity
-                layout={layout}
-                subsequentOf={layout.model.getSchema('Interval')}
-                updateLayout={this.props.updateLayout}
-              />
-            </div>
-          </div>
-        </Drawer>
       </div>
     );
   }
