@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import {SelectSchema} from "./ftm/SelectSchema";
-import {GraphLayout, GraphUpdateHandler} from "@alephdata/vislib";
+import {SelectSchema} from "./SelectSchema";
+import {GraphLayout, GraphUpdateHandler} from "../layout";
 import {Entity, Schema} from "@alephdata/followthemoney";
 import {Divider} from "@blueprintjs/core";
-import {EntityEditor} from "./ftm/EntityEditor";
+import {EntityEditor} from "./EntityEditor";
 
 interface ICreateEntityProps {
   layout: GraphLayout
@@ -36,7 +36,7 @@ export class CreateEntity extends Component<ICreateEntityProps, ICreateEntitySta
 
       /**
        * @description transferring values from old entity to new one where applicable, craiteria is where name and and the type of property matchs
-       * */
+       */
       if(entity){
         // stores properties which has a value
         const nextEntityProps = nextEntity.schema.getProperties()

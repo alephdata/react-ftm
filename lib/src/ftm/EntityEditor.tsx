@@ -3,7 +3,7 @@ import {
   Callout,
 } from '@blueprintjs/core'
 import {Entity, Property} from "@alephdata/followthemoney";
-import {GraphLayout} from "@alephdata/vislib";
+import {GraphLayout} from "../layout";
 import {SelectProperty} from "./property/SelectProperty";
 import {PropertyEditor} from "./property/PropertyEditor";
 

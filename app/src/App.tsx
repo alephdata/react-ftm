@@ -1,15 +1,14 @@
 import React from 'react'
-import '@blueprintjs/core/lib/css/blueprint.css';
-import {Classes, Drawer, FocusStyleManager} from '@blueprintjs/core';
+import {Classes, FocusStyleManager} from '@blueprintjs/core';
 import {IEntityDatum} from '@alephdata/followthemoney';
 import {GraphLayout, GraphEditor} from '@alephdata/vislib';
 import {defaultModel, Model} from '@alephdata/followthemoney'
 import {data} from './resources/az_alievs';
 
+import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/select/lib/css/blueprint-select.css'
 import '@blueprintjs/datetime/lib/css/blueprint-datetime.css'
 import './App.css';
-import {CreateEntity} from "./components/CreateEntity";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -28,14 +27,15 @@ export default class Vis2 extends React.Component {
 
   constructor(props: any) {
     super(props)
-    // const jsonLayout = localStorage.getItem(demoKey)
-    // if (!jsonLayout) {
-    // this.state.layout = GraphLayout.fromJSON(model, JSON.parse(jsonLayout))
-    // } else {
-    const entities = data.map(rawEntity => this.state.layout.model.getEntity(rawEntity as unknown as IEntityDatum));
-    entities.forEach((entity) => this.state.layout.appendEntity(entity))
-    this.state.layout.layout()
-    // }
+    const jsonLayout = localStorage.getItem(demoKey);
+    console.log(jsonLayout)
+    if (jsonLayout) {
+      this.state.layout = GraphLayout.fromJSON(model, JSON.parse(jsonLayout))
+    } else {
+      const entities = data.map(rawEntity => this.state.layout.model.getEntity(rawEntity as unknown as IEntityDatum));
+      entities.forEach((entity) => this.state.layout.appendEntity(entity))
+      this.state.layout.layout()
+    }
     this.updateLayout = this.updateLayout.bind(this)
   }
 
@@ -49,20 +49,8 @@ export default class Vis2 extends React.Component {
 
   render() {
     const {layout} = this.state;
-    const theEntity = Array.from(layout.entities.values())[2];
     return <div className={Classes.DARK}>
       <GraphEditor layout={layout} updateLayout={this.updateLayout}/>
-      <Drawer isOpen={!!theEntity} lazy={true} usePortal={false} hasBackdrop={false} className={Classes.CALLOUT}>
-        <div className={Classes.DRAWER_BODY}>
-          <div className={Classes.DIALOG_BODY}>
-            <CreateEntity
-              layout={layout}
-              subsequentOf={layout.model.getSchema('Thing')}
-              updateLayout={this.updateLayout}
-            />
-          </div>
-        </div>
-      </Drawer>
     </div>
   }
 }

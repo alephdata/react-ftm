@@ -1,8 +1,9 @@
 import * as React from 'react'
-import { Button, ButtonGroup } from '@blueprintjs/core';
+import {Button, ButtonGroup, Classes, Drawer} from '@blueprintjs/core';
 import { GraphLayout, GraphUpdateHandler } from './layout/GraphLayout'
 import { GraphRenderer } from './renderer/GraphRenderer'
 import { Toolbar } from './Toolbar';
+import {CreateEntity} from "./ftm/CreateEntity";
 
 export interface IGraphEditorProps {
   layout: GraphLayout,
@@ -39,6 +40,17 @@ export class GraphEditor extends React.Component<IGraphEditorProps> {
           </div>
           <GraphRenderer layout={layout} updateLayout={updateLayout}/>
         </div>
+        <Drawer isOpen={true} lazy={true} usePortal={false} size="360p" hasBackdrop={false} className={Classes.CALLOUT}>
+          <div className={Classes.DRAWER_BODY}>
+            <div className={Classes.DIALOG_BODY}>
+              <CreateEntity
+                layout={layout}
+                subsequentOf={layout.model.getSchema('Interval')}
+                updateLayout={this.props.updateLayout}
+              />
+            </div>
+          </div>
+        </Drawer>
       </div>
     );
   }

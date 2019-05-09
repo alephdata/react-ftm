@@ -1,8 +1,8 @@
 import React, {PureComponent} from 'react';
 import {Suggest} from "@blueprintjs/select";
-import {Entity, Model, Schema} from "@alephdata/followthemoney";
+import { Model, Schema} from "@alephdata/followthemoney";
 import {MenuItem, NonIdealState} from "@blueprintjs/core";
-import {highlightText} from "../../utils";
+import {highlightText} from "../utils";
 
 const SuggestSchema = Suggest.ofType<Schema>()
 

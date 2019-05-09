@@ -2,7 +2,7 @@ import {ItemPredicate, ItemRenderer, Suggest} from "@blueprintjs/select";
 import {Property} from "@alephdata/followthemoney";
 import React, {PureComponent} from "react";
 import {FormGroup, MenuItem, NonIdealState} from "@blueprintjs/core";
-import {highlightText} from "../../../utils";
+import {highlightText} from "../../utils";
 
 const PropertySuggest = Suggest.ofType<Property>()
 

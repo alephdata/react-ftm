@@ -14,7 +14,7 @@
   "homepage": "https://github.com/alephdata/vis2.js#readme",
   "dependencies": {
     "@alephdata/followthemoney": "^1.11.20",
-    "@alephdata/vislib": "file:../lib",
+    "@alephdata/vislib": "../lib",
     "@blueprintjs/core": "^3.15.1",
     "@blueprintjs/datetime": "^3.9.0",
     "@blueprintjs/select": "^3.8.0",
