@@ -1,12 +1,11 @@
-import {Entity, Model, PropertyType, IEntityDatum} from '@alephdata/followthemoney'
-import {forceSimulation, forceLink, forceCollide} from 'd3';
-import {Vertex} from './Vertex'
-import {Edge} from './Edge'
-import {Viewport} from './Viewport'
-import {Point} from './Point';
-import {Rectangle} from './Rectangle';
-import {debounce} from "../utils";
-
+import { Entity, Model, PropertyType, IEntityDatum } from '@alephdata/followthemoney'
+import { forceSimulation, forceLink, forceCollide } from 'd3';
+import { Vertex } from './Vertex'
+import { Edge } from './Edge'
+import { Viewport } from './Viewport'
+import { Point } from './Point';
+import { Rectangle } from './Rectangle';
+import { GraphConfig } from '../GraphConfig';
 
 interface IGraphLayoutData {
   viewport: any
@@ -18,8 +17,10 @@ interface IGraphLayoutData {
 }
 
 export type GraphUpdateHandler = (graph: GraphLayout) => void
+export type VertexPredicate = (vertex: Vertex) => boolean
 
 export class GraphLayout {
+  public readonly config: GraphConfig
   public readonly model: Model
   viewport: Viewport;
   vertices = new Map<string, Vertex>()
@@ -28,9 +29,10 @@ export class GraphLayout {
   selection = new Array<string>()
   selectionMode: boolean = true
 
-  constructor(model: Model) {
+  constructor(config: GraphConfig, model: Model) {
+    this.config = config
     this.model = model
-    this.viewport = new Viewport()
+    this.viewport = new Viewport(config)
     this.addVertex = this.addVertex.bind(this)
     this.addEdge = this.addEdge.bind(this)
     this.appendEntity = this.appendEntity.bind(this)
@@ -148,6 +150,10 @@ export class GraphLayout {
     }
   }
 
+  selectVerticesByFilter(predicate: VertexPredicate) {
+    this.selection = this.getVertices().filter(predicate).map((v) => v.id)
+  }
+
   selectArea(area: Rectangle) {
     const selected = this.getVertices().filter((vertex) => area.contains(vertex.position))
     this.selection = selected.map((vertex) => vertex.id)
@@ -207,7 +213,7 @@ export class GraphLayout {
 
     const simulation = forceSimulation(nodes)
       .force('links', forceLink(links))
-      .force('collide', forceCollide(Vertex.RADIUS))
+      .force('collide', forceCollide(this.config.vertexRadius))
     simulation.stop()
     simulation.tick(500)
     nodes.forEach((node) => {
@@ -231,9 +237,9 @@ export class GraphLayout {
     }
   }
 
-  static fromJSON(model: Model, data: any): GraphLayout {
+  static fromJSON(config: GraphConfig, model: Model, data: any): GraphLayout {
     const layoutData = data as IGraphLayoutData
-    const layout = new GraphLayout(model)
+    const layout = new GraphLayout(config, model)
     layoutData.entities.forEach((edata) => {
       layout.appendEntity(model.getEntity(edata))
     })
@@ -245,7 +251,7 @@ export class GraphLayout {
       const edge = Edge.fromJSON(layout, edata)
       layout.edges.set(edge.id, edge)
     })
-    layout.viewport = Viewport.fromJSON(layoutData.viewport)
+    layout.viewport = Viewport.fromJSON(config, layoutData.viewport)
     layout.selectionMode = layoutData.selectionMode
     layout.selection = layoutData.selection
     return layout

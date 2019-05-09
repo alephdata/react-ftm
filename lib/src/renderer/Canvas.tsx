@@ -4,6 +4,8 @@ import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
 import { Viewport } from '../layout/Viewport';
 import { Point } from '../layout/Point';
 import { Rectangle } from '../layout/Rectangle';
+import { getRefMatrix, applyMatrix } from './utils';
+import { GraphLayout } from '../layout/GraphLayout';
 
 
 interface ICanvasProps {
@@ -19,7 +21,6 @@ export class Canvas extends React.Component <ICanvasProps> {
   selectionRef: React.RefObject<SVGRectElement>
   dragInitial: Point
   dragExtent: Point
-  nextViewport?: Viewport
 
   constructor(props: Readonly<ICanvasProps>) {
     super(props)
@@ -35,19 +36,19 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   componentDidMount() {
+    this.onResize()
     const svg = this.svgRef.current;
     if (svg !== null) {
-      svg.addEventListener('resize', this.onResize)
       svg.addEventListener('wheel', this.onZoom)
-      this.onResize()
+      window.addEventListener('resize', this.onResize)
     }
   }
 
   componentWillUnmount() {
     const svg = this.svgRef.current;
     if (svg !== null) {
-      svg.removeEventListener('resize', this.onResize)
       svg.removeEventListener('wheel', this.onZoom)
+      window.removeEventListener('resize', this.onResize)
     }
   }
 
@@ -55,18 +56,16 @@ export class Canvas extends React.Component <ICanvasProps> {
     const { viewport } = this.props;
     const svg = this.svgRef.current;
     if (svg !== null) {
-      this.props.updateViewport(viewport.setSvg(svg));
+      const rect = svg.getBoundingClientRect()
+      const ratio = rect.height / rect.width
+      this.props.updateViewport(viewport.setRatio(ratio));
     }
-  }
-
-  private getDragArea() {
-    return Rectangle.fromPoints(this.dragInitial, this.dragExtent)
   }
 
   private resizeSelection() {
     const selection = this.selectionRef.current
     if (selection) {
-      const rect = this.getDragArea()
+      const rect = Rectangle.fromPoints(this.dragInitial, this.dragExtent)
       selection.setAttribute('x', rect.x + '')
       selection.setAttribute('y', rect.y + '')
       selection.setAttribute('width', rect.width + '')
@@ -75,10 +74,10 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   private onDragMove(e: DraggableEvent, data: DraggableData) {
-    const { selectionMode } = this.props
-    const viewport = this.nextViewport || this.props.viewport;
-    const current = viewport.applyMatrix(data.x, data.y)
-    const last = viewport.applyMatrix(data.lastX, data.lastY)
+    const { selectionMode, viewport } = this.props
+    const matrix = getRefMatrix(this.svgRef)
+    const current = applyMatrix(matrix, data.x, data.y)
+    const last = applyMatrix(matrix, data.lastX, data.lastY)
     const offset = current.subtract(last)
     if (selectionMode) {
       this.dragExtent = new Point(
@@ -88,62 +87,49 @@ export class Canvas extends React.Component <ICanvasProps> {
       this.resizeSelection()
     } else if (offset.x || offset.y) {
       const gridOffset = viewport.zoomedPixelToGrid(offset)
-      const center = viewport.center.addition(gridOffset)
-      this.nextViewport = viewport.setCenter(center)
-      const svg = this.svgRef.current
-      if (svg && this.nextViewport.viewBox) {
-        svg.setAttribute('viewBox', this.nextViewport.viewBox)
-      }
+      const center = viewport.center.subtract(gridOffset)
+      this.props.updateViewport(viewport.setCenter(center));
     }
   }
 
   onDragEnd(e: DraggableEvent, data: DraggableData) {
     const { selectionMode, viewport } = this.props
     if (selectionMode) {
-      const initial = viewport.pixelToGrid(this.dragInitial)
-      const extent = viewport.pixelToGrid(this.dragExtent)
+      const initial = viewport.config.pixelToGrid(this.dragInitial)
+      const extent = viewport.config.pixelToGrid(this.dragExtent)
       const area = Rectangle.fromPoints(initial, extent)
       this.props.selectArea(area)
-    } else if (this.nextViewport) {
-      this.props.updateViewport(this.nextViewport);
     }
     this.dragInitial = new Point(0, 0)
     this.dragExtent = new Point(0, 0)
-    this.nextViewport = undefined
     this.resizeSelection()
   }
 
   onDragStart(e: DraggableEvent, data: DraggableData) {
-    const { viewport } = this.props;
     this.props.clearSelection()
-    this.dragInitial = viewport.applyMatrix(data.x, data.y)
+    const matrix = getRefMatrix(this.svgRef)
+    this.dragInitial = applyMatrix(matrix, data.x, data.y)
     this.dragExtent = this.dragInitial
-    this.nextViewport = viewport
   }
 
   private onZoom(event: MouseWheelEvent) {
-    const viewport = this.nextViewport || this.props.viewport
-    const factor = 1 / viewport.gridUnit
     event.preventDefault()
     event.stopPropagation()
-    // TODO: according to docs `event.deltaY` is not stable, but it works fine so i've tested so far, consider using scroll events if anybody will experience improper behaviour
-    // https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event
-    const zoomChange = (event.deltaY < 0 ? 1 : -1) * factor
-    const zoomLevel = viewport.zoomLevel * (1 + zoomChange)
-    if (zoomLevel !== viewport.zoomLevel) {
-      const target = viewport.applyMatrix(event.clientX, event.clientY)
-      const gridTarget = viewport.pixelToGrid(target)
-      this.props.updateViewport(viewport.setZoom(gridTarget, zoomLevel))
-    }
+    const { viewport } = this.props
+    const direction = event.deltaY < 0 ? 1 : -1
+    const matrix = getRefMatrix(this.svgRef)
+    const target = applyMatrix(matrix, event.clientX, event.clientY)
+    const gridTarget = viewport.config.pixelToGrid(target)
+    const newViewport = viewport.zoomToPoint(gridTarget, direction)
+    this.props.updateViewport(newViewport)
   }
 
   render() {
-    const viewport = this.nextViewport || this.props.viewport
-    const grid = `M ${viewport.gridUnit} 0 L 0 0 0 ${viewport.gridUnit}`
+    const { viewport } = this.props
+    const grid = `M ${viewport.config.gridUnit} 0 L 0 0 0 ${viewport.config.gridUnit}`
     const style = {width: "100%", height: "100%"}
-    const rect = this.getDragArea()
     return (
-      <svg viewBox={viewport.viewBox} style={style} ref={this.svgRef} xmlns="http://www.w3.org/2000/svg" className="canvas">
+      <svg viewBox={viewport.viewBox} style={style} ref={this.svgRef} xmlns="http://www.w3.org/2000/svg">
         <DraggableCore
           handle="#canvas-handle"
           onStart={this.onDragStart}
@@ -159,10 +145,6 @@ export class Canvas extends React.Component <ICanvasProps> {
             {this.props.children}
             <rect id="selection"
                   ref={this.selectionRef}
-                  x={rect.x}
-                  y={rect.y}
-                  width={rect.width}
-                  height={rect.height}
                   stroke="black"
                   strokeWidth="0.5px"
                   strokeDasharray="2"
@@ -170,7 +152,7 @@ export class Canvas extends React.Component <ICanvasProps> {
           </g>
         </DraggableCore>
         <defs>
-          <pattern id="grid" width={viewport.gridUnit} height={viewport.gridUnit} patternUnits="userSpaceOnUse">
+          <pattern id="grid" width={viewport.config.gridUnit} height={viewport.config.gridUnit} patternUnits="userSpaceOnUse">
             <path d={grid} fill="none" stroke={Colors.LIGHT_GRAY3} strokeWidth="0.5"/>
           </pattern>
           <filter x="0" y="0" width="1" height="1" id="solid">

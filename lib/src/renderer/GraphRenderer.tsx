@@ -65,7 +65,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     return layout.getEdges().map((edge) =>
       <EdgeRenderer
         key={edge.id}
-        viewport={layout.viewport}
+        config={layout.config}
         edge={edge}
         source={layout.vertices.get(edge.sourceId)}
         target={layout.vertices.get(edge.targetId)}
@@ -78,7 +78,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     return layout.getVertices().map((vertex) =>
       <VertexRenderer
         key={vertex.id}
-        viewport={layout.viewport}
+        config={layout.config}
         selected={layout.isVertexSelected(vertex)}
         vertex={vertex}
         selectVertex={this.selectVertex}

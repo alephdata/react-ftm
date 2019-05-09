@@ -1,35 +1,25 @@
 import { Point } from './Point'
+import { GraphConfig } from '../GraphConfig';
+import { Rectangle } from './Rectangle';
 
 export class Viewport {
+  private static readonly BASE_SIZE = 100
+  public readonly config: GraphConfig
   public center: Point
   public zoomLevel: number
-  public gridUnit: number
-  public svg?: SVGSVGElement
+  public ratio: number
   public viewBox?: string
 
-  constructor(zoomLevel: number = 1, center?: Point){
+  constructor(config: GraphConfig, zoomLevel: number = 1, ratio: number = 1, center?: Point) {
+    this.config = config
     this.zoomLevel = zoomLevel
+    this.ratio = ratio
     this.center = center || new Point()
-    this.gridUnit = 10;
     this.viewBox = undefined
   }
 
-  gridToPixel(point: Point): Point {
-    return new Point(
-      point.x * this.gridUnit,
-      point.y * this.gridUnit
-    )
-  }
-
-  pixelToGrid(point: Point): Point {
-    return new Point(
-      point.x / this.gridUnit,
-      point.y / this.gridUnit
-    )
-  }
-
   zoomedPixelToGrid(point: Point): Point {
-    const zoomed = this.pixelToGrid(point)
+    const zoomed = this.config.pixelToGrid(point)
     return new Point(
       zoomed.x / this.zoomLevel,
       zoomed.y / this.zoomLevel
@@ -37,35 +27,23 @@ export class Viewport {
   }
 
   private computeViewBox() {
-    const scaleX = 100 * this.gridUnit * this.zoomLevel;
-    const scaleY = 100 * this.gridUnit * this.zoomLevel;
-    const gridCenter = this.gridToPixel(this.center);
-    const thisX = -((scaleX / 2) + (gridCenter.x * this.zoomLevel))
-    const thisY = -((scaleY / 2) + (gridCenter.y * this.zoomLevel))
-    this.viewBox = `${thisX} ${thisY} ${scaleX} ${scaleY}`
-  }
-
-  applyMatrix(x: number, y: number): Point {
-    if (this.svg) {
-      const ctm = this.svg.getScreenCTM() as DOMMatrix
-      return new Point(
-        (x - ctm.e) / ctm.a,
-        (y - ctm.f) / ctm.d
-      )
-    }
-    return new Point(0, 0)
+    const unit = this.config.gridUnit * this.zoomLevel
+    const widthX = Viewport.BASE_SIZE * unit
+    const widthY = Viewport.BASE_SIZE * unit * this.ratio
+    const minX = (this.center.x * this.config.gridUnit) - (widthX / 2)
+    const minY = (this.center.y * this.config.gridUnit) - (widthY / 2)
+    this.viewBox = `${minX} ${minY} ${widthX} ${widthY}`
   }
 
   clone(): Viewport {
-    const clone = Viewport.fromJSON(this.toJSON())
-    clone.svg = this.svg
+    const clone = Viewport.fromJSON(this.config, this.toJSON())
     clone.viewBox = this.viewBox
     return clone
   }
 
-  setSvg(svg: SVGSVGElement): Viewport {
+  setRatio(ratio: number): Viewport {
     const viewport = this.clone()
-    viewport.svg = svg
+    viewport.ratio = ratio
     viewport.computeViewBox()
     return viewport
   }
@@ -77,34 +55,58 @@ export class Viewport {
     return viewport
   }
 
-  setZoom(target: Point, zoomLevel: number): Viewport {
+  private getBoundedZoomLevel(zoomLevel: number) {
+    return Math.max(0.1, Math.min(3, zoomLevel))
+  }
+
+  zoomToPoint(target: Point, direction: number): Viewport {
+    const factor = 1 / this.config.gridUnit
+    const zoomChange = direction * factor
+    const zoomLevel = this.zoomLevel * (1 + zoomChange)
+    const boundedZoomLevel = this.getBoundedZoomLevel(zoomLevel)
+    if (boundedZoomLevel === this.zoomLevel) {
+      return this
+    }
+    const offset = new Point(
+      ((target.x - this.center.x) * zoomChange * -1),
+      ((target.y - this.center.y) * zoomChange * -1),
+    )
+    const center = this.center.addition(offset);
+    return this.setZoom(center, zoomLevel)
+  }
+
+  setZoom(center: Point, zoomLevel: number): Viewport {
     const viewport = this.clone()
-    const boundedZoomLevel = Math.max(0.1, Math.min(2, zoomLevel))
+    const boundedZoomLevel = this.getBoundedZoomLevel(zoomLevel)
     if (boundedZoomLevel === viewport.zoomLevel) {
       return this
     }
-    const scaleChange = (1 / boundedZoomLevel) - (1 / this.zoomLevel)
-    const offset = new Point(
-      (target.x * scaleChange * -1),
-      (target.y * scaleChange * -1),
-    )
-    viewport.center = this.center.addition(offset);
+    viewport.center = center
     viewport.zoomLevel = boundedZoomLevel
     viewport.computeViewBox()
     return viewport
+  }
+
+  fitToRect(rect: Rectangle): Viewport {
+    const outer = rect.pad(3)
+    const zoomX = outer.width / Viewport.BASE_SIZE
+    const zoomY = outer.height / (Viewport.BASE_SIZE * this.ratio)
+    const zoomLevel = this.getBoundedZoomLevel(Math.max(zoomX, zoomY))
+    return this.setZoom(outer.getCenter(), zoomLevel)
   }
 
   toJSON(): any {
     // not storing gridUnit, seems to be constant so far. This
     // will probably need review some times.
     return {
+      zoomLevel: this.zoomLevel,
+      ratio: this.ratio,
       center: this.center.toJSON(),
-      zoomLevel: this.zoomLevel
     }
   }
 
-  static fromJSON(data: any): Viewport {
+  static fromJSON(config: GraphConfig, data: any): Viewport {
     const center = Point.fromJSON(data.center)
-    return new Viewport(data.zoomLevel, center)
+    return new Viewport(config, data.zoomLevel, data.ratio, center)
   }
 }

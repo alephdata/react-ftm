@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Colors } from '@blueprintjs/core';
+import { GraphConfig } from '../GraphConfig';
 import { Edge } from '../layout/Edge'
 import { Viewport } from '../layout/Viewport';
 import { Vertex } from '../layout/Vertex';
@@ -9,19 +10,20 @@ import { LabelRenderer } from './LabelRenderer';
 
 interface IEdgeRendererProps {
   edge: Edge,
-  viewport: Viewport,
+  config: GraphConfig,
   source?: Vertex,
   target?: Vertex
 }
 
 export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
   render(){
-    const { edge, source, target, viewport } = this.props;
+    const { edge, source, target, config } = this.props;
     if (!source || !target || source.hidden || target.hidden) {
       return null;
     }
-    const sourcePosition = viewport.gridToPixel(source.position)
-    const targetPosition = viewport.gridToPixel(target.position)
+    // console.log('edge')
+    const sourcePosition = config.gridToPixel(source.position)
+    const targetPosition = config.gridToPixel(target.position)
     const center = Rectangle.fromPoints(sourcePosition, targetPosition).getCenter()
     return <g className="edge">
       <line
