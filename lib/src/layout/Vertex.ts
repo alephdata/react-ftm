@@ -1,6 +1,7 @@
 import { Entity, Property, PropertyType, Value } from '@alephdata/followthemoney';
 import { Point, IPointData } from './Point'
 import { GraphLayout } from './GraphLayout'
+import {Edge} from "./Edge";
 
 interface IVertexData {
   id: string
@@ -21,6 +22,7 @@ export class Vertex {
   public hidden: boolean
   public position: Point
   public readonly entityId?: string
+  public garbage : boolean = false;
 
   constructor(layout: GraphLayout, data: IVertexData) {
     this.layout = layout
@@ -33,9 +35,12 @@ export class Vertex {
     this.entityId = data.entityId
   }
 
-  getDegree(): number {
+  getOwnEdges(): Edge[]{
     return this.layout.getEdges()
-      .filter((edge) => edge.sourceId == this.id || edge.targetId == this.id)
+      .filter((edge) => edge.sourceId === this.id || edge.targetId === this.id)
+  }
+  getDegree(): number {
+    return this.getOwnEdges()
       .length;
   }
 
@@ -55,6 +60,16 @@ export class Vertex {
       Math.round(fuzzy.x),
       Math.round(fuzzy.y)
     ))
+  }
+
+  updateFromEntity(vertex:Vertex){
+    return Object.assign(this,
+      {
+        hidden: vertex.hidden,
+        position: vertex.position,
+      }
+    )
+
   }
 
   toJSON(): IVertexData {
@@ -108,4 +123,5 @@ export class Vertex {
       hidden: false
     });
   }
+
 }

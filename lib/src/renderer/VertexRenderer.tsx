@@ -53,7 +53,6 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
     if (vertex.hidden) {
       return null;
     }
-    // console.log('vertex')
     const { x, y } = config.gridToPixel(vertex.position)
     const translate = `translate(${x} ${y})`
     const labelPosition = new Point(0, config.vertexRadius * config.gridUnit)

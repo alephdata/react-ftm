@@ -1,9 +1,8 @@
 import * as React from 'react'
-import { Component } from 'react'
 import {Button, ButtonGroup, Divider, Tooltip, Colors, Classes, InputGroup, Icon} from "@blueprintjs/core"
 import {GraphLayout, GraphUpdateHandler} from "./layout/GraphLayout"
 import { Rectangle } from './layout/Rectangle'
-import { filterVerticesByText } from './filters'
+import { filterVerticesByText } from './filters';
 
 
 interface IToolbarProps {
@@ -15,7 +14,7 @@ interface IToolbarState {
   searchText: string
 }
 
-export class Toolbar extends Component<IToolbarProps, IToolbarState> {
+export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
   state: IToolbarState = {
     searchText: ''
   }
