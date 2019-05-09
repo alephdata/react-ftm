@@ -17,3 +17,14 @@ body {
   min-width: 100%;
   height: 100%;
 }
+
+/*
+ * this is a hack around this issue  https://github.com/palantir/blueprint/issues/3515
+ * it enables users to interact with canvas while drawer is open
+*/
+.bp3-overlay {
+  pointer-events: none;
+}
+.bp3-drawer {
+  pointer-events: all;
+}
