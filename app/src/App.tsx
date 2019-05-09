@@ -49,8 +49,6 @@ export default class Vis2 extends React.Component {
 
   render() {
     const {layout} = this.state;
-    return <div>
-      <GraphEditor layout={layout} updateLayout={this.updateLayout}/>
-    </div>
+    return <GraphEditor layout={layout} updateLayout={this.updateLayout}/>
   }
 }
