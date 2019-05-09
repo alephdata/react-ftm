@@ -1,12 +1,13 @@
 import React, {PureComponent} from 'react';
 import {Suggest} from "@blueprintjs/select";
-import {Model, Schema} from "@alephdata/followthemoney";
+import {Entity, Model, Schema} from "@alephdata/followthemoney";
 import {MenuItem, NonIdealState} from "@blueprintjs/core";
 import {highlightText} from "../../utils";
 
 const SuggestSchema = Suggest.ofType<Schema>()
 
 interface ISelectSchemaProps {
+  disabled: boolean
   model: Model,
   subsequentOf: Schema,
   onSchemaSelect:(schema:Schema)=>void
@@ -19,11 +20,11 @@ export class SelectSchema extends PureComponent<ISelectSchemaProps> {
     super(props);
     this.schemataToShow = Object.values(props.model.schemata)
       .filter(schema => schema && (schema.name !== Schema.THING) && schema.isA(props.subsequentOf)) as Schema[]
-
   }
 
   render() {
     return <SuggestSchema
+      disabled={this.props.disabled}
       itemPredicate={(query, schema) => `${schema.name}${schema.description}`.includes(query.trim())}
       itemRenderer={(schema, {handleClick, modifiers, query}) => {
         if (!modifiers.matchesPredicate) {
