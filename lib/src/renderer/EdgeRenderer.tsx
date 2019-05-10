@@ -13,11 +13,12 @@ interface IEdgeRendererProps {
   config: GraphConfig,
   source?: Vertex,
   target?: Vertex
+  shouldBeHighlighted: boolean
 }
 
 export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
   render(){
-    const { edge, source, target, config } = this.props;
+    const { edge, source, target, config, shouldBeHighlighted } = this.props;
     if (!source || !target || source.hidden || target.hidden) {
       return null;
     }
@@ -26,7 +27,8 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     const center = Rectangle.fromPoints(sourcePosition, targetPosition).getCenter()
     return <g className="edge">
       <line
-        stroke={Colors.GRAY2}
+        stroke={shouldBeHighlighted ? config.selectedColor :Colors.GRAY2}
+        strokeWidth={shouldBeHighlighted ? 2 : 'inherit'}
         x1={sourcePosition.x}
         y1={sourcePosition.y}
         x2={targetPosition.x}
