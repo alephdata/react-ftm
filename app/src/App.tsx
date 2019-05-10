@@ -26,6 +26,7 @@ export default class Vis2 extends React.Component {
   }
   saveTimeout: any
 
+
   constructor(props: any) {
     super(props)
     const jsonLayout = localStorage.getItem(demoKey);

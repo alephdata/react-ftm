@@ -1,8 +1,10 @@
 import * as React from 'react'
-import {Button, ButtonGroup, Divider, Tooltip, Colors, Classes, InputGroup, Icon} from "@blueprintjs/core"
+import {Button, ButtonGroup, Divider, Tooltip, Colors, Classes, InputGroup, Icon, Drawer} from "@blueprintjs/core"
 import {GraphLayout, GraphUpdateHandler} from "./layout/GraphLayout"
 import { Rectangle } from './layout/Rectangle'
 import { filterVerticesByText } from './filters';
+import {CreateEntity} from "./ftm/CreateEntity";
+import {Schema} from "@alephdata/followthemoney";
 
 
 interface IToolbarProps {
@@ -12,11 +14,14 @@ interface IToolbarProps {
 
 interface IToolbarState {
   searchText: string
+  drawerStatus: boolean
+  subsequentOf?: Schema
 }
 
 export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
   state: IToolbarState = {
-    searchText: ''
+    searchText: '',
+    drawerStatus: false
   }
 
   constructor(props: Readonly<IToolbarProps>) {
@@ -25,6 +30,9 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     this.onFitToSelection = this.onFitToSelection.bind(this)
     this.onChangeSearch = this.onChangeSearch.bind(this)
     this.onSubmitSearch = this.onSubmitSearch.bind(this)
+    this.onAddEdge = this.onAddEdge.bind(this)
+    this.onAddVertex = this.onAddVertex.bind(this);
+    this.toggleDrawer = this.toggleDrawer.bind(this)
   }
 
   onToggleSelectionMode() {
@@ -57,10 +65,27 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     event.preventDefault()
     event.stopPropagation()
   }
+  onAddVertex() {
+    this.setState({
+      drawerStatus: true,
+      subsequentOf: this.props.layout.model.getSchema('Thing')
+    })
+  }
 
+  onAddEdge(){
+    this.setState({
+      drawerStatus: true,
+      subsequentOf: this.props.layout.model.getSchema('Interval')
+    })
+  }
+
+  toggleDrawer(){
+    this.setState(({drawerStatus}) => ({drawerStatus:!drawerStatus}))
+  }
   render() {
+    const {layout} = this.props;
     const toolbarStyle = {backgroundColor: Colors.LIGHT_GRAY5, width: '100%', padding: '3px'}
-    return (
+    return (<>
       <ButtonGroup style={toolbarStyle} className={Classes.ELEVATION_1}>
         <Tooltip content="Select a group of nodes">
           <Button icon="select" active={this.props.layout.selectionMode} onClick={this.onToggleSelectionMode}/>
@@ -69,11 +94,33 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
           <Button icon="zoom-to-fit" onClick={this.onFitToSelection}/>
         </Tooltip>
         <Divider/>
-        <div style={{width: '100%'}}></div>
+        <Tooltip content="add a node">
+          <Button icon="new-object" onClick={this.onAddVertex}/>
+        </Tooltip><Tooltip content="add a link">
+          <Button icon="new-link" onClick={this.onAddEdge}/>
+        </Tooltip>
+        <div style={{width: '100%'}}/>
         <form onSubmit={this.onSubmitSearch}>
           <InputGroup leftIcon="search" onChange={this.onChangeSearch} value={this.state.searchText} />
         </form>
       </ButtonGroup>
+      <Drawer isOpen={this.state.drawerStatus} lazy={true}  size="360p" hasBackdrop={false} className={Classes.CALLOUT}>
+        <div className={Classes.DRAWER_BODY}>
+          <div className={Classes.DIALOG_BODY}>
+            {!!this.state.subsequentOf && <CreateEntity
+              layout={layout}
+              subsequentOf={this.state.subsequentOf}
+              updateLayout={this.props.updateLayout}
+            />}
+          </div>
+        </div>
+        <div className={Classes.DRAWER_FOOTER}>
+          <Button onClick={this.toggleDrawer}>
+            Done
+          </Button>
+        </div>
+      </Drawer>
+      </>
     )
   }
 }

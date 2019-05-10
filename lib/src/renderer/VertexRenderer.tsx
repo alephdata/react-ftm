@@ -57,13 +57,16 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
     const translate = `translate(${x} ${y})`
     const labelPosition = new Point(0, config.vertexRadius * config.gridUnit)
     const color = selected ? config.selectedColor : config.vertexColor;
+    const groupStyles:React.CSSProperties = {
+      cursor: selected ? 'grab' : 'pointer'
+    }
     return (
       <DraggableCore
         handle='.handle'
         onStart={this.onPanStart}
         onDrag={this.onPanMove}
         onStop={this.onPanEnd} >
-        <g className="vertex" transform={translate} ref={this.gRef}>
+        <g className="vertex" transform={translate} ref={this.gRef} style={groupStyles}>
           <circle className="handle" r={config.gridUnit * config.vertexRadius} fill={color} />
           <LabelRenderer center={labelPosition} label={vertex.label} />
         </g>

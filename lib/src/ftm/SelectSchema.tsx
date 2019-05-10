@@ -14,12 +14,21 @@ interface ISelectSchemaProps {
 }
 
 export class SelectSchema extends PureComponent<ISelectSchemaProps> {
-  private readonly schemataToShow: Schema[];
+  private schemataToShow: Schema[];
 
   constructor(props: ISelectSchemaProps) {
     super(props);
-    this.schemataToShow = Object.values(props.model.schemata)
-      .filter(schema => schema && (schema.name !== Schema.THING) && schema.isA(props.subsequentOf)) as Schema[]
+    this.schemataToShow = this.computeSchemaList(props.subsequentOf)
+  }
+
+  computeSchemaList(subsequentOf = this.props.subsequentOf){
+    return Object.values(this.props.model.schemata)
+      .filter(schema => schema && (schema.name !== Schema.THING) && schema.isA(subsequentOf)) as Schema[]
+  }
+  componentWillReceiveProps(nextProps: Readonly<ISelectSchemaProps>, nextContext: any): void {
+    if(nextProps.subsequentOf !== this.props.subsequentOf){
+      this.schemataToShow = this.computeSchemaList(nextProps.subsequentOf);
+    }
   }
 
   render() {
