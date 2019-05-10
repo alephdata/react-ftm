@@ -3,7 +3,6 @@ import {
   Callout,
 } from '@blueprintjs/core'
 import {Entity, Property} from "@alephdata/followthemoney";
-import {GraphLayout} from "../layout";
 import {SelectProperty} from "./property/SelectProperty";
 import {PropertyEditor} from "./property/PropertyEditor";
 
@@ -12,7 +11,6 @@ import {PropertyEditor} from "./property/PropertyEditor";
 
 interface IEntityEditorProps {
   entity: Entity,
-  layout: GraphLayout
   onEntityChanged:(entity:Entity) => void
 }
 

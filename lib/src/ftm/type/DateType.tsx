@@ -9,7 +9,7 @@ export class DateType extends PureComponent<ITypeProps> {
   onChange = (value: Date) => {
     this.props.onPropertyChanged([value.toString()] as unknown as Values, this.props.property)
   };
-  jsDateFormatter: IDateFormatProps = {
+  private jsDateFormatter: IDateFormatProps = {
     formatDate: date => date.toLocaleDateString(),
     parseDate: str => new Date(str),
     placeholder: "M/D/YYYY",

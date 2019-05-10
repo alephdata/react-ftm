@@ -118,6 +118,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
           <Button onClick={this.toggleDrawer}>
             Done
           </Button>
+
         </div>
       </Drawer>
       </>

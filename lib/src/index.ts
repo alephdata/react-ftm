@@ -4,6 +4,7 @@ export * from './layout/Rectangle'
 export * from './layout/Vertex'
 export * from './layout/Viewport'
 export * from './layout/GraphLayout'
+export * from './GraphContext'
 
 export * from './GraphConfig'
 export * from './GraphEditor'

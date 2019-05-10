@@ -1,7 +1,7 @@
 import React from 'react'
 import { FocusStyleManager } from '@blueprintjs/core';
 import {IEntityDatum} from '@alephdata/followthemoney';
-import { GraphLayout, GraphEditor, GraphConfig } from '@alephdata/vislib';
+import { GraphLayout, GraphEditor, GraphConfig, GraphContext } from '@alephdata/vislib';
 import { defaultModel, Model } from '@alephdata/followthemoney'
 import { data } from './resources/az_alievs';
 
@@ -14,7 +14,7 @@ FocusStyleManager.onlyShowFocusOnTabs();
 
 const model = new Model(defaultModel)
 const config = new GraphConfig()
-const demoKey = 'LS_v2'
+const demoKey = 'LS_v122222sadw2'
 
 interface IVisState {
   layout: GraphLayout
@@ -50,6 +50,11 @@ export default class Vis2 extends React.Component {
 
   render() {
     const {layout} = this.state;
-    return <GraphEditor layout={layout} updateLayout={this.updateLayout}/>
+    return <GraphContext.Provider value={{
+      updateLayout:this.updateLayout,
+      layout
+    }}>
+      <GraphEditor layout={layout} updateLayout={this.updateLayout}/>
+    </GraphContext.Provider>
   }
 }

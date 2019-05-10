@@ -72,7 +72,6 @@ export class CreateEntity extends Component<ICreateEntityProps, ICreateEntitySta
       {entity &&  <EntityEditor
         onEntityChanged={this.appendToLayout}
         entity={entity}
-        layout={layout}
       /> }
     </div>
   }
