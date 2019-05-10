@@ -81,7 +81,12 @@ export class SelectSchema extends PureComponent<ISelectSchemaProps> {
 
   computeSchemaList(subsequentOf = this.props.subsequentOf) {
     return Object.values(this.props.model.schemata)
-      .filter(schema => schema && (schema !== subsequentOf) && schema.isA(subsequentOf)) as Schema[]
+      .filter(schema => schema
+        && (schema !== subsequentOf)
+        && !schema.abstract
+        && schema.isA(subsequentOf)
+
+      ) as Schema[]
   }
 
   componentWillReceiveProps(nextProps: Readonly<ISelectSchemaProps>, nextContext: any): void {

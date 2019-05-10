@@ -94,9 +94,9 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
           <Button icon="zoom-to-fit" onClick={this.onFitToSelection}/>
         </Tooltip>
         <Divider/>
-        <Tooltip content="add a node">
+        <Tooltip content="Add an object or a subject">
           <Button icon="new-object" onClick={this.onAddVertex}/>
-        </Tooltip><Tooltip content="add a link">
+        </Tooltip><Tooltip content="Add a connection">
           <Button icon="new-link" onClick={this.onAddEdge}/>
         </Tooltip>
         <div style={{width: '100%'}}/>
