@@ -20,6 +20,7 @@ export class EntityType extends PureComponent<IEntityTypeProps> {
     super(props);
 
     this.ensureInstance = this.ensureInstance.bind(this);
+    this.onRemove = this.onRemove.bind(this);
   }
 
 
@@ -53,9 +54,14 @@ export class EntityType extends PureComponent<IEntityTypeProps> {
       } else return e
     })
   }
-  onChange = (item:Entity) => {
-    const values = this.props.values;
-    this.props.onPropertyChanged([...values, item.id], this.props.property)
+  onAdd = (item:Entity) => {
+    const nextValues = [...this.props.values,item.id];
+    this.props.onPropertyChanged(nextValues, this.props.property)
+  }
+  onRemove(label:string, index:number){
+    let nextValues = [...this.props.values];
+    nextValues.splice(index,1);
+    this.props.onPropertyChanged(nextValues, this.props.property)
   }
 
   render() {
@@ -66,9 +72,18 @@ export class EntityType extends PureComponent<IEntityTypeProps> {
 
     return <FormGroup label={property.description || property.label || property.name}>
       <EntityMultiSelect
+        resetOnSelect
+        popoverProps={{
+          minimal:true
+        }}
+        tagInputProps={{
+          addOnBlur:true,
+          fill:true,
+          onRemove:this.onRemove
+        }}
         itemPredicate={this.itemPredicate}
         itemRenderer={this.itemRenderer}
-        onItemSelect={this.onChange}
+        onItemSelect={this.onAdd}
         selectedItems={this.ensureInstance()}
         items={availableItems}
         tagRenderer={e => e.getCaption()}

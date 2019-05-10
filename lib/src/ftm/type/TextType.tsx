@@ -20,6 +20,7 @@ export class TextType extends PureComponent<ITypeProps> {
         vertical
       >
         <TagInput
+          addOnBlur
           addOnPaste
           onChange={this.onChange}
           values={this.props.values}

@@ -8,5 +8,5 @@ export interface ITypeProps {
 }
 
 export function predicate(term:string, query:string){
-  return term.trim().toLowerCase().indexOf(query.trim()) !== -1
+  return term.trim().toLowerCase().indexOf(query.trim().toLowerCase()) !== -1
 }

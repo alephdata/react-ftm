@@ -30,13 +30,13 @@ export default class Vis2 extends React.Component {
   constructor(props: any) {
     super(props)
     const jsonLayout = localStorage.getItem(demoKey);
-    if (jsonLayout) {
-      this.state.layout = GraphLayout.fromJSON(config, model, JSON.parse(jsonLayout))
-    } else {
+    // if (jsonLayout) {
+    //   this.state.layout = GraphLayout.fromJSON(config, model, JSON.parse(jsonLayout))
+    // } else {
       const entities = data.map(rawEntity => this.state.layout.model.getEntity(rawEntity as unknown as IEntityDatum));
       entities.forEach((entity) => this.state.layout.appendEntity(entity))
       this.state.layout.layout()
-    }
+    // }
     this.updateLayout = this.updateLayout.bind(this)
   }
 
