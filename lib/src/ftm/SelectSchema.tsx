@@ -1,8 +1,9 @@
 import React, {PureComponent} from 'react';
-import {Suggest} from "@blueprintjs/select";
+import {ItemPredicate, ItemRenderer, Suggest} from "@blueprintjs/select";
 import { Model, Schema} from "@alephdata/followthemoney";
 import {MenuItem, NonIdealState} from "@blueprintjs/core";
 import {highlightText} from "../utils";
+import {predicate} from "./type/common";
 
 const SuggestSchema = Suggest.ofType<Schema>()
 
@@ -21,6 +22,25 @@ export class SelectSchema extends PureComponent<ISelectSchemaProps> {
     this.schemataToShow = this.computeSchemaList(props.subsequentOf)
   }
 
+  itemPredicate:ItemPredicate<Schema> = (query, schema) => predicate(`${schema.name}${schema.description}`, query)
+
+  itemRender :ItemRenderer<Schema> = (schema, {handleClick, modifiers, query}) => {
+    if (!modifiers.matchesPredicate) {
+      return null;
+    }
+    const label = schema.description ? schema.label : undefined;
+    const text = schema.description || schema.label;
+    return (
+      <MenuItem
+        active={modifiers.active}
+        disabled={modifiers.disabled}
+        label={label}
+        key={schema.name}
+        onClick={handleClick}
+        text={highlightText(text, query)}
+      />
+    );
+  }
   computeSchemaList(subsequentOf = this.props.subsequentOf){
     return Object.values(this.props.model.schemata)
       .filter(schema => schema && (schema.name !== Schema.THING) && schema.isA(subsequentOf)) as Schema[]
@@ -34,24 +54,8 @@ export class SelectSchema extends PureComponent<ISelectSchemaProps> {
   render() {
     return <SuggestSchema
       disabled={this.props.disabled}
-      itemPredicate={(query, schema) => `${schema.name}${schema.description}`.includes(query.trim())}
-      itemRenderer={(schema, {handleClick, modifiers, query}) => {
-        if (!modifiers.matchesPredicate) {
-          return null;
-        }
-        const label = schema.description ? schema.label : undefined;
-        const text = schema.description || schema.label;
-        return (
-          <MenuItem
-            active={modifiers.active}
-            disabled={modifiers.disabled}
-            label={label}
-            key={schema.name}
-            onClick={handleClick}
-            text={highlightText(text, query)}
-          />
-        );
-      }}
+      itemPredicate={this.itemPredicate}
+      itemRenderer={this.itemRender}
       resetOnSelect={true}
       onItemSelect={this.props.onSchemaSelect}
       inputValueRenderer={p => p.name}

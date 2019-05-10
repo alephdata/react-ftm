@@ -14,7 +14,7 @@ FocusStyleManager.onlyShowFocusOnTabs();
 
 const model = new Model(defaultModel)
 const config = new GraphConfig()
-const demoKey = 'LS_v122222sadw2'
+const demoKey = 'LS_v1'
 
 interface IVisState {
   layout: GraphLayout

@@ -3,6 +3,7 @@ import {Property} from "@alephdata/followthemoney";
 import React, {PureComponent} from "react";
 import {FormGroup, MenuItem, NonIdealState} from "@blueprintjs/core";
 import {highlightText} from "../../utils";
+import {predicate} from "../type/common";
 
 const PropertySuggest = Suggest.ofType<Property>()
 
@@ -13,7 +14,7 @@ interface ISelectPropertyProps {
 
 export class SelectProperty extends PureComponent<ISelectPropertyProps> {
   itemPredicate:ItemPredicate<Property> = (query: string, property: Property) => {
-    return `${property.name + property.description}`.includes(query.trim())
+    return predicate(`${property.name + property.description}`,query)
   }
 
   itemRenderer:ItemRenderer<Property> = (property, {handleClick, modifiers, query}) => {

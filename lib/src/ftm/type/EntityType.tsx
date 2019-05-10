@@ -1,8 +1,8 @@
 import React, {PureComponent} from "react";
-import {Entity, Property, Values} from "@alephdata/followthemoney";
-import {ControlGroup, FormGroup, MenuItem} from "@blueprintjs/core";
+import {Entity} from "@alephdata/followthemoney";
+import {FormGroup, MenuItem} from "@blueprintjs/core";
 import {ItemPredicate, ItemRenderer, MultiSelect} from "@blueprintjs/select";
-import {ITypeProps} from "./common";
+import {ITypeProps, predicate} from "./common";
 import {highlightText} from "../../utils";
 
 interface IEntityTypeProps extends ITypeProps {
@@ -16,14 +16,8 @@ export class EntityType extends PureComponent<IEntityTypeProps> {
   static group = new Set(['entity'])
 
   itemPredicate: ItemPredicate<Entity> = (query: string, entity: Entity) => {
-    const caption = entity.getCaption();
-    console.log(caption)
-    if (caption) {
-      return caption.includes(query.trim());
-    } else {
-      return false
-    }
-  }
+    return predicate(entity.getCaption() || '', query)
+  };
 
   itemRenderer: ItemRenderer<Entity> = (entity, {handleClick, modifiers, query}) => {
     if (!modifiers.matchesPredicate) {
