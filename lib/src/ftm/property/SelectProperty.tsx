@@ -12,7 +12,7 @@ interface ISelectPropertyProps {
   onSelected: (property: Property) => void
 }
 
-export class SSelectProperty extends PureComponent<ISelectPropertyProps> {
+export class SelectProperty extends PureComponent<ISelectPropertyProps> {
   itemPredicate:ItemPredicate<Property> = (query: string, property: Property) => {
     return predicate(`${property.name + property.description}`,query)
   }

@@ -77,7 +77,7 @@
     "typescript": "^3.4.2"
   },
   "peerDependencies": {
-    "@alephdata/followthemoney": "^1.11.20",
+    "@alephdata/followthemoney": "^1.11.22",
     "@blueprintjs/core": "^3.15.1",
     "@blueprintjs/datetime": "^3.9.0",
     "@blueprintjs/select": "^3.8.0",
