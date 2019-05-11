@@ -4,7 +4,6 @@ import {FormGroup, MenuItem} from "@blueprintjs/core";
 import {ItemPredicate, ItemRenderer, MultiSelect} from "@blueprintjs/select";
 import {ITypeProps, predicate} from "./common";
 import {highlightText} from "../../utils";
-import {bindExpression} from "@babel/types";
 
 interface IEntityTypeProps extends ITypeProps {
   entities: Map<string, Entity>
@@ -47,17 +46,19 @@ export class EntityType extends PureComponent<IEntityTypeProps> {
     );
   }
 
-  ensureInstance():Array<Entity>{
+  ensureInstance(): Array<Entity>{
     return this.props.values.map(e => {
       if(typeof e === 'string'){
         return this.props.entities.get(e) as Entity
       } else return e
     })
   }
+
   onAdd = (item:Entity) => {
     const nextValues = [...this.props.values,item.id];
     this.props.onPropertyChanged(nextValues, this.props.property)
   }
+
   onRemove(label:string, index:number){
     let nextValues = [...this.props.values];
     nextValues.splice(index,1);
@@ -65,27 +66,27 @@ export class EntityType extends PureComponent<IEntityTypeProps> {
   }
 
   render() {
-    const {property} = this.props;
-    const availableItems = Array.from(this.props.entities.values())
-      // you are more likely to want only `Things`
-      .filter(e => e.schema.isThing() && !this.props.values.includes(e.id));
+    const { property } = this.props;
+    const label = property.description || property.label || property.name
+    const items = Array.from(this.props.entities.values())
+      .filter(e => e.schema.isA(property.getRange()) && !this.props.values.includes(e.id));
 
-    return <FormGroup label={property.description || property.label || property.name}>
+    return <FormGroup label={label}>
       <EntityMultiSelect
         resetOnSelect
         popoverProps={{
-          minimal:true
+          minimal: true
         }}
         tagInputProps={{
-          addOnBlur:true,
-          fill:true,
-          onRemove:this.onRemove
+          addOnBlur: true,
+          fill: true,
+          onRemove: this.onRemove
         }}
         itemPredicate={this.itemPredicate}
         itemRenderer={this.itemRenderer}
         onItemSelect={this.onAdd}
         selectedItems={this.ensureInstance()}
-        items={availableItems}
+        items={items}
         tagRenderer={e => e.getCaption()}
       />
     </FormGroup>

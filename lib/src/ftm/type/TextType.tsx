@@ -13,12 +13,9 @@ export class TextType extends PureComponent<ITypeProps> {
 
   render() {
     const {property} = this.props;
-    return <FormGroup
-      label={property.description || property.label || property.name}
-    >
-      <ControlGroup
-        vertical
-      >
+    const label = property.description || property.label || property.name
+    return <FormGroup label={label}>
+      <ControlGroup vertical>
         <TagInput
           addOnBlur
           addOnPaste

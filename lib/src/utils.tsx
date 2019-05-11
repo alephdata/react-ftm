@@ -2,6 +2,7 @@
 
 import React from 'react';
 
+
 export function highlightText(text: string, query: string) {
   let lastIndex = 0;
   const words = query

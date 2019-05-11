@@ -23,20 +23,18 @@ export class CreateEntity extends Component<ICreateEntityProps, ICreateEntitySta
   }
   state:ICreateEntityState = {}
 
-  appendToLayout(entity:Entity){
+  appendToLayout(entity: Entity){
     this.props.layout.appendEntity(entity);
     this.props.layout.layout();
     this.props.updateLayout(this.props.layout)
   }
 
-  onSchemaSelect(schema:Schema) {
+  onSchemaSelect(schema: Schema) {
     this.setState(({entity})=>{
       // generates a new entity based on selected schema
       const nextEntity = this.props.layout.model.createEntity(schema);
 
-      /**
-       * @description transferring values from old entity to new one where applicable, craiteria is where name and and the type of property matchs
-       */
+      // transfer values from old entity to new one where applicable
       if(entity){
         // stores properties which has a value
         const nextEntityProps = nextEntity.schema.getProperties()
@@ -69,7 +67,7 @@ export class CreateEntity extends Component<ICreateEntityProps, ICreateEntitySta
         onSchemaSelect={this.onSchemaSelect}
       />
       <Divider />
-      {entity &&  <EntityEditor
+      {entity && <EntityEditor
         onEntityChanged={this.appendToLayout}
         entity={entity}
       /> }

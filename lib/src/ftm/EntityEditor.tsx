@@ -1,13 +1,8 @@
 import React, {PureComponent} from 'react';
-import {
-  Callout,
-} from '@blueprintjs/core'
+import { Callout } from '@blueprintjs/core'
 import {Entity, Property} from "@alephdata/followthemoney";
 import {SelectProperty} from "./property/SelectProperty";
 import {PropertyEditor} from "./property/PropertyEditor";
-
-// 7ce99c16990557f8a859a6c6ab080dc8cf1e1506 - MARIOT
-// 47b73abc9dd57c83c3ae65cd70dc48541b15a1e3 - JAMAL
 
 interface IEntityEditorProps {
   entity: Entity,

@@ -32,21 +32,14 @@ export class PropertyEditor extends Component<IPropertyEditorProps> {
     };
 
     if (DateType.group.has(property.type.name)) {
-      return <DateType
-        {...commonProps}
-      />;
+      return <DateType {...commonProps} />;
     }
 
     if (EntityType.group.has(property.type.name)) {
-      return <EntityType
-        entities={this.context.layout.entities}
-        {...commonProps}
-      />
+      return <EntityType entities={this.context.layout.entities} {...commonProps} />
     }
 
     // fallback
-    return <TextType
-      {...commonProps}
-    />;
+    return <TextType {...commonProps} />;
   }
 }

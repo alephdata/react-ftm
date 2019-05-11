@@ -1,7 +1,7 @@
-import {ItemPredicate, ItemRenderer, Suggest} from "@blueprintjs/select";
-import {Property} from "@alephdata/followthemoney";
 import React, {PureComponent} from "react";
+import {ItemPredicate, ItemRenderer, Suggest} from "@blueprintjs/select";
 import {FormGroup, MenuItem, NonIdealState} from "@blueprintjs/core";
+import {Property} from "@alephdata/followthemoney";
 import {highlightText} from "../../utils";
 import {predicate} from "../type/common";
 
@@ -21,16 +21,13 @@ export class SelectProperty extends PureComponent<ISelectPropertyProps> {
     if (!modifiers.matchesPredicate) {
       return null;
     }
-    const label = property.description ? property.name : undefined;
-    const text = property.description || property.name;
     return (
       <MenuItem
         active={modifiers.active}
         disabled={modifiers.disabled}
-        label={label}
         key={property.name}
         onClick={handleClick}
-        text={highlightText(text, query)}
+        text={highlightText(property.label, query)}
       />
     );
   }
