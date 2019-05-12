@@ -107,7 +107,7 @@ export class Vertex {
     return new Vertex(layout, {
       id: `${type}:${entity.id}`,
       type: type,
-      label: entity.getCaption() || entity.schema.label,
+      label: entity.getCaption(),
       fixed: false,
       hidden: false,
       entityId: entity.id

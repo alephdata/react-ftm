@@ -21,6 +21,8 @@ export class Edge {
   public readonly targetId: string
   public readonly entityId?: string
   public readonly propertyQName?: string
+
+  // temp flag for disposal of outdated nodes
   public garbage: boolean = false
 
   constructor(layout: GraphLayout, data: IEdgeData) {
@@ -91,7 +93,7 @@ export class Edge {
     return new Edge(layout, {
       id: `${entity.id}(${source.id}, ${target.id})`,
       type: PropertyType.ENTITY,
-      label: entity.getCaption() || entity.schema.label,
+      label: entity.getCaption(),
       sourceId: source.id,
       targetId: target.id,
       entityId: entity.id
