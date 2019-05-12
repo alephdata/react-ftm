@@ -3,8 +3,8 @@ import {Button, ButtonGroup, Divider, Tooltip, Colors, Classes, InputGroup, Icon
 import {GraphLayout, GraphUpdateHandler} from "./layout/GraphLayout"
 import { Rectangle } from './layout/Rectangle'
 import { filterVerticesByText } from './filters';
-import {CreateEntity} from "./ftm/CreateEntity";
-import {Schema} from "@alephdata/followthemoney";
+import { CreateEntity } from "./editor/CreateEntity";
+import { Schema } from "@alephdata/followthemoney";
 
 
 interface IToolbarProps {

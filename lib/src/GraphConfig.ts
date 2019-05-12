@@ -6,6 +6,8 @@ export class GraphConfig {
   public vertexColor: string = Colors.BLUE5
   public selectedColor: string = Colors.BLUE2
   public vertexRadius: number = 1
+  public contentPadding: string = '10px'
+  public borderColor: string = Colors.LIGHT_GRAY1
 
   gridToPixel(point: Point): Point {
     return new Point(

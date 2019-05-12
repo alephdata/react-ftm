@@ -24,20 +24,34 @@ export class GraphEditor extends React.Component<IGraphEditorProps> {
   }
 
   render() {
-    const { layout, updateLayout } = this.props;
+    const { layout, updateLayout } = this.props
+    const config = layout.config
     return (
       <div style={{flex: 1, display: 'flex', flexFlow: 'column', height: '100%'}}>
         <div style={{flexGrow: 0, flexShrink: 1, flexBasis: 'auto'}}>
           <Toolbar layout={layout} updateLayout={updateLayout}/>
         </div>
-        <div style={{flexGrow: 1, flexShrink: 1, flexBasis: '100%', position: 'relative'}}>
-          <div style={{position: 'absolute', top: '5px', right: '10px'}}>
-            <ButtonGroup vertical>
-              <Button icon="zoom-in" onClick={() => this.onZoom(0.8)}/>
-              <Button icon="zoom-out" onClick={() => this.onZoom(1.2)}/>
-            </ButtonGroup>
+        <div style={{flex: 1, display: 'flex', flexFlow: 'row', flexGrow: 1, flexShrink: 1, flexBasis: '100%'}}>
+          <div style={{flexGrow: 4, flexShrink: 1, flexBasis: 'auto', position: 'relative'}}>
+            <div style={{position: 'absolute', top: '5px', right: '10px'}}>
+              <ButtonGroup vertical>
+                <Button icon="zoom-in" onClick={() => this.onZoom(0.8)}/>
+                <Button icon="zoom-out" onClick={() => this.onZoom(1.2)}/>
+              </ButtonGroup>
+            </div>
+            <GraphRenderer layout={layout} updateLayout={updateLayout}/>
           </div>
-          <GraphRenderer layout={layout} updateLayout={updateLayout}/>
+          <div style={{
+            flexGrow: 1,
+            flexShrink: 1,
+            flexBasis: 'auto',
+            borderLeftWidth: '1px',
+            borderLeftStyle: 'solid',
+            borderLeftColor: config.borderColor,
+            padding: config.contentPadding
+          }}>
+            test 123
+          </div>
         </div>
       </div>
     );
