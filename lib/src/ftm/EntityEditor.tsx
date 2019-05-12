@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import * as React from 'react'
 import { Callout } from '@blueprintjs/core'
 import {Entity, Property} from "@alephdata/followthemoney";
 import {SelectProperty} from "./property/SelectProperty";
@@ -13,7 +13,7 @@ interface IEntityEditorState {
   propsToEdit: Set<Property>
 }
 
-export class EntityEditor extends PureComponent<IEntityEditorProps, IEntityEditorState> {
+export class EntityEditor extends React.PureComponent<IEntityEditorProps, IEntityEditorState> {
   private schemaProperties: Property[];
 
 

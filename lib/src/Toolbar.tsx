@@ -31,7 +31,8 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     this.onChangeSearch = this.onChangeSearch.bind(this)
     this.onSubmitSearch = this.onSubmitSearch.bind(this)
     this.onAddEdge = this.onAddEdge.bind(this)
-    this.onAddVertex = this.onAddVertex.bind(this);
+    this.onAddVertex = this.onAddVertex.bind(this)
+    this.onRemoveSelection = this.onRemoveSelection.bind(this)
     this.toggleDrawer = this.toggleDrawer.bind(this)
   }
 
@@ -65,6 +66,13 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     event.preventDefault()
     event.stopPropagation()
   }
+
+  onRemoveSelection() {
+    const {layout, updateLayout} = this.props
+    layout.removeSelection()
+    updateLayout(layout)
+  }
+
   onAddVertex() {
     this.setState({
       drawerStatus: true,
@@ -82,8 +90,10 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
   toggleDrawer(){
     this.setState(({drawerStatus}) => ({drawerStatus:!drawerStatus}))
   }
+
   render() {
-    const {layout} = this.props;
+    const {layout} = this.props
+    const hasSelection = layout.hasSelection()
     const toolbarStyle = {backgroundColor: Colors.LIGHT_GRAY5, width: '100%', padding: '3px'}
     return (<>
       <ButtonGroup style={toolbarStyle} className={Classes.ELEVATION_1}>
@@ -94,9 +104,13 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
           <Button icon="zoom-to-fit" onClick={this.onFitToSelection}/>
         </Tooltip>
         <Divider/>
-        <Tooltip content="Add an object or a subject">
+        <Tooltip content="Add a node">
           <Button icon="new-object" onClick={this.onAddVertex}/>
-        </Tooltip><Tooltip content="Add a connection">
+        </Tooltip>
+        <Tooltip content="Remove selected nodes" disabled={!hasSelection}>
+          <Button icon="graph-remove" onClick={this.onRemoveSelection} disabled={!hasSelection} />
+        </Tooltip>
+        <Tooltip content="Add an edge">
           <Button icon="new-link" onClick={this.onAddEdge}/>
         </Tooltip>
         <div style={{width: '100%'}}/>

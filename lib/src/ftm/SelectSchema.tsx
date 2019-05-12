@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import * as React from 'react'
 import {Model, Schema, IconRegistry} from "@alephdata/followthemoney";
 import {Menu, MenuItem} from "@blueprintjs/core";
 
@@ -10,7 +10,7 @@ interface ISelectSchemaProps {
   onSchemaSelect: (schema: Schema) => void
 }
 
-export class SelectSchema extends PureComponent<ISelectSchemaProps> {
+export class SelectSchema extends React.PureComponent<ISelectSchemaProps> {
   private schemataToShow: Schema[];
 
   constructor(props: ISelectSchemaProps) {

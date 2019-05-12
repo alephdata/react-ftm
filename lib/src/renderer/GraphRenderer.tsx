@@ -62,26 +62,26 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
 
   renderEdges() {
     const { layout } = this.props;
-    return layout.getEdges().map((edge) => {
+    const edges = layout.getEdges().filter((edge) => !edge.isHidden())
+    return edges.map((edge) => {
       const source = layout.vertices.get(edge.sourceId);
       const target = layout.vertices.get(edge.targetId);
-
-      const isOwnVertexSelected = (source && layout.isVertexSelected(source)) || (target && layout.isVertexSelected(target))
       return  <EdgeRenderer
-        key={edge.id}
-        config={layout.config}
-        edge={edge}
-        shouldBeHighlighted={!!isOwnVertexSelected}
-        source={source}
-        target={target}
-      />
+          key={edge.id}
+          config={layout.config}
+          edge={edge}
+          selected={layout.isEdgeSelected(edge)}
+          source={source}
+          target={target}
+        />
       }
     )
   }
 
   renderVertices() {
     const { layout } = this.props;
-    return layout.getVertices().map((vertex) =>
+    const vertices = layout.getVertices().filter((vertex) => !vertex.isHidden())
+    return vertices.map((vertex) =>
       <VertexRenderer
         key={vertex.id}
         config={layout.config}

@@ -1,10 +1,10 @@
-import React, {PureComponent} from "react";
+import * as React from 'react'
 import {Values} from "@alephdata/followthemoney";
 import {DateInput, IDateFormatProps} from "@blueprintjs/datetime";
 import {FormGroup} from "@blueprintjs/core";
 import {ITypeProps} from "./common";
 
-export class DateType extends PureComponent<ITypeProps> {
+export class DateType extends React.PureComponent<ITypeProps> {
   static group = new Set(['date'])
 
   onChange = (value: Date) => {

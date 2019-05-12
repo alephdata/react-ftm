@@ -1,9 +1,9 @@
-import React, {PureComponent} from "react";
+import * as React from 'react'
 import {Entity} from "@alephdata/followthemoney";
 import {FormGroup, MenuItem} from "@blueprintjs/core";
 import {ItemPredicate, ItemRenderer, MultiSelect} from "@blueprintjs/select";
-import {ITypeProps, predicate} from "./common";
-import {highlightText} from "../../utils";
+import {ITypeProps} from "./common";
+import {highlightText, matchText} from "../../utils";
 
 interface IEntityTypeProps extends ITypeProps {
   entities: Map<string, Entity>
@@ -12,19 +12,18 @@ interface IEntityTypeProps extends ITypeProps {
 const EntityMultiSelect = MultiSelect.ofType<Entity>();
 
 
-export class EntityType extends PureComponent<IEntityTypeProps> {
+export class EntityType extends React.PureComponent<IEntityTypeProps> {
   static group = new Set(['entity'])
 
   constructor(props:IEntityTypeProps) {
     super(props);
-
     this.ensureInstance = this.ensureInstance.bind(this);
     this.onRemove = this.onRemove.bind(this);
   }
 
 
   itemPredicate: ItemPredicate<Entity> = (query: string, entity: Entity) => {
-    return predicate(entity.getCaption() || '', query)
+    return matchText(entity.getCaption() || '', query)
   };
 
   itemRenderer: ItemRenderer<Entity> = (entity, {handleClick, modifiers, query}) => {

@@ -1,20 +1,20 @@
-import React, {PureComponent} from "react";
-import {ItemPredicate, ItemRenderer, Suggest} from "@blueprintjs/select";
-import {FormGroup, MenuItem, NonIdealState} from "@blueprintjs/core";
+import * as React from 'react'
+import {ItemPredicate, ItemRenderer, Select} from "@blueprintjs/select";
+import {MenuItem, Button} from "@blueprintjs/core";
 import {Property} from "@alephdata/followthemoney";
-import {highlightText} from "../../utils";
-import {predicate} from "../type/common";
+import {highlightText, matchText} from "../../utils";
 
-const PropertySuggest = Suggest.ofType<Property>()
+const PropertySelect = Select.ofType<Property>()
 
 interface ISelectPropertyProps {
   properties: Property[]
   onSelected: (property: Property) => void
 }
 
-export class SelectProperty extends PureComponent<ISelectPropertyProps> {
+export class SelectProperty extends React.PureComponent<ISelectPropertyProps> {
+
   itemPredicate:ItemPredicate<Property> = (query: string, property: Property) => {
-    return predicate(`${property.name + property.description}`,query)
+    return matchText(`${property.name + property.description}`,query)
   }
 
   itemRenderer:ItemRenderer<Property> = (property, {handleClick, modifiers, query}) => {
@@ -33,21 +33,15 @@ export class SelectProperty extends PureComponent<ISelectPropertyProps> {
   }
 
   render() {
-    return <FormGroup label="Add more properties">
-      <PropertySuggest
-        itemPredicate={this.itemPredicate}
-        itemRenderer={this.itemRenderer}
-        resetOnSelect={true}
-        onItemSelect={this.props.onSelected}
-        inputValueRenderer={p => p.name}
-        items={this.props.properties}
-        noResults={<NonIdealState
-          icon="heart-broken"
-          title="No search results"
-          description="no such a property found, try using other Schemas"
-        />}
-      />
-    </FormGroup>
+    return <PropertySelect
+      itemPredicate={this.itemPredicate}
+      itemRenderer={this.itemRenderer}
+      // filterable={false}
+      resetOnSelect={true}
+      onItemSelect={this.props.onSelected}
+      items={this.props.properties}>
+      <Button text="Add a field" fill rightIcon="double-caret-vertical" />
+    </PropertySelect>
   }
 }
 

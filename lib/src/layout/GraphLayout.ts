@@ -35,19 +35,13 @@ export class GraphLayout {
     this.viewport = new Viewport(config)
     this.addVertex = this.addVertex.bind(this)
     this.addEdge = this.addEdge.bind(this)
-    this.appendEntity = this.appendEntity.bind(this)
+    this.addEntity = this.addEntity.bind(this)
   }
 
   addVertex(vertex: Vertex): Vertex {
-    /**
-     * @desc if vertex already exists transfers persistent parameters from old vertex to new
-     */
-    if (this.vertices.has(vertex.id)) {
-      const prevVertex = this.vertices.get(vertex.id) as Vertex;
-      this.vertices.set(
-        vertex.id,
-        vertex.updateFromEntity(prevVertex)
-      );
+    const existing = this.vertices.get(vertex.id)
+    if (existing) {
+      this.vertices.set(vertex.id, existing.update(vertex))
     } else {
       this.vertices.set(vertex.id, vertex)
     }
@@ -59,79 +53,61 @@ export class GraphLayout {
   }
 
   addEdge(edge: Edge): Edge {
-    this.edges.set(edge.id, edge)
-    return edge
+    const existing = this.edges.get(edge.id)
+    if (existing) {
+      this.edges.set(edge.id, existing.update(edge))
+    } else {
+      this.edges.set(edge.id, edge)
+    }
+    return this.edges.get(edge.id) as Edge
   }
 
   getEdges(): Edge[] {
     return Array.from(this.edges.values())
   }
 
-  convertEntityToElements(entity: Entity) {
-    const returnValue = {
-      vertices: [] as Vertex[],
-      edges: [] as Edge[]
-    };
-    if (entity.schema.edge) {
-      const sourceProperty = entity.schema.getProperty(entity.schema.edge.source)
-      const targetProperty = entity.schema.getProperty(entity.schema.edge.target)
-
-      entity.getProperty(sourceProperty).forEach((source) => {
-        entity.getProperty(targetProperty).forEach((target) => {
-          const sourceVertex = Vertex.fromValue(this, sourceProperty, source)
-          const targetVertex = Vertex.fromValue(this, targetProperty, target)
-          returnValue.vertices.push(
-            sourceVertex,
-            targetVertex
-          )
-          returnValue.edges.push(
-            Edge.fromEntity(this, entity, sourceVertex, targetVertex)
-          )
-
-        })
-      })
-    } else {
-      const mainVertex = Vertex.fromEntity(this, entity);
-      returnValue.vertices.push(mainVertex)
-
-      // TODO: make "typesConfig" part of the layout.
-      const properties = entity.getProperties()
-      // removing properties which should not be represented as a vertex
-        .filter(property => property.type.grouped);
-
-      properties.forEach((prop) => {
-        entity.getProperty(prop).forEach((value) => {
-          const propertyVertex = Vertex.fromValue(this, prop, value);
-          returnValue.vertices.push(propertyVertex)
-          returnValue.edges.push(
-            Edge.fromValue(this, prop, mainVertex, propertyVertex)
-          )
-        })
-      })
-    }
-    return returnValue
-  }
-
-  appendEntity(entity: Entity) {
-    this.collectGarbage();
-    this.entities.set(entity.id, entity);
-    this.entities
-      .forEach(entity => {
-        const {edges, vertices} = this.convertEntityToElements(entity);
-        vertices.forEach(this.addVertex, this);
-        edges.forEach(this.addEdge, this);
-      }, this);
-    this.disposeGarbage();
-  }
-
-  collectGarbage() {
+  private generate(): void {
     this.edges.forEach(edge => edge.garbage = true);
     this.vertices.forEach(vertex => vertex.garbage = true);
-  }
-
-  disposeGarbage() {
+    this.entities.forEach((entity) => {
+      if (entity.schema.edge) {
+        const sourceProperty = entity.schema.getProperty(entity.schema.edge.source)
+        const targetProperty = entity.schema.getProperty(entity.schema.edge.target)
+  
+        entity.getProperty(sourceProperty).forEach((source) => {
+          entity.getProperty(targetProperty).forEach((target) => {
+            const sourceVertex = Vertex.fromValue(this, sourceProperty, source)
+            const targetVertex = Vertex.fromValue(this, targetProperty, target)
+            this.addVertex(sourceVertex)
+            this.addVertex(targetVertex)
+            this.addEdge(Edge.fromEntity(this, entity, sourceVertex, targetVertex))
+          })
+        })
+      } else {
+        const mainVertex = Vertex.fromEntity(this, entity);
+        this.addVertex(mainVertex)
+  
+        // TODO: make "typesConfig" part of the layout.
+        const properties = entity.getProperties()
+        // removing properties which should not be represented as a vertex
+          .filter(property => property.type.grouped);
+  
+        properties.forEach((prop) => {
+          entity.getProperty(prop).forEach((value) => {
+            const propertyVertex = Vertex.fromValue(this, prop, value);
+            this.addVertex(propertyVertex)
+            this.addEdge(Edge.fromValue(this, prop, mainVertex, propertyVertex))
+          })
+        })
+      }
+    })
     this.edges.forEach(edge => edge.garbage && this.edges.delete(edge.id));
     this.vertices.forEach(vertex => vertex.garbage && this.vertices.delete(vertex.id));
+  }
+
+  addEntity(entity: Entity) {
+    this.entities.set(entity.id, entity)
+    this.generate()
   }
 
   getEntities(): Entity[] {
@@ -163,12 +139,21 @@ export class GraphLayout {
       .map((vertexId) => this.vertices.get(vertexId)) as Vertex[]
   }
 
+  hasSelection(): boolean {
+    return this.getSelection().length > 0
+  }
+ 
   clearSelection() {
     this.selection = [];
   }
 
   isVertexSelected(vertex: Vertex): boolean {
     return this.selection.indexOf(vertex.id) !== -1;
+  }
+
+  isEdgeSelected(edge: Edge): boolean {
+    return this.selection.indexOf(edge.sourceId) !== -1 ||
+      this.selection.indexOf(edge.targetId) !== -1;
   }
 
   dragSelection(offset: Point) {
@@ -184,10 +169,24 @@ export class GraphLayout {
     })
   }
 
-  layout() {
-    this.vertices.forEach((vertex) => {
-      vertex.hidden = vertex.type !== PropertyType.ENTITY && vertex.getDegree() <= 1;
+  removeSelection() {
+    this.getSelection().forEach((vertex) => {
+      if (vertex.entityId) {
+        this.entities.delete(vertex.entityId)
+        this.edges.forEach((edge) => {
+          if (edge.isEntity() && edge.isLinkedToVertex(vertex)) {
+            this.entities.delete(edge.entityId as string)
+          }
+        })
+      } else {
+        vertex.hidden = true
+      }
     })
+    this.generate()
+  }
+
+  layout() {
+    this.generate()
     this.layoutPositions()
   }
 
@@ -226,8 +225,7 @@ export class GraphLayout {
   toJSON(): IGraphLayoutData {
     return {
       viewport: this.viewport.toJSON(),
-      // entities: this.getEntities().map((entity) => entity.toJSON()),
-      entities: [],
+      entities: this.getEntities().map((entity) => entity.toJSON()),
       vertices: this.getVertices().map((vertex) => vertex.toJSON()),
       edges: this.getEdges().map((edge) => edge.toJSON()),
       selection: this.selection,
@@ -239,7 +237,7 @@ export class GraphLayout {
     const layoutData = data as IGraphLayoutData
     const layout = new GraphLayout(config, model)
     layoutData.entities.forEach((edata) => {
-      layout.appendEntity(model.getEntity(edata))
+      layout.entities.set(edata.id, model.getEntity(edata))
     })
     layoutData.vertices.forEach((vdata) => {
       const vertex = Vertex.fromJSON(layout, vdata)
@@ -249,6 +247,7 @@ export class GraphLayout {
       const edge = Edge.fromJSON(layout, edata)
       layout.edges.set(edge.id, edge)
     })
+    layout.generate()
     layout.viewport = Viewport.fromJSON(config, layoutData.viewport)
     layout.selectionMode = layoutData.selectionMode
     layout.selection = layoutData.selection

@@ -34,6 +34,39 @@ export class Edge {
     this.propertyQName = data.propertyQName
   }
 
+  isHidden(): boolean {
+    const source = this.layout.vertices.get(this.sourceId)
+    if (!source || source.isHidden()) {
+      return true;
+    }
+    const target = this.layout.vertices.get(this.targetId)
+    if (!target || target.isHidden()) {
+      return true;
+    }
+    return false;
+  }
+
+  isEntity(): boolean {
+    return !!(this.entityId && !this.propertyQName && this.layout.entities.get(this.entityId))
+  }
+
+  getEntity(): Entity | undefined {
+    if (this.entityId) {
+      return this.layout.entities.get(this.entityId)
+    }
+  }
+
+  isLinkedToVertex(vertex: Vertex): boolean {
+    return this.sourceId == vertex.id ||
+           this.targetId == vertex.id;
+  }
+
+  update(other: Edge): Edge {
+    const data = other.toJSON()
+    // TODO: remove if there are no changes
+    return Edge.fromJSON(this.layout, data)
+  }
+
   clone(): Edge {
     return Edge.fromJSON(this.layout, this.toJSON())
   }

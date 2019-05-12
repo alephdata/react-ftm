@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import * as React from 'react'
 import {SelectSchema} from "./SelectSchema";
 import {GraphLayout, GraphUpdateHandler} from "../layout";
 import {Entity, Schema} from "@alephdata/followthemoney";
@@ -15,7 +15,7 @@ interface ICreateEntityState {
   entity?: Entity
 }
 
-export class CreateEntity extends Component<ICreateEntityProps, ICreateEntityState> {
+export class CreateEntity extends React.Component<ICreateEntityProps, ICreateEntityState> {
   constructor(props: ICreateEntityProps) {
     super(props);
     this.onSchemaSelect = this.onSchemaSelect.bind(this);
@@ -24,9 +24,10 @@ export class CreateEntity extends Component<ICreateEntityProps, ICreateEntitySta
   state:ICreateEntityState = {}
 
   appendToLayout(entity: Entity){
-    this.props.layout.appendEntity(entity);
-    this.props.layout.layout();
-    this.props.updateLayout(this.props.layout)
+    const { layout } = this.props
+    layout.addEntity(entity);
+    layout.layout();
+    this.props.updateLayout(layout)
   }
 
   onSchemaSelect(schema: Schema) {

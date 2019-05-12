@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import * as React from 'react'
 import {Entity, Property, Values} from "@alephdata/followthemoney";
 import {DateType} from "../type/DateType";
 import {TextType} from "../type/TextType";
@@ -11,7 +11,7 @@ interface IPropertyEditorProps {
   onEntityChanged: (nextEntity: Entity) => void
 }
 
-export class PropertyEditor extends Component<IPropertyEditorProps> {
+export class PropertyEditor extends React.Component<IPropertyEditorProps> {
   static contextType = GraphContext;
   context!: React.ContextType<typeof GraphContext>;
 
@@ -22,7 +22,7 @@ export class PropertyEditor extends Component<IPropertyEditorProps> {
 
   render() {
     if (!this.context) return null;
-    const {entity, property} = this.props;
+    const { entity, property } = this.props;
     const values = entity.getProperty(property);
     const commonProps = {
       onPropertyChanged: this.onPropertyChanged,

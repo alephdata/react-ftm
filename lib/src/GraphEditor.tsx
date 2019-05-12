@@ -1,10 +1,8 @@
 import * as React from 'react'
-import {Button, ButtonGroup, Classes, Drawer} from '@blueprintjs/core';
+import { Button, ButtonGroup } from '@blueprintjs/core';
 import { GraphLayout, GraphUpdateHandler } from './layout/GraphLayout'
 import { GraphRenderer } from './renderer/GraphRenderer'
 import { Toolbar } from './Toolbar';
-import { CreateEntity } from "./ftm/CreateEntity";
-import { GraphConfig } from './GraphConfig';
 
 export interface IGraphEditorProps {
   layout: GraphLayout,
@@ -26,7 +24,7 @@ export class GraphEditor extends React.Component<IGraphEditorProps> {
   }
 
   render() {
-    const {layout, updateLayout} = this.props;
+    const { layout, updateLayout } = this.props;
     return (
       <div style={{flex: 1, display: 'flex', flexFlow: 'column', height: '100%'}}>
         <div style={{flexGrow: 0, flexShrink: 1, flexBasis: 'auto'}}>

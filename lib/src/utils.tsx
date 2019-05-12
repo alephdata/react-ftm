@@ -1,7 +1,6 @@
 
 
-import React from 'react';
-
+import * as React from 'react'
 
 export function highlightText(text: string, query: string) {
   let lastIndex = 0;
@@ -34,4 +33,8 @@ export function highlightText(text: string, query: string) {
     tokens.push(rest);
   }
   return tokens;
+}
+
+export function matchText(term: string, query: string): boolean {
+  return term.trim().toLowerCase().indexOf(query.trim().toLowerCase()) !== -1
 }

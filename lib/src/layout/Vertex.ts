@@ -39,9 +39,23 @@ export class Vertex {
     return this.layout.getEdges()
       .filter((edge) => edge.sourceId === this.id || edge.targetId === this.id)
   }
+
   getDegree(): number {
-    return this.getOwnEdges()
-      .length;
+    return this.getOwnEdges().length;
+  }
+
+  isHidden(): boolean {
+    return this.hidden || this.type !== PropertyType.ENTITY && this.getDegree() <= 1
+  }
+
+  isEntity(): boolean {
+    return !!(this.entityId && this.layout.entities.get(this.entityId))
+  }
+
+  getEntity(): Entity | undefined {
+    if (this.entityId) {
+      return this.layout.entities.get(this.entityId)
+    }
   }
 
   clone(): Vertex {
@@ -62,14 +76,11 @@ export class Vertex {
     ))
   }
 
-  updateFromEntity(vertex:Vertex){
-    return Object.assign(this,
-      {
-        hidden: vertex.hidden,
-        position: vertex.position,
-      }
-    )
-
+  update(other: Vertex): Vertex {
+    const data = other.toJSON()
+    data.hidden = this.hidden
+    data.position = this.position.toJSON()
+    return Vertex.fromJSON(this.layout, data)
   }
 
   toJSON(): IVertexData {
