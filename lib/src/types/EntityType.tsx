@@ -3,7 +3,7 @@ import {Entity} from "@alephdata/followthemoney";
 import {FormGroup, MenuItem} from "@blueprintjs/core";
 import {ItemPredicate, ItemRenderer, MultiSelect} from "@blueprintjs/select";
 import {ITypeProps} from "./common";
-import {highlightText, matchText} from "../../utils";
+import {highlightText, matchText} from "../utils";
 
 interface IEntityTypeProps extends ITypeProps {
   entities: Map<string, Entity>

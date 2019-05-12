@@ -13,8 +13,7 @@ export class TextType extends React.PureComponent<ITypeProps> {
 
   render() {
     const {property} = this.props;
-    const label = property.description || property.label || property.name
-    return <FormGroup label={label}>
+    return <FormGroup label={property.label}>
       <ControlGroup vertical>
         <TagInput
           addOnBlur

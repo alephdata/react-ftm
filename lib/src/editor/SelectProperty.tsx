@@ -1,8 +1,8 @@
 import * as React from 'react'
-import {ItemPredicate, ItemRenderer, Select} from "@blueprintjs/select";
-import {MenuItem, Button} from "@blueprintjs/core";
-import {Property} from "@alephdata/followthemoney";
-import {highlightText, matchText} from "../../utils";
+import {ItemPredicate, ItemRenderer, Select} from '@blueprintjs/select';
+import {MenuItem, Button} from '@blueprintjs/core';
+import {Property} from '@alephdata/followthemoney';
+import {highlightText, matchText} from '../utils';
 
 const PropertySelect = Select.ofType<Property>()
 
@@ -40,7 +40,7 @@ export class SelectProperty extends React.PureComponent<ISelectPropertyProps> {
       resetOnSelect={true}
       onItemSelect={this.props.onSelected}
       items={this.props.properties}>
-      <Button text="Add a field" fill rightIcon="double-caret-vertical" />
+      <Button text='Add a field' fill rightIcon='double-caret-vertical' />
     </PropertySelect>
   }
 }

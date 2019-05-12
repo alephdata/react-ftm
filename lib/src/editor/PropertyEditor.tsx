@@ -1,9 +1,9 @@
 import * as React from 'react'
-import {Entity, Property, Values} from "@alephdata/followthemoney";
-import {DateType} from "../type/DateType";
-import {TextType} from "../type/TextType";
-import {EntityType} from "../type/EntityType";
-import {GraphContext} from "../../GraphContext";
+import {Entity, Property, Values} from '@alephdata/followthemoney';
+import {DateType} from '../types/DateType';
+import {TextType} from '../types/TextType';
+import {EntityType} from '../types/EntityType';
+import {GraphContext} from '../GraphContext';
 
 interface IPropertyEditorProps {
   entity: Entity,

@@ -1,9 +1,9 @@
 import * as React from 'react'
-import {SelectSchema} from "./SelectSchema";
-import {GraphLayout, GraphUpdateHandler} from "../layout";
-import {Entity, Schema} from "@alephdata/followthemoney";
-import {Divider} from "@blueprintjs/core";
-import {EntityEditor} from "./EntityEditor";
+import {SelectSchema} from './SelectSchema';
+import {GraphLayout, GraphUpdateHandler} from '../layout';
+import {Entity, Schema} from '@alephdata/followthemoney';
+import {Divider} from '@blueprintjs/core';
+import {EntityEditor} from './EntityEditor';
 
 interface ICreateEntityProps {
   layout: GraphLayout

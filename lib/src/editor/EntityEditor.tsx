@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Callout } from '@blueprintjs/core'
-import {Entity, Property} from "@alephdata/followthemoney";
-import {SelectProperty} from "./property/SelectProperty";
-import {PropertyEditor} from "./property/PropertyEditor";
+import {Entity, Property} from '@alephdata/followthemoney';
+import {SelectProperty} from './SelectProperty';
+import {PropertyEditor} from './PropertyEditor';
 
 interface IEntityEditorProps {
   entity: Entity,

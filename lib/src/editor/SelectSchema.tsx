@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {Model, Schema, IconRegistry} from "@alephdata/followthemoney";
-import {Menu, MenuItem} from "@blueprintjs/core";
+import {Model, Schema, IconRegistry} from '@alephdata/followthemoney';
+import {Menu, MenuItem} from '@blueprintjs/core';
 
 
 interface ISelectSchemaProps {

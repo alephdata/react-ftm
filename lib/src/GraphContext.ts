@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react'
 import {GraphLayout, GraphUpdateHandler} from "./layout";
 
 export interface IGraphContextValue {

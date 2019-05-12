@@ -1,8 +1,8 @@
 import * as React from 'react'
-import {Values} from "@alephdata/followthemoney";
-import {DateInput, IDateFormatProps} from "@blueprintjs/datetime";
-import {FormGroup} from "@blueprintjs/core";
-import {ITypeProps} from "./common";
+import {Values} from '@alephdata/followthemoney';
+import {DateInput, IDateFormatProps} from '@blueprintjs/datetime';
+import {FormGroup} from '@blueprintjs/core';
+import {ITypeProps} from './common';
 
 export class DateType extends React.PureComponent<ITypeProps> {
   static group = new Set(['date'])
@@ -14,7 +14,7 @@ export class DateType extends React.PureComponent<ITypeProps> {
   private jsDateFormatter: IDateFormatProps = {
     formatDate: date => date.toLocaleDateString(),
     parseDate: str => new Date(str),
-    placeholder: "YYYY-MM-DD",
+    placeholder: 'YYYY-MM-DD',
   };
 
   render() {
