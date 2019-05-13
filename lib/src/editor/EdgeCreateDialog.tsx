@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Dialog, Menu, MenuItem, FormGroup, Intent, Button, ControlGroup, InputGroup } from '@blueprintjs/core'
-import { Schema, IconRegistry } from '@alephdata/followthemoney'
+import { Model, Schema, Property, IconRegistry } from '@alephdata/followthemoney'
 import { GraphContext, IGraphContext } from '../GraphContext'
 
 
@@ -13,6 +13,28 @@ interface IEdgeCreateDialogState {
   label: string,
   schema?: Schema
 }
+
+export class EdgeType {
+  public schema?: Schema
+  public property?: Property
+
+  constructor(schema?: Schema, property?: Property) {
+    this.schema = schema
+    this.property = property
+  }
+
+  static getAll(model: Model): EdgeType[] {
+    const types = new Array<EdgeType>()
+    if (model.schemata) {
+      model.schemata.forEach((schema) => {
+        types.push(new EdgeType(schema))
+      })
+    }
+    
+    return types
+  }
+}
+
 
 export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IEdgeCreateDialogState> {
   static contextType = GraphContext;
