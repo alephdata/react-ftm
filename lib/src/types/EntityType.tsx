@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {Entity} from "@alephdata/followthemoney";
-import {FormGroup, MenuItem} from "@blueprintjs/core";
-import {ItemPredicate, ItemRenderer, MultiSelect} from "@blueprintjs/select";
+import {FormGroup, MenuItem, Button} from "@blueprintjs/core";
+import {ItemPredicate, ItemRenderer, Select} from "@blueprintjs/select";
 import {ITypeProps} from "./common";
 import {highlightText, matchText} from "../utils";
 
@@ -9,18 +9,11 @@ interface IEntityTypeProps extends ITypeProps {
   entities: Map<string, Entity>
 }
 
-const EntityMultiSelect = MultiSelect.ofType<Entity>();
+const EntitySelect = Select.ofType<Entity>();
 
 
 export class EntityType extends React.PureComponent<IEntityTypeProps> {
   static group = new Set(['entity'])
-
-  constructor(props:IEntityTypeProps) {
-    super(props);
-    this.ensureInstance = this.ensureInstance.bind(this);
-    this.onRemove = this.onRemove.bind(this);
-  }
-
 
   itemPredicate: ItemPredicate<Entity> = (query: string, entity: Entity) => {
     return matchText(entity.getCaption() || '', query)
@@ -53,14 +46,8 @@ export class EntityType extends React.PureComponent<IEntityTypeProps> {
     })
   }
 
-  onAdd = (item:Entity) => {
-    const nextValues = [...this.props.values,item.id];
-    this.props.onPropertyChanged(nextValues, this.props.property)
-  }
-
-  onRemove(label:string, index:number){
-    let nextValues = [...this.props.values];
-    nextValues.splice(index,1);
+  onSelect = (item:Entity) => {
+    const nextValues = [item.id];
     this.props.onPropertyChanged(nextValues, this.props.property)
   }
 
@@ -69,25 +56,19 @@ export class EntityType extends React.PureComponent<IEntityTypeProps> {
     const label = property.description || property.label || property.name
     const items = Array.from(this.props.entities.values())
       .filter(e => e.schema.isA(property.getRange()) && !this.props.values.includes(e.id));
-
+    const selectedEntity = this.ensureInstance()[0];
+    const buttonText = selectedEntity ? selectedEntity.getCaption() : 'Select from list?@PUDO';
     return <FormGroup label={label}>
-      <EntityMultiSelect
+      <EntitySelect
         resetOnSelect
-        popoverProps={{
-          minimal: true
-        }}
-        tagInputProps={{
-          addOnBlur: true,
-          fill: true,
-          onRemove: this.onRemove
-        }}
+        popoverProps={{ minimal: true }}
         itemPredicate={this.itemPredicate}
         itemRenderer={this.itemRenderer}
-        onItemSelect={this.onAdd}
-        selectedItems={this.ensureInstance()}
+        onItemSelect={this.onSelect}
         items={items}
-        tagRenderer={e => e.getCaption()}
-      />
+      >
+        <Button text={buttonText} rightIcon="double-caret-vertical" />
+      </EntitySelect>
     </FormGroup>
   }
 }
