@@ -40,7 +40,7 @@ export class SelectProperty extends React.PureComponent<ISelectPropertyProps> {
       resetOnSelect={true}
       onItemSelect={this.props.onSelected}
       items={this.props.properties}>
-      <Button text='Add a field' fill rightIcon='double-caret-vertical' />
+      <Button icon='plus' text='Add a field' fill rightIcon='double-caret-vertical' />
     </PropertySelect>
   }
 }
