@@ -1,15 +1,12 @@
 import * as React from 'react'
 import { Button, ButtonGroup } from '@blueprintjs/core';
-import { GraphLayout, GraphUpdateHandler } from './layout/GraphLayout'
 import { GraphRenderer } from './renderer/GraphRenderer'
+import { IGraphContext } from './GraphContext'
 import { Toolbar } from './Toolbar';
+import { Sidebar } from './Sidebar';
 
-export interface IGraphEditorProps {
-  layout: GraphLayout,
-  updateLayout: GraphUpdateHandler
-}
 
-export class GraphEditor extends React.Component<IGraphEditorProps> {
+export class GraphEditor extends React.Component<IGraphContext> {
   constructor(props: any) {
     super(props)
     this.onZoom = this.onZoom.bind(this)
@@ -50,7 +47,7 @@ export class GraphEditor extends React.Component<IGraphEditorProps> {
             borderLeftColor: config.borderColor,
             padding: config.contentPadding
           }}>
-            test 123
+            <Sidebar layout={layout} updateLayout={updateLayout}/>
           </div>
         </div>
       </div>

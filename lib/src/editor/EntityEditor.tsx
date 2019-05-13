@@ -54,23 +54,21 @@ export class EntityEditor extends React.PureComponent<IEntityEditorProps, IEntit
     const {propsToEdit} = this.state;
 
     return <div>
-      <h2>{label}</h2>
+      <h2>{entity.getCaption()}</h2>
       {Array.from(propsToEdit.values()).map(property => <PropertyEditor
         key={property.name}
         onEntityChanged={this.props.onEntityChanged}
         entity={entity}
         property={property}
       />)}
-      <Callout>
-        <SelectProperty
-          properties={this.schemaProperties.filter(p => !propsToEdit.has(p))}
-          onSelected={p => {
-            this.setState(({propsToEdit}) => ({
-              propsToEdit: new Set(propsToEdit.add(p))
-            }))
-          }}
-        />
-      </Callout>
+      <SelectProperty
+        properties={this.schemaProperties.filter(p => !propsToEdit.has(p))}
+        onSelected={p => {
+          this.setState(({propsToEdit}) => ({
+            propsToEdit: new Set(propsToEdit.add(p))
+          }))
+        }}
+      />
     </div>
   }
 }
