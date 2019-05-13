@@ -28,3 +28,7 @@ body {
 .bp3-drawer {
   pointer-events: all;
 }
+
+.vertex--icon{
+  pointer-events: none;
+}

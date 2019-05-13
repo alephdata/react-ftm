@@ -37,6 +37,7 @@ export class SelectSchema extends React.PureComponent<ISelectSchemaProps> {
   render() {
     return <Menu>
       {this.schemataToShow.map(schema => {
+        // TODO: replace this with aleph-ui/blueprint/icon integration
         const iconPaths = IconRegistry.getIcon(schema.name.toLowerCase());
         const icon = iconPaths && <svg viewBox={'0 0 24 24'} height={20} width={20}>{iconPaths
           .map(d => <path d={d}/>)

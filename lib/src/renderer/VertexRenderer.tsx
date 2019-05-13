@@ -7,6 +7,7 @@ import { Vertex } from '../layout/Vertex'
 import { Viewport } from '../layout/Viewport';
 import { getRefMatrix, applyMatrix } from './utils';
 import { LabelRenderer } from './LabelRenderer';
+import {IconRenderer} from "./IconRenderer";
 
 interface IVertexRendererProps {
   vertex: Vertex
@@ -60,6 +61,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
     const groupStyles:React.CSSProperties = {
       cursor: selected ? 'grab' : 'pointer'
     }
+
     return (
       <DraggableCore
         handle='.handle'
@@ -69,6 +71,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
         <g className="vertex" transform={translate} ref={this.gRef} style={groupStyles}>
           <circle className="handle" r={config.gridUnit * config.vertexRadius} fill={color} />
           <LabelRenderer center={labelPosition} label={vertex.label} />
+          <IconRenderer vertex={vertex}/>
         </g>
       </DraggableCore>
     );
