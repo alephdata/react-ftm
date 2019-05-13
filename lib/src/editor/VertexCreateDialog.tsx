@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Dialog, Menu, MenuItem, FormGroup, Intent, Button, ControlGroup, InputGroup } from '@blueprintjs/core'
-import { Schema, IconRegistry } from '@alephdata/followthemoney'
+import { Dialog, Intent, ControlGroup, InputGroup } from '@blueprintjs/core'
+import { Schema } from '@alephdata/followthemoney'
 import { GraphContext, IGraphContext } from '../GraphContext'
 import { VertexSchemaSelect } from './VertexSchemaSelect'
 
@@ -74,6 +74,9 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
   render() {
     const { layout } = this.context as IGraphContext
     const { isOpen, toggleDialog } = this.props
+    const schema = this.getSchema()
+    const placeholder = `${schema.label} name`
+    const isValid = this.checkValid()
     return (
       <Dialog icon="new-object" isOpen={isOpen} title="Add entity" onClose={toggleDialog}>
         <form onSubmit={this.onSubmit}>
@@ -81,15 +84,16 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
             <ControlGroup fill>
               <VertexSchemaSelect
                 model={layout.model}
-                schema={this.getSchema()}
+                schema={schema}
                 onSelect={this.onSchemaSelect}
               />
               <InputGroup
                 large
+                intent={isValid ? undefined : Intent.WARNING}
                 className="bp3-fill"
                 value={this.state.label}
                 onChange={this.onChangeLabel}
-                placeholder="Entity name"
+                placeholder={placeholder}
               />
             </ControlGroup>
           </div>

@@ -1,25 +1,23 @@
 import * as React from 'react'
-import {Button, ButtonGroup, Divider, Tooltip, Colors, Classes, InputGroup, Icon, Drawer} from "@blueprintjs/core"
+import { Button, ButtonGroup, Divider, Tooltip, Colors, Classes, InputGroup } from "@blueprintjs/core"
 import { IGraphContext } from './GraphContext'
 import { Rectangle } from './layout/Rectangle'
 import { filterVerticesByText } from './filters';
-import { CreateEntity } from "./editor/CreateEntity";
-import { Schema } from "@alephdata/followthemoney";
 import { VertexCreateDialog } from "./editor/VertexCreateDialog";
+import { EdgeCreateDialog } from "./editor/EdgeCreateDialog";
 
 
 interface IToolbarState {
   searchText: string
-  drawerStatus: boolean
-  subsequentOf?: Schema
+  edgeCreateOpen: boolean
   vertexCreateOpen: boolean
 }
 
 export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
   state: IToolbarState = {
     searchText: '',
-    drawerStatus: false,
-    vertexCreateOpen: false
+    vertexCreateOpen: false,
+    edgeCreateOpen: false
   }
 
   constructor(props: Readonly<IGraphContext>) {
@@ -28,10 +26,9 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
     this.onFitToSelection = this.onFitToSelection.bind(this)
     this.onChangeSearch = this.onChangeSearch.bind(this)
     this.onSubmitSearch = this.onSubmitSearch.bind(this)
-    this.onAddEdge = this.onAddEdge.bind(this)
+    this.toggleAddEdge = this.toggleAddEdge.bind(this)
     this.toggleAddVertex = this.toggleAddVertex.bind(this)
     this.onRemoveSelection = this.onRemoveSelection.bind(this)
-    this.toggleDrawer = this.toggleDrawer.bind(this)
   }
 
   onToggleSelectionMode() {
@@ -75,15 +72,8 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
     this.setState({ vertexCreateOpen: !this.state.vertexCreateOpen })
   }
 
-  onAddEdge(){
-    this.setState({
-      drawerStatus: true,
-      subsequentOf: this.props.layout.model.getSchema('Interval')
-    })
-  }
-
-  toggleDrawer(){
-    this.setState(({drawerStatus}) => ({drawerStatus:!drawerStatus}))
+  toggleAddEdge(){
+    this.setState({ edgeCreateOpen: !this.state.edgeCreateOpen })
   }
 
   render() {
@@ -106,7 +96,7 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
           <Button icon="graph-remove" onClick={this.onRemoveSelection} disabled={!hasSelection} />
         </Tooltip>
         <Tooltip content="Add connections">
-          <Button icon="new-link" onClick={this.onAddEdge}/>
+          <Button icon="new-link" onClick={this.toggleAddEdge}/>
         </Tooltip>
         <div style={{width: '100%'}}/>
         <form onSubmit={this.onSubmitSearch}>
@@ -114,22 +104,7 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
         </form>
       </ButtonGroup>
       <VertexCreateDialog isOpen={this.state.vertexCreateOpen} toggleDialog={this.toggleAddVertex} />
-      <Drawer isOpen={this.state.drawerStatus} lazy={true}  size="360p" hasBackdrop={false} className={Classes.CALLOUT}>
-        <div className={Classes.DRAWER_BODY}>
-          <div className={Classes.DIALOG_BODY}>
-            {!!this.state.subsequentOf && <CreateEntity
-              layout={layout}
-              subsequentOf={this.state.subsequentOf}
-              updateLayout={this.props.updateLayout}
-            />}
-          </div>
-        </div>
-        <div className={Classes.DRAWER_FOOTER}>
-          <Button onClick={this.toggleDrawer}>
-            Done
-          </Button>
-        </div>
-      </Drawer>
+      <EdgeCreateDialog isOpen={this.state.edgeCreateOpen} toggleDialog={this.toggleAddEdge} />
     </React.Fragment>
   }
 }
