@@ -92,20 +92,20 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
     const toolbarStyle = {backgroundColor: Colors.LIGHT_GRAY5, width: '100%', padding: '3px'}
     return <React.Fragment>
       <ButtonGroup style={toolbarStyle} className={Classes.ELEVATION_1}>
-        <Tooltip content="Select a group of nodes">
+        <Tooltip content="Select elements">
           <Button icon="select" active={this.props.layout.selectionMode} onClick={this.onToggleSelectionMode}/>
         </Tooltip>
         <Tooltip content="Fit view to selection">
           <Button icon="zoom-to-fit" onClick={this.onFitToSelection}/>
         </Tooltip>
         <Divider/>
-        <Tooltip content="Add a node">
+        <Tooltip content="Add entities">
           <Button icon="new-object" onClick={this.toggleAddVertex}/>
         </Tooltip>
-        <Tooltip content="Remove selected nodes" disabled={!hasSelection}>
+        <Tooltip content="Remove selected" disabled={!hasSelection}>
           <Button icon="graph-remove" onClick={this.onRemoveSelection} disabled={!hasSelection} />
         </Tooltip>
-        <Tooltip content="Add an edge">
+        <Tooltip content="Add connections">
           <Button icon="new-link" onClick={this.onAddEdge}/>
         </Tooltip>
         <div style={{width: '100%'}}/>

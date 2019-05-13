@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button, MenuItem } from '@blueprintjs/core';
+import { Button, MenuItem, Alignment } from '@blueprintjs/core';
 import { Select, IItemRendererProps } from '@blueprintjs/select';
 import { Model, Schema, IconRegistry } from '@alephdata/followthemoney';
 
@@ -15,21 +15,25 @@ export class VertexSchemaSelect extends React.PureComponent<ISelectSchemaProps> 
   getSchemata(): Schema[] {
     const { model } = this.props
     const schemata = Object.keys(model.schemata).map((name) => model.schemata[name]) as Schema[]
-    return schemata.filter((schema) => !schema.abstract && !schema.generated && !schema.isEdge)
-    // console.log()
-    // return schemata.filter((schema) => schema.isCreateable)
+    const filtered = schemata.filter((schema) => schema.isCreateable && !schema.isEdge)
+    return filtered.sort((a, b) => a.label.localeCompare(b.label))
+  }
+
+  static getIcon(schema: Schema) {
+    const iconPaths = IconRegistry.getSchemaIcon(schema);
+    return <svg viewBox={'0 0 24 24'} height={16} width={16}>{iconPaths
+      .map((d, i) => <path key={i} d={d}/>)
+    }/></svg>;
   }
 
   renderSchema(schema: Schema, { handleClick, modifiers }: IItemRendererProps) {
     if (!modifiers.matchesPredicate) {
         return null;
     }
-    // const iconPaths = IconRegistry.getIcon(schema.name.toLowerCase());
-    // const icon = iconPaths && <svg viewBox={'0 0 24 24'} height={20} width={20}>{iconPaths.map(d => <path d={d}/>)}</svg>;
     return <MenuItem
       active={modifiers.active}
       key={schema.name}
-      // icon={icon}
+      icon={VertexSchemaSelect.getIcon(schema)}
       onClick={handleClick}
       text={schema.label}
     />
@@ -45,7 +49,13 @@ export class VertexSchemaSelect extends React.PureComponent<ISelectSchemaProps> 
         itemRenderer={this.renderSchema}
         onItemSelect={this.props.onSelect}
       >
-        <Button text={schema.label} fill rightIcon='double-caret-vertical'/>
+        <Button
+          large
+          text={schema.label}
+          alignText={Alignment.LEFT}
+          icon={VertexSchemaSelect.getIcon(schema)}
+          rightIcon='double-caret-vertical'
+        />
       </SchemaSelect>
     );
   }
