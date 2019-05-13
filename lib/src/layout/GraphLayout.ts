@@ -136,14 +136,14 @@ export class GraphLayout {
     this.selection = selected.map((vertex) => vertex.id)
   }
 
-  getSelection(): Vertex[] {
+  getSelectedVertices(): Vertex[] {
     return this.selection
       .filter((vertexId) => this.vertices.has(vertexId))
       .map((vertexId) => this.vertices.get(vertexId)) as Vertex[]
   }
 
   hasSelection(): boolean {
-    return this.getSelection().length > 0
+    return this.selection.length > 0
   }
  
   clearSelection() {
@@ -160,20 +160,20 @@ export class GraphLayout {
   }
 
   dragSelection(offset: Point) {
-    this.getSelection().forEach((vertex) => {
+    this.getSelectedVertices().forEach((vertex) => {
       const position = vertex.position.addition(offset)
       this.vertices.set(vertex.id, vertex.setPosition(position))
     })
   }
 
   dropSelection() {
-    this.getSelection().forEach((vertex) => {
+    this.getSelectedVertices().forEach((vertex) => {
       this.vertices.set(vertex.id, vertex.snapPosition(vertex.position))
     })
   }
 
   removeSelection() {
-    this.getSelection().forEach((vertex) => {
+    this.getSelectedVertices().forEach((vertex) => {
       if (vertex.entityId) {
         this.entities.delete(vertex.entityId)
         this.edges.forEach((edge) => {
