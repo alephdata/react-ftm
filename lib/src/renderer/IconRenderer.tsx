@@ -16,12 +16,13 @@ export class IconRenderer extends React.PureComponent<IIconRendererProps>{
     }
     // const radius = IconRegistry.SIZE / 2;
     const radius = 12
-    const translate = `translate(${-radius} ${-radius - 2})`;
-    const scale = 'scale(0.5)';
-
-    const iconPaths = IconRegistry.getSchemaIcon(entity.schema);
-    return iconPaths && (<g transform={scale + translate} fill={Colors.WHITE} className="vertex--icon">{iconPaths
-      .map((d, i) => <path key={i} d={d}/>)
-    }/></g>);
+    const translate = `translate(${-radius} ${-radius - 2})`
+    const scale = 'scale(0.5)'
+    const iconPaths = IconRegistry.getSchemaIcon(entity.schema)
+    return iconPaths && (
+      <g transform={scale + translate} fill={Colors.WHITE} pointerEvents="none">
+        {iconPaths.map((d, i) => <path key={i} d={d}/>)}/>
+      </g>
+    );
   }
 }
