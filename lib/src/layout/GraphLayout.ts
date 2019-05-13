@@ -142,6 +142,23 @@ export class GraphLayout {
       .map((vertexId) => this.vertices.get(vertexId)) as Vertex[]
   }
 
+  getSelectedEntities(){
+    return this.getRelatedEntities(
+      this.getSelection()
+    )
+  }
+
+  getRelatedEntities(elements: Array<Vertex | Edge>): Array<Entity>{
+    return Array.from(elements.reduce((entities, element) => {
+      if(this.entities.has(element.entityId as string)){
+        entities.add(
+          this.entities.get(element.entityId as string) as Entity
+        )
+      }
+      return entities
+    }, new Set<Entity>()).values())
+  }
+
   hasSelection(): boolean {
     return this.getSelection().length > 0
   }
