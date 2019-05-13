@@ -1,4 +1,4 @@
-import { Entity, Model, PropertyType, IEntityDatum } from '@alephdata/followthemoney'
+import { Entity, Model, IEntityDatum } from '@alephdata/followthemoney'
 import { forceSimulation, forceLink, forceCollide } from 'd3';
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
@@ -16,7 +16,6 @@ interface IGraphLayoutData {
   selectionMode: boolean
 }
 
-export type GraphUpdateHandler = (graph: GraphLayout) => void
 export type VertexPredicate = (vertex: Vertex) => boolean
 
 export class GraphLayout {
@@ -112,6 +111,10 @@ export class GraphLayout {
 
   getEntities(): Entity[] {
     return Array.from(this.entities.values())
+  }
+
+  getVertexByEntity(entity: Entity): Vertex | undefined {
+    return this.getVertices().filter((v) => v.isEntity).find((v) => v.entityId === entity.id)
   }
 
   selectVertex(vertex: Vertex, additional: boolean = false) {

@@ -1,19 +1,15 @@
 import * as React from 'react'
-import { GraphLayout, GraphUpdateHandler } from '../layout/GraphLayout'
 import { Viewport } from '../layout/Viewport';
 import { Vertex } from '../layout/Vertex';
 import { Point } from '../layout/Point';
 import { Rectangle } from '../layout/Rectangle';
+import { IGraphContext } from '../GraphContext'
 import { Canvas } from './Canvas'
 import { EdgeRenderer } from './EdgeRenderer'
 import { VertexRenderer } from './VertexRenderer'
 
-export interface IGraphRendererProps {
-  layout: GraphLayout,
-  updateLayout: GraphUpdateHandler
-}
 
-export class GraphRenderer extends React.Component<IGraphRendererProps> {
+export class GraphRenderer extends React.Component<IGraphContext> {
   constructor(props: any) {
     super(props)
     this.updateViewport = this.updateViewport.bind(this);

@@ -14,10 +14,11 @@ export class TextType extends React.PureComponent<ITypeProps> {
   render() {
     const {property} = this.props;
     return <FormGroup label={property.label}>
-      <ControlGroup vertical>
+      <ControlGroup vertical fill>
         <TagInput
           addOnBlur
           addOnPaste
+          fill
           onChange={this.onChange}
           values={this.props.values}
         />

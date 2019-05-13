@@ -1,14 +1,12 @@
 import * as React from 'react'
 import {SelectSchema} from './SelectSchema';
-import {GraphLayout, GraphUpdateHandler} from '../layout';
+import { IGraphContext } from '../GraphContext';
 import {Entity, Schema} from '@alephdata/followthemoney';
 import {Divider} from '@blueprintjs/core';
 import {EntityEditor} from './EntityEditor';
 
-interface ICreateEntityProps {
-  layout: GraphLayout
+interface ICreateEntityProps extends IGraphContext {
   subsequentOf: Schema
-  updateLayout:GraphUpdateHandler
 }
 
 interface ICreateEntityState {
@@ -21,7 +19,7 @@ export class CreateEntity extends React.Component<ICreateEntityProps, ICreateEnt
     this.onSchemaSelect = this.onSchemaSelect.bind(this);
     this.appendToLayout = this.appendToLayout.bind(this)
   }
-  state:ICreateEntityState = {}
+  state: ICreateEntityState = {}
 
   appendToLayout(entity: Entity){
     const { layout } = this.props
@@ -32,28 +30,12 @@ export class CreateEntity extends React.Component<ICreateEntityProps, ICreateEnt
 
   onSchemaSelect(schema: Schema) {
     this.setState(({entity})=>{
-      // generates a new entity based on selected schema
       const nextEntity = this.props.layout.model.createEntity(schema);
-
       // transfer values from old entity to new one where applicable
       if(entity){
-        // stores properties which has a value
-        const nextEntityProps = nextEntity.schema.getProperties()
-        entity.getProperties()
-          .forEach(property => {
-            // identifies if next and prev properties are similar
-            const similarProp = nextEntityProps.has(property.name) && nextEntityProps.get(property.name);
-            if(similarProp && (similarProp.type === property.type)){
-              // this is the case when we can save the value
-              nextEntity.properties.set(similarProp, entity.getProperty(property))
-            }
-          })
+        nextEntity.copyProperties(entity)
       }
-
-
-      return ({
-        entity: nextEntity
-      })
+      return ({ entity: nextEntity })
     })
   }
 
