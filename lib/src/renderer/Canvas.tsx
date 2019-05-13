@@ -86,7 +86,7 @@ export class Canvas extends React.Component <ICanvasProps> {
       )
       this.resizeSelection()
     } else if (offset.x || offset.y) {
-      const gridOffset = viewport.zoomedPixelToGrid(offset)
+      const gridOffset = viewport.config.pixelToGrid(offset)
       const center = viewport.center.subtract(gridOffset)
       this.props.updateViewport(viewport.setCenter(center));
     }
