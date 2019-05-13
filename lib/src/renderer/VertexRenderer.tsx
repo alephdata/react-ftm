@@ -56,12 +56,11 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
     }
     const { x, y } = config.gridToPixel(vertex.position)
     const translate = `translate(${x} ${y})`
-    const labelPosition = new Point(0, config.vertexRadius * config.gridUnit)
-    const color = selected ? config.selectedColor : config.vertexColor;
+    const labelPosition = new Point(0, config.VERTEX_RADIUS * config.gridUnit)
+    const stroke = this.props.selected ? config.SELECTED_COLOR : 'initial';
     const groupStyles:React.CSSProperties = {
       cursor: selected ? 'grab' : 'pointer'
     }
-
     return (
       <DraggableCore
         handle='.handle'
@@ -69,7 +68,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
         onDrag={this.onPanMove}
         onStop={this.onPanEnd} >
         <g className="vertex" transform={translate} ref={this.gRef} style={groupStyles}>
-          <circle className="handle" r={config.gridUnit * config.vertexRadius} fill={color} />
+          <circle className="handle" r={config.gridUnit * config.VERTEX_RADIUS} fill={config.VERTEX_COLOR} stroke={stroke} />
           <LabelRenderer center={labelPosition} label={vertex.label} />
           <IconRenderer vertex={vertex}/>
         </g>

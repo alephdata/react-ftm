@@ -25,9 +25,16 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     const targetPosition = config.gridToPixel(target.position)
     const center = Rectangle.fromPoints(sourcePosition, targetPosition).getCenter()
     return <g className="edge">
+      {selected &&<line
+        stroke={config.SELECTED_COLOR}
+        strokeWidth={2}
+        x1={sourcePosition.x}
+        y1={sourcePosition.y}
+        x2={targetPosition.x}
+        y2={targetPosition.y}
+      />}
       <line
-        stroke={selected ? config.selectedColor : Colors.GRAY2}
-        strokeWidth={selected ? 2 : 'inherit'}
+        stroke={Colors.GRAY3}
         x1={sourcePosition.x}
         y1={sourcePosition.y}
         x2={targetPosition.x}

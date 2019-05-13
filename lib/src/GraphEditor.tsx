@@ -44,7 +44,7 @@ export class GraphEditor extends React.Component<IGraphContext> {
             flexBasis: 'auto',
             borderLeftWidth: '1px',
             borderLeftStyle: 'solid',
-            borderLeftColor: config.borderColor,
+            borderLeftColor: config.BORDER_COLOR,
             padding: config.contentPadding
           }}>
             <Sidebar layout={layout} updateLayout={updateLayout}/>
