@@ -1,8 +1,7 @@
 import * as React from 'react'
-import { Dialog, Menu, MenuItem, FormGroup, Intent, Button, Alignment, ControlGroup, InputGroup } from '@blueprintjs/core'
+import { Dialog, MenuItem, FormGroup, Intent, Button, Alignment, Position } from '@blueprintjs/core'
 import { Select, IItemRendererProps } from '@blueprintjs/select';
-import { Model, Schema, Property, IconRegistry, PropertyType } from '@alephdata/followthemoney'
-import { GraphContext, IGraphContext } from '../GraphContext'
+import { IGraphContext } from '../GraphContext'
 import { VertexSelect } from './VertexSelect'
 import { EdgeType } from './EdgeType'
 import { Vertex } from '../layout/Vertex';
@@ -150,7 +149,6 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         return type.property.schema.label
       }
     }
-    return 'Source'
   }
 
   getTargetLabel(): string | undefined {
@@ -163,7 +161,6 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         return type.property.label
       }
     }
-    return 'Target'
   }
 
   getTypeDescription(): string | undefined | null {
@@ -196,52 +193,68 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     const { source, target, type } = this.state
     const types = this.getTypes()
     return (
-      <Dialog icon="new-link" isOpen={isOpen} title="Add link" onClose={toggleDialog}>
+      <Dialog icon="new-link" isOpen={isOpen} title="Add link" onClose={toggleDialog} style={{width: '800px'}}>
         <form onSubmit={this.onSubmit}>
           <div className="bp3-dialog-body">
-            <FormGroup label={this.getSourceLabel()}>
-              <VertexSelect
-                vertices={this.getVertices(source, target)}
-                vertex={source}
-                onSelect={this.onSelectSource}
-              />
-            </FormGroup>
-            <FormGroup label={this.getTargetLabel()}>
-              <VertexSelect
-                vertices={this.getVertices(target, source)}
-                vertex={target}
-                onSelect={this.onSelectTarget}
-              />
-            </FormGroup>
-            <FormGroup label="Type" helperText={this.getTypeDescription()}>
-              <EdgeTypeSelect
-                filterable={false}
-                items={types}
-                itemRenderer={this.renderEdgeType}
-                onItemSelect={this.onChangeType}
-              >
-                <Button
-                  disabled={!types.length}
-                  text={type ? type.label : 'Select link type'}
-                  alignText={Alignment.LEFT}
-                  icon={EdgeCreateDialog.getEdgeTypeIcon(type)}
-                  rightIcon='double-caret-vertical'
-                />
-              </EdgeTypeSelect>
-            </FormGroup>
+            <div style={{flex: 1, display: 'flex', flexFlow: 'row'}}>
+              <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
+                <FormGroup label='Source' helperText={this.getSourceLabel()}>
+                  <VertexSelect
+                    vertices={this.getVertices(source, target)}
+                    vertex={source}
+                    onSelect={this.onSelectSource}
+                  />
+                </FormGroup>
+              </div>
+              <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
+                <FormGroup label="Type" helperText={this.getTypeDescription()}>
+                  <EdgeTypeSelect
+                    popoverProps={{
+                      position: Position.BOTTOM_LEFT,
+                      minimal: true,
+                      targetProps: {style: {width: '100%'}}
+                    }}
+                    filterable={false}
+                    items={types}
+                    itemRenderer={this.renderEdgeType}
+                    onItemSelect={this.onChangeType}
+                  >
+                    <Button fill
+                      disabled={!types.length}
+                      text={type ? type.label : 'Select type'}
+                      alignText={Alignment.LEFT}
+                      icon={EdgeCreateDialog.getEdgeTypeIcon(type)}
+                      rightIcon='double-caret-vertical'
+                    />
+                  </EdgeTypeSelect>
+                </FormGroup>
+              </div>
+              <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
+                <FormGroup label='Target' helperText={this.getTargetLabel()}>
+                  <VertexSelect
+                    vertices={this.getVertices(target, source)}
+                    vertex={target}
+                    onSelect={this.onSelectTarget}
+                  />
+                </FormGroup>
+              </div>
+              <div style={{flexGrow: 0, flexShrink: 1, flexBasis: '1%'}}>
+                <FormGroup label='&nbsp;'>
+                  <Button
+                    onClick={this.onReverse}
+                    disabled={!this.isReversible()}
+                    icon="exchange"
+                  />
+                </FormGroup>
+              </div>
+            </div>
           </div>
           <div className="bp3-dialog-footer">
           <div className="bp3-dialog-footer-actions">
             <Button
-              onClick={this.onReverse}
-              disabled={!this.isReversible()}
-              icon="exchange"
-              text="Reverse"
-            />
-            <Button
               intent={Intent.PRIMARY}
               disabled={!this.isValid()}
-              text="Create link"
+              text="Create"
               type="submit"
             />
           </div>

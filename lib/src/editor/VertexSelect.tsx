@@ -36,8 +36,12 @@ export class VertexSelect extends React.PureComponent<IVertexSelectProps> {
     const { vertices, vertex } = this.props
     return (
       <TypedSelect
-        popoverProps={{position: Position.BOTTOM_LEFT, minimal: true}}
-        filterable={false}
+        popoverProps={{
+          position: Position.BOTTOM_LEFT,
+          minimal: true,
+          targetProps: {style: {width: '100%'}}
+        }}
+        filterable={true}
         items={vertices}
         itemRenderer={this.renderVertex}
         noResults={
