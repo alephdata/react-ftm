@@ -13,9 +13,13 @@ export class TextType extends React.PureComponent<ITypeProps> {
 
   render() {
     const {property} = this.props;
-    return <FormGroup label={property.label}>
-      <ControlGroup vertical fill>
+    return <FormGroup label={property.label} >
+      <ControlGroup vertical fill >
         <TagInput
+          large
+          tagProps={{
+           minimal:true
+          }}
           addOnBlur
           addOnPaste
           fill

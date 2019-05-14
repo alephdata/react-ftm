@@ -16,7 +16,6 @@ interface IEntityEditorState {
 export class EntityEditor extends React.PureComponent<IEntityEditorProps, IEntityEditorState> {
   private schemaProperties: Property[];
 
-
   constructor(props: IEntityEditorProps) {
     super(props);
     this.schemaProperties = Array.from(props.entity.schema.getProperties().values());
@@ -50,7 +49,6 @@ export class EntityEditor extends React.PureComponent<IEntityEditorProps, IEntit
   render() {
     const {entity} = this.props;
     const label = entity.getCaption() || <i>{entity.schema.name}</i>;
-    // first gets a list of featured properties so these are at the top
     const {propsToEdit} = this.state;
 
     return <div>

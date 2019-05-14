@@ -23,6 +23,7 @@ export class Sidebar extends React.Component<IGraphContext> {
   render() {
     if(!this.context) return null;
     const selection = this.context.layout.getSelectedEntities()
+
     if(selection.length === 1){
       return <EntityEditor
         entity={selection[0]}
@@ -33,6 +34,10 @@ export class Sidebar extends React.Component<IGraphContext> {
         entities={selection}
       />
     }
-    return "you got nothing here!"
+    return <EntityList
+      entities={this.context.layout.getEntities()
+        .filter(e=>e.schema.isThing())
+      }
+    />
   }
 }

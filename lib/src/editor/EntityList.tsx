@@ -1,6 +1,7 @@
 import React from 'react';
 import {Entity} from '@alephdata/followthemoney';
-import {UL, Elevation, Card, Divider, Button, Classes} from '@blueprintjs/core'
+import {Menu, MenuItem, Elevation, Card, Divider, Button, ButtonGroup, Classes} from '@blueprintjs/core'
+import {SchemaIcon} from "../SchemaIcon";
 
 interface IEntityListProps {
   entities: Array<Entity>
@@ -13,16 +14,18 @@ export class EntityList extends React.PureComponent<IEntityListProps>{
   render(){
     const {entities} = this.props;
 
-    return <UL className={Classes.LIST_UNSTYLED}>
-      {entities.map((entity,i) => {
-        return (<React.Fragment key={entity.id}>
-          <Card elevation={Elevation.TWO}>
-            <h5><a href="#">{entity.getCaption()}</a></h5>
-            <p>{entity.getProperty('description').join(' ')}</p>
-          </Card>
-          {!!(entities.length - 1 - i) && <Divider/>}
-        </React.Fragment>)
+    return <Menu >
+      {entities.map((entity) => {
+        return (<MenuItem
+          key={entity.id}
+          text={entity.getCaption()}
+          icon={SchemaIcon.get(entity.schema)}
+          labelElement={ <ButtonGroup vertical>
+            <Button icon='locate'/>
+            <Button icon='more' />
+          </ButtonGroup>}
+        />)
       })}
-    </UL>
+    </Menu>
   }
 }
