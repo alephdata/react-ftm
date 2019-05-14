@@ -1,7 +1,8 @@
 import * as React from 'react'
-import { Button, MenuItem, Alignment } from '@blueprintjs/core';
+import { Button, MenuItem, Alignment, Position } from '@blueprintjs/core';
 import { Select, IItemRendererProps } from '@blueprintjs/select';
 import { Model, Schema, IconRegistry } from '@alephdata/followthemoney';
+import { SchemaIcon } from '../SchemaIcon';
 
 interface ISelectSchemaProps {
   model: Model,
@@ -19,13 +20,6 @@ export class VertexSchemaSelect extends React.PureComponent<ISelectSchemaProps> 
     return filtered.sort((a, b) => a.label.localeCompare(b.label))
   }
 
-  static getIcon(schema: Schema) {
-    const iconPaths = IconRegistry.getSchemaIcon(schema);
-    return <svg viewBox={'0 0 24 24'} height={16} width={16}>{iconPaths
-      .map((d, i) => <path key={i} d={d}/>)
-    }/></svg>;
-  }
-
   renderSchema(schema: Schema, { handleClick, modifiers }: IItemRendererProps) {
     if (!modifiers.matchesPredicate) {
         return null;
@@ -33,7 +27,7 @@ export class VertexSchemaSelect extends React.PureComponent<ISelectSchemaProps> 
     return <MenuItem
       active={modifiers.active}
       key={schema.name}
-      icon={VertexSchemaSelect.getIcon(schema)}
+      icon={SchemaIcon.get(schema)}
       onClick={handleClick}
       text={schema.label}
     />
@@ -41,9 +35,10 @@ export class VertexSchemaSelect extends React.PureComponent<ISelectSchemaProps> 
 
   render() {
     const { schema } = this.props
-    
+
     return (
       <SchemaSelect
+        popoverProps={{position: Position.BOTTOM_LEFT, minimal: true}}
         filterable={false}
         items={this.getSchemata()}
         itemRenderer={this.renderSchema}
@@ -53,7 +48,7 @@ export class VertexSchemaSelect extends React.PureComponent<ISelectSchemaProps> 
           large
           text={schema.label}
           alignText={Alignment.LEFT}
-          icon={VertexSchemaSelect.getIcon(schema)}
+          icon={SchemaIcon.get(schema)}
           rightIcon='double-caret-vertical'
         />
       </SchemaSelect>
