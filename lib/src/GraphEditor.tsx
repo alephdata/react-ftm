@@ -25,7 +25,7 @@ export class GraphEditor extends React.Component<IGraphContext> {
     const config = layout.config
     return (
       <div style={{flex: 1, display: 'flex', flexFlow: 'column', height: '100%'}} >
-        <div style={{flexGrow: 0, flexShrink: 1, flexBasis: 'auto'}}>
+        <div style={{flexGrow: 0, flexShrink: 1, flexBasis: '20vw'}}>
           <Toolbar layout={layout} updateLayout={updateLayout}/>
         </div>
         <div style={{flex: 1, display: 'flex', flexFlow: 'row', flexGrow: 1, flexShrink: 1, flexBasis: '100%'}}>
