@@ -7,6 +7,7 @@ import { VertexSelect } from './VertexSelect'
 import { EdgeType } from './EdgeType'
 import { Vertex } from '../layout/Vertex';
 import { Edge } from '../layout/Edge';
+import { SchemaIcon } from '../SchemaIcon';
 
 const EdgeTypeSelect = Select.ofType<EdgeType>();
 
@@ -34,6 +35,13 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     this.onChangeType = this.onChangeType.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.onReverse = this.onReverse.bind(this)
+  }
+
+  static getEdgeTypeIcon(type?: EdgeType) {
+    if (type && type.schema) {
+      return SchemaIcon.get(type.schema)
+    }
+    return 'link'
   }
 
   componentDidMount() {
@@ -178,7 +186,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
       active={modifiers.active}
       key={type.key}
       text={type.label}
-      // icon={VertexSchemaSelect.getIcon(schema)}
+      icon={EdgeCreateDialog.getEdgeTypeIcon(type)}
       onClick={handleClick}
     />
   }
@@ -216,7 +224,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                   disabled={!types.length}
                   text={type ? type.label : 'Select link type'}
                   alignText={Alignment.LEFT}
-                  // icon={VertexSchemaSelect.getIcon(schema)}
+                  icon={EdgeCreateDialog.getEdgeTypeIcon(type)}
                   rightIcon='double-caret-vertical'
                 />
               </EdgeTypeSelect>
