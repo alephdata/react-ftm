@@ -6,6 +6,7 @@ import { GraphContext, IGraphContext } from '../GraphContext'
 import { VertexSelect } from './VertexSelect'
 import { EdgeType } from './EdgeType'
 import { Vertex } from '../layout/Vertex';
+import { Edge } from '../layout/Edge';
 
 const EdgeTypeSelect = Select.ofType<EdgeType>();
 
@@ -32,6 +33,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     this.onSelectTarget = this.onSelectTarget.bind(this)
     this.onChangeType = this.onChangeType.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
+    this.onReverse = this.onReverse.bind(this)
   }
 
   componentDidMount() {
@@ -50,7 +52,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   onChangeType(type: EdgeType) {
     const { source, target } = this.state
     if (source && target) {
-      if (!type.matchForward(source, target) && type.matchBackward(source, target)) {
+      if (!type.match(source, target) && type.match(target, source)) {
         this.setState({ source: target, target: source })
       }
       this.setState({ type })
@@ -65,8 +67,56 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     this.setState({ target, type: undefined })
   }
 
+  isValid() {
+    const { source, target, type } = this.state
+    return source && target && type && type.match(source, target)
+  }
+
   onSubmit(e: React.ChangeEvent<HTMLFormElement>) {
+    const { layout, updateLayout, toggleDialog } = this.props
+    const { source, target, type } = this.state
     e.preventDefault()
+    if (source && target && type && this.isValid()) {
+      const sourceEntity = source.getEntity()
+      const targetEntity = target.getEntity()
+      if (type.property && sourceEntity) {
+        const value = targetEntity || target.label
+        sourceEntity.setProperty(type.property, value)
+        layout.addEntity(sourceEntity)
+        const edge = Edge.fromValue(layout, type.property, source, target)
+        layout.viewport = layout.viewport.setCenter(edge.getCenter())
+      }
+      if (type.schema && type.schema.edge && sourceEntity && targetEntity) {
+        const entity = layout.model.createEntity(type.schema)
+        entity.setProperty(type.schema.edge.source, sourceEntity)
+        entity.setProperty(type.schema.edge.target, targetEntity)
+        layout.addEntity(entity)
+        const edge = Edge.fromEntity(layout, entity, source, target)
+        layout.viewport = layout.viewport.setCenter(edge.getCenter())
+      }
+      updateLayout(layout)
+      toggleDialog()
+    }
+  }
+
+  isReversible() {
+    const { source, target, type } = this.state
+    return source && target && type && type.match(target, source)
+  }
+
+  onReverse() {
+    const { source, target, type } = this.state
+    if (this.isReversible()) {
+      this.setState({ source: target, target: source })
+    }
+  }
+
+  getTypes(): EdgeType[] {
+    const { source, target } = this.state
+    if (source && target) {
+      return this.types.filter((et) => et.match(source, target) || et.match(target, source))
+    }
+    return []
   }
 
   getVertices(include?: Vertex, except?: Vertex): Vertex[] {
@@ -132,9 +182,9 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   }
 
   render() {
-    const { layout, isOpen, toggleDialog } = this.props
+    const { isOpen, toggleDialog } = this.props
     const { source, target, type } = this.state
-    const types = (source && target) ? EdgeType.getMatching(layout.model, source, target) : []
+    const types = this.getTypes()
     return (
       <Dialog icon="new-link" isOpen={isOpen} title="Add link" onClose={toggleDialog}>
         <form onSubmit={this.onSubmit}>
@@ -153,7 +203,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                 onSelect={this.onSelectTarget}
               />
             </FormGroup>
-            <FormGroup label="Link type" helperText={this.getTypeDescription()}>
+            <FormGroup label="Type" helperText={this.getTypeDescription()}>
               <EdgeTypeSelect
                 filterable={false}
                 items={types}
@@ -170,6 +220,22 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
               </EdgeTypeSelect>
             </FormGroup>
           </div>
+          <div className="bp3-dialog-footer">
+          <div className="bp3-dialog-footer-actions">
+            <Button
+              onClick={this.onReverse}
+              disabled={!this.isReversible()}
+              icon="exchange"
+              text="Reverse"
+            />
+            <Button
+              intent={Intent.PRIMARY}
+              disabled={!this.isValid()}
+              text="Create link"
+              type="submit"
+            />
+          </div>
+        </div>
         </form>
       </Dialog>
     );

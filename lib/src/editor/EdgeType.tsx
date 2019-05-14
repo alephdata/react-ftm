@@ -1,5 +1,4 @@
-import { Model, Schema, Property, IconRegistry, PropertyType } from '@alephdata/followthemoney'
-import { GraphContext, IGraphContext } from '../GraphContext'
+import { Model, Schema, Property } from '@alephdata/followthemoney'
 import { Vertex } from '../layout/Vertex'
 
 
@@ -16,7 +15,7 @@ export class EdgeType {
     this.key = ((schema && schema.name) || (property && property.qname)) as string
   }
 
-  matchForward(source: Vertex, target: Vertex): boolean {
+  match(source: Vertex, target: Vertex): boolean {
     const sourceEntity = source.getEntity()
     const targetEntity = target.getEntity()
     if (!sourceEntity) {
@@ -44,14 +43,6 @@ export class EdgeType {
     return false
   }
 
-  matchBackward(source: Vertex, target: Vertex): boolean {
-    return this.matchForward(target, source)
-  }
-
-  match(source: Vertex, target: Vertex): boolean {
-    return this.matchForward(source, target) || this.matchBackward(source, target)
-  }
-
   static getAll(model: Model): EdgeType[] {
     const types = new Array<EdgeType>()
     model.getSchemata().forEach((schema) => {
@@ -63,9 +54,5 @@ export class EdgeType {
       }
     })
     return types.sort((a, b) => a.label.localeCompare(b.label))
-  }
-
-  static getMatching(model: Model, source: Vertex, target: Vertex): EdgeType[] {
-    return EdgeType.getAll(model).filter((et) => et.match(source, target))
   }
 }

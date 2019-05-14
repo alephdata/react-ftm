@@ -36,7 +36,9 @@ export class VertexSelect extends React.PureComponent<IVertexSelectProps> {
         filterable={false}
         items={vertices}
         itemRenderer={this.renderVertex}
-        noResults={<MenuItem disabled={true} text="No vertices." />}
+        noResults={
+          <MenuItem disabled={true} text="No vertices." />
+        }
         onItemSelect={this.props.onSelect}
       >
         <Button

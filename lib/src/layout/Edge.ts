@@ -1,6 +1,8 @@
 import { Vertex } from './Vertex'
 import { Entity, PropertyType, Property, Value } from '@alephdata/followthemoney';
 import { GraphLayout } from './GraphLayout';
+import { Rectangle } from './Rectangle';
+import { Point } from './Point';
 
 interface IEdgeData {
   id: string
@@ -36,12 +38,20 @@ export class Edge {
     this.propertyQName = data.propertyQName
   }
 
+  getSource(): Vertex | undefined {
+    return this.layout.vertices.get(this.sourceId)
+  }
+
+  getTarget(): Vertex | undefined {
+    return this.layout.vertices.get(this.targetId)
+  }
+
   isHidden(): boolean {
-    const source = this.layout.vertices.get(this.sourceId)
+    const source = this.getSource()
     if (!source || source.isHidden()) {
       return true;
     }
-    const target = this.layout.vertices.get(this.targetId)
+    const target = this.getTarget()
     if (!target || target.isHidden()) {
       return true;
     }
@@ -56,6 +66,19 @@ export class Edge {
     if (this.entityId) {
       return this.layout.entities.get(this.entityId)
     }
+  }
+
+  getRect(): Rectangle {
+    const source = this.getSource()
+    const target = this.getTarget()
+    if (source && target) {
+      return Rectangle.fromPoints(source.position, target.position)
+    }
+    return new Rectangle(0, 0, 0, 0)
+  }
+
+  getCenter(): Point {
+    return this.getRect().getCenter()
   }
 
   isLinkedToVertex(vertex: Vertex): boolean {

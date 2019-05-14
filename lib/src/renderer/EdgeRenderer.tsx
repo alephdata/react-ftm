@@ -23,7 +23,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     }
     const sourcePosition = config.gridToPixel(source.position)
     const targetPosition = config.gridToPixel(target.position)
-    const center = Rectangle.fromPoints(sourcePosition, targetPosition).getCenter()
+    const center = config.gridToPixel(edge.getCenter())
     return <g className="edge">
       { selected && (
         <line
