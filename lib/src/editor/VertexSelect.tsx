@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Button, MenuItem, Alignment, Position } from '@blueprintjs/core'
 import { Select, IItemRendererProps } from '@blueprintjs/select'
 import { Vertex } from '../layout/Vertex'
-// import { SchemaIcon } from '../SchemaIcon'
+import { SchemaIcon } from '../SchemaIcon'
 
 interface IVertexSelectProps {
   vertices: Vertex[],
@@ -13,6 +13,12 @@ interface IVertexSelectProps {
 const TypedSelect = Select.ofType<Vertex>();
 
 export class VertexSelect extends React.PureComponent<IVertexSelectProps> {
+
+  static getVertexIcon(vertex: Vertex) {
+    const entity = vertex.getEntity()
+    return vertex.isEntity() && entity ? SchemaIcon.get(entity.schema) : undefined;
+  }
+
   renderVertex(vertex: Vertex, { handleClick, modifiers }: IItemRendererProps) {
     if (!modifiers.matchesPredicate) {
         return null;
@@ -20,7 +26,7 @@ export class VertexSelect extends React.PureComponent<IVertexSelectProps> {
     return <MenuItem
       active={modifiers.active}
       key={vertex.id}
-      // icon={VertexSchemaSelect.getIcon(schema)}
+      icon={VertexSelect.getVertexIcon(vertex)}
       onClick={handleClick}
       text={vertex.label}
     />
@@ -28,12 +34,14 @@ export class VertexSelect extends React.PureComponent<IVertexSelectProps> {
 
   render() {
     const { vertices, vertex } = this.props
-    const label = vertex ? vertex.label : 'Select an entity'
-
     return (
       <TypedSelect
-        popoverProps={{position: Position.BOTTOM_LEFT, minimal: true}}
-        filterable={false}
+        popoverProps={{
+          position: Position.BOTTOM_LEFT,
+          minimal: true,
+          targetProps: {style: {width: '100%'}}
+        }}
+        filterable={true}
         items={vertices}
         itemRenderer={this.renderVertex}
         noResults={
@@ -43,10 +51,10 @@ export class VertexSelect extends React.PureComponent<IVertexSelectProps> {
       >
         <Button
           fill
-          text={label}
+          text={vertex ? vertex.label : 'Select an entity'}
+          icon={vertex ? VertexSelect.getVertexIcon(vertex) : undefined}
           disabled={!vertices.length}
           alignText={Alignment.LEFT}
-          // icon={VertexSchemaSelect.getIcon(schema)}
           rightIcon='double-caret-vertical'
         />
       </TypedSelect>
