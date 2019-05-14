@@ -44,7 +44,7 @@ export class GraphEditor extends React.Component<IGraphContext> {
             maxHeight:'100%',
             boxSizing:'border-box',
             overflowY: 'scroll',
-            flexBasis: 'auto',
+            flexBasis: '20vw',
             borderLeftWidth: '1px',
             borderLeftStyle: 'solid',
             borderLeftColor: config.BORDER_COLOR,
