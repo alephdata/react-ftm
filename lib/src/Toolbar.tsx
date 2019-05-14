@@ -5,6 +5,7 @@ import { Rectangle } from './layout/Rectangle'
 import { filterVerticesByText } from './filters';
 import { VertexCreateDialog } from "./editor/VertexCreateDialog";
 import { EdgeCreateDialog } from "./editor/EdgeCreateDialog";
+import { EdgeType } from "./editor/EdgeType";
 
 
 interface IToolbarState {
@@ -39,9 +40,9 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
 
   onFitToSelection() {
     const {layout, updateLayout} = this.props
-    const selection = layout.getSelection()
+    const selection = layout.getSelectedVertices()
     const vertices = selection.length > 0 ? selection : layout.getVertices()
-    const points = vertices.filter((v) => !v.hidden).map((v) => v.position)
+    const points = vertices.filter((v) => !v.isHidden()).map((v) => v.position)
     const rect = Rectangle.fromPoints(...points)
     layout.viewport = layout.viewport.fitToRect(rect)
     updateLayout(layout)
@@ -78,7 +79,11 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
 
   render() {
     const { layout } = this.props
+    const vertices = this.props.layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
+    const canAddEdge = vertices.length > 0 && vertices.length <= 2
+    const sourceVertex = vertices[0]
+    const targetVertex = vertices[1]
     const toolbarStyle = {backgroundColor: Colors.LIGHT_GRAY5, width: '100%', padding: '3px'}
     return <React.Fragment>
       <ButtonGroup style={toolbarStyle} className={Classes.ELEVATION_1}>
@@ -95,8 +100,8 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
         <Tooltip content="Remove selected" disabled={!hasSelection}>
           <Button icon="graph-remove" onClick={this.onRemoveSelection} disabled={!hasSelection} />
         </Tooltip>
-        <Tooltip content="Add connections">
-          <Button icon="new-link" onClick={this.toggleAddEdge}/>
+        <Tooltip content="Add links">
+          <Button icon="new-link" onClick={this.toggleAddEdge} disabled={!canAddEdge} />
         </Tooltip>
         <div style={{width: '100%'}}/>
         <form onSubmit={this.onSubmitSearch}>
@@ -104,7 +109,14 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
         </form>
       </ButtonGroup>
       <VertexCreateDialog isOpen={this.state.vertexCreateOpen} toggleDialog={this.toggleAddVertex} />
-      <EdgeCreateDialog isOpen={this.state.edgeCreateOpen} toggleDialog={this.toggleAddEdge} />
+      <EdgeCreateDialog
+        layout={layout}
+        source={sourceVertex}
+        target={targetVertex}
+        isOpen={this.state.edgeCreateOpen}
+        toggleDialog={this.toggleAddEdge}
+        updateLayout={this.props.updateLayout}
+      />
     </React.Fragment>
   }
 }
