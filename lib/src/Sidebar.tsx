@@ -2,6 +2,7 @@ import * as React from 'react'
 import {Entity} from '@alephdata/followthemoney';
 import {GraphContext, IGraphContext} from './GraphContext'
 import {EntityEditor} from "./editor/EntityEditor";
+import {EntityList} from "./editor/EntityList";
 
 
 export class Sidebar extends React.Component<IGraphContext> {
@@ -20,10 +21,18 @@ export class Sidebar extends React.Component<IGraphContext> {
   }
 
   render() {
-    if(!this.context)return null;
-    return <EntityEditor
-      entity={this.context.layout.entities.values().next().value}
-      onEntityChanged={this.appendToLayout}
-    />
+    if(!this.context) return null;
+    const selection = this.context.layout.getSelectedEntities()
+    if(selection.length === 1){
+      return <EntityEditor
+        entity={selection[0]}
+        onEntityChanged={this.appendToLayout}
+      />
+    }else if(selection.length){
+      return <EntityList
+        entities={selection}
+      />
+    }
+    return "you got nothing here!"
   }
 }

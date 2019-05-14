@@ -56,7 +56,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
     const { vertex, config, selected } = this.props
     const { x, y } = config.gridToPixel(vertex.position)
     const translate = `translate(${x} ${y})`
-    const labelPosition = new Point(0, config.vertexRadius * config.gridUnit)
+    const labelPosition = new Point(0, config.VERTEX_RADIUS * config.gridUnit)
     const groupStyles: React.CSSProperties = {
       cursor: selected ? 'grab' : 'pointer'
     }
@@ -69,9 +69,9 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
         onStop={this.onPanEnd} >
         <g className="vertex" transform={translate} ref={this.gRef} style={groupStyles}>
           { selected && (
-            <circle r={(config.gridUnit * config.vertexRadius) + 2} fill={config.selectedColor} />
+            <circle r={(config.gridUnit * config.VERTEX_RADIUS) + 2} fill={config.SELECTED_COLOR} />
           )}
-          <circle className="handle" r={config.gridUnit * config.vertexRadius} fill={config.vertexColor} />
+          <circle className="handle" r={config.gridUnit * config.VERTEX_RADIUS} fill={config.VERTEX_COLOR} />
           <LabelRenderer center={labelPosition} label={vertex.label} onClick={this.onClick} />
           <IconRenderer vertex={vertex}/>
         </g>

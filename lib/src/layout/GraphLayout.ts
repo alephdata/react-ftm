@@ -116,7 +116,9 @@ export class GraphLayout {
   }
 
   getVertexByEntity(entity: Entity): Vertex | undefined {
-    return this.getVertices().filter((v) => v.isEntity).find((v) => v.entityId === entity.id)
+    return this.getVertices()
+      .filter((v) => v.isEntity)
+      .find((v) => v.entityId === entity.id)
   }
 
   selectElement(element: GraphElement, additional: boolean = false) {
@@ -144,28 +146,29 @@ export class GraphLayout {
       .map((vertexId) => this.vertices.get(vertexId)) as Vertex[]
   }
 
+  getSelectedEntities(){
+    return this.getRelatedEntities(
+      ...this.getSelectedVertices(), ...this.getSelectedEdges()
+    )
+  }
+
+  getRelatedEntities(...elements: Array<GraphElement>): Array<Entity> {
+    return Array.from(elements.reduce((entities, element) => {
+      if (this.entities.has(element.entityId as string)) {
+        entities.add(
+          this.entities.get(element.entityId as string) as Entity
+        )
+      }
+      return entities
+    }, new Set<Entity>()).values())
+  }
+
   getSelectedEdges(): Edge[] {
     return this.selection
       .filter((edgeId) => this.edges.has(edgeId))
       .map((edgeId) => this.edges.get(edgeId)) as Edge[]
   }
 
-  getSelectedEntities(): Entity[] {
-    const entities = new Array<Entity>()
-    this.getSelectedVertices().forEach((vertex) => {
-      const entity = vertex.getEntity()
-      if (entity) {
-        entities.push(entity)
-      }
-    })
-    this.getSelectedEdges().forEach((edge) => {
-      const entity = edge.getEntity()
-      if (entity && edge.isEntity()) {
-        entities.push(entity)
-      }
-    })
-    return entities
-  }
 
   hasSelection(): boolean {
     return this.selection.length > 0
@@ -249,7 +252,7 @@ export class GraphLayout {
 
     const simulation = forceSimulation(nodes)
       .force('links', forceLink(links))
-      .force('collide', forceCollide(this.config.vertexRadius))
+      .force('collide', forceCollide(this.config.VERTEX_RADIUS))
     simulation.stop()
     simulation.tick(500)
     nodes.forEach((node) => {

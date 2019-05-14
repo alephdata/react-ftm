@@ -3,11 +3,12 @@ import { Point } from './layout/Point';
 
 export class GraphConfig {
   public gridUnit: number = 10
-  public vertexColor: string = Colors.BLUE5
-  public selectedColor: string = 'yellow'
-  public vertexRadius: number = 1
+  public VERTEX_COLOR: string = Colors.BLUE5
+  public SELECTED_COLOR: string = Colors.GOLD4
+  public SELECTED_COLOR2: string = Colors.GRAY4
+  public VERTEX_RADIUS: number = 1
   public contentPadding: string = '10px'
-  public borderColor: string = Colors.LIGHT_GRAY1
+  public BORDER_COLOR: string = Colors.LIGHT_GRAY1
 
   gridToPixel(point: Point): Point {
     return new Point(

@@ -41,7 +41,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     }
     return <g className="edge">
       <line
-        stroke={config.selectedColor}
+        stroke={config.SELECTED_COLOR}
         strokeWidth='2'
         strokeOpacity={highlight ? '1' : '0'}
         x1={sourcePosition.x}
@@ -67,5 +67,4 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     </g>
   }
 }
-
 

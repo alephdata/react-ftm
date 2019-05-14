@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Callout } from '@blueprintjs/core'
+import { H2 } from '@blueprintjs/core'
 import {Entity, Property} from '@alephdata/followthemoney';
 import {SelectProperty} from './SelectProperty';
 import {PropertyEditor} from './PropertyEditor';
@@ -54,7 +54,7 @@ export class EntityEditor extends React.PureComponent<IEntityEditorProps, IEntit
     const {propsToEdit} = this.state;
 
     return <div>
-      <h2>{entity.getCaption()}</h2>
+      <H2>{entity.getCaption()}</H2>
       {Array.from(propsToEdit.values()).map(property => <PropertyEditor
         key={property.name}
         onEntityChanged={this.props.onEntityChanged}
