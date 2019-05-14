@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button, ButtonGroup } from '@blueprintjs/core';
+import {Button, ButtonGroup, Classes} from '@blueprintjs/core';
 import { GraphRenderer } from './renderer/GraphRenderer'
 import { IGraphContext } from './GraphContext'
 import { Toolbar } from './Toolbar';
@@ -24,12 +24,12 @@ export class GraphEditor extends React.Component<IGraphContext> {
     const { layout, updateLayout } = this.props
     const config = layout.config
     return (
-      <div style={{flex: 1, display: 'flex', flexFlow: 'column', height: '100%'}}>
-        <div style={{flexGrow: 0, flexShrink: 1, flexBasis: 'auto'}}>
+      <div style={{flex: 1, display: 'flex', flexFlow: 'column', height: '100%'}} >
+        <div style={{flexGrow: 0, flexShrink: 1, flexBasis: 'auto'}} className={Classes.ELEVATION_3}>
           <Toolbar layout={layout} updateLayout={updateLayout}/>
         </div>
         <div style={{flex: 1, display: 'flex', flexFlow: 'row', flexGrow: 1, flexShrink: 1, flexBasis: '100%'}}>
-          <div style={{flexGrow: 4, flexShrink: 1, flexBasis: 'auto', position: 'relative'}}>
+          <div style={{flexGrow: 4, flexShrink: 1, flexBasis: 'auto', position: 'relative', overflow:'hidden'}}>
             <div style={{position: 'absolute', top: '5px', right: '10px'}}>
               <ButtonGroup vertical>
                 <Button icon="zoom-in" onClick={() => this.onZoom(0.8)}/>
@@ -41,6 +41,9 @@ export class GraphEditor extends React.Component<IGraphContext> {
           <div style={{
             flexGrow: 1,
             flexShrink: 1,
+            maxHeight:'100%',
+            boxSizing:'border-box',
+            overflowY: 'scroll',
             flexBasis: 'auto',
             borderLeftWidth: '1px',
             borderLeftStyle: 'solid',
