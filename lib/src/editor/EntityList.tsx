@@ -19,7 +19,6 @@ export class EntityList extends React.PureComponent<IEntityListProps>{
           <Card elevation={Elevation.TWO}>
             <h5><a href="#">{entity.getCaption()}</a></h5>
             <p>{entity.getProperty('description').join(' ')}</p>
-            <Button>Submit</Button>
           </Card>
           {!!(entities.length - 1 - i) && <Divider/>}
         </React.Fragment>)
