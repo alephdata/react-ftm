@@ -53,12 +53,11 @@ export class EntityType extends React.PureComponent<IEntityTypeProps> {
 
   render() {
     const { property } = this.props;
-    const label = property.description || property.label || property.name
     const items = Array.from(this.props.entities.values())
       .filter(e => e.schema.isA(property.getRange()) && !this.props.values.includes(e.id));
     const selectedEntity = this.ensureInstance()[0];
     const buttonText = selectedEntity ? selectedEntity.getCaption() : 'Select from list?@PUDO';
-    return <FormGroup label={label}>
+    return <FormGroup label={property.label}>
       <EntitySelect
         resetOnSelect
         popoverProps={{ minimal: true }}

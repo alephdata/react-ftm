@@ -6,7 +6,7 @@ import {PropertyEditor} from './PropertyEditor';
 
 interface IEntityEditorProps {
   entity: Entity,
-  onEntityChanged:(entity:Entity) => void
+  onEntityChanged: (entity: Entity) => void
 }
 
 interface IEntityEditorState {
@@ -23,7 +23,6 @@ export class EntityEditor extends React.PureComponent<IEntityEditorProps, IEntit
     this.state = {
       propsToEdit: this.getEditableProperties(props)
     }
-
   }
 
   getEditableProperties(props = this.props) {
@@ -37,7 +36,7 @@ export class EntityEditor extends React.PureComponent<IEntityEditorProps, IEntit
     return propsToEdit;
   }
 
-  componentWillReceiveProps(nextProps: Readonly<IEntityEditorProps>, nextContext: any): void {
+  componentWillReceiveProps(nextProps: Readonly<IEntityEditorProps>): void {
     if (this.props.entity !== nextProps.entity) {
       this.schemaProperties = Array.from(nextProps.entity.schema.getProperties().values());
       this.setState({
@@ -47,8 +46,7 @@ export class EntityEditor extends React.PureComponent<IEntityEditorProps, IEntit
   }
 
   render() {
-    const {entity} = this.props;
-    const label = entity.getCaption() || <i>{entity.schema.name}</i>;
+    const { entity } = this.props;
     const {propsToEdit} = this.state;
 
     return <div>

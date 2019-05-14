@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Button, ButtonGroup, Classes} from '@blueprintjs/core';
+import {Button, ButtonGroup, Colors} from '@blueprintjs/core';
 import { GraphRenderer } from './renderer/GraphRenderer'
 import { IGraphContext } from './GraphContext'
 import { Toolbar } from './Toolbar';
@@ -30,7 +30,7 @@ export class GraphEditor extends React.Component<IGraphContext> {
         </div>
         <div style={{flex: 1, display: 'flex', flexFlow: 'row', flexGrow: 1, flexShrink: 1, flexBasis: '100%'}}>
           <div style={{flexGrow: 4, flexShrink: 1, flexBasis: 'auto', position: 'relative', overflow:'hidden'}}>
-            <div style={{position: 'absolute', top: '5px', right: '10px'}}>
+            <div style={{position: 'absolute', bottom: '5px', left: '10px'}}>
               <ButtonGroup vertical>
                 <Button icon="zoom-in" onClick={() => this.onZoom(0.8)}/>
                 <Button icon="zoom-out" onClick={() => this.onZoom(1.2)}/>
@@ -41,12 +41,13 @@ export class GraphEditor extends React.Component<IGraphContext> {
           <div style={{
             flexGrow: 1,
             flexShrink: 1,
-            maxHeight:'100%',
+            maxHeight: '100%',
             boxSizing:'border-box',
             overflowY: 'scroll',
-            flexBasis: '20vw',
+            flexBasis: '10vw',
             borderLeftWidth: '1px',
             borderLeftStyle: 'solid',
+            // backgroundColor: Colors.LIGHT_GRAY5,
             borderLeftColor: config.BORDER_COLOR,
             padding: config.contentPadding
           }}>

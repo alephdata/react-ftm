@@ -18,10 +18,8 @@ export class DateType extends React.PureComponent<ITypeProps> {
   };
 
   render() {
-    const {property, values} = this.props;
-    const label = property.description || property.label || property.name
-
-    return <FormGroup label={label}>
+    const {property, values} = this.props
+    return <FormGroup label={property.label}>
       <DateInput
         {...this.jsDateFormatter}
         value={values[0] ? new Date(values[0] as string) : undefined}

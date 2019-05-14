@@ -169,7 +169,6 @@ export class GraphLayout {
       .map((edgeId) => this.edges.get(edgeId)) as Edge[]
   }
 
-
   hasSelection(): boolean {
     return this.selection.length > 0
   }

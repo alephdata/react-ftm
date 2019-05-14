@@ -1,19 +1,18 @@
 import * as React from 'react'
 import {Entity} from '@alephdata/followthemoney';
-import {GraphContext, IGraphContext} from './GraphContext'
+import {IGraphContext} from './GraphContext'
 import {EntityEditor} from "./editor/EntityEditor";
 import {EntityList} from "./editor/EntityList";
 
 
 export class Sidebar extends React.Component<IGraphContext> {
-  static contextType = GraphContext;
-  context!: React.ContextType<typeof GraphContext>;
+
   constructor(props: Readonly<IGraphContext>) {
     super(props);
     this.appendToLayout  = this.appendToLayout.bind(this);
   }
 
-  appendToLayout(entity: Entity){
+  appendToLayout(entity: Entity) {
     const { layout } = this.props
     layout.addEntity(entity);
     layout.layout();
@@ -21,23 +20,19 @@ export class Sidebar extends React.Component<IGraphContext> {
   }
 
   render() {
-    if(!this.context) return null;
-    const selection = this.context.layout.getSelectedEntities()
+    const { layout } = this.props
+    const selection = layout.getSelectedEntities()
 
-    if(selection.length === 1){
+    if (selection.length === 1) {
       return <EntityEditor
         entity={selection[0]}
         onEntityChanged={this.appendToLayout}
       />
-    }else if(selection.length){
-      return <EntityList
-        entities={selection}
-      />
+    } else if (selection.length){
+      return <EntityList entities={selection} />
     }
-    return <EntityList
-      entities={this.context.layout.getEntities()
-        .filter(e=>e.schema.isThing())
-      }
-    />
+    const vertices = layout.getVertices().filter((v) => !v.isHidden())
+    const entities = vertices.map((v) => v.getEntity()).filter((e) => !!e)
+    return <EntityList entities={entities as Entity[]} />
   }
 }

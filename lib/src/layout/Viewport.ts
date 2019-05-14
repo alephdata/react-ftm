@@ -91,7 +91,8 @@ export class Viewport {
     const outer = rect.pad(3)
     const zoomX = outer.width / Viewport.BASE_SIZE
     const zoomY = outer.height / (Viewport.BASE_SIZE * this.ratio)
-    const zoomLevel = this.getBoundedZoomLevel(Math.max(zoomX, zoomY))
+    const intendedZoom = Math.max(0.4, Math.max(zoomX, zoomY))
+    const zoomLevel = this.getBoundedZoomLevel(intendedZoom)
     return this.setZoom(outer.getCenter(), zoomLevel)
   }
 
