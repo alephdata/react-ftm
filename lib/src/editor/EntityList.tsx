@@ -15,14 +15,14 @@ export class EntityList extends React.PureComponent<IEntityListProps>{
 
     return <UL className={Classes.LIST_UNSTYLED}>
       {entities.map((entity,i) => {
-        return (<>
+        return (<React.Fragment key={entity.id}>
           <Card elevation={Elevation.TWO}>
             <h5><a href="#">{entity.getCaption()}</a></h5>
             <p>{entity.getProperty('description').join(' ')}</p>
             <Button>Submit</Button>
           </Card>
           {!!(entities.length - 1 - i) && <Divider/>}
-        </>)
+        </React.Fragment>)
       })}
     </UL>
   }
