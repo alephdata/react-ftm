@@ -84,6 +84,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         sourceEntity.setProperty(type.property, value)
         layout.addEntity(sourceEntity)
         const edge = Edge.fromValue(layout, type.property, source, target)
+        layout.selectElement(edge)
         layout.viewport = layout.viewport.setCenter(edge.getCenter())
       }
       if (type.schema && type.schema.edge && sourceEntity && targetEntity) {
@@ -92,6 +93,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         entity.setProperty(type.schema.edge.target, targetEntity)
         layout.addEntity(entity)
         const edge = Edge.fromEntity(layout, entity, source, target)
+        layout.selectElement(edge)
         layout.viewport = layout.viewport.setCenter(edge.getCenter())
       }
       updateLayout(layout)

@@ -54,7 +54,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
       layout.layout()
       const vertex = layout.getVertexByEntity(entity)
       if (vertex) {
-        layout.selectVertex(vertex)
+        layout.selectElement(vertex)
         layout.viewport = layout.viewport.setCenter(vertex.position)
         updateLayout(layout)
         this.setState({label: ''})

@@ -18,6 +18,8 @@ interface IGraphLayoutData {
 
 export type VertexPredicate = (vertex: Vertex) => boolean
 
+export type GraphElement = Vertex | Edge
+
 export class GraphLayout {
   public readonly config: GraphConfig
   public readonly model: Model
@@ -72,7 +74,7 @@ export class GraphLayout {
       if (entity.schema.edge) {
         const sourceProperty = entity.schema.getProperty(entity.schema.edge.source)
         const targetProperty = entity.schema.getProperty(entity.schema.edge.target)
-  
+
         entity.getProperty(sourceProperty).forEach((source) => {
           entity.getProperty(targetProperty).forEach((target) => {
             const sourceVertex = Vertex.fromValue(this, sourceProperty, source)
@@ -85,12 +87,12 @@ export class GraphLayout {
       } else {
         const mainVertex = Vertex.fromEntity(this, entity);
         this.addVertex(mainVertex)
-  
+
         // TODO: make "typesConfig" part of the layout.
         const properties = entity.getProperties()
         // removing properties which should not be represented as a vertex
           .filter(property => property.type.grouped);
-  
+
         properties.forEach((prop) => {
           entity.getProperty(prop).forEach((value) => {
             const propertyVertex = Vertex.fromValue(this, prop, value);
@@ -117,12 +119,12 @@ export class GraphLayout {
     return this.getVertices().filter((v) => v.isEntity).find((v) => v.entityId === entity.id)
   }
 
-  selectVertex(vertex: Vertex, additional: boolean = false) {
-    if (!this.isVertexSelected(vertex)) {
+  selectElement(element: GraphElement, additional: boolean = false) {
+    if (!this.isElementSelected(element)) {
       if (additional) {
-        this.selection = [vertex.id, ...this.selection]
+        this.selection = [element.id, ...this.selection]
       } else {
-        this.selection = [vertex.id]
+        this.selection = [element.id]
       }
     }
   }
@@ -142,20 +144,44 @@ export class GraphLayout {
       .map((vertexId) => this.vertices.get(vertexId)) as Vertex[]
   }
 
+  getSelectedEdges(): Edge[] {
+    return this.selection
+      .filter((edgeId) => this.edges.has(edgeId))
+      .map((edgeId) => this.edges.get(edgeId)) as Edge[]
+  }
+
+  getSelectedEntities(): Entity[] {
+    const entities = new Array<Entity>()
+    this.getSelectedVertices().forEach((vertex) => {
+      const entity = vertex.getEntity()
+      if (entity) {
+        entities.push(entity)
+      }
+    })
+    this.getSelectedEdges().forEach((edge) => {
+      const entity = edge.getEntity()
+      if (entity && edge.isEntity()) {
+        entities.push(entity)
+      }
+    })
+    return entities
+  }
+
   hasSelection(): boolean {
     return this.selection.length > 0
   }
- 
+
   clearSelection() {
     this.selection = [];
   }
 
-  isVertexSelected(vertex: Vertex): boolean {
-    return this.selection.indexOf(vertex.id) !== -1;
+  isElementSelected(element: GraphElement) {
+    return this.selection.indexOf(element.id) !== -1;
   }
 
-  isEdgeSelected(edge: Edge): boolean {
-    return this.selection.indexOf(edge.sourceId) !== -1 ||
+  isEdgeHighlighted(edge: Edge): boolean {
+    return this.isElementSelected(edge) ||
+      this.selection.indexOf(edge.sourceId) !== -1 ||
       this.selection.indexOf(edge.targetId) !== -1;
   }
 
@@ -183,6 +209,16 @@ export class GraphLayout {
         })
       } else {
         vertex.hidden = true
+      }
+    })
+    this.getSelectedEdges().forEach((edge) => {
+      const entity = edge.getEntity()
+      if (entity) {
+        if (edge.isEntity()) {
+          this.entities.delete(entity.id)
+        } else {
+          // TODO: Remove value
+        }
       }
     })
     this.generate()

@@ -7,13 +7,15 @@ import { IGraphContext } from '../GraphContext'
 import { Canvas } from './Canvas'
 import { EdgeRenderer } from './EdgeRenderer'
 import { VertexRenderer } from './VertexRenderer'
+import { Edge } from '../layout/Edge';
+import { GraphElement } from '../layout';
 
 
 export class GraphRenderer extends React.Component<IGraphContext> {
   constructor(props: any) {
     super(props)
     this.updateViewport = this.updateViewport.bind(this);
-    this.selectVertex = this.selectVertex.bind(this);
+    this.selectElement = this.selectElement.bind(this);
     this.selectArea = this.selectArea.bind(this);
     this.dragSelection = this.dragSelection.bind(this);
     this.dropSelection = this.dropSelection.bind(this);
@@ -44,9 +46,9 @@ export class GraphRenderer extends React.Component<IGraphContext> {
     this.props.updateLayout(layout)
   }
 
-  selectVertex(vertex: Vertex, additional: boolean = false) {
+  selectElement(element: GraphElement, additional: boolean = false) {
     const { layout } = this.props;
-    layout.selectVertex(vertex, additional)
+    layout.selectElement(element, additional)
     this.props.updateLayout(layout)
   }
 
@@ -66,9 +68,10 @@ export class GraphRenderer extends React.Component<IGraphContext> {
           key={edge.id}
           config={layout.config}
           edge={edge}
-          selected={layout.isEdgeSelected(edge)}
+          highlight={layout.isEdgeHighlighted(edge)}
           source={source}
           target={target}
+          selectEdge={this.selectElement}
         />
       }
     )
@@ -81,9 +84,9 @@ export class GraphRenderer extends React.Component<IGraphContext> {
       <VertexRenderer
         key={vertex.id}
         config={layout.config}
-        selected={layout.isVertexSelected(vertex)}
+        selected={layout.isElementSelected(vertex)}
         vertex={vertex}
-        selectVertex={this.selectVertex}
+        selectVertex={this.selectElement}
         dragSelection={this.dragSelection}
         dropSelection={this.dropSelection}
       />

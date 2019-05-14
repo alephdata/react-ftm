@@ -42,7 +42,7 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
     const {layout, updateLayout} = this.props
     const selection = layout.getSelectedVertices()
     const vertices = selection.length > 0 ? selection : layout.getVertices()
-    const points = vertices.filter((v) => !v.hidden).map((v) => v.position)
+    const points = vertices.filter((v) => !v.isHidden()).map((v) => v.position)
     const rect = Rectangle.fromPoints(...points)
     layout.viewport = layout.viewport.fitToRect(rect)
     updateLayout(layout)
