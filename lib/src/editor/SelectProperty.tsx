@@ -1,8 +1,8 @@
 import * as React from 'react'
-import {ItemPredicate, ItemRenderer, Select} from '@blueprintjs/select';
-import {MenuItem, Button} from '@blueprintjs/core';
-import {Property} from '@alephdata/followthemoney';
-import {highlightText, matchText} from '../utils';
+import { ItemPredicate, ItemRenderer, Select } from '@blueprintjs/select';
+import { MenuItem, Button, Position, Alignment } from '@blueprintjs/core';
+import { Property } from '@alephdata/followthemoney';
+import { highlightText, matchText } from '../utils';
 
 const PropertySelect = Select.ofType<Property>()
 
@@ -13,11 +13,11 @@ interface ISelectPropertyProps {
 
 export class SelectProperty extends React.PureComponent<ISelectPropertyProps> {
 
-  itemPredicate:ItemPredicate<Property> = (query: string, property: Property) => {
+  itemPredicate: ItemPredicate<Property> = (query: string, property: Property) => {
     return matchText(`${property.name + property.description}`,query)
   }
 
-  itemRenderer:ItemRenderer<Property> = (property, {handleClick, modifiers, query}) => {
+  itemRenderer: ItemRenderer<Property> = (property, {handleClick, modifiers, query}) => {
     if (!modifiers.matchesPredicate) {
       return null;
     }
@@ -34,13 +34,18 @@ export class SelectProperty extends React.PureComponent<ISelectPropertyProps> {
 
   render() {
     return <PropertySelect
+      popoverProps={{
+        position: Position.BOTTOM_LEFT,
+        minimal: true,
+        targetProps: {style: {width: '100%'}}
+      }}
       itemPredicate={this.itemPredicate}
       itemRenderer={this.itemRenderer}
-      // filterable={false}
+      filterable={false}
       resetOnSelect={true}
       onItemSelect={this.props.onSelected}
       items={this.props.properties}>
-      <Button icon='plus' text='Add a field' fill rightIcon='double-caret-vertical' />
+      <Button icon='plus' text='Add a field' fill alignText={Alignment.LEFT} />
     </PropertySelect>
   }
 }
