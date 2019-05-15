@@ -1,24 +1,18 @@
-import React, { Component, PureComponent } from 'react';
-import { MenuItem, Classes, Position } from '@blueprintjs/core';
-import { MultiSelect  } from '@blueprintjs/select';
+import React from 'react';
 import {wordList} from "../../utils";
 
-import './Country.scss';
-
-interface CountriesListItem {
-  [countryCode:string]: string
-}
 
 interface ICountryNameProps {
   code:string
-  countries:CountriesListItem
+  countries:Map<string, string>
   short?:boolean
 }
-export class CountryName extends PureComponent<ICountryNameProps> {
+
+export class CountryName extends React.PureComponent<ICountryNameProps> {
   render() {
     const { code, countries, short = false } = this.props;
     const codeLabel = code ? code.toUpperCase() : "Unknown";
-    const label = short ? codeLabel : (countries[code] || codeLabel);
+    const label = short ? codeLabel : (countries.get(code) || codeLabel);
 
     if (!code) return null;
     return label;
@@ -29,10 +23,10 @@ export class CountryName extends PureComponent<ICountryNameProps> {
 interface ICountriesListProps {
   codes:string[],
   truncate: number
-  countries:CountriesListItem
+  countries:Map<string, string>
 }
 
-export class CountriesList extends Component<ICountriesListProps> {
+export class CountriesList extends React.Component<ICountriesListProps> {
   render() {
     const { codes, truncate = Infinity, ...props } = this.props;
     if (!codes) return null;

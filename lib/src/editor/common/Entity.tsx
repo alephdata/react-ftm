@@ -12,7 +12,7 @@ import { SchemaIcon } from './';
 interface IEntityLabel  {
   entity: Entity
   icon?:boolean
-  truncate?:boolean
+  truncate?:number
 }
 
 export class EntityLabel extends React.Component<IEntityLabel> {

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {Entity} from '@alephdata/followthemoney';
 import {IGraphContext} from './GraphContext'
-import {EntityEditor} from "./editor/EntityEditor";
+import {EntityViewer} from "./editor/EntityViewer";
 import {EntityList} from "./editor/EntityList";
 
 
@@ -24,7 +24,7 @@ export class Sidebar extends React.Component<IGraphContext> {
     const selection = layout.getSelectedEntities()
 
     if (selection.length === 1) {
-      return <EntityEditor
+      return <EntityViewer
         entity={selection[0]}
         onEntityChanged={this.appendToLayout}
       />

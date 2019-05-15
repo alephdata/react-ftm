@@ -8,6 +8,7 @@ import {
 } from '.';
 import {wordList} from "../../utils";
 import {Classes} from "@blueprintjs/core";
+import {GraphContext} from "../../GraphContext";
 
 interface IPropertyCommonProps {
   prop:Property
@@ -17,23 +18,28 @@ interface IValueProps extends IPropertyCommonProps{
   value:Value
 }
 
-class PropertyValue extends React.PureComponent<IValueProps> {
+export class PropertyValue extends React.PureComponent<IValueProps> {
+  static contextType = GraphContext;
+  context!: React.ContextType<typeof GraphContext>;
+
   render() {
     const { value, prop } = this.props;
-    if (!value) {
+    if (!value || !this.context) {
       return null;
     }
+
     if (prop.type.name === 'country') {
-      return <CountryName code={value as string} />;
+      return <CountryName code={value as string} countries={prop.type.values}/>;
     }
     if (prop.type.name === 'language') {
-      return <LanguageName code={value as string} />;
+      return <LanguageName code={value as string} languages={prop.type.values}/>;
     }
     if (prop.type.name === 'url') {
-      return <URL value={value} />;
+      return <URL value={value as string} />;
     }
     if (prop.type.name === 'entity') {
-      return <EntityLabel entity={value as Entity} icon />;
+      const entity = 'string' === typeof value ? this.context.layout.entities.get(value) : value;
+      return <EntityLabel entity={entity as Entity} icon />;
     }
     if (prop.type.name === 'date') {
       return <DateComponent value={value as string} />;
@@ -64,11 +70,11 @@ export class PropertyReverse extends React.PureComponent<IPropertyCommonProps> {
   }
 }
 
-interface IProeprtyValuesProps extends IPropertyCommonProps{
+interface IPropertyValuesProps extends IPropertyCommonProps{
   values:Values
 }
 
-export class PropertyValues extends React.PureComponent<IProeprtyValuesProps > {
+export class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
   render() {
     const { prop, values } = this.props;
     const vals = values.map(value => (
@@ -81,3 +87,19 @@ export class PropertyValues extends React.PureComponent<IProeprtyValuesProps > {
   }
 }
 
+
+export class PropertyListItem extends React.PureComponent<IPropertyValuesProps>{
+  render(){
+    return <li style={{
+      display:"flex",
+      justifyContent:"space-between",
+    }}>
+      <span className="value">
+        <PropertyValues prop={this.props.prop} values={this.props.values}/>
+      </span>
+      <span className={Classes.TEXT_MUTED}>
+        <PropertyName prop={this.props.prop}/>
+      </span>
+    </li>
+  }
+}

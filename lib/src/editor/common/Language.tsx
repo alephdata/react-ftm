@@ -2,18 +2,17 @@ import React from 'react';
 import {wordList} from "../../utils";
 
 
-interface ILangList{ [langName:string]:string }
 
 interface ILanguageNameProps {
   code:string
-  languages: ILangList
+  languages: Map<string, string>
 }
 
 export class LanguageName extends React.PureComponent<ILanguageNameProps> {
   render() {
     const { code, languages } = this.props;
     const codeLabel = code ? code.toUpperCase() : 'Unknown';
-    const label = languages[code] || codeLabel;
+    const label = languages.get(code) || codeLabel;
 
     if (!code) return null;
     return label;
@@ -23,7 +22,7 @@ export class LanguageName extends React.PureComponent<ILanguageNameProps> {
 
 interface ILanguageListProps {
   codes:string[],
-  languages:ILangList
+  languages:Map<string, string>
 }
 
 export class LanguageList extends React.Component<ILanguageListProps> {
