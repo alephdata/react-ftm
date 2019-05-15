@@ -117,14 +117,14 @@ export class Vertex {
 
   static fromValue(layout: GraphLayout, property: Property, value: Value): Vertex {
     if (property.type.name === PropertyType.ENTITY || value instanceof Entity) {
-      if (value instanceof Entity) {
-        return Vertex.fromEntity(layout, value);
+      if ('string' ===  typeof value) {
+        const entity = layout.entities.get(value)
+        if (!entity) {
+          throw new Error("Dangling entity reference.")
+        }
+        return Vertex.fromEntity(layout, entity);
       }
-      const entity = layout.entities.get(value)
-      if (!entity) {
-        throw new Error("Dangling entity reference.")
-      }
-      return Vertex.fromEntity(layout, entity);
+      return Vertex.fromEntity(layout, value);
     }
     const type = property.type.name;
     return new Vertex(layout, {
