@@ -75,9 +75,9 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     const availableProperties = this.schemaProperties.filter(p => !visibleProps.has(p));
     return <div>
       <H2>{entity.getCaption()}</H2>
-      <table className={Classes.HTML_TABLE}>
+      <UL className={Classes.HTML_TABLE}>
         {Array.from(visibleProps.keys()).map(this.renderProperty)}
-      </table>
+      </UL>
       {!!availableProperties.length && (<>
         <Divider/>
         <SelectProperty

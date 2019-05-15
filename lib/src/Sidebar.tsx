@@ -10,6 +10,7 @@ export class Sidebar extends React.Component<IGraphContext> {
   constructor(props: Readonly<IGraphContext>) {
     super(props);
     this.appendToLayout  = this.appendToLayout.bind(this);
+    this.onEntitySelected = this.onEntitySelected.bind(this);
   }
 
   appendToLayout(entity: Entity) {
@@ -17,6 +18,15 @@ export class Sidebar extends React.Component<IGraphContext> {
     layout.addEntity(entity);
     layout.layout();
     this.props.updateLayout(layout)
+  }
+
+  onEntitySelected(entity:Entity){
+    const { layout } = this.props;
+    const vertexToSelect = layout.getVertexByEntity(entity);
+    if(vertexToSelect) {
+      layout.selectElement(vertexToSelect)
+      this.props.updateLayout(layout)
+    }
   }
 
   render() {
@@ -33,6 +43,6 @@ export class Sidebar extends React.Component<IGraphContext> {
     }
     const vertices = layout.getVertices().filter((v) => !v.isHidden())
     const entities = vertices.map((v) => v.getEntity()).filter((e) => !!e)
-    return <EntityList entities={entities as Entity[]} />
+    return <EntityList entities={entities as Entity[]} onEntitySelected={this.onEntitySelected}/>
   }
 }
