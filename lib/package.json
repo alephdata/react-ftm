@@ -53,11 +53,13 @@
     ]
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.7",
+    "@types/d3": "^5.7.2",
     "@types/jest": "^24.0.11",
     "@types/node": "^10.14.4",
     "@types/react": "^16.8.13",
     "@types/react-dom": "^16.8.3",
-    "@types/d3": "^5.7.2",
+    "@types/numeral": "^0.0.25",
     "coveralls": "^3.0.3",
     "jest": "^24.5.0",
     "jest-config": "^24.7.1",
@@ -85,7 +87,10 @@
     "react-dom": "^16.8.6"
   },
   "dependencies": {
+    "numeral": "^2.0.6",
+    "classnames": "^2.2.6",
     "d3": "^5.9.2",
-    "react-draggable": "^3.3.0"
+    "react-draggable": "^3.3.0",
+    "truncate": "^2.0.1"
   }
 }

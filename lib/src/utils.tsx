@@ -38,3 +38,22 @@ export function highlightText(text: string, query: string) {
 export function matchText(term: string, query: string): boolean {
   return term.trim().toLowerCase().indexOf(query.trim().toLowerCase()) !== -1
 }
+
+/*
+ * https://stackoverflow.com/questions/23618744/rendering-comma-separated-list-of-links
+ */
+export function wordList(arr:Array<any>, sep:string) {
+  if (arr.length === 0) {
+    return [];
+  }
+
+  return arr.slice(1).reduce((xs, x) => xs.concat([sep, x]), [arr[0]]);
+}
+
+export function getHost(url:string) {
+  try {
+    return new URL(url).hostname;
+  } catch (e) {
+    return url;
+  }
+}
