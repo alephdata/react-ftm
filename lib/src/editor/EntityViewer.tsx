@@ -59,14 +59,13 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
       onEntityChanged={this.props.onEntityChanged}
       entity={entity}
       property={property}
-    /> : <>
+    /> : <React.Fragment key={property.name}>
       <PropertyListItem
-        key={property.name}
         prop={property}
         values={entity.getProperty(property)}
       />
     <br/>
-    </>
+    </React.Fragment>
   }
 
   render() {
@@ -75,7 +74,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     const availableProperties = this.schemaProperties.filter(p => !visibleProps.has(p));
     return <div>
       <H2>{entity.getCaption()}</H2>
-      <UL className={Classes.HTML_TABLE}>
+      <UL className={Classes.LIST_UNSTYLED}>
         {Array.from(visibleProps.keys()).map(this.renderProperty)}
       </UL>
       {!!availableProperties.length && (<>
