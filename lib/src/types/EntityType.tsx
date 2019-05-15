@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {Entity} from "@alephdata/followthemoney";
-import {FormGroup, MenuItem, Button} from "@blueprintjs/core";
+import {FormGroup, MenuItem, Button, Position, Alignment} from "@blueprintjs/core";
 import {ItemPredicate, ItemRenderer, Select} from "@blueprintjs/select";
 import {ITypeProps} from "./common";
 import {highlightText, matchText} from "../utils";
@@ -60,13 +60,21 @@ export class EntityType extends React.PureComponent<IEntityTypeProps> {
     return <FormGroup label={property.label}>
       <EntitySelect
         resetOnSelect
-        popoverProps={{ minimal: true }}
+        popoverProps={{
+          position: Position.BOTTOM_LEFT,
+          minimal: true,
+          targetProps: {style: {width: '100%'}}
+        }}
         itemPredicate={this.itemPredicate}
         itemRenderer={this.itemRenderer}
         onItemSelect={this.onSelect}
         items={items}
       >
-        <Button text={buttonText} rightIcon="double-caret-vertical" />
+        <Button
+          text={buttonText}
+          fill
+          alignText={Alignment.LEFT}
+          rightIcon="double-caret-vertical" />
       </EntitySelect>
     </FormGroup>
   }

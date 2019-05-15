@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {Values} from '@alephdata/followthemoney';
 import {DateInput, IDateFormatProps} from '@blueprintjs/datetime';
-import {FormGroup} from '@blueprintjs/core';
+import {FormGroup, Position} from '@blueprintjs/core';
 import {ITypeProps} from './common';
 
 export class DateType extends React.PureComponent<ITypeProps> {
@@ -22,6 +22,11 @@ export class DateType extends React.PureComponent<ITypeProps> {
     return <FormGroup label={property.label}>
       <DateInput
         {...this.jsDateFormatter}
+        popoverProps={{
+          position: Position.BOTTOM_LEFT,
+          minimal: true,
+          targetProps: {style: {width: '100%'}}
+        }}
         value={values[0] ? new Date(values[0] as string) : undefined}
         onChange={this.onChange}
       />

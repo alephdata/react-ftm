@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Button, ButtonGroup, Colors} from '@blueprintjs/core';
+import { Button, ButtonGroup } from '@blueprintjs/core';
 import { GraphRenderer } from './renderer/GraphRenderer'
 import { IGraphContext } from './GraphContext'
 import { Toolbar } from './Toolbar';
@@ -42,12 +42,11 @@ export class GraphEditor extends React.Component<IGraphContext> {
             flexGrow: 1,
             flexShrink: 1,
             maxHeight: '100%',
-            boxSizing:'border-box',
+            boxSizing: 'border-box',
             overflowY: 'scroll',
             flexBasis: '10vw',
             borderLeftWidth: '1px',
             borderLeftStyle: 'solid',
-            // backgroundColor: Colors.LIGHT_GRAY5,
             borderLeftColor: config.BORDER_COLOR,
             padding: config.contentPadding
           }}>

@@ -16,9 +16,8 @@ export class TextType extends React.PureComponent<ITypeProps> {
     return <FormGroup label={property.label} >
       <ControlGroup vertical fill >
         <TagInput
-          large
           tagProps={{
-           minimal:true
+            minimal:true
           }}
           addOnBlur
           addOnPaste

@@ -18,11 +18,11 @@ export class Vertex {
   public readonly id: string
   public readonly type: string
   public readonly label: string
+  public readonly entityId?: string
   public fixed: boolean
   public hidden: boolean
   public position: Point
-  public readonly entityId?: string
-  public garbage : boolean = false;
+  public garbage: boolean = false;
 
   constructor(layout: GraphLayout, data: IVertexData) {
     this.layout = layout
@@ -79,6 +79,7 @@ export class Vertex {
   update(other: Vertex): Vertex {
     const data = other.toJSON()
     data.hidden = this.hidden
+    data.fixed = this.fixed
     data.position = this.position.toJSON()
     return Vertex.fromJSON(this.layout, data)
   }
