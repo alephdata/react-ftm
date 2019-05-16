@@ -2,6 +2,8 @@ import {throttle} from "@blueprintjs/core/lib/esm/common/utils";
 import {GraphLayout, IGraphLayoutData} from "./GraphLayout";
 
 export class History {
+  static BACK = -1;
+  static FORWARD = 1;
   isPooling:boolean = false;
   stack:Array<IGraphLayoutData> = [];
   current?:IGraphLayoutData
@@ -40,6 +42,6 @@ export class History {
     this.current = this.stack[this.state];
     return this.layout.update(this.current)
   }
-  back(){ return this.go(-1) }
-  forward(){  return this.go(1) }
+  back(){ return this.go(History.BACK) }
+  forward(){  return this.go(History.FORWARD) }
 }

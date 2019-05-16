@@ -5,7 +5,7 @@ import { Rectangle } from './layout/Rectangle'
 import { filterVerticesByText } from './filters';
 import { VertexCreateDialog } from "./editor/VertexCreateDialog";
 import { EdgeCreateDialog } from "./editor/EdgeCreateDialog";
-
+import {History} from "./layout";
 
 interface IToolbarState {
   searchText: string
@@ -72,6 +72,8 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
     updateLayout(layout)
   }
 
+  onHistory = (factor:number) => () => this.props.updateLayout(this.props.layout.history.go(factor))
+
   toggleAddVertex() {
     this.setState({ vertexCreateOpen: !this.state.vertexCreateOpen })
   }
@@ -108,10 +110,10 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
         </Tooltip>
         <Divider/>
         <Tooltip content="Undo">
-          <Button icon="undo" onClick={() => this.props.updateLayout(this.props.layout.history.back())} />
+          <Button icon="undo" onClick={this.onHistory(History.BACK)} />
         </Tooltip>
         <Tooltip content="Redo">
-          <Button icon="redo" onClick={() => this.props.updateLayout(this.props.layout.history.forward())} />
+          <Button icon="redo" onClick={this.onHistory(History.FORWARD)} />
         </Tooltip>
         <div style={{width: '100%'}}/>
         <form onSubmit={this.onSubmitSearch}>
