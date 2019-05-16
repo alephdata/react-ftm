@@ -1,11 +1,12 @@
 import * as React from 'react'
-import { Button, ButtonGroup, Divider, Tooltip, Colors, Classes, InputGroup } from "@blueprintjs/core"
+import {Button,AnchorButton, ButtonGroup, Divider, Tooltip, Colors, Classes, InputGroup, Intent} from "@blueprintjs/core"
 import { IGraphContext} from './GraphContext'
 import { Rectangle } from './layout/Rectangle'
 import { filterVerticesByText } from './filters';
 import { VertexCreateDialog } from "./editor/VertexCreateDialog";
 import { EdgeCreateDialog } from "./editor/EdgeCreateDialog";
 import {History} from "./layout";
+import has = Reflect.has;
 
 interface IToolbarState {
   searchText: string
@@ -102,11 +103,12 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
         <Tooltip content="Add entities">
           <Button icon="new-object" onClick={this.toggleAddVertex}/>
         </Tooltip>
-        <Tooltip content="Remove selected" disabled={!hasSelection}>
-          <Button icon="graph-remove" onClick={this.onRemoveSelection} disabled={!hasSelection} />
+        <Tooltip content={hasSelection ? "Remove selected" : "To remove a node first you must select a node by clicking on it"}>
+          <AnchorButton intent={Intent.DANGER} icon="graph-remove" onClick={this.onRemoveSelection} disabled={!hasSelection} />
         </Tooltip>
+        <Divider/>
         <Tooltip content="Add links">
-          <Button icon="new-link" onClick={this.toggleAddEdge} disabled={!canAddEdge} />
+          <AnchorButton icon="new-link" onClick={this.toggleAddEdge} disabled={!canAddEdge} />
         </Tooltip>
         <Divider/>
         <Tooltip content="Undo">
