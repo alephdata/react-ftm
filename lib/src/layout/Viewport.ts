@@ -15,7 +15,7 @@ export class Viewport {
     this.zoomLevel = zoomLevel
     this.ratio = ratio
     this.center = center || new Point()
-    this.viewBox = undefined
+    this.computeViewBox()
   }
 
   zoomedPixelToGrid(point: Point): Point {

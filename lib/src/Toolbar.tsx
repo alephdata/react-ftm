@@ -1,11 +1,10 @@
 import * as React from 'react'
 import { Button, ButtonGroup, Divider, Tooltip, Colors, Classes, InputGroup } from "@blueprintjs/core"
-import { IGraphContext } from './GraphContext'
+import { IGraphContext} from './GraphContext'
 import { Rectangle } from './layout/Rectangle'
 import { filterVerticesByText } from './filters';
 import { VertexCreateDialog } from "./editor/VertexCreateDialog";
 import { EdgeCreateDialog } from "./editor/EdgeCreateDialog";
-import { EdgeType } from "./editor/EdgeType";
 
 
 interface IToolbarState {
@@ -106,6 +105,13 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
         </Tooltip>
         <Tooltip content="Add links">
           <Button icon="new-link" onClick={this.toggleAddEdge} disabled={!canAddEdge} />
+        </Tooltip>
+        <Divider/>
+        <Tooltip content="Undo">
+          <Button icon="undo" onClick={() => this.props.updateLayout(this.props.layout.history.back())} />
+        </Tooltip>
+        <Tooltip content="Redo">
+          <Button icon="redo" onClick={() => this.props.updateLayout(this.props.layout.history.forward())} />
         </Tooltip>
         <div style={{width: '100%'}}/>
         <form onSubmit={this.onSubmitSearch}>

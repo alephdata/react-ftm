@@ -30,17 +30,17 @@ export class GraphLayout {
   entities = new Map<string, Entity>()
   selection = new Array<string>()
   selectionMode: boolean = true
-  private history: History;
+  history: History;
 
   constructor(config: GraphConfig, model: Model) {
     this.config = config
     this.model = model
     this.viewport = new Viewport(config)
+    this.history = new History(this);
+
     this.addVertex = this.addVertex.bind(this)
     this.addEdge = this.addEdge.bind(this)
     this.addEntity = this.addEntity.bind(this);
-    this.history = new History(this);
-    this.history.push(this.toJSON())
   }
 
   addVertex(vertex: Vertex): Vertex {
@@ -113,6 +113,7 @@ export class GraphLayout {
   addEntity(entity: Entity) {
     this.entities.set(entity.id, entity)
     this.generate()
+    this.history.push(this.toJSON())
   }
 
   getEntities(): Entity[] {
@@ -201,7 +202,8 @@ export class GraphLayout {
   dropSelection() {
     this.getSelectedVertices().forEach((vertex) => {
       this.vertices.set(vertex.id, vertex.snapPosition(vertex.position))
-    })
+    });
+    this.history.push(this.toJSON())
   }
 
   removeSelection() {
@@ -228,6 +230,7 @@ export class GraphLayout {
       }
     })
     this.generate()
+    this.history.push(this.toJSON())
   }
 
   layout() {
@@ -265,6 +268,16 @@ export class GraphLayout {
         this.vertices.set(vertex.id, vertex.snapPosition(position))
       }
     })
+  }
+
+  clone():GraphLayout{
+    return this.update(this.toJSON());
+  }
+
+  update(withData:IGraphLayoutData):GraphLayout{
+    const nextLayout =GraphLayout.fromJSON(this.config, this.model, withData)
+    nextLayout.history = this.history;
+    return nextLayout;
   }
 
   toJSON(): IGraphLayoutData {

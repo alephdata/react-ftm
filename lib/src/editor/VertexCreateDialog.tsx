@@ -88,6 +88,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
                 onSelect={this.onSchemaSelect}
               />
               <InputGroup
+                autoFocus
                 large
                 intent={isValid ? undefined : Intent.WARNING}
                 className="bp3-fill"

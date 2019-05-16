@@ -10,7 +10,7 @@ export function filterVerticesByText(text: string) {
     // TODO: should this filter all values for entity vertices
     const matching = terms.filter((term) => {
       return text.indexOf(term) !== -1
-    })
+    });
     return terms.length !== 0 && matching.length === terms.length
   }
 }

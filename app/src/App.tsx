@@ -31,10 +31,14 @@ export default class Vis2 extends React.Component {
     const jsonLayout = localStorage.getItem(demoKey);
     if (jsonLayout) {
       this.state.layout = GraphLayout.fromJSON(config, model, JSON.parse(jsonLayout))
+      this.state.layout.history.push(this.state.layout.toJSON());
     } else {
-      const entities = data.map(rawEntity => this.state.layout.model.getEntity(rawEntity as unknown as IEntityDatum));
-      entities.forEach((entity) => this.state.layout.addEntity(entity))
-      this.state.layout.layout()
+      this.state.layout.history.createChangePool(()=>{
+        const entities = data.map(rawEntity => this.state.layout.model.getEntity(rawEntity as unknown as IEntityDatum));
+        entities.forEach((entity) => this.state.layout.addEntity(entity))
+        this.state.layout.layout()
+      })
+
     }
     this.updateLayout = this.updateLayout.bind(this)
   }
