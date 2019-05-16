@@ -1,8 +1,10 @@
 import * as React from 'react'
 import { Button, MenuItem, Alignment, Position } from '@blueprintjs/core'
-import { Select, IItemRendererProps } from '@blueprintjs/select'
+import {Select, IItemRendererProps, ItemPredicate} from '@blueprintjs/select'
 import { Vertex } from '../layout/Vertex'
 import { SchemaIcon } from '../SchemaIcon'
+import {Entity} from "@alephdata/followthemoney";
+import {matchText} from "../utils";
 
 interface IVertexSelectProps {
   vertices: Vertex[],
@@ -18,6 +20,10 @@ export class VertexSelect extends React.PureComponent<IVertexSelectProps> {
     const entity = vertex.getEntity()
     return vertex.isEntity() && entity ? SchemaIcon.get(entity.schema) : undefined;
   }
+
+  itemPredicate: ItemPredicate<Vertex> = (query: string, vertex: Vertex) => {
+    return matchText(vertex.label, query)
+  };
 
   renderVertex(vertex: Vertex, { handleClick, modifiers }: IItemRendererProps) {
     if (!modifiers.matchesPredicate) {
@@ -36,6 +42,7 @@ export class VertexSelect extends React.PureComponent<IVertexSelectProps> {
     const { vertices, vertex } = this.props
     return (
       <TypedSelect
+        itemPredicate={this.itemPredicate}
         popoverProps={{
           position: Position.BOTTOM_LEFT,
           minimal: true,
