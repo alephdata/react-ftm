@@ -6,8 +6,9 @@ import { Viewport } from './Viewport'
 import { Point } from './Point';
 import { Rectangle } from './Rectangle';
 import { GraphConfig } from '../GraphConfig';
+import {History} from "./History";
 
-interface IGraphLayoutData {
+export interface IGraphLayoutData {
   viewport: any
   entities: Array<IEntityDatum>
   vertices: Array<any>
@@ -29,6 +30,7 @@ export class GraphLayout {
   entities = new Map<string, Entity>()
   selection = new Array<string>()
   selectionMode: boolean = true
+  private history: History;
 
   constructor(config: GraphConfig, model: Model) {
     this.config = config
@@ -36,7 +38,9 @@ export class GraphLayout {
     this.viewport = new Viewport(config)
     this.addVertex = this.addVertex.bind(this)
     this.addEdge = this.addEdge.bind(this)
-    this.addEntity = this.addEntity.bind(this)
+    this.addEntity = this.addEntity.bind(this);
+    this.history = new History(this);
+    this.history.push(this.toJSON())
   }
 
   addVertex(vertex: Vertex): Vertex {
