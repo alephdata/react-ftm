@@ -4,7 +4,7 @@ import {DateInput, IDateFormatProps} from '@blueprintjs/datetime';
 import {FormGroup, Position} from '@blueprintjs/core';
 import {ITypeProps} from './common';
 
-export class DateType extends React.PureComponent<ITypeProps> {
+export class DateEdit extends React.PureComponent<ITypeProps> {
   static group = new Set(['date'])
 
   onChange = (value: Date) => {

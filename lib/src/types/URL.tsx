@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon } from '@blueprintjs/core';
-import {getHost} from "../../utils";
+import {getHost} from "../utils";
 
 interface IURLProps {
   value:string

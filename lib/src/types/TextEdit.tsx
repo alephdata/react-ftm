@@ -3,7 +3,7 @@ import {Values} from "@alephdata/followthemoney";
 import {ControlGroup, FormGroup, TagInput} from "@blueprintjs/core";
 import {ITypeProps} from "./common";
 
-export class TextType extends React.PureComponent<ITypeProps> {
+export class TextEdit extends React.PureComponent<ITypeProps> {
   static group = new Set(['text', 'string'])
 
   onChange = (values: Array<string | React.ReactNode>) => {

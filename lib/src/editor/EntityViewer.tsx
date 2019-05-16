@@ -3,7 +3,7 @@ import {Classes, Divider, H2, UL} from '@blueprintjs/core'
 import {Entity, Property} from '@alephdata/followthemoney';
 import {SelectProperty} from './SelectProperty';
 import {PropertyEditor} from './PropertyEditor';
-import { PropertyName, PropertyValues} from './common';
+import { PropertyName, PropertyValues} from '../types';
 
 interface IEntityViewerProps {
   entity: Entity,

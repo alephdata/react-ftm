@@ -1,10 +1,10 @@
 import React from 'react';
 import {Entity} from "@alephdata/followthemoney";
 import {Classes} from '@blueprintjs/core'
-/// <reference path="../../types.d.ts"/>
+/// <reference path="../moduleTypes.d.ts"/>
 import truncateText from 'truncate';
 
-import { SchemaIcon } from './';
+import { SchemaIcon } from './index';
 
 
 

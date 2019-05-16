@@ -1,8 +1,8 @@
 import * as React from 'react'
 import {Entity, Property, Values} from '@alephdata/followthemoney';
-import {DateType} from '../types/DateType';
-import {TextType} from '../types/TextType';
-import {EntityType} from '../types/EntityType';
+import {DateEdit} from '../types/DateEdit';
+import {TextEdit} from '../types/TextEdit';
+import {EntityEdit} from '../types/EntityEdit';
 import {GraphContext} from '../GraphContext';
 
 interface IPropertyEditorProps {
@@ -31,15 +31,15 @@ export class PropertyEditor extends React.Component<IPropertyEditorProps> {
       entity: entity
     };
 
-    if (DateType.group.has(property.type.name)) {
-      return <DateType {...commonProps} />;
+    if (DateEdit.group.has(property.type.name)) {
+      return <DateEdit {...commonProps} />;
     }
 
-    if (EntityType.group.has(property.type.name)) {
-      return <EntityType entities={this.context.layout.entities} {...commonProps} />
+    if (EntityEdit.group.has(property.type.name)) {
+      return <EntityEdit entities={this.context.layout.entities} {...commonProps} />
     }
 
     // fallback
-    return <TextType {...commonProps} />;
+    return <TextEdit {...commonProps} />;
   }
 }

@@ -12,7 +12,7 @@ interface IEntityTypeProps extends ITypeProps {
 const EntitySelect = Select.ofType<Entity>();
 
 
-export class EntityType extends React.PureComponent<IEntityTypeProps> {
+export class EntityEdit extends React.PureComponent<IEntityTypeProps> {
   static group = new Set(['entity'])
 
   itemPredicate: ItemPredicate<Entity> = (query: string, entity: Entity) => {

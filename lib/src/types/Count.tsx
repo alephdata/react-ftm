@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Numeric } from '.';
+import { Numeric } from './index';
 
 interface ICountProps {
   count:number

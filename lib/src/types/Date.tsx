@@ -1,5 +1,4 @@
 import React from 'react';
-import {interpolateRainbow} from "d3-scale-chromatic";
 
 interface IEarliestProps {
   values:number[]

@@ -6,9 +6,9 @@ import {
   DateComponent,
   Numeric, CountryName, LanguageName, URL
 } from '.';
-import {wordList} from "../../utils";
+import {wordList} from "../utils";
 import {Classes} from "@blueprintjs/core";
-import {GraphContext} from "../../GraphContext";
+import {GraphContext} from "../GraphContext";
 
 interface IPropertyCommonProps {
   prop:Property
