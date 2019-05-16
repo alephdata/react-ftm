@@ -3,7 +3,7 @@ import {Classes, Divider, H2, UL} from '@blueprintjs/core'
 import {Entity, Property} from '@alephdata/followthemoney';
 import {SelectProperty} from './SelectProperty';
 import {PropertyEditor} from './PropertyEditor';
-import {PropertyListItem} from './common';
+import { PropertyName, PropertyValues} from './common';
 
 interface IEntityViewerProps {
   entity: Entity,
@@ -13,6 +13,7 @@ interface IEntityViewerProps {
 interface IEntityViewerState {
   visibleProps: Map<Property, boolean>
 }
+
 
 export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntityViewerState> {
   private schemaProperties: Property[];
@@ -51,21 +52,41 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     }))
   }
 
+  toggleEditable(property:Property){
+    this.setState(({visibleProps}) => ({
+      visibleProps: new Map(visibleProps.set(property, !visibleProps.get(property)))
+    }))
+  }
+
   renderProperty(property:Property){
     const { entity } = this.props;
     const isEditable = this.state.visibleProps.get(property);
-    return isEditable ? <PropertyEditor
-      key={property.name}
-      onEntityChanged={this.props.onEntityChanged}
-      entity={entity}
-      property={property}
-    /> : <React.Fragment key={property.name}>
-      <PropertyListItem
-        prop={property}
-        values={entity.getProperty(property)}
+
+    if(isEditable){
+      return <PropertyEditor
+        key={property.name}
+        onEntityChanged={this.props.onEntityChanged}
+        entity={entity}
+        property={property}
       />
-    <br/>
-    </React.Fragment>
+    }else{
+      return <React.Fragment key={property.name}>
+        <li
+          onDoubleClick={() => this.toggleEditable(property)}
+          style={{
+            display:"flex",
+            justifyContent:"space-between",
+          }}
+        >
+        <span className="value">
+          <PropertyValues prop={property} values={entity.getProperty(property)}/>
+        </span>
+          <span className={Classes.TEXT_MUTED}>
+          <PropertyName prop={property}/>
+        </span>
+        </li><br/>
+      </React.Fragment>
+    }
   }
 
   render() {

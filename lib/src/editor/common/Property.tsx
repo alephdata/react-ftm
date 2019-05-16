@@ -86,20 +86,3 @@ export class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
     return (<span>{ wordList(vals, ' · ') }</span>);
   }
 }
-
-
-export class PropertyListItem extends React.PureComponent<IPropertyValuesProps>{
-  render(){
-    return <li style={{
-      display:"flex",
-      justifyContent:"space-between",
-    }}>
-      <span className="value">
-        <PropertyValues prop={this.props.prop} values={this.props.values}/>
-      </span>
-      <span className={Classes.TEXT_MUTED}>
-        <PropertyName prop={this.props.prop}/>
-      </span>
-    </li>
-  }
-}
