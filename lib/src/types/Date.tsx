@@ -20,13 +20,8 @@ export class DateComponent extends React.PureComponent<IDateComponentProps> {
 
   render() {
     const { value: dateString } = this.props;
-    const availableChunks = dateString.split(/-/);
-    const dateObject = Reflect.construct(Date, [dateString]);
-    return Intl.DateTimeFormat(navigator.language, {
-      year:'numeric',
-      month:availableChunks[1] && 'long',
-      day:availableChunks[2] && 'numeric'
-    }).format(dateObject)
+    const dateObject:Date = Reflect.construct(Date, [dateString]);
+    return [dateObject.getFullYear(), dateObject.getMonth(), dateObject.getDay()].join('/')
   }
 }
 
