@@ -1,7 +1,7 @@
 import React from 'react';
 import { Entity } from '@alephdata/followthemoney';
 import { Menu, MenuItem } from '@blueprintjs/core'
-import { SchemaIcon } from "../SchemaIcon";
+import { SchemaIcon } from '../types';
 
 interface IEntityListProps {
   entities: Array<Entity>

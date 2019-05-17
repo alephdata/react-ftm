@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Point } from '../layout/Point';
+import { Point } from '../layout';
 
 export function getRefMatrix(ref: React.RefObject<SVGGraphicsElement>): DOMMatrix | null {
   if (ref.current) {

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Button, MenuItem, Alignment, Position } from '@blueprintjs/core';
 import { Select, IItemRendererProps } from '@blueprintjs/select';
 import { Model, Schema, IconRegistry } from '@alephdata/followthemoney';
-import { SchemaIcon } from '../SchemaIcon';
+import { SchemaIcon } from '../types';
 
 interface ISelectSchemaProps {
   model: Model,

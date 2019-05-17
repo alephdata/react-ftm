@@ -4,9 +4,8 @@ import { Select, IItemRendererProps } from '@blueprintjs/select';
 import { IGraphContext } from '../GraphContext'
 import { VertexSelect } from './VertexSelect'
 import { EdgeType } from './EdgeType'
-import { Vertex } from '../layout/Vertex';
-import { Edge } from '../layout/Edge';
-import { SchemaIcon } from '../SchemaIcon';
+import { Vertex,Edge } from '../layout';
+import { SchemaIcon } from '../types';
 
 const EdgeTypeSelect = Select.ofType<EdgeType>();
 

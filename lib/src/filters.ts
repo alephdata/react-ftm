@@ -14,8 +14,3 @@ export function filterVerticesByText(text: string) {
     return terms.length !== 0 && matching.length === terms.length
   }
 }
-
-
-export function matchText(term:string, query:string){
-  return term.trim().toLowerCase().indexOf(query.trim().toLowerCase()) !== -1
-}

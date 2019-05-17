@@ -6,7 +6,3 @@ export interface ITypeProps {
   entity: Entity
   onPropertyChanged: (values: Values, property: Property) => void
 }
-
-export interface ITypeState {
-  isEditable: boolean
-}

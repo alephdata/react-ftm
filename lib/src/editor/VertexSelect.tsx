@@ -2,8 +2,7 @@ import * as React from 'react'
 import { Button, MenuItem, Alignment, Position } from '@blueprintjs/core'
 import {Select, IItemRendererProps, ItemPredicate} from '@blueprintjs/select'
 import { Vertex } from '../layout/Vertex'
-import { SchemaIcon } from '../SchemaIcon'
-import {Entity} from "@alephdata/followthemoney";
+import { SchemaIcon } from '../types'
 import {matchText} from "../utils";
 
 interface IVertexSelectProps {

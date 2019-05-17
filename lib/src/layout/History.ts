@@ -28,7 +28,6 @@ export class History {
     this.push(this.layout.toJSON())
   }
   go(factor:number):GraphLayout{
-    debugger;
     const nextPossibleState = this.state += factor;
     let nextState;
 

@@ -1,28 +1,25 @@
 import React from 'react';
-import {Schema} from '@alephdata/followthemoney';
-import { Icon } from '@blueprintjs/core';
+import {Schema, IconRegistry} from '@alephdata/followthemoney';
 
-interface ISchemaIconProps {
+interface ISchemaCommonProps {
   schema: Schema
 }
 
-export class SchemaIcon extends React.PureComponent<ISchemaIconProps> {
-  render() {
-    const { schema, ...rest } = this.props;
+export class SchemaIcon extends React.Component<ISchemaCommonProps>{
+  static get(schema: Schema, size: number = 16) {
+    const iconPaths = IconRegistry.getSchemaIcon(schema);
     return (
-      <Icon
-        className="entity-icon"
-        iconSize={16}
-        {...rest}
-        // @ts-ignore
-        icon={schema.name.toLowerCase()}
-      />
+      <svg viewBox={'0 0 24 24'} height={size} width={size}>
+        {iconPaths.map((d, i) => <path key={i} d={d}/>)}/>
+      </svg>
     );
+  }
+  render(){
+    return SchemaIcon.get(this.props.schema)
   }
 }
 
-interface ISchemaLabelProps {
-  schema:Schema
+interface ISchemaLabelProps extends ISchemaCommonProps{
   plural?:boolean
   icon?:boolean
 }
@@ -43,8 +40,7 @@ export class SchemaLabel extends React.Component<ISchemaLabelProps> {
   }
 }
 
-interface ISchemaLinkProps {
-  schema:Schema
+interface ISchemaLinkProps extends ISchemaCommonProps{
   plural?:boolean
   url:string
 }
