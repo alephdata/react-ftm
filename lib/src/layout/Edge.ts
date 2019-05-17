@@ -82,8 +82,8 @@ export class Edge {
   }
 
   isLinkedToVertex(vertex: Vertex): boolean {
-    return this.sourceId == vertex.id ||
-           this.targetId == vertex.id;
+    return this.sourceId === vertex.id ||
+           this.targetId === vertex.id;
   }
 
   update(other: Edge): Edge {
