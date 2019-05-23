@@ -1,12 +1,11 @@
 import * as React from 'react'
 import {Button,AnchorButton, ButtonGroup, Divider, Tooltip, Colors, Classes, InputGroup, Intent} from "@blueprintjs/core"
 import { IGraphContext} from './GraphContext'
-import { Rectangle } from './layout/Rectangle'
 import { filterVerticesByText } from './filters';
-import { VertexCreateDialog } from "./editor/VertexCreateDialog";
-import { EdgeCreateDialog } from "./editor/EdgeCreateDialog";
-import {History} from "./layout";
-import has = Reflect.has;
+import { VertexCreateDialog, EdgeCreateDialog } from "./editor";
+import {History, Rectangle} from "./layout";
+import {alignHorizontal} from "./layout/tools/alignHorizontal";
+import {alignVertical} from "./layout/tools/alignVertical";
 
 interface IToolbarState {
   searchText: string
@@ -116,6 +115,21 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
         </Tooltip>
         <Tooltip content="Redo">
           <Button icon="redo" onClick={this.onHistory(History.FORWARD)} />
+        </Tooltip>
+        <Divider/>
+        <Tooltip content="Align horizontal">
+          <Button icon="drag-handle-horizontal" onClick={() => {
+            this.props.updateLayout(
+              alignHorizontal(this.props.layout)
+            )
+          }} />
+        </Tooltip>
+        <Tooltip content="Align vertical">
+          <Button icon="drag-handle-vertical" onClick={() => {
+            this.props.updateLayout(
+              alignVertical(this.props.layout)
+            )
+          }} />
         </Tooltip>
         <div style={{width: '100%'}}/>
         <form onSubmit={this.onSubmitSearch}>

@@ -4,6 +4,7 @@ import {DateEdit} from '../types/DateEdit';
 import {TextEdit} from '../types/TextEdit';
 import {EntityEdit} from '../types/EntityEdit';
 import {GraphContext} from '../GraphContext';
+import {CountryEdit} from "../types/CountryEdit";
 
 interface IPropertyEditorProps {
   entity: Entity,
@@ -33,6 +34,10 @@ export class PropertyEditor extends React.Component<IPropertyEditorProps> {
 
     if (DateEdit.group.has(property.type.name)) {
       return <DateEdit {...commonProps} />;
+    }
+
+    if (CountryEdit.group.has(property.type.name)) {
+      return <CountryEdit {...commonProps} />;
     }
 
     if (EntityEdit.group.has(property.type.name)) {

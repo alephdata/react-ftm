@@ -257,8 +257,8 @@ export class GraphLayout {
     }).filter((link) => (link.source && link.target))
 
     const simulation = forceSimulation(nodes)
-      .force('links', forceLink(links))
-      .force('collide', forceCollide(this.config.VERTEX_RADIUS))
+      .force('links', forceLink(links).distance(3))
+      .force('collide', forceCollide(this.config.VERTEX_RADIUS).strength(2))
     simulation.stop()
     simulation.tick(500)
     nodes.forEach((node) => {
