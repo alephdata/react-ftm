@@ -1,6 +1,6 @@
 {
   "name": "@alephdata/vislib",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Graph network visualisation tool for aleph/followthemoney ",
   "keywords": [],
   "files": ["dist/**/*"],

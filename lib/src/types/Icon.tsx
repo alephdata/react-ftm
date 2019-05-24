@@ -12,6 +12,8 @@ Object.assign(BlueprintIcon.prototype, {
   },
   render() {
     // @ts-ignore
+    this.props.iconSize = this.props.iconSize || BlueprintIcon.SIZE_STANDARD;
+    // @ts-ignore
     if (this.isInternal(this.props.icon)) {
       Object.assign(BlueprintIcon, {
         SIZE_STANDARD: 25,
