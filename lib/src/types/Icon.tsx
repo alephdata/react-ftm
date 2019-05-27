@@ -12,7 +12,7 @@ Object.assign(BlueprintIcon.prototype, {
   },
   render() {
     // @ts-ignore
-    this.props.iconSize = this.props.iconSize || BlueprintIcon.SIZE_STANDARD;
+    // this.props.iconSize = this.props.iconSize || BlueprintIcon.SIZE_STANDARD;
     // @ts-ignore
     if (this.isInternal(this.props.icon)) {
       Object.assign(BlueprintIcon, {

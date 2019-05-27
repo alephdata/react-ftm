@@ -1,11 +1,23 @@
 import * as React from 'react'
-import {Button,AnchorButton, ButtonGroup, Divider, Tooltip, Colors, Classes, InputGroup, Intent} from "@blueprintjs/core"
+import {
+  Button,
+  AnchorButton,
+  ButtonGroup,
+  Divider,
+  Tooltip,
+  Colors,
+  Classes,
+  InputGroup,
+  Intent,
+  FileInput
+} from "@blueprintjs/core"
 import { IGraphContext} from './GraphContext'
 import { filterVerticesByText } from './filters';
 import { VertexCreateDialog, EdgeCreateDialog } from "./editor";
-import {History, Rectangle} from "./layout";
+import {GraphLayout, History, Rectangle} from "./layout";
 import {alignHorizontal} from "./layout/tools/alignHorizontal";
 import {alignVertical} from "./layout/tools/alignVertical";
+import {exportJSON} from "./layout/tools/exportJSON";
 
 interface IToolbarState {
   searchText: string
@@ -130,6 +142,27 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
               alignVertical(this.props.layout)
             )
           }} />
+        </Tooltip>
+        <Divider/>
+        <Tooltip content="Load from computed">
+          <FileInput onInputChange={(e) => {
+            const f = new FileReader();
+            f.onload = (c:any) => {
+              this.props.updateLayout(
+                GraphLayout.fromJSON(this.props.layout.config, this.props.layout.model, JSON.parse(c.target.result))
+              );
+            }
+            // @ts-ignore
+            f.readAsText(e.currentTarget.files[0])
+          }}/>
+        </Tooltip>
+        <Tooltip content="Download data">
+          <AnchorButton download icon="cloud-download" onMouseDown={(e) => {
+            e.currentTarget.setAttribute('href', exportJSON(this.props.layout))
+          }} onBlur={e => {
+            const url = e.currentTarget.getAttribute('href');
+            url && URL.revokeObjectURL(url)
+          }}/>
         </Tooltip>
         <div style={{width: '100%'}}/>
         <form onSubmit={this.onSubmitSearch}>
