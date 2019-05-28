@@ -17,7 +17,7 @@ import { VertexCreateDialog, EdgeCreateDialog } from "./editor";
 import {GraphLayout, History, Rectangle} from "./layout";
 import {alignHorizontal} from "./layout/tools/alignHorizontal";
 import {alignVertical} from "./layout/tools/alignVertical";
-import {exportJSON} from "./layout/tools/exportJSON";
+import {downloadableJSON} from "./layout/tools/downloadableJSON";
 
 interface IToolbarState {
   searchText: string
@@ -84,6 +84,21 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
     updateLayout(layout)
   }
 
+  onReadFile(e:React.FormEvent<HTMLInputElement>) {
+  if(e && e.currentTarget && e.currentTarget.files){
+    try{
+      const f = new FileReader();
+      f.onload = (c:any) => {
+        this.props.updateLayout(
+          GraphLayout.fromJSON(this.props.layout.config, this.props.layout.model, JSON.parse(c.target.result))
+        );
+      }
+      f.readAsText(e.currentTarget.files[0])
+    }catch (e) {
+      // TODO: visualise a warning
+    }
+  }
+}
   onHistory = (factor:number) => () => this.props.updateLayout(this.props.layout.history.go(factor))
 
   toggleAddVertex() {
@@ -145,20 +160,11 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
         </Tooltip>
         <Divider/>
         <Tooltip content="Load from computed">
-          <FileInput onInputChange={(e) => {
-            const f = new FileReader();
-            f.onload = (c:any) => {
-              this.props.updateLayout(
-                GraphLayout.fromJSON(this.props.layout.config, this.props.layout.model, JSON.parse(c.target.result))
-              );
-            }
-            // @ts-ignore
-            f.readAsText(e.currentTarget.files[0])
-          }}/>
+          <FileInput onInputChange={this.onReadFile}/>
         </Tooltip>
         <Tooltip content="Download data">
           <AnchorButton download icon="cloud-download" onMouseDown={(e) => {
-            e.currentTarget.setAttribute('href', exportJSON(this.props.layout))
+            e.currentTarget.setAttribute('href', downloadableJSON(this.props.layout))
           }} onBlur={e => {
             const url = e.currentTarget.getAttribute('href');
             url && URL.revokeObjectURL(url)
