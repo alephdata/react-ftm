@@ -96,8 +96,9 @@
     "react-dom": "^16.8.6"
   },
   "dependencies": {
-    "numeral": "^2.0.6",
     "d3-force": "^2.0.1",
+    "dagre": "^0.8.4",
+    "numeral": "^2.0.6",
     "react-draggable": "^3.3.0",
     "truncate": "^2.0.1"
   }
