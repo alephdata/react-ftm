@@ -1,5 +1,5 @@
 import { Entity, Model, IEntityDatum } from '@alephdata/followthemoney'
-import { forceSimulation, forceLink, forceCollide } from 'd3';
+import { forceSimulation, forceLink, forceCollide } from 'd3-force';
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
 import { Viewport } from './Viewport'

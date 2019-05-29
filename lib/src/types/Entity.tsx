@@ -4,7 +4,7 @@ import {Classes} from '@blueprintjs/core'
 /// <reference path="../moduleTypes.d.ts"/>
 import truncateText from 'truncate';
 
-import { SchemaIcon } from './index';
+import { SchemaIcon } from './Schema';
 
 
 

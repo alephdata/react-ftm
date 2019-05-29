@@ -97,7 +97,7 @@
   },
   "dependencies": {
     "numeral": "^2.0.6",
-    "d3": "^5.9.2",
+    "d3-force": "^2.0.1",
     "react-draggable": "^3.3.0",
     "truncate": "^2.0.1"
   }

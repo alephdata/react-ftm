@@ -18,6 +18,7 @@ import {GraphLayout, History, Rectangle} from "./layout";
 import {alignHorizontal} from "./layout/tools/alignHorizontal";
 import {alignVertical} from "./layout/tools/alignVertical";
 import {downloadableJSON} from "./layout/tools/downloadableJSON";
+import {alignCircle} from "./layout/tools/alignCircle";
 
 interface IToolbarState {
   searchText: string
@@ -155,6 +156,13 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
           <Button icon="drag-handle-vertical" onClick={() => {
             this.props.updateLayout(
               alignVertical(this.props.layout)
+            )
+          }} />
+        </Tooltip>
+        <Tooltip content="Arrange as circle">
+          <Button icon="layout-circle" onClick={() => {
+            this.props.updateLayout(
+              alignCircle(this.props.layout)
             )
           }} />
         </Tooltip>
