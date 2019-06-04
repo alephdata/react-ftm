@@ -16,7 +16,7 @@ export class GraphEditor extends React.Component<IGraphContext> {
     const {layout, updateLayout} = this.props
     const {viewport} = layout
     const newZoomLevel = viewport.zoomLevel * factor
-    layout.viewport = viewport.setZoom(viewport.center, newZoomLevel)
+    layout.viewport = viewport.setZoom(newZoomLevel)
     updateLayout(layout)
   }
 

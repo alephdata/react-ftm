@@ -72,16 +72,16 @@ export class Viewport {
       ((target.y - this.center.y) * zoomChange * -1),
     )
     const center = this.center.addition(offset);
-    return this.setZoom(center, zoomLevel)
+    return this.setZoom(zoomLevel)
+      .setCenter(center)
   }
 
-  setZoom(center: Point, zoomLevel: number): Viewport {
+  setZoom(zoomLevel: number): Viewport {
     const viewport = this.clone()
     const boundedZoomLevel = this.getBoundedZoomLevel(zoomLevel)
     if (boundedZoomLevel === viewport.zoomLevel) {
       return this
     }
-    viewport.center = center
     viewport.zoomLevel = boundedZoomLevel
     viewport.computeViewBox()
     return viewport
@@ -93,7 +93,8 @@ export class Viewport {
     const zoomY = outer.height / (Viewport.BASE_SIZE * this.ratio)
     const intendedZoom = Math.max(0.4, Math.max(zoomX, zoomY))
     const zoomLevel = this.getBoundedZoomLevel(intendedZoom)
-    return this.setZoom(outer.getCenter(), zoomLevel)
+    return this.setZoom(zoomLevel)
+      .setCenter(outer.getCenter())
   }
 
   toJSON(): any {

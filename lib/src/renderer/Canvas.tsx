@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as ReactDOM from 'react-dom';
 import { Colors } from '@blueprintjs/core';
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
 import { Viewport } from '../layout/Viewport';
@@ -122,6 +123,60 @@ export class Canvas extends React.Component <ICanvasProps> {
     const gridTarget = viewport.config.pixelToGrid(target)
     const newViewport = viewport.zoomToPoint(gridTarget, direction)
     this.props.updateViewport(newViewport)
+  }
+  componentWillReceiveProps(nextProps: Readonly<ICanvasProps>): void {
+    this._animateTransition(this.props.viewport.viewBox || '' , nextProps.viewport.viewBox || '');
+  }
+
+  _animateTransition(oldViewBox:string, viewBox:string, userDuration?:number) {
+    if (viewBox && oldViewBox && viewBox !== oldViewBox) {
+      let start = this._now();
+      let that = this;
+      let domNode = ReactDOM.findDOMNode(that);
+      let req;
+
+      let oldVb = oldViewBox.split(" ").map(n => parseInt(n, 10));
+      let newVb = viewBox.split(" ").map(n => parseInt(n, 10));
+      let duration:number = userDuration as number;
+      // if duration not supplied, calculate based on change of size and center
+      if (!userDuration) {
+        let wRatio = newVb[2]/oldVb[2];
+        let hRatio = newVb[3]/oldVb[3];
+        let oldCenterX = oldVb[0] + oldVb[2]/2;
+        let oldCenterY = oldVb[1] + oldVb[3]/2;
+        let newCenterX = newVb[0] + newVb[2]/2;
+        let newCenterY = newVb[1] + newVb[3]/2;
+        let ratio = Math.max(wRatio, 1/wRatio, hRatio, 1/hRatio);
+        let dist = Math.floor(Math.sqrt(Math.pow(newCenterX - oldCenterX, 2) + Math.pow(newCenterY - oldCenterY, 2)));
+        duration = 1 - 1/(ratio + Math.log(dist + 1));
+        duration = Math.max(0.4, duration);
+      }
+      const draw = () => {
+        req = requestAnimationFrame(draw);
+
+        let time = (that._now() - start);
+        let vb = oldVb.map((part, i) => {
+          return oldVb[i] + (newVb[i] - oldVb[i]) * (time / duration);
+        }).join(" ");
+
+        // @ts-ignore
+        domNode && domNode.setAttribute("viewBox", vb);
+
+        if (time > duration) {
+          cancelAnimationFrame(req);
+        }
+      };
+
+      requestAnimationFrame(draw);
+
+    } else {
+      // @ts-ignore
+      ReactDOM.findDOMNode(this).setAttribute("viewBox", viewBox);
+    }
+  }
+
+  _now() {
+    return new Date().getTime() / 1000;
   }
 
   render() {
