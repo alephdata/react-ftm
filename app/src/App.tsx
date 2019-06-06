@@ -1,14 +1,14 @@
 import React from 'react'
 import { FocusStyleManager } from '@blueprintjs/core';
-import {IEntityDatum} from '@alephdata/followthemoney';
 import { GraphLayout, GraphEditor, GraphConfig, GraphContext } from '@alephdata/vislib';
-import { defaultModel, Model } from '@alephdata/followthemoney'
+import { defaultModel, Model, IEntityDatum} from '@alephdata/followthemoney'
 import { data } from './resources/az_alievs';
 
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/select/lib/css/blueprint-select.css'
 import '@blueprintjs/datetime/lib/css/blueprint-datetime.css'
 import './App.css';
+import {ToolBox} from "./ToolBox";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -52,12 +52,17 @@ export default class Vis2 extends React.Component {
   }
 
   render() {
-    const { layout } = this.state;
-    return <GraphContext.Provider value={{
-      updateLayout:this.updateLayout,
-      layout
-    }}>
-      <GraphEditor layout={layout} updateLayout={this.updateLayout}/>
+    const layoutContext = {
+      layout:this.state.layout,
+      updateLayout:this.updateLayout
+    }
+    return <GraphContext.Provider value={layoutContext}>
+      <GraphEditor
+        {...layoutContext}
+        toolbarProps={{
+          tools: <ToolBox {...layoutContext} />
+        }}
+      />
     </GraphContext.Provider>
   }
 }

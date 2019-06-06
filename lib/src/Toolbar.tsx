@@ -9,25 +9,22 @@ import {
   Classes,
   InputGroup,
   Intent,
-  FileInput
 } from "@blueprintjs/core"
 import { IGraphContext} from './GraphContext'
 import { filterVerticesByText } from './filters';
 import { VertexCreateDialog, EdgeCreateDialog } from "./editor";
 import {GraphLayout, History, Rectangle} from "./layout";
-import {alignHorizontal} from "./layout/tools/alignHorizontal";
-import {alignVertical} from "./layout/tools/alignVertical";
-import {downloadableJSON} from "./layout/tools/downloadableJSON";
-import {alignCircle} from "./layout/tools/alignCircle";
-import {arrangeTree} from "./layout/tools/arrangeTree";
 
+export interface IToolbarProps extends IGraphContext{
+  tools?:  React.ComponentElement<any, any>
+}
 interface IToolbarState {
   searchText: string
   edgeCreateOpen: boolean
   vertexCreateOpen: boolean
 }
 
-export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
+export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
   state: IToolbarState = {
     searchText: '',
     vertexCreateOpen: false,
@@ -86,21 +83,6 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
     updateLayout(layout)
   }
 
-  onReadFile(e:React.FormEvent<HTMLInputElement>) {
-  if(e && e.currentTarget && e.currentTarget.files){
-    try{
-      const f = new FileReader();
-      f.onload = (c:any) => {
-        this.props.updateLayout(
-          GraphLayout.fromJSON(this.props.layout.config, this.props.layout.model, JSON.parse(c.target.result))
-        );
-      }
-      f.readAsText(e.currentTarget.files[0])
-    }catch (e) {
-      // TODO: visualise a warning
-    }
-  }
-}
   onHistory = (factor:number) => () => this.props.updateLayout(this.props.layout.history.go(factor))
 
   toggleAddVertex() {
@@ -145,47 +127,8 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
         <Tooltip content="Redo">
           <Button icon="redo" onClick={this.onHistory(History.FORWARD)} />
         </Tooltip>
-        <Divider/>
-        <Tooltip content="Align horizontal">
-          <Button icon="drag-handle-horizontal" onClick={() => {
-            this.props.updateLayout(
-              alignHorizontal(this.props.layout)
-            )
-          }} />
-        </Tooltip>
-        <Tooltip content="Align vertical">
-          <Button icon="drag-handle-vertical" onClick={() => {
-            this.props.updateLayout(
-              alignVertical(this.props.layout)
-            )
-          }} />
-        </Tooltip>
-        <Tooltip content="Arrange as circle">
-          <Button icon="layout-circle" onClick={() => {
-            this.props.updateLayout(
-              alignCircle(this.props.layout)
-            )
-          }} />
-        </Tooltip>
-        <Tooltip content="Arrange as circle">
-          <Button icon="layout-hierarchy" onClick={() => {
-            this.props.updateLayout(
-              arrangeTree(this.props.layout)
-            )
-          }} />
-        </Tooltip>
-        <Divider/>
-        <Tooltip content="Load from computed">
-          <FileInput onInputChange={this.onReadFile}/>
-        </Tooltip>
-        <Tooltip content="Download data">
-          <AnchorButton download icon="cloud-download" onMouseDown={(e) => {
-            e.currentTarget.setAttribute('href', downloadableJSON(this.props.layout))
-          }} onBlur={e => {
-            const url = e.currentTarget.getAttribute('href');
-            url && URL.revokeObjectURL(url)
-          }}/>
-        </Tooltip>
+
+        {this.props.tools}
         <div style={{width: '100%'}}/>
         <form onSubmit={this.onSubmitSearch}>
           <InputGroup leftIcon="search" onChange={this.onChangeSearch} value={this.state.searchText} />

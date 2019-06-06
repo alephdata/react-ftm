@@ -2,11 +2,14 @@ import * as React from 'react'
 import { Button, ButtonGroup } from '@blueprintjs/core';
 import { GraphRenderer } from './renderer/GraphRenderer'
 import { IGraphContext } from './GraphContext'
-import { Toolbar } from './Toolbar';
+import {IToolbarProps, Toolbar} from './Toolbar';
 import { Sidebar } from './Sidebar';
 
+interface IGraphEditorProps  extends IGraphContext{
+  toolbarProps: Partial<IToolbarProps>
+}
 
-export class GraphEditor extends React.Component<IGraphContext> {
+export class GraphEditor extends React.Component<IGraphEditorProps> {
   constructor(props: any) {
     super(props)
     this.onZoom = this.onZoom.bind(this)
@@ -26,7 +29,11 @@ export class GraphEditor extends React.Component<IGraphContext> {
     return (
       <div style={{flex: 1, display: 'flex', flexFlow: 'column', height: '100%'}} >
         <div style={{flexGrow: 0, flexShrink: 1, flexBasis: 'auto'}}>
-          <Toolbar layout={layout} updateLayout={updateLayout}/>
+          <Toolbar
+            layout={layout}
+            updateLayout={updateLayout}
+            {...this.props.toolbarProps}
+          />
         </div>
         <div style={{flex: 1, display: 'flex', flexFlow: 'row', flexGrow: 1, flexShrink: 1, flexBasis: '100%'}}>
           <div style={{flexGrow: 4, flexShrink: 1, flexBasis: 'auto', position: 'relative', overflow:'hidden'}}>

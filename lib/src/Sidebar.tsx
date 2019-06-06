@@ -5,6 +5,8 @@ import {EntityViewer} from "./editor/EntityViewer";
 import {EntityList} from "./editor/EntityList";
 
 
+
+
 export class Sidebar extends React.Component<IGraphContext> {
 
   constructor(props: Readonly<IGraphContext>) {
