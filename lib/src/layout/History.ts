@@ -41,6 +41,17 @@ export class History {
     this.current = this.stack[this.state];
     return this.layout.update(this.current)
   }
+  canGoTo(factor:number):boolean{
+    debugger;
+    const nextPossibleState = this.state + factor;
+    if(!factor){
+      return true
+    }else if(factor > 0){
+      return nextPossibleState <= (this.stack.length - 1)
+    }else {
+      return nextPossibleState >= 0
+    }
+  }
   back(){ return this.go(History.BACK) }
   forward(){  return this.go(History.FORWARD) }
 }

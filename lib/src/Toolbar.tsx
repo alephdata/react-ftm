@@ -103,6 +103,14 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     const toolbarStyle = {backgroundColor: Colors.LIGHT_GRAY5, width: '100%', padding: '3px'}
     return <React.Fragment>
       <ButtonGroup style={toolbarStyle} className={Classes.ELEVATION_1}>
+        <Tooltip content="Undo">
+          <Button icon="undo" onClick={this.onHistory(History.BACK)} disabled={!layout.history.canGoTo(History.BACK)} />
+        </Tooltip>
+        <Tooltip content="Redo">
+          <Button icon="redo" onClick={this.onHistory(History.FORWARD)} disabled={!layout.history.canGoTo(History.FORWARD)}/>
+        </Tooltip>
+        <Divider/>
+
         <Tooltip content="Select elements">
           <Button icon="select" active={this.props.layout.selectionMode} onClick={this.onToggleSelectionMode}/>
         </Tooltip>
@@ -120,7 +128,6 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
         <Tooltip content="Add links">
           <AnchorButton icon="new-link" onClick={this.toggleAddEdge} disabled={!canAddEdge} />
         </Tooltip>
-        <Divider/>
 
 
         {this.props.tools}
