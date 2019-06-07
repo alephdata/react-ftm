@@ -3,12 +3,12 @@ import { FocusStyleManager } from '@blueprintjs/core';
 import { GraphLayout, GraphEditor, GraphConfig, GraphContext } from '@alephdata/vislib';
 import { defaultModel, Model, IEntityDatum} from '@alephdata/followthemoney'
 import { data } from './resources/az_alievs';
+import {ToolBox} from "./components/ToolBox";
 
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/select/lib/css/blueprint-select.css'
 import '@blueprintjs/datetime/lib/css/blueprint-datetime.css'
 import './App.css';
-import {ToolBox} from "./ToolBox";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 

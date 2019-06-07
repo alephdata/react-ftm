@@ -1,10 +1,10 @@
 import React from 'react';
-import {Button, Divider, Tooltip, FileInput, AnchorButton} from "@blueprintjs/core";
+import {Button, Divider, Tooltip, AnchorButton} from "@blueprintjs/core";
 import {
   alignHorizontal, alignVertical, alignCircle,
   arrangeTree, downloadableJSON, IGraphContext,
-  GraphLayout
 } from '@alephdata/vislib';
+import {ToolUpload} from "./ToolUpload";
 interface IToolBoxProps extends IGraphContext {};
 
 
@@ -40,23 +40,10 @@ export function ToolBox({layout, updateLayout}:IToolBoxProps){
       }} />
     </Tooltip>
     <Divider/>
-    <Tooltip content="Load from computed">
-      <FileInput onInputChange={(e:React.FormEvent<HTMLInputElement>) => {
-        if(e && e.currentTarget && e.currentTarget.files){
-          try{
-            const f = new FileReader();
-            f.onload = (c:any) => {
-              updateLayout(
-                GraphLayout.fromJSON(layout.config, layout.model, JSON.parse(c.target.result))
-              );
-            }
-            f.readAsText(e.currentTarget.files[0])
-          }catch (e) {
-            // TODO: visualise a warning
-          }
-        }
-      }}/>
-    </Tooltip>
+    <ToolUpload
+      layout={layout}
+      updateLayout={updateLayout}
+    />
     <Tooltip content="Download data">
       <AnchorButton download icon="cloud-download" onMouseDown={(e) => {
         e.currentTarget.setAttribute('href', downloadableJSON(layout))
