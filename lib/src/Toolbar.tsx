@@ -114,19 +114,14 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
           <Button icon="new-object" onClick={this.toggleAddVertex}/>
         </Tooltip>
         <Tooltip content={hasSelection ? "Remove selected" : "To remove a node first you must select a node by clicking on it"}>
-          <AnchorButton intent={Intent.DANGER} icon="graph-remove" onClick={this.onRemoveSelection} disabled={!hasSelection} />
+          <AnchorButton icon="graph-remove" onClick={this.onRemoveSelection} disabled={!hasSelection} />
         </Tooltip>
         <Divider/>
         <Tooltip content="Add links">
           <AnchorButton icon="new-link" onClick={this.toggleAddEdge} disabled={!canAddEdge} />
         </Tooltip>
         <Divider/>
-        <Tooltip content="Undo">
-          <Button icon="undo" onClick={this.onHistory(History.BACK)} />
-        </Tooltip>
-        <Tooltip content="Redo">
-          <Button icon="redo" onClick={this.onHistory(History.FORWARD)} />
-        </Tooltip>
+
 
         {this.props.tools}
         <div style={{width: '100%'}}/>
