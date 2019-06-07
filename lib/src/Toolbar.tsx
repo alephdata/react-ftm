@@ -104,10 +104,10 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     return <React.Fragment>
       <ButtonGroup style={toolbarStyle} className={Classes.ELEVATION_1}>
         <Tooltip content="Undo">
-          <Button icon="undo" onClick={this.onHistory(History.BACK)} disabled={!layout.history.canGoTo(History.BACK)} />
+          <AnchorButton icon="undo" onClick={this.onHistory(History.BACK)} disabled={!layout.history.canGoTo(History.BACK)} />
         </Tooltip>
         <Tooltip content="Redo">
-          <Button icon="redo" onClick={this.onHistory(History.FORWARD)} disabled={!layout.history.canGoTo(History.FORWARD)}/>
+          <AnchorButton icon="redo" onClick={this.onHistory(History.FORWARD)} disabled={!layout.history.canGoTo(History.FORWARD)}/>
         </Tooltip>
         <Divider/>
 

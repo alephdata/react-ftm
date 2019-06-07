@@ -18,5 +18,6 @@ export function alignCircle(layout:GraphLayout):GraphLayout{
     )))
 
   })
+  layout.history.push(layout.toJSON())
   return layout
 }
