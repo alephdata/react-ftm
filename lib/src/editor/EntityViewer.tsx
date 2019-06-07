@@ -72,18 +72,19 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     }else{
       return <React.Fragment key={property.name}>
         <li
-          onDoubleClick={() => this.toggleEditable(property)}
+          onClick={() => this.toggleEditable(property)}
           style={{
+            cursor:'pointer',
             display:"flex",
             justifyContent:"space-between",
           }}
         >
-        <span className="value">
-          <PropertyValues prop={property} values={entity.getProperty(property)}/>
-        </span>
           <span className={Classes.TEXT_MUTED}>
-          <PropertyName prop={property}/>
-        </span>
+            <PropertyName prop={property}/>
+          </span>
+          <span className="value">
+            <PropertyValues prop={property} values={entity.getProperty(property)}/>
+          </span>
         </li><br/>
       </React.Fragment>
     }
