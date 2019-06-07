@@ -1,4 +1,3 @@
-import {throttle} from "@blueprintjs/core/lib/esm/common/utils";
 import {GraphLayout, IGraphLayoutData} from "./GraphLayout";
 
 export class History {

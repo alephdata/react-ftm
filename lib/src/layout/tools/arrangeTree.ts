@@ -3,16 +3,17 @@ import * as dagre from 'dagre'
 import {GraphLayout} from "../GraphLayout";
 import {Vertex} from "../Vertex";
 import {Point} from "../Point";
-import {Edge} from "../Edge";
+import {Rectangle} from "../Rectangle";
 
 export function arrangeTree(layout:GraphLayout):GraphLayout{
-  const nodes = layout.getSelectedVertices()
+  const selectedVertices = layout.getSelectedVertices()
     .filter((vertex) => !vertex.isHidden())
-    .map((vertex) => ({
+  const nodes = selectedVertices.map((vertex) => ({
       id: vertex.id,
       width: layout.config.VERTEX_RADIUS*2,
       height: layout.config.VERTEX_RADIUS*2,
-    }))
+    }));
+  const center = Rectangle.fromPoints(...selectedVertices.map(v => v.position)).getCenter();
   const links = layout.getEdges().map((edge) => {
     return {
       id:edge.id,
@@ -23,7 +24,7 @@ export function arrangeTree(layout:GraphLayout):GraphLayout{
 
   const g = new dagre.graphlib.Graph({
     multigraph:true,
-    directed:true
+    directed:true,
   });
 
   g.setGraph({
@@ -42,7 +43,7 @@ export function arrangeTree(layout:GraphLayout):GraphLayout{
     const vertex = layout.vertices.get(node) as Vertex
     const nN = g.node(node);
     if(nN){
-      const position = new Point(nN.x, nN.y)
+      const position = center.addition(new Point(nN.x, nN.y))
       layout.vertices.set(vertex.id, vertex.snapPosition(position))
     }
   })
