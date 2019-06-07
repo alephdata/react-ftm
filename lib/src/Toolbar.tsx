@@ -132,7 +132,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
 
         {this.props.tools}
         <div style={{width: '100%'}}/>
-        <form onSubmit={this.onSubmitSearch}>
+        <form style={{minWidth:'20vw'}} onSubmit={this.onSubmitSearch}>
           <InputGroup leftIcon="search" onChange={this.onChangeSearch} value={this.state.searchText} />
         </form>
       </ButtonGroup>
