@@ -1,8 +1,7 @@
 import React from 'react'
 import { FocusStyleManager } from '@blueprintjs/core';
 import { GraphLayout, GraphEditor, GraphConfig, GraphContext } from '@alephdata/vislib';
-import { defaultModel, Model, IEntityDatum} from '@alephdata/followthemoney'
-import { data } from './resources/az_alievs';
+import { defaultModel, Model} from '@alephdata/followthemoney'
 import {ToolBox} from "./components/ToolBox";
 
 import '@blueprintjs/core/lib/css/blueprint.css';
@@ -32,13 +31,6 @@ export default class Vis2 extends React.Component {
     if (jsonLayout) {
       this.state.layout = GraphLayout.fromJSON(config, model, JSON.parse(jsonLayout))
       this.state.layout.history.push(this.state.layout.toJSON());
-    } else {
-      this.state.layout.history.createChangePool(()=>{
-        const entities = data.map(rawEntity => this.state.layout.model.getEntity(rawEntity as unknown as IEntityDatum));
-        entities.forEach((entity) => this.state.layout.addEntity(entity))
-        this.state.layout.layout()
-      })
-
     }
     this.updateLayout = this.updateLayout.bind(this)
   }
