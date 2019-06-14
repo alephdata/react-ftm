@@ -13,8 +13,8 @@ export class TextEdit extends React.PureComponent<ITypeProps> {
 
   render() {
     const {property} = this.props;
-    return <FormGroup label={property.label} >
-      <ControlGroup vertical fill >
+    return <FormGroup >
+      <ControlGroup vertical  >
         <TagInput
           tagProps={{
             minimal:true

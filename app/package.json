@@ -18,6 +18,7 @@
     "@blueprintjs/core": "^3.15.1",
     "@blueprintjs/datetime": "^3.9.0",
     "@blueprintjs/select": "^3.8.0",
+    "@blueprintjs/table": "^3.5.0",
     "@types/node": "11.13.8",
     "@types/react": "16.8.15",
     "@types/react-dom": "16.8.4",
@@ -25,6 +26,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-draggable": "^3.3.0",
+    "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.0",
     "typescript": "3.5.1"
   },
@@ -47,5 +49,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-router-dom": "^4.3.3"
   }
 }

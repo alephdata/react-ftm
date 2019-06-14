@@ -1,8 +1,10 @@
 import React from 'react'
-import { FocusStyleManager } from '@blueprintjs/core';
-import { GraphLayout, GraphEditor, GraphConfig, GraphContext } from '@alephdata/vislib';
-import { defaultModel, Model} from '@alephdata/followthemoney'
+import {FocusStyleManager, Drawer, Position} from '@blueprintjs/core';
+import {GraphLayout, GraphEditor, GraphConfig, GraphContext} from '@alephdata/vislib';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import {defaultModel, Model} from '@alephdata/followthemoney'
 import {ToolBox} from "./components/ToolBox";
+import {TabularView} from "./components/TabularView";
 
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/select/lib/css/blueprint-select.css'
@@ -45,16 +47,33 @@ export default class Vis2 extends React.Component {
 
   render() {
     const layoutContext = {
-      layout:this.state.layout,
-      updateLayout:this.updateLayout
+      layout: this.state.layout,
+      updateLayout: this.updateLayout
     }
     return <GraphContext.Provider value={layoutContext}>
-      <GraphEditor
-        {...layoutContext}
-        toolbarProps={{
-          tools: <ToolBox {...layoutContext} />
-        }}
-      />
+      <Router>
+        <Route path="/tabular" exact render={
+          ({history}) => <Drawer
+            position={Position.BOTTOM}
+            icon="th"
+            isOpen
+            canOutsideClickClose
+            title="Table editor"
+            onClose={() => history.push('/')}>
+            <div >
+              <TabularView/>
+            </div>
+          </Drawer>
+        }/>
+        <Route path={"/"}>
+          <GraphEditor
+            {...layoutContext}
+            toolbarProps={{
+              tools: <ToolBox {...layoutContext} />
+            }}
+          />
+        </Route>
+      </Router>
     </GraphContext.Provider>
   }
 }
