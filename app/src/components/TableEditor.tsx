@@ -3,7 +3,6 @@ import {IGraphContext, PropertyEditor, PropertyValues, VertexSchemaSelect} from 
 import {Cell, Column, RenderMode, Table} from "@blueprintjs/table";
 import {Callout, Card, Popover, PopoverInteractionKind, Tab, Tabs} from "@blueprintjs/core";
 import {Entity, Schema} from "@alephdata/followthemoney";
-
 import '@blueprintjs/table/lib/css/table.css'
 
 
@@ -11,15 +10,18 @@ interface ITableEditorProps extends IGraphContext {
 }
 
 
+
 export const TableEditor = React.memo(function TableEditor(props: ITableEditorProps) {
-  let {layout, updateLayout} = props;
+  const {layout, updateLayout} = props;
   const [listedSchemata, setListedSchemata] = React.useState(
-    React.useMemo(() => layout.getEntities()
+    React.useMemo(
+      () => layout.getEntities()
         .map(entity => entity.schema)
         .filter((schema, index, list) => list.indexOf(schema) === index),
-      [layout])
+      [layout]
+    )
   );
-  console.log(listedSchemata)
+
   return (<Tabs vertical renderActiveTabPanelOnly animate={false}>
     {listedSchemata
       .map(schema => <Tab
@@ -35,9 +37,7 @@ export const TableEditor = React.memo(function TableEditor(props: ITableEditorPr
     <Callout>
       <VertexSchemaSelect
         model={layout.model}
-        onSelect={schema => {
-          !listedSchemata.includes(schema) && setListedSchemata([...listedSchemata, schema])
-        }}
+        onSelect={schema => !listedSchemata.includes(schema) && setListedSchemata([...listedSchemata, schema])}
       />
     </Callout>
   </Tabs>)
@@ -49,11 +49,11 @@ interface ITableForSchemaProps extends IGraphContext {
 
 function TableForSchema({layout, schema, updateLayout}: ITableForSchemaProps) {
   const entities = layout.getEntities()
-    .filter(e => e.schema.isA(schema));
+    .filter(e => e.schema.isA(schema))
+    .concat(layout.model.createEntity(schema)); //we do +1 to enable creating a new row
 
   const numRows = entities.length;
   const properties = Array.from(schema.getProperties().values());
-  // const properties = schema.getFeaturedProperties()
 
   const onEntityChanged = (nextEntity: Entity) => {
     layout.addEntity(nextEntity);
@@ -70,7 +70,6 @@ function TableForSchema({layout, schema, updateLayout}: ITableForSchemaProps) {
       key={property.qname}
       name={property.name}
       cellRenderer={(i) => {
-        console.count('Cell rendered')
         const entity = entities[i];
         return <Cell>
           <Popover
