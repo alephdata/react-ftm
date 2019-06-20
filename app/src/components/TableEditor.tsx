@@ -64,7 +64,8 @@ function TableForSchema({layout, schema, updateLayout}: ITableForSchemaProps) {
     renderMode={RenderMode.BATCH}
     numRows={numRows}
     enableMultipleSelection={false}
-    enableRowHeader={false}
+    enableGhostCells
+    enableRowHeader
   >
     {properties.map(property => <Column
       key={property.qname}
