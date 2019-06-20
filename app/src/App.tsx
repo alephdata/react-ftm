@@ -1,5 +1,5 @@
 import React from 'react'
-import {FocusStyleManager, Drawer, Position} from '@blueprintjs/core';
+import {FocusStyleManager, Drawer, Position, Classes} from '@blueprintjs/core';
 import {GraphLayout, GraphEditor, GraphConfig, GraphContext} from '@alephdata/vislib';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import {defaultModel, Model} from '@alephdata/followthemoney'
@@ -10,6 +10,7 @@ import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/select/lib/css/blueprint-select.css'
 import '@blueprintjs/datetime/lib/css/blueprint-datetime.css'
 import './App.css';
+import {Class} from "@babel/types";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -61,7 +62,7 @@ export default class Vis2 extends React.Component {
             canOutsideClickClose
             title="Table editor"
             onClose={() => history.push('/')}>
-            <div>
+            <div className={Classes.DRAWER_BODY}>
               {layoutContext.layout && <TableEditor {...layoutContext}/>}
             </div>
           </Drawer>

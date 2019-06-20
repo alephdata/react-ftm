@@ -1,7 +1,7 @@
 import React from 'react';
 import {IGraphContext, PropertyEditor, PropertyValues, VertexSchemaSelect} from '@alephdata/vislib';
 import {Cell, Column, RenderMode, Table} from "@blueprintjs/table";
-import {Card, Popover, PopoverInteractionKind, Tab, Tabs} from "@blueprintjs/core";
+import {Callout, Card, Popover, PopoverInteractionKind, Tab, Tabs} from "@blueprintjs/core";
 import {Entity, Schema} from "@alephdata/followthemoney";
 
 import '@blueprintjs/table/lib/css/table.css'
@@ -32,12 +32,14 @@ export const TableEditor = React.memo(function TableEditor(props: ITableEditorPr
           layout={layout}
         />}
       />)}
-    <VertexSchemaSelect
-      model={layout.model}
-      onSelect={schema => {
-        !listedSchemata.includes(schema) && setListedSchemata([...listedSchemata, schema])
-      }}
-    />
+    <Callout>
+      <VertexSchemaSelect
+        model={layout.model}
+        onSelect={schema => {
+          !listedSchemata.includes(schema) && setListedSchemata([...listedSchemata, schema])
+        }}
+      />
+    </Callout>
   </Tabs>)
 })
 
