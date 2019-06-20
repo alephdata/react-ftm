@@ -4,7 +4,7 @@ import {GraphLayout, GraphEditor, GraphConfig, GraphContext} from '@alephdata/vi
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import {defaultModel, Model} from '@alephdata/followthemoney'
 import {ToolBox} from "./components/ToolBox";
-import {TabularView} from "./components/TabularView";
+import {TableEditor} from "./components/TableEditor";
 
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/select/lib/css/blueprint-select.css'
@@ -56,12 +56,13 @@ export default class Vis2 extends React.Component {
           ({history}) => <Drawer
             position={Position.BOTTOM}
             icon="th"
+            transitionDuration={0}
             isOpen
             canOutsideClickClose
             title="Table editor"
             onClose={() => history.push('/')}>
-            <div >
-              <TabularView/>
+            <div>
+              {layoutContext.layout && <TableEditor {...layoutContext}/>}
             </div>
           </Drawer>
         }/>
