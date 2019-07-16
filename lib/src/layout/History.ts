@@ -42,7 +42,6 @@ export class History {
   }
 
   canGoTo(factor: number): boolean {
-    debugger;
     const nextPossibleState = this.state + factor;
     if (!factor) {
       return true
