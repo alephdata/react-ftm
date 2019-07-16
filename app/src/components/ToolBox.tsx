@@ -33,7 +33,7 @@ export function ToolBox({layout, updateLayout}:IToolBoxProps){
         )
       }} />
     </Tooltip>
-    <Tooltip content="Arrange as circle">
+    <Tooltip content="Arrange as hierarchy">
       <AnchorButton icon="layout-hierarchy" disabled={disableLayoutButtons} onClick={() => {
         updateLayout(
           arrangeTree(layout)
