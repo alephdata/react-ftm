@@ -48,13 +48,13 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
 
   onNewPropertySelected(p:Property){
     this.setState(({visibleProps}) => ({
-      visibleProps: new Map(visibleProps.set(p, true))
+      visibleProps: new Map(this.getVisibleProperties().set(p, true))
     }))
   }
 
   toggleEditable(property:Property){
     this.setState(({visibleProps}) => ({
-      visibleProps: new Map(visibleProps.set(property, !visibleProps.get(property)))
+      visibleProps: new Map(this.getVisibleProperties().set(property, !visibleProps.get(property)))
     }))
   }
 
@@ -94,6 +94,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     const { entity } = this.props;
     const {visibleProps} = this.state;
     const availableProperties = this.schemaProperties.filter(p => !visibleProps.has(p));
+
     return <div>
       <H2>{entity.getCaption()}</H2>
       <UL className={Classes.LIST_UNSTYLED}>
