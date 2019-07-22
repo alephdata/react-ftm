@@ -19,7 +19,7 @@ export class DateEdit extends React.PureComponent<ITypeProps> {
 
   render() {
     const {property, values} = this.props
-    return <FormGroup label={property.label}>
+    return <FormGroup>
       <DateInput
         {...this.jsDateFormatter}
         popoverProps={{

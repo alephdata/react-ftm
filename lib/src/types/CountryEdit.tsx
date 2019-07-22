@@ -20,7 +20,7 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
 
   render() {
     const {property} = this.props;
-    return <FormGroup label={property.label} >
+    return <FormGroup>
       <ControlGroup vertical fill >
         <CountryMultiSelect
           tagRenderer={i => i[1]}

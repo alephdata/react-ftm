@@ -17,6 +17,7 @@ export class PropertyEditor extends React.Component<IPropertyEditorProps> {
   context!: React.ContextType<typeof GraphContext>;
 
   onPropertyChanged = (nextValues: Values) => {
+    console.log('property changed', nextValues)
     this.props.entity.properties.set(this.props.property, nextValues);
     this.props.onEntityChanged(this.props.entity)
   }

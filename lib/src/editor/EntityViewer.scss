@@ -1,0 +1,21 @@
+.EntityViewer {
+  padding: 5px;
+  &__title {
+    padding: 10px 0;
+  }
+  &__property-list {
+  }
+  &__property-list-item {
+    padding: 5px 0 !important;
+
+    &__label {
+      font-size: 12px;
+
+    }
+
+    &__value {
+      margin: 3px 0 !important;
+
+    }
+  }
+}

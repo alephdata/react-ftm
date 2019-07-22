@@ -4,6 +4,8 @@ import {Entity, Property} from '@alephdata/followthemoney';
 import {SelectProperty} from './SelectProperty';
 import {PropertyEditor} from './PropertyEditor';
 import { PropertyName, PropertyValues} from '../types';
+import './EntityViewer.scss';
+import c from 'classnames';
 
 interface IEntityViewerProps {
   entity: Entity,
@@ -62,32 +64,31 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     const { entity } = this.props;
     const isEditable = this.state.visibleProps.get(property);
 
-    if(isEditable){
-      return <PropertyEditor
-        key={property.name}
-        onEntityChanged={this.props.onEntityChanged}
-        entity={entity}
-        property={property}
-      />
-    }else{
-      return <React.Fragment key={property.name}>
-        <li
-          onClick={() => this.toggleEditable(property)}
-          style={{
-            cursor:'pointer',
-            display:"flex",
-            justifyContent:"space-between",
-          }}
-        >
+    return <React.Fragment key={property.name}>
+      <li
+        className='EntityViewer__property-list-item'
+        onClick={() => this.toggleEditable(property)}
+      >
+        <div className='EntityViewer__property-list-item__label'>
           <span className={Classes.TEXT_MUTED}>
             <PropertyName prop={property}/>
           </span>
-          <span className="value">
+        </div>
+        <div className='EntityViewer__property-list-item__value'>
+          {isEditable && (
+            <PropertyEditor
+              key={property.name}
+              onEntityChanged={this.props.onEntityChanged}
+              entity={entity}
+              property={property}
+            />
+          )}
+          {!isEditable && (
             <PropertyValues prop={property} values={entity.getProperty(property)}/>
-          </span>
-        </li><br/>
-      </React.Fragment>
-    }
+          )}
+        </div>
+      </li>
+    </React.Fragment>
   }
 
   render() {
@@ -95,9 +96,9 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     const {visibleProps} = this.state;
     const availableProperties = this.schemaProperties.filter(p => !visibleProps.has(p));
 
-    return <div>
-      <H2>{entity.getCaption()}</H2>
-      <UL className={Classes.LIST_UNSTYLED}>
+    return <div className='EntityViewer'>
+      <H2 className='EntityViewer__title'>{entity.getCaption()}</H2>
+      <UL className={c('EntityViewer__property-list', Classes.LIST_UNSTYLED)}>
         {Array.from(visibleProps.keys()).map(this.renderProperty)}
       </UL>
       {!!availableProperties.length && (<>

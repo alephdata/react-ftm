@@ -83,6 +83,6 @@ export class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
     if (!vals.length) {
       return (<span className={Classes.TEXT_MUTED}>—</span>);
     }
-    return (<span>{ wordList(vals, ' · ') }</span>);
+    return (<span>{ wordList(vals, ' , ') }</span>);
   }
 }

@@ -21,6 +21,7 @@ export default {
   plugins: [
     json(),
     sass({
+      output: true,
       insert: true
     }),
     // Allow node_modules resolution, so you can use 'external' to control
