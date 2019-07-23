@@ -22,7 +22,7 @@ export class Canvas extends React.Component <ICanvasProps> {
   selectionRef: React.RefObject<SVGRectElement>
   dragInitial: Point
   dragExtent: Point
-  disableAnimation: boolean
+  tempDisableAnimation: boolean
 
   constructor(props: Readonly<ICanvasProps>) {
     super(props)
@@ -35,7 +35,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     this.selectionRef = React.createRef()
     this.dragInitial = new Point(0, 0)
     this.dragExtent = new Point(0, 0)
-    this.disableAnimation = false
+    this.tempDisableAnimation = false
   }
 
   componentDidMount() {
@@ -91,7 +91,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     } else if (offset.x || offset.y) {
       const gridOffset = viewport.config.pixelToGrid(offset)
       const center = viewport.center.subtract(gridOffset)
-      this.disableAnimation = true
+      this.tempDisableAnimation = true
       this.props.updateViewport(viewport.setCenter(center));
     }
   }
@@ -125,7 +125,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     const target = applyMatrix(matrix, event.clientX, event.clientY)
     const gridTarget = viewport.config.pixelToGrid(target)
     const newViewport = viewport.zoomToPoint(gridTarget, direction)
-    this.disableAnimation = true
+    this.tempDisableAnimation = true
     this.props.updateViewport(newViewport)
   }
   componentWillReceiveProps(nextProps: Readonly<ICanvasProps>): void {
@@ -135,8 +135,8 @@ export class Canvas extends React.Component <ICanvasProps> {
   animationHandler(oldViewBox:string, viewBox:string, userDuration?:number) {
     if (viewBox && oldViewBox && viewBox !== oldViewBox) {
       // should only animate on non-user initiated zoom and pan
-      if (this.disableAnimation) {
-        this.disableAnimation = false
+      if (this.tempDisableAnimation) {
+        this.tempDisableAnimation = false
       } else {
         this._animateTransition(oldViewBox, viewBox)
       }
