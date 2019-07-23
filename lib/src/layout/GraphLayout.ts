@@ -31,6 +31,7 @@ export class GraphLayout {
   selection = new Array<string>()
   selectionMode: boolean = true
   history: History;
+  private hasDraggedSelection = false
 
   constructor(config: GraphConfig, model: Model) {
     this.config = config
@@ -197,13 +198,17 @@ export class GraphLayout {
       const position = vertex.position.addition(offset)
       this.vertices.set(vertex.id, vertex.setPosition(position))
     })
+    this.hasDraggedSelection = true
   }
 
   dropSelection() {
     this.getSelectedVertices().forEach((vertex) => {
       this.vertices.set(vertex.id, vertex.snapPosition(vertex.position))
     });
-    this.history.push(this.toJSON())
+    if (this.hasDraggedSelection === true) {
+      this.history.push(this.toJSON())
+    }
+    this.hasDraggedSelection = false
   }
 
   removeSelection() {
