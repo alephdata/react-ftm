@@ -120,7 +120,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     event.preventDefault()
     event.stopPropagation()
     const { viewport } = this.props
-    const direction = event.deltaY < 0 ? -1 : 1
+    const direction = event.deltaY < 0 ? -.5 : .5
     const matrix = getRefMatrix(this.svgRef)
     const target = applyMatrix(matrix, event.clientX, event.clientY)
     const gridTarget = viewport.config.pixelToGrid(target)
