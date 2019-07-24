@@ -113,7 +113,7 @@ export class GraphLayout {
 
   addEntity(entity: Entity) {
     this.entities.set(entity.id, entity)
-    this.generate()
+    this.layout()
     this.history.push(this.toJSON())
   }
 
