@@ -2,14 +2,12 @@ import { Entity, Model, IEntityDatum } from '@alephdata/followthemoney'
 import { forceSimulation, forceLink, forceCollide } from 'd3-force';
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
-import { Viewport } from './Viewport'
 import { Point } from './Point';
 import { Rectangle } from './Rectangle';
 import { GraphConfig } from '../GraphConfig';
 import {History} from "./History";
 
 export interface IGraphLayoutData {
-  viewport: any
   entities: Array<IEntityDatum>
   vertices: Array<any>
   edges: Array<any>
@@ -24,7 +22,6 @@ export type GraphElement = Vertex | Edge
 export class GraphLayout {
   public readonly config: GraphConfig
   public readonly model: Model
-  viewport: Viewport;
   vertices = new Map<string, Vertex>()
   edges = new Map<string, Edge>()
   entities = new Map<string, Entity>()
@@ -36,7 +33,6 @@ export class GraphLayout {
   constructor(config: GraphConfig, model: Model) {
     this.config = config
     this.model = model
-    this.viewport = new Viewport(config)
     this.history = new History(this);
 
     this.addVertex = this.addVertex.bind(this)
@@ -287,7 +283,6 @@ export class GraphLayout {
 
   toJSON(): IGraphLayoutData {
     return {
-      viewport: this.viewport.toJSON(),
       entities: this.getEntities().map((entity) => entity.toJSON()),
       vertices: this.getVertices().map((vertex) => vertex.toJSON()),
       edges: this.getEdges().map((edge) => edge.toJSON()),
@@ -311,7 +306,6 @@ export class GraphLayout {
       layout.edges.set(edge.id, edge)
     })
     layout.generate()
-    layout.viewport = Viewport.fromJSON(config, layoutData.viewport)
     layout.selectionMode = layoutData.selectionMode
     layout.selection = layoutData.selection
     return layout

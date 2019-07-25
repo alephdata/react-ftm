@@ -23,9 +23,7 @@ export class GraphRenderer extends React.Component<IGraphContext> {
   }
 
   updateViewport(viewport: Viewport) {
-    const { layout } = this.props;
-    layout.viewport = viewport
-    this.props.updateLayout(layout)
+    this.props.updateViewport(viewport)
   }
 
   dragSelection(offset: Point) {
@@ -94,9 +92,9 @@ export class GraphRenderer extends React.Component<IGraphContext> {
   }
 
   render(){
-    const { layout } = this.props;
+    const { layout, viewport } = this.props;
     return (
-      <Canvas viewport={layout.viewport}
+      <Canvas viewport={viewport}
               selectArea={this.selectArea}
               selectionMode={layout.selectionMode}
               clearSelection={this.clearSelection}

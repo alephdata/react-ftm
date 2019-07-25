@@ -49,13 +49,12 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
   }
 
   onFitToSelection() {
-    const {layout, updateLayout} = this.props
+    const {layout, updateLayout, viewport, updateViewport} = this.props
     const selection = layout.getSelectedVertices()
     const vertices = selection.length > 0 ? selection : layout.getVertices()
     const points = vertices.filter((v) => !v.isHidden()).map((v) => v.position)
     const rect = Rectangle.fromPoints(...points)
-    layout.viewport = layout.viewport.fitToRect(rect)
-    updateLayout(layout)
+    updateViewport(viewport.fitToRect(rect))
   }
 
   onChangeSearch(event: React.FormEvent<HTMLInputElement>) {
@@ -94,7 +93,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
   }
 
   render() {
-    const { layout } = this.props
+    const { layout, viewport } = this.props
     const vertices = this.props.layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
@@ -144,6 +143,8 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
         isOpen={this.state.edgeCreateOpen}
         toggleDialog={this.toggleAddEdge}
         updateLayout={this.props.updateLayout}
+        viewport={viewport}
+        updateViewport={this.props.updateViewport}
       />
     </React.Fragment>
   }

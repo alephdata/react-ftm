@@ -8,7 +8,7 @@ import {ToolUpload} from "./ToolUpload";
 interface IToolBoxProps extends IGraphContext {};
 
 
-export function ToolBox({layout, updateLayout}:IToolBoxProps){
+export function ToolBox({layout, updateLayout, viewport, updateViewport}:IToolBoxProps){
   return (<>
     <Divider/>
     <Tooltip content="Align horizontal">
@@ -43,6 +43,8 @@ export function ToolBox({layout, updateLayout}:IToolBoxProps){
     <ToolUpload
       layout={layout}
       updateLayout={updateLayout}
+      viewport={viewport}
+      updateViewport={updateViewport}
     />
     <Tooltip content="Download data">
       <AnchorButton download icon="cloud-download" onMouseDown={(e) => {
