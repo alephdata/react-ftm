@@ -8,7 +8,9 @@ export class TextEdit extends React.PureComponent<ITypeProps> {
 
   onChange = (values: Array<string | React.ReactNode>) => {
     // TODO: @pudo maybe we need to implement Entity.removeProperty in FTM?
-    this.props.onPropertyChanged(values as unknown as Values, this.props.property)
+
+    // remove duplicates
+    this.props.onPropertyChanged(Array.from(new Set(values)) as unknown as Values, this.props.property)
   }
 
   render() {
