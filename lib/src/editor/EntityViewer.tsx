@@ -54,9 +54,17 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     }))
   }
 
-  toggleEditable(property:Property){
+  onEditPropertyClick(e:React.MouseEvent, property:Property){
+    e.preventDefault()
+    e.stopPropagation()
     this.setState(({visibleProps}) => ({
-      visibleProps: new Map(this.getVisibleProperties().set(property, !visibleProps.get(property)))
+      visibleProps: new Map(this.getVisibleProperties().set(property, true))
+    }))
+  }
+
+  leaveEditMode(e) {
+    this.setState(({visibleProps}) => ({
+      visibleProps: this.getVisibleProperties()
     }))
   }
 
@@ -67,7 +75,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     return <React.Fragment key={property.name}>
       <li
         className='EntityViewer__property-list-item'
-        onClick={() => this.toggleEditable(property)}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className='EntityViewer__property-list-item__label'>
           <span className={Classes.TEXT_MUTED}>
@@ -84,7 +92,9 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
             />
           )}
           {!isEditable && (
-            <PropertyValues prop={property} values={entity.getProperty(property)}/>
+            <div onClick={(e) => this.onEditPropertyClick(e, property)}>
+              <PropertyValues prop={property} values={entity.getProperty(property)}/>
+            </div>
           )}
         </div>
       </li>
@@ -96,7 +106,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     const {visibleProps} = this.state;
     const availableProperties = this.schemaProperties.filter(p => !visibleProps.has(p));
 
-    return <div className='EntityViewer'>
+    return <div className='EntityViewer' onClick={(e) => this.leaveEditMode(e)}>
       <H2 className='EntityViewer__title'>{entity.getCaption()}</H2>
       <UL className={c('EntityViewer__property-list', Classes.LIST_UNSTYLED)}>
         {Array.from(visibleProps.keys()).map(this.renderProperty)}

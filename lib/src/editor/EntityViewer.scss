@@ -1,5 +1,7 @@
 .EntityViewer {
-  padding: 5px;
+  height: 100%;
+  padding: 10px;
+
   &__title {
     padding: 10px 0;
   }
@@ -10,12 +12,10 @@
 
     &__label {
       font-size: 12px;
-
     }
 
     &__value {
       margin: 3px 0 !important;
-
     }
   }
 }
