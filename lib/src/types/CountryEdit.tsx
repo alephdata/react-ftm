@@ -90,7 +90,7 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
           }}
           items={availableOptions}
           popoverProps={{ minimal: true, position: Position.BOTTOM_LEFT }}
-          tagInputProps={{ tagProps: {interactive: false, minimal: true}, onRemove: this.onRemove, fill: true }}
+          tagInputProps={{ tagProps: {interactive: false, minimal: true, fill: true}, onRemove: this.onRemove }}
           selectedItems={selectedOptions}
           openOnKeyDown
           resetOnSelect
