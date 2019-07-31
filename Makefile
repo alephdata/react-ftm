@@ -15,7 +15,7 @@ clean:
 	rm -rf lib/node_modules lib/dist app/node_modules
 
 lib:
-	cd app && npm start
+	cd lib && npm start
 
 app:
 	cd app && npm start

@@ -9,31 +9,32 @@ interface IToolBoxProps extends IGraphContext {};
 
 
 export function ToolBox({layout, updateLayout}:IToolBoxProps){
+  const disableLayoutButtons = layout.selection && layout.selection.length <= 1;
   return (<>
     <Divider/>
     <Tooltip content="Align horizontal">
-      <Button icon="drag-handle-horizontal" onClick={() => {
+      <AnchorButton icon="drag-handle-horizontal" disabled={disableLayoutButtons} onClick={() => {
         updateLayout(
           alignHorizontal(layout)
         )
       }} />
     </Tooltip>
     <Tooltip content="Align vertical">
-      <Button icon="drag-handle-vertical" onClick={() => {
+      <AnchorButton icon="drag-handle-vertical" disabled={disableLayoutButtons} onClick={() => {
         updateLayout(
           alignVertical(layout)
         )
       }} />
     </Tooltip>
     <Tooltip content="Arrange as circle">
-      <Button icon="layout-circle" onClick={() => {
+      <AnchorButton icon="layout-circle" disabled={disableLayoutButtons} onClick={() => {
         updateLayout(
           alignCircle(layout)
         )
       }} />
     </Tooltip>
-    <Tooltip content="Arrange as circle">
-      <Button icon="layout-hierarchy" onClick={() => {
+    <Tooltip content="Arrange as hierarchy">
+      <AnchorButton icon="layout-hierarchy" disabled={disableLayoutButtons} onClick={() => {
         updateLayout(
           arrangeTree(layout)
         )
