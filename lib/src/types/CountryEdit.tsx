@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {Values, Property, Entity} from "@alephdata/followthemoney";
-import {Classes, ControlGroup, FormGroup, MenuItem, TagInput} from "@blueprintjs/core";
+import {ControlGroup, FormGroup, MenuItem, Position, TagInput} from "@blueprintjs/core";
 import {ItemRenderer, MultiSelect} from "@blueprintjs/select";
 import {ITypeProps} from "./common";
 import {highlightText} from "../utils";
@@ -70,24 +70,30 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
           onItemSelect={this.onChange}
           itemRenderer={(country, {handleClick, modifiers, query}) => {
             if (!modifiers.matchesPredicate) {
-            return null;
-          }
-            const [label, text] = country;
-            return (
-            <MenuItem
-              active={modifiers.active}
-              disabled={modifiers.disabled}
-              key={label}
-              onClick={handleClick}
-              text={highlightText(text, query)}
-              className={Classes.POPOVER_DISMISS}
-            />
-            );
+              return null;
+            }
+            const [key, label] = country;
+
+            if (label.toLowerCase().includes(query.toLowerCase())) {
+              return (
+                <MenuItem
+                  active={modifiers.active}
+                  disabled={modifiers.disabled}
+                  key={key}
+                  onClick={handleClick}
+                  text={highlightText(label, query)}
+                />
+              );
+            } else {
+              return null;
+            }
           }}
           items={availableOptions}
-          popoverProps={{ minimal: true }}
+          popoverProps={{ minimal: true, position: Position.BOTTOM_LEFT }}
           tagInputProps={{ tagProps: {interactive: false, minimal: true}, onRemove: this.onRemove, fill: true }}
           selectedItems={selectedOptions}
+          openOnKeyDown
+          resetOnSelect
         />
       </ControlGroup>
     </FormGroup>
