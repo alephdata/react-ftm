@@ -5,6 +5,11 @@ import {ITypeProps} from "./common";
 
 export class TextEdit extends React.PureComponent<ITypeProps> {
   static group = new Set(['text', 'string'])
+  private ref: HTMLInputElement;
+
+  componentDidMount(){
+    this.ref.focus();
+  }
 
   onChange = (values: Array<string | React.ReactNode>) => {
     // TODO: @pudo maybe we need to implement Entity.removeProperty in FTM?
@@ -18,6 +23,7 @@ export class TextEdit extends React.PureComponent<ITypeProps> {
     return <FormGroup>
       <ControlGroup vertical fill >
         <TagInput
+          inputRef={(ref) => this.ref = ref}
           tagProps={{
             minimal:true
           }}
