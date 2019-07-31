@@ -13,7 +13,8 @@ interface IEntityViewerProps {
 }
 
 interface IEntityViewerState {
-  visibleProps: Map<Property, boolean>
+  visibleProps: Property[],
+  currEditing: Property | undefined
 }
 
 
@@ -25,7 +26,8 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     this.schemaProperties = Array.from(props.entity.schema.getProperties().values());
 
     this.state = {
-      visibleProps: this.getVisibleProperties(props)
+      visibleProps: this.getVisibleProperties(props),
+      currEditing: null
     }
 
     this.onNewPropertySelected = this.onNewPropertySelected.bind(this);
@@ -34,9 +36,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
 
   getVisibleProperties(props = this.props) {
     const {entity} = props;
-    return new Map(entity.getProperties()
-      .map(property => [property, false])
-    );
+    return [...entity.getProperties()]
   }
 
   componentWillReceiveProps(nextProps: Readonly<IEntityViewerProps>): void {
@@ -49,33 +49,35 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   onNewPropertySelected(p:Property){
+    console.log('new property selected')
     this.setState(({visibleProps}) => ({
-      visibleProps: new Map(this.getVisibleProperties().set(p, true))
+      visibleProps: [...visibleProps, ...[p]],
+      currEditing: p
     }))
   }
 
   onEditPropertyClick(e:React.MouseEvent, property:Property){
     e.preventDefault()
     e.stopPropagation()
-    this.setState(({visibleProps}) => ({
-      visibleProps: new Map(this.getVisibleProperties().set(property, true))
+    this.setState(() => ({
+      currEditing: property
     }))
   }
 
   leaveEditMode(e) {
-    this.setState(({visibleProps}) => ({
-      visibleProps: this.getVisibleProperties()
+    this.setState(({}) => ({
+      currEditing: null
     }))
   }
 
   renderProperty(property:Property){
     const { entity } = this.props;
-    const isEditable = this.state.visibleProps.get(property);
+    const { currEditing } = this.state;
+    const isEditable = property === currEditing;
 
     return <React.Fragment key={property.name}>
       <li
         className='EntityViewer__property-list-item'
-        onClick={(e) => e.stopPropagation()}
       >
         <div className='EntityViewer__property-list-item__label'>
           <span className={Classes.TEXT_MUTED}>
@@ -84,12 +86,14 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
         </div>
         <div className='EntityViewer__property-list-item__value'>
           {isEditable && (
-            <PropertyEditor
-              key={property.name}
-              onEntityChanged={this.props.onEntityChanged}
-              entity={entity}
-              property={property}
-            />
+            <div onClick={(e) => e.stopPropagation()}>
+              <PropertyEditor
+                key={property.name}
+                onEntityChanged={this.props.onEntityChanged}
+                entity={entity}
+                property={property}
+              />
+            </div>
           )}
           {!isEditable && (
             <div onClick={(e) => this.onEditPropertyClick(e, property)}>
@@ -103,22 +107,25 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
 
   render() {
     const { entity } = this.props;
-    const {visibleProps} = this.state;
-    const availableProperties = this.schemaProperties.filter(p => !visibleProps.has(p));
+    const { visibleProps } = this.state;
+    const availableProperties = this.schemaProperties.filter(p => visibleProps.indexOf(p) < 0);
 
-    return <div className='EntityViewer' onClick={(e) => this.leaveEditMode(e)}>
-      <H2 className='EntityViewer__title'>{entity.getCaption()}</H2>
-      <UL className={c('EntityViewer__property-list', Classes.LIST_UNSTYLED)}>
-        {Array.from(visibleProps.keys()).map(this.renderProperty)}
-      </UL>
-      {!!availableProperties.length && (<>
-        <Divider/>
-        <SelectProperty
-          properties={availableProperties}
-          onSelected={this.onNewPropertySelected}
-        />
-      </>)}
-
-    </div>
+    return (
+      <div
+        className='EntityViewer'
+        onClick={(e) => this.leaveEditMode(e)} >
+          <H2 className='EntityViewer__title'>{entity.getCaption()}</H2>
+          <UL className={c('EntityViewer__property-list', Classes.LIST_UNSTYLED)}>
+            {visibleProps.map(this.renderProperty)}
+          </UL>
+          {!!availableProperties.length && (<>
+            <Divider/>
+            <SelectProperty
+              properties={availableProperties}
+              onSelected={this.onNewPropertySelected}
+            />
+          </>)}
+      </div>
+    )
   }
 }

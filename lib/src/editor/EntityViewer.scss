@@ -16,6 +16,14 @@
 
     &__value {
       margin: 3px 0 !important;
+
+      .bp3-input {
+        border: none !important;
+        box-shadow: none !important;
+        border-bottom: 1px solid #5c7080 !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+      }
     }
   }
 }

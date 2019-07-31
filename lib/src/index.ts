@@ -1,5 +1,3 @@
-import './index.scss';
-
 export * from './layout'
 export * from './editor'
 export * from './renderer'
