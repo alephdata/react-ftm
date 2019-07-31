@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {Values, Property, Entity} from "@alephdata/followthemoney";
-import {ControlGroup, FormGroup, MenuItem, TagInput} from "@blueprintjs/core";
+import {Classes, ControlGroup, FormGroup, MenuItem, TagInput} from "@blueprintjs/core";
 import {ItemRenderer, MultiSelect} from "@blueprintjs/select";
 import {ITypeProps} from "./common";
 import {highlightText} from "../utils";
@@ -12,14 +12,57 @@ const CountryMultiSelect = MultiSelect.ofType<[string, string]>()
 export class CountryEdit extends React.PureComponent<ITypeProps> {
   static group = new Set(['country'])
 
-  onChange = (values: Array<string | React.ReactNode>) => {
-    console.log(values)
+  constructor(props: any) {
+    super(props);
+    this.onChange = this.onChange.bind(this)
+    this.onRemove = this.onRemove.bind(this)
+  }
+
+  onChange([countryId, label]) {
+    const { values, property, onPropertyChanged } = this.props;
     // TODO: @pudo maybe we need to implement Entity.removeProperty in FTM?
-    this.props.onPropertyChanged(values as unknown as Values, this.props.property)
+    onPropertyChanged([...values, ...[countryId]] as unknown as Values, property)
+  }
+
+  getAvailableOptions() {
+    const { values, property } = this.props;
+
+    const optionsMap = new Map(property.type.values)
+    values.forEach((valKey: string) => optionsMap.delete(valKey))
+
+    return Array.from(optionsMap.entries());
+  }
+
+  getIdLabelPairs() {
+    const { property, values } = this.props;
+
+    const fullCountriesMap = property.type.values
+
+    return values.map((valKey: string) => {
+      const countryLabel = fullCountriesMap.get(valKey)
+      return [valKey, countryLabel] as [string, string]
+    })
+  }
+
+  // blueprint function returns the tag label instead of the tag id
+  onRemove(valToRemove) {
+    const { property, values, onPropertyChanged } = this.props;
+
+    const fullCountriesMap = property.type.values
+    const keyToRemove = Array.from(fullCountriesMap.entries())
+      .find(([key, val]) => val == valToRemove)[0]
+
+    console.log(keyToRemove)
+    const nextPropVals = [...values].filter(key => key !== keyToRemove);
+    onPropertyChanged(nextPropVals as unknown as Values, property)
   }
 
   render() {
-    const {property} = this.props;
+    const { property } = this.props;
+
+    const availableOptions = this.getAvailableOptions();
+    const selectedOptions = this.getIdLabelPairs();
+
     return <FormGroup>
       <ControlGroup vertical fill >
         <CountryMultiSelect
@@ -34,14 +77,17 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
             <MenuItem
               active={modifiers.active}
               disabled={modifiers.disabled}
-              label={label}
               key={label}
               onClick={handleClick}
               text={highlightText(text, query)}
+              className={Classes.POPOVER_DISMISS}
             />
             );
           }}
-          items={Array.from(property.type.values.entries())}
+          items={availableOptions}
+          popoverProps={{ minimal: true }}
+          tagInputProps={{ tagProps: {interactive: false, minimal: true}, onRemove: this.onRemove, fill: true }}
+          selectedItems={selectedOptions}
         />
       </ControlGroup>
     </FormGroup>
