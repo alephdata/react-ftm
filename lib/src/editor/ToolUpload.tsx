@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {IGraphContext, GraphLayout} from '@alephdata/vislib'
+import { IGraphContext } from '../GraphContext';
+import { GraphLayout } from '../layout/GraphLayout';
 import {Button, FileInput, Tooltip, Dialog, Classes} from '@blueprintjs/core';
 
 interface IToolUploadProps extends IGraphContext {

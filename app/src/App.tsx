@@ -2,7 +2,6 @@ import React from 'react'
 import { FocusStyleManager } from '@blueprintjs/core';
 import { GraphLayout, GraphEditor, GraphConfig, GraphContext, Viewport } from '@alephdata/vislib';
 import { defaultModel, Model} from '@alephdata/followthemoney'
-import {ToolBox} from "./components/ToolBox";
 
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/select/lib/css/blueprint-select.css'
@@ -25,7 +24,6 @@ export default class Vis2 extends React.Component {
   state: IVisState = {
     layout: new GraphLayout(config, model),
     viewport: new Viewport(config)
-
   }
   saveTimeout: any
 
@@ -71,9 +69,6 @@ export default class Vis2 extends React.Component {
     return <GraphContext.Provider value={layoutContext}>
       <GraphEditor
         {...layoutContext}
-        toolbarProps={{
-          tools: <ToolBox {...layoutContext} />
-        }}
       />
     </GraphContext.Provider>
   }

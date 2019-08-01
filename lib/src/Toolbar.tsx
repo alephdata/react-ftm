@@ -12,19 +12,16 @@ import {
 } from "@blueprintjs/core"
 import { IGraphContext} from './GraphContext'
 import { filterVerticesByText } from './filters';
-import { VertexCreateDialog, EdgeCreateDialog } from "./editor";
-import {GraphLayout, History, Rectangle} from "./layout";
+import { VertexCreateDialog, EdgeCreateDialog, ToolUpload } from "./editor";
+import { GraphLayout, History, Rectangle, alignCircle, alignHorizontal, alignVertical, arrangeTree, downloadableJSON } from "./layout";
 
-export interface IToolbarProps extends IGraphContext{
-  tools?:  React.ComponentElement<any, any>
-}
 interface IToolbarState {
   searchText: string
   edgeCreateOpen: boolean
   vertexCreateOpen: boolean
 }
 
-export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
+export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
   state: IToolbarState = {
     searchText: '',
     vertexCreateOpen: false,
@@ -93,13 +90,15 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
   }
 
   render() {
-    const { layout, viewport } = this.props
+    const { layout, viewport, updateLayout, updateViewport } = this.props
     const vertices = this.props.layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
     const sourceVertex = vertices[0]
     const targetVertex = vertices[1]
     const toolbarStyle = {backgroundColor: Colors.LIGHT_GRAY5, width: '100%', padding: '3px'}
+    const disableLayoutButtons = layout.selection && layout.selection.length <= 1;
+
     return <React.Fragment>
       <ButtonGroup style={toolbarStyle} className={Classes.ELEVATION_1}>
         <Tooltip content="Undo">
@@ -127,9 +126,51 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
         <Tooltip content="Add links">
           <AnchorButton icon="new-link" onClick={this.toggleAddEdge} disabled={!canAddEdge} />
         </Tooltip>
+        <Divider/>
+        <Tooltip content="Align horizontal">
+          <AnchorButton icon="drag-handle-horizontal" disabled={disableLayoutButtons} onClick={() => {
+            updateLayout(
+              alignHorizontal(layout)
+            )
+          }} />
+        </Tooltip>
+        <Tooltip content="Align vertical">
+          <AnchorButton icon="drag-handle-vertical" disabled={disableLayoutButtons} onClick={() => {
+            updateLayout(
+              alignVertical(layout)
+            )
+          }} />
+        </Tooltip>
+        <Tooltip content="Arrange as circle">
+          <AnchorButton icon="layout-circle" disabled={disableLayoutButtons} onClick={() => {
+            updateLayout(
+              alignCircle(layout)
+            )
+          }} />
+        </Tooltip>
+        <Tooltip content="Arrange as hierarchy">
+          <AnchorButton icon="layout-hierarchy" disabled={disableLayoutButtons} onClick={() => {
+            updateLayout(
+              arrangeTree(layout)
+            )
+          }} />
+        </Tooltip>
+        <Divider/>
+        <ToolUpload
+          layout={layout}
+          updateLayout={updateLayout}
+          viewport={viewport}
+          updateViewport={updateViewport}
+        />
+        <Tooltip content="Download data">
+          <AnchorButton download icon="cloud-download" onMouseDown={(e) => {
+            e.currentTarget.setAttribute('href', downloadableJSON(layout))
+          }} onBlur={e => {
+            const url = e.currentTarget.getAttribute('href');
+            url && URL.revokeObjectURL(url)
+          }}/>
+        </Tooltip>
 
-
-        {this.props.tools}
         <div style={{width: '100%'}}/>
         <form style={{minWidth:'20vw'}} onSubmit={this.onSubmitSearch}>
           <InputGroup leftIcon="search" onChange={this.onChangeSearch} value={this.state.searchText} />
