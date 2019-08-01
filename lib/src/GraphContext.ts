@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { GraphLayout, Viewport } from "./layout";
 
-export type GraphUpdateHandler = (graph: GraphLayout) => void
+export type GraphUpdateHandler = (layout: GraphLayout, modifyHistory?: boolean, animate?: boolean) => void
 export type ViewportUpdateHandler = (viewport: Viewport) => void
 
 export interface IGraphContext {

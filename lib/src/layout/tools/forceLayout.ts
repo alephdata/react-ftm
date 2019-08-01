@@ -33,7 +33,6 @@ export function forceLayout(layout:GraphLayout):GraphLayout{
       layout.vertices.set(vertex.id, vertex.snapPosition(position))
     }
   })
-  layout.history.push(layout.toJSON())
 
   return layout;
 }

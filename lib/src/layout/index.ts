@@ -1,5 +1,4 @@
 export * from './GraphLayout';
-export * from './History'
 export * from './Edge'
 export * from './Point'
 export * from './Rectangle'

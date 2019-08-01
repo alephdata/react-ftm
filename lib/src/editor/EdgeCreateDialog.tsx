@@ -102,7 +102,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         layout.selectElement(edge)
         updateViewport(viewport.setCenter(edge.getCenter()))
       }
-      updateLayout(layout)
+      updateLayout(layout, true)
       toggleDialog()
     }
   }

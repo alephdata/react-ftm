@@ -11,7 +11,6 @@ export function alignVertical(layout:GraphLayout, step = 4): GraphLayout{
 
   selectedVertices
     .forEach((v, i) =>  layout.vertices.set(v.id, v.snapPosition(new Point(averageY, leftVertex + (i * step)))))
-  layout.history.push(layout.toJSON())
 
   return layout
 }

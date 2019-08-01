@@ -13,7 +13,13 @@ import {
 import { IGraphContext} from './GraphContext'
 import { filterVerticesByText } from './filters';
 import { VertexCreateDialog, EdgeCreateDialog, ToolUpload } from "./editor";
-import { GraphLayout, History, Rectangle, alignCircle, alignHorizontal, alignVertical, arrangeTree, downloadableJSON } from "./layout";
+import { GraphLayout, Rectangle, alignCircle, alignHorizontal, alignVertical, arrangeTree, downloadableJSON } from "./layout";
+import { History } from './History';
+
+interface IToolbarProps extends IGraphContext {
+  onHistoryNavigate: (factor:number) => void,
+  history: History
+}
 
 interface IToolbarState {
   searchText: string
@@ -21,14 +27,14 @@ interface IToolbarState {
   vertexCreateOpen: boolean
 }
 
-export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
+export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
   state: IToolbarState = {
     searchText: '',
     vertexCreateOpen: false,
     edgeCreateOpen: false
   }
 
-  constructor(props: Readonly<IGraphContext>) {
+  constructor(props: Readonly<IToolbarProps>) {
     super(props);
     this.onToggleSelectionMode = this.onToggleSelectionMode.bind(this)
     this.onFitToSelection = this.onFitToSelection.bind(this)
@@ -76,10 +82,8 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
   onRemoveSelection() {
     const {layout, updateLayout} = this.props
     layout.removeSelection()
-    updateLayout(layout)
+    updateLayout(layout, true)
   }
-
-  onHistory = (factor:number) => () => this.props.updateLayout(this.props.layout.history.go(factor))
 
   toggleAddVertex() {
     this.setState({ vertexCreateOpen: !this.state.vertexCreateOpen })
@@ -90,7 +94,7 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
   }
 
   render() {
-    const { layout, viewport, updateLayout, updateViewport } = this.props
+    const { layout, viewport, updateLayout, updateViewport, onHistoryNavigate, history } = this.props
     const vertices = this.props.layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
@@ -102,10 +106,10 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
     return <React.Fragment>
       <ButtonGroup style={toolbarStyle} className={Classes.ELEVATION_1}>
         <Tooltip content="Undo">
-          <AnchorButton icon="undo" onClick={this.onHistory(History.BACK)} disabled={!layout.history.canGoTo(History.BACK)} />
+          <AnchorButton icon="undo" onClick={() => onHistoryNavigate(History.BACK)} disabled={!history.canGoTo(History.BACK)} />
         </Tooltip>
         <Tooltip content="Redo">
-          <AnchorButton icon="redo" onClick={this.onHistory(History.FORWARD)} disabled={!layout.history.canGoTo(History.FORWARD)}/>
+          <AnchorButton icon="redo" onClick={() => onHistoryNavigate(History.FORWARD)} disabled={!history.canGoTo(History.FORWARD)}/>
         </Tooltip>
         <Divider/>
 
@@ -130,28 +134,32 @@ export class Toolbar extends React.Component<IGraphContext, IToolbarState> {
         <Tooltip content="Align horizontal">
           <AnchorButton icon="drag-handle-horizontal" disabled={disableLayoutButtons} onClick={() => {
             updateLayout(
-              alignHorizontal(layout)
+              alignHorizontal(layout),
+              true
             )
           }} />
         </Tooltip>
         <Tooltip content="Align vertical">
           <AnchorButton icon="drag-handle-vertical" disabled={disableLayoutButtons} onClick={() => {
             updateLayout(
-              alignVertical(layout)
+              alignVertical(layout),
+              true
             )
           }} />
         </Tooltip>
         <Tooltip content="Arrange as circle">
           <AnchorButton icon="layout-circle" disabled={disableLayoutButtons} onClick={() => {
             updateLayout(
-              alignCircle(layout)
+              alignCircle(layout),
+              true
             )
           }} />
         </Tooltip>
         <Tooltip content="Arrange as hierarchy">
           <AnchorButton icon="layout-hierarchy" disabled={disableLayoutButtons} onClick={() => {
             updateLayout(
-              arrangeTree(layout)
+              arrangeTree(layout),
+              true
             )
           }} />
         </Tooltip>

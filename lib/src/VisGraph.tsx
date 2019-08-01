@@ -7,14 +7,14 @@ import { GraphConfig } from './GraphConfig';
 import { IGraphContext, GraphContext } from './GraphContext'
 import { Toolbar } from './Toolbar';
 import { Sidebar } from './Sidebar';
-// import { History } from './History';
+import { History } from './History';
 import { Model, defaultModel } from '@alephdata/followthemoney'
 
 
 interface IVisGraphProps {
   config: GraphConfig,
   model: Model,
-  jsonLayout: any,
+  storedLayout: any,
   updateStoredLayout: (layout:any) => void
 }
 
@@ -28,21 +28,29 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     layout: new GraphLayout(new GraphConfig(), new Model(defaultModel)),
     viewport: new Viewport(new GraphConfig())
   };
-  // history: History;
+  history: History;
 
   constructor(props: any) {
     super(props)
+    const { config, model, storedLayout } = props
+
+    const layout = storedLayout ? GraphLayout.fromJSON(config, model, storedLayout) :
+      new GraphLayout(config, model)
 
     this.state = {
-      layout: new GraphLayout(props.config, props.model),
-      viewport: new Viewport(props.config)
+      layout: layout,
+      viewport: new Viewport(config)
     };
 
-    // this.history = new History(props.layout);
+    this.history = new History();
+    if (storedLayout) {
+      this.history.push(storedLayout);
+    }
 
     this.onZoom = this.onZoom.bind(this);
     this.updateLayout = this.updateLayout.bind(this);
     this.updateViewport = this.updateViewport.bind(this);
+    this.onHistoryNavigate = this.onHistoryNavigate.bind(this);
   }
 
   onZoom(factor: number) {
@@ -53,8 +61,12 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     }
   }
 
-  updateLayout(layout: GraphLayout, modifyHistory?: boolean, animate?: boolean) {
+  updateLayout(layout: GraphLayout, modifyHistory: boolean = false, animate: boolean = false) {
     const { updateStoredLayout } = this.props;
+
+    if (modifyHistory) {
+      this.history.push(layout.toJSON())
+    }
 
     this.setState({layout});
 
@@ -66,6 +78,14 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
     //TODO update stored viewport?
   }
+
+  onHistoryNavigate(factor:number) {
+    const { config, model } = this.props;
+
+    const nextLayoutData = this.history.go(factor);
+    this.updateLayout(GraphLayout.fromJSON(config, model, nextLayoutData), false)
+  }
+
 
   render() {
     // const { layout, viewport, updateViewport } = this.props
@@ -91,6 +111,8 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               updateLayout={this.updateLayout}
               viewport={viewport}
               updateViewport={this.updateViewport}
+              onHistoryNavigate={this.onHistoryNavigate}
+              history={this.history}
             />
           </div>
           <div style={{flex: 1, display: 'flex', flexFlow: 'row', flexGrow: 1, flexShrink: 1, flexBasis: '100%'}}>

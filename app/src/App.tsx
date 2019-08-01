@@ -12,7 +12,7 @@ FocusStyleManager.onlyShowFocusOnTabs();
 
 const model = new Model(defaultModel)
 const config = new GraphConfig()
-const demoKey = 'LSL_v1'
+const demoKey = 'LS_v1'
 
 export default class Vis2 extends React.Component {
   // state: IVisState = {
@@ -20,11 +20,15 @@ export default class Vis2 extends React.Component {
   //   viewport: new Viewport(config)
   // }
   saveTimeout: any
-  jsonLayout: any
+  storedLayout: any
 
   constructor(props: any) {
     super(props)
-    this.jsonLayout = localStorage.getItem(demoKey);
+    const localStorageContents = localStorage.getItem(demoKey);
+
+    if (localStorageContents) {
+      this.storedLayout = JSON.parse(localStorageContents)
+    }
 
     //   this.state.layout = GraphLayout.fromJSON(config, model, JSON.parse(jsonLayout))
     //   this.state.layout.history.push(this.state.layout.toJSON());
@@ -55,12 +59,12 @@ export default class Vis2 extends React.Component {
   //   }, 1000)
   // }
 
-  updateStoredLayout(jsonLayout: any) {
-    this.jsonLayout = jsonLayout;
+  updateStoredLayout(storedLayout: any) {
+    this.storedLayout = storedLayout;
 
     clearTimeout(this.saveTimeout)
     this.saveTimeout = setTimeout(() => {
-      localStorage.setItem(demoKey, jsonLayout)
+      localStorage.setItem(demoKey, storedLayout)
     }, 1000)
   }
 
@@ -69,7 +73,7 @@ export default class Vis2 extends React.Component {
       <VisGraph
         config={config}
         model={model}
-        jsonLayout={this.jsonLayout}
+        storedLayout={this.storedLayout}
         updateStoredLayout={this.updateStoredLayout}
       />
     )

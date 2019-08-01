@@ -34,8 +34,8 @@ export class GraphRenderer extends React.Component<IGraphContext> {
 
   dropSelection() {
     const { layout } = this.props;
-    layout.dropSelection()
-    this.props.updateLayout(layout)
+    const shouldUpdateHistory = layout.dropSelection()
+    this.props.updateLayout(layout, shouldUpdateHistory)
   }
 
   clearSelection() {
