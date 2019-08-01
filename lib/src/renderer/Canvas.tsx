@@ -22,6 +22,7 @@ export class Canvas extends React.Component <ICanvasProps> {
   selectionRef: React.RefObject<SVGRectElement>
   dragInitial: Point
   dragExtent: Point
+  tempDisableAnimation: boolean
 
   constructor(props: Readonly<ICanvasProps>) {
     super(props)
@@ -34,6 +35,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     this.selectionRef = React.createRef()
     this.dragInitial = new Point(0, 0)
     this.dragExtent = new Point(0, 0)
+    this.tempDisableAnimation = false
   }
 
   componentDidMount() {
@@ -89,6 +91,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     } else if (offset.x || offset.y) {
       const gridOffset = viewport.config.pixelToGrid(offset)
       const center = viewport.center.subtract(gridOffset)
+      this.tempDisableAnimation = true
       this.props.updateViewport(viewport.setCenter(center));
     }
   }
@@ -117,62 +120,71 @@ export class Canvas extends React.Component <ICanvasProps> {
     event.preventDefault()
     event.stopPropagation()
     const { viewport } = this.props
-    const direction = event.deltaY < 0 ? -1 : 1
+    const direction = event.deltaY < 0 ? -.5 : .5
     const matrix = getRefMatrix(this.svgRef)
     const target = applyMatrix(matrix, event.clientX, event.clientY)
     const gridTarget = viewport.config.pixelToGrid(target)
     const newViewport = viewport.zoomToPoint(gridTarget, direction)
+    this.tempDisableAnimation = true
     this.props.updateViewport(newViewport)
   }
   componentWillReceiveProps(nextProps: Readonly<ICanvasProps>): void {
-    this._animateTransition(this.props.viewport.viewBox || '' , nextProps.viewport.viewBox || '');
+    this.animationHandler(this.props.viewport.viewBox || '' , nextProps.viewport.viewBox || '');
   }
 
-  _animateTransition(oldViewBox:string, viewBox:string, userDuration?:number) {
+  animationHandler(oldViewBox:string, viewBox:string, userDuration?:number) {
     if (viewBox && oldViewBox && viewBox !== oldViewBox) {
-      let start = this._now();
-      let that = this;
-      let domNode = ReactDOM.findDOMNode(that);
-      let req;
-
-      let oldVb = oldViewBox.split(" ").map(n => parseInt(n, 10));
-      let newVb = viewBox.split(" ").map(n => parseInt(n, 10));
-      let duration:number = userDuration as number;
-      // if duration not supplied, calculate based on change of size and center
-      if (!userDuration) {
-        let wRatio = newVb[2]/oldVb[2];
-        let hRatio = newVb[3]/oldVb[3];
-        let oldCenterX = oldVb[0] + oldVb[2]/2;
-        let oldCenterY = oldVb[1] + oldVb[3]/2;
-        let newCenterX = newVb[0] + newVb[2]/2;
-        let newCenterY = newVb[1] + newVb[3]/2;
-        let ratio = Math.max(wRatio, 1/wRatio, hRatio, 1/hRatio);
-        let dist = Math.floor(Math.sqrt(Math.pow(newCenterX - oldCenterX, 2) + Math.pow(newCenterY - oldCenterY, 2)));
-        duration = 1 - 1/(ratio + Math.log(dist + 1));
-        duration = Math.max(0.4, duration);
+      // should only animate on non-user initiated zoom and pan
+      if (this.tempDisableAnimation) {
+        this.tempDisableAnimation = false
+      } else {
+        this._animateTransition(oldViewBox, viewBox)
       }
-      const draw = () => {
-        req = requestAnimationFrame(draw);
-
-        let time = (that._now() - start);
-        let vb = oldVb.map((part, i) => {
-          return oldVb[i] + (newVb[i] - oldVb[i]) * (time / duration);
-        }).join(" ");
-
-        // @ts-ignore
-        domNode && domNode.setAttribute("viewBox", vb);
-
-        if (time > duration) {
-          cancelAnimationFrame(req);
-        }
-      };
-
-      requestAnimationFrame(draw);
-
     } else {
       // @ts-ignore
       ReactDOM.findDOMNode(this).setAttribute("viewBox", viewBox);
     }
+  }
+
+  _animateTransition(oldViewBox:string, viewBox:string, userDuration?:number) {
+    let start = this._now();
+    let that = this;
+    let domNode = ReactDOM.findDOMNode(that);
+    let req;
+
+    let oldVb = oldViewBox.split(" ").map(n => parseInt(n, 10));
+    let newVb = viewBox.split(" ").map(n => parseInt(n, 10));
+    let duration:number = userDuration as number;
+    // if duration not supplied, calculate based on change of size and center
+    if (!userDuration) {
+      let wRatio = newVb[2]/oldVb[2];
+      let hRatio = newVb[3]/oldVb[3];
+      let oldCenterX = oldVb[0] + oldVb[2]/2;
+      let oldCenterY = oldVb[1] + oldVb[3]/2;
+      let newCenterX = newVb[0] + newVb[2]/2;
+      let newCenterY = newVb[1] + newVb[3]/2;
+      let ratio = Math.max(wRatio, 1/wRatio, hRatio, 1/hRatio);
+      let dist = Math.floor(Math.sqrt(Math.pow(newCenterX - oldCenterX, 2) + Math.pow(newCenterY - oldCenterY, 2)));
+      duration = 1 - 1/(ratio + Math.log(dist + 1));
+      duration = Math.max(0.4, duration);
+    }
+    const draw = () => {
+      req = requestAnimationFrame(draw);
+
+      let time = (that._now() - start);
+      let vb = oldVb.map((part, i) => {
+        return oldVb[i] + (newVb[i] - oldVb[i]) * (time / duration);
+      }).join(" ");
+
+      // @ts-ignore
+      domNode && domNode.setAttribute("viewBox", vb);
+
+      if (time > duration) {
+        cancelAnimationFrame(req);
+      }
+    };
+
+    requestAnimationFrame(draw);
   }
 
   _now() {
