@@ -1,6 +1,6 @@
 import React from 'react'
 import { FocusStyleManager } from '@blueprintjs/core';
-import { GraphLayout, GraphEditor, GraphConfig, GraphContext, Viewport } from '@alephdata/vislib';
+import { VisGraph, GraphConfig } from '@alephdata/vislib';
 import { defaultModel, Model} from '@alephdata/followthemoney'
 
 import '@blueprintjs/core/lib/css/blueprint.css';
@@ -12,64 +12,66 @@ FocusStyleManager.onlyShowFocusOnTabs();
 
 const model = new Model(defaultModel)
 const config = new GraphConfig()
-const demoKeyLayout = 'LSL_v1'
-const demoKeyViewport = 'LSV_v1'
-
-interface IVisState {
-  layout: GraphLayout,
-  viewport: Viewport
-}
+const demoKey = 'LSL_v1'
 
 export default class Vis2 extends React.Component {
-  state: IVisState = {
-    layout: new GraphLayout(config, model),
-    viewport: new Viewport(config)
-  }
+  // state: IVisState = {
+  //   layout: new GraphLayout(config, model),
+  //   viewport: new Viewport(config)
+  // }
   saveTimeout: any
+  jsonLayout: any
 
   constructor(props: any) {
     super(props)
-    const jsonLayout = localStorage.getItem(demoKeyLayout);
-    const jsonViewport = localStorage.getItem(demoKeyViewport);
-    if (jsonLayout) {
-      this.state.layout = GraphLayout.fromJSON(config, model, JSON.parse(jsonLayout))
-      this.state.layout.history.push(this.state.layout.toJSON());
-    }
-    if (jsonViewport) {
-      this.state.viewport = Viewport.fromJSON(config, JSON.parse(jsonViewport))
-    }
+    this.jsonLayout = localStorage.getItem(demoKey);
 
-    this.updateLayout = this.updateLayout.bind(this)
-    this.updateViewport = this.updateViewport.bind(this)
+    //   this.state.layout = GraphLayout.fromJSON(config, model, JSON.parse(jsonLayout))
+    //   this.state.layout.history.push(this.state.layout.toJSON());
+    // }
+    // if (jsonViewport) {
+    //   this.state.viewport = Viewport.fromJSON(config, JSON.parse(jsonViewport))
+    // }
+    //
+    // this.updateLayout = this.updateLayout.bind(this)
+    // this.updateViewport = this.updateViewport.bind(this)
+
+    this.updateStoredLayout = this.updateStoredLayout.bind(this);
   }
 
-  updateLayout(layout: GraphLayout) {
-    this.setState({layout})
-    clearTimeout(this.saveTimeout)
-    this.saveTimeout = setTimeout(() => {
-      localStorage.setItem(demoKeyLayout, JSON.stringify(layout.toJSON()))
-    }, 1000)
-  }
+  // updateLayout(layout: GraphLayout) {
+  //   this.setState({layout})
+  //   clearTimeout(this.saveTimeout)
+  //   this.saveTimeout = setTimeout(() => {
+  //     localStorage.setItem(demoKey, JSON.stringify(layout.toJSON()))
+  //   }, 1000)
+  // }
+  //
+  // updateViewport(viewport: Viewport) {
+  //   this.setState({viewport})
+  //   clearTimeout(this.saveTimeout)
+  //   this.saveTimeout = setTimeout(() => {
+  //     localStorage.setItem(demoKeyViewport, JSON.stringify(viewport.toJSON()))
+  //   }, 1000)
+  // }
 
-  updateViewport(viewport: Viewport) {
-    this.setState({viewport})
+  updateStoredLayout(jsonLayout: any) {
+    this.jsonLayout = jsonLayout;
+
     clearTimeout(this.saveTimeout)
     this.saveTimeout = setTimeout(() => {
-      localStorage.setItem(demoKeyViewport, JSON.stringify(viewport.toJSON()))
+      localStorage.setItem(demoKey, jsonLayout)
     }, 1000)
   }
 
   render() {
-    const layoutContext = {
-      layout:this.state.layout,
-      updateLayout:this.updateLayout,
-      viewport: this.state.viewport,
-      updateViewport:this.updateViewport
-    }
-    return <GraphContext.Provider value={layoutContext}>
-      <GraphEditor
-        {...layoutContext}
+    return (
+      <VisGraph
+        config={config}
+        model={model}
+        jsonLayout={this.jsonLayout}
+        updateStoredLayout={this.updateStoredLayout}
       />
-    </GraphContext.Provider>
+    )
   }
 }
