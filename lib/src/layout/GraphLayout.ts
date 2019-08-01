@@ -240,7 +240,7 @@ export class GraphLayout {
 
   layoutPositions() {
     const nodes = this.getVertices()
-      .filter((vertex) => !vertex.hidden)
+      .filter((vertex) => !vertex.isHidden())
       .map((vertex) => {
         const n = {id: vertex.id, fixed: vertex.fixed} as any
         if (vertex.fixed) {
@@ -255,6 +255,7 @@ export class GraphLayout {
         target: nodes.find((n) => n.id === edge.targetId)
       }
     }).filter((link) => (link.source && link.target))
+
 
     const simulation = forceSimulation(nodes)
       .force('links', forceLink(links).distance(3))
