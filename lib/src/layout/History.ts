@@ -38,6 +38,8 @@ export class History {
 
     this.state = nextState
     this.current = this.stack[this.state];
+    this.current.selection = []
+    this.current.selectionMode = false
     return this.layout.update(this.current)
   }
 

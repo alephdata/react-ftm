@@ -16,15 +16,13 @@ export class GraphEditor extends React.Component<IGraphEditorProps> {
   }
 
   onZoom(factor: number) {
-    const {layout, updateLayout} = this.props
-    const {viewport} = layout
+    const {viewport, updateViewport} = this.props
     const newZoomLevel = viewport.zoomLevel * factor
-    layout.viewport = viewport.setZoom(newZoomLevel)
-    updateLayout(layout)
+    updateViewport(viewport.setZoom(newZoomLevel))
   }
 
   render() {
-    const { layout, updateLayout } = this.props
+    const { layout, updateLayout, viewport, updateViewport } = this.props
     const config = layout.config
     return (
       <div style={{flex: 1, display: 'flex', flexFlow: 'column', height: '100%'}} >
@@ -32,6 +30,8 @@ export class GraphEditor extends React.Component<IGraphEditorProps> {
           <Toolbar
             layout={layout}
             updateLayout={updateLayout}
+            viewport={viewport}
+            updateViewport={updateViewport}
             {...this.props.toolbarProps}
           />
         </div>
@@ -43,7 +43,7 @@ export class GraphEditor extends React.Component<IGraphEditorProps> {
                 <Button icon="zoom-out" onClick={() => this.onZoom(1.2)}/>
               </ButtonGroup>
             </div>
-            <GraphRenderer layout={layout} updateLayout={updateLayout}/>
+            <GraphRenderer layout={layout} updateLayout={updateLayout} viewport={viewport} updateViewport={updateViewport}/>
           </div>
           <div style={{
             flexGrow: 1,
@@ -57,7 +57,7 @@ export class GraphEditor extends React.Component<IGraphEditorProps> {
             borderLeftColor: config.BORDER_COLOR,
             padding: config.contentPadding
           }}>
-            <Sidebar layout={layout} updateLayout={updateLayout}/>
+            <Sidebar layout={layout} updateLayout={updateLayout} viewport={viewport} updateViewport={updateViewport}/>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Divider, Tooltip, AnchorButton} from "@blueprintjs/core";
+import {Divider, Tooltip, AnchorButton} from "@blueprintjs/core";
 import {
   alignHorizontal, alignVertical, alignCircle,
   arrangeTree, downloadableJSON, IGraphContext,
@@ -8,7 +8,7 @@ import {ToolUpload} from "./ToolUpload";
 interface IToolBoxProps extends IGraphContext {};
 
 
-export function ToolBox({layout, updateLayout}:IToolBoxProps){
+export function ToolBox({layout, updateLayout, viewport, updateViewport}:IToolBoxProps){
   const disableLayoutButtons = layout.selection && layout.selection.length <= 1;
   return (<>
     <Divider/>
@@ -44,6 +44,8 @@ export function ToolBox({layout, updateLayout}:IToolBoxProps){
     <ToolUpload
       layout={layout}
       updateLayout={updateLayout}
+      viewport={viewport}
+      updateViewport={updateViewport}
     />
     <Tooltip content="Download data">
       <AnchorButton download icon="cloud-download" onMouseDown={(e) => {
