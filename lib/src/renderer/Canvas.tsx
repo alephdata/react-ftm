@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom';
 import { Colors } from '@blueprintjs/core';
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { Viewport } from '../layout/Viewport';
+import { Viewport } from '../Viewport';
 import { Point } from '../layout/Point';
 import { Rectangle } from '../layout/Rectangle';
 import { getRefMatrix, applyMatrix } from './utils';

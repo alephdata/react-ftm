@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Viewport } from '../layout/Viewport';
+import { Viewport } from '../Viewport';
 import { Vertex } from '../layout/Vertex';
 import { Point } from '../layout/Point';
 import { Rectangle } from '../layout/Rectangle';

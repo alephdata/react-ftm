@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Button, ButtonGroup } from '@blueprintjs/core';
 import { GraphRenderer } from './renderer/GraphRenderer'
 import { GraphLayout } from './layout/GraphLayout';
-import { Viewport } from './layout/Viewport';
+import { Viewport } from './Viewport';
 import { GraphConfig } from './GraphConfig';
 import { IGraphContext, GraphContext } from './GraphContext'
 import { Toolbar } from './Toolbar';
