@@ -20,14 +20,14 @@ export default class Vis2 extends React.Component {
   //   viewport: new Viewport(config)
   // }
   saveTimeout: any
-  storedLayout: any
+  storedGraphData: any
 
   constructor(props: any) {
     super(props)
     const localStorageContents = localStorage.getItem(demoKey);
 
     if (localStorageContents) {
-      this.storedLayout = JSON.parse(localStorageContents)
+      this.storedGraphData = JSON.parse(localStorageContents)
     }
 
     //   this.state.layout = GraphLayout.fromJSON(config, model, JSON.parse(jsonLayout))
@@ -40,7 +40,7 @@ export default class Vis2 extends React.Component {
     // this.updateLayout = this.updateLayout.bind(this)
     // this.updateViewport = this.updateViewport.bind(this)
 
-    this.updateStoredLayout = this.updateStoredLayout.bind(this);
+    this.updateStoredGraphData = this.updateStoredGraphData.bind(this);
   }
 
   // updateLayout(layout: GraphLayout) {
@@ -59,12 +59,12 @@ export default class Vis2 extends React.Component {
   //   }, 1000)
   // }
 
-  updateStoredLayout(storedLayout: any) {
-    this.storedLayout = storedLayout;
+  updateStoredGraphData(storedGraphData: any) {
+    this.storedGraphData = storedGraphData;
 
     clearTimeout(this.saveTimeout)
     this.saveTimeout = setTimeout(() => {
-      localStorage.setItem(demoKey, storedLayout)
+      localStorage.setItem(demoKey, storedGraphData)
     }, 1000)
   }
 
@@ -73,8 +73,8 @@ export default class Vis2 extends React.Component {
       <VisGraph
         config={config}
         model={model}
-        storedLayout={this.storedLayout}
-        updateStoredLayout={this.updateStoredLayout}
+        storedGraphData={this.storedGraphData}
+        updateStoredGraphData={this.updateStoredGraphData}
       />
     )
   }

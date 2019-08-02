@@ -14,8 +14,8 @@ import { Model, defaultModel } from '@alephdata/followthemoney'
 interface IVisGraphProps {
   config: GraphConfig,
   model: Model,
-  storedLayout: any,
-  updateStoredLayout: (layout:any) => void
+  storedGraphData: any,
+  updateStoredGraphData: (layout:any) => void
 }
 
 interface IVisGraphState {
@@ -32,19 +32,24 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
   constructor(props: any) {
     super(props)
-    const { config, model, storedLayout } = props
-
-    const layout = storedLayout ? GraphLayout.fromJSON(config, model, storedLayout) :
-      new GraphLayout(config, model)
-
-    this.state = {
-      layout: layout,
-      viewport: new Viewport(config)
-    };
+    const { config, model, storedGraphData } = props
 
     this.history = new History();
-    if (storedLayout) {
-      this.history.push(storedLayout);
+
+    if (storedGraphData) {
+      const { layout, viewport } = storedGraphData;
+
+      this.state = {
+        layout: GraphLayout.fromJSON(config, model, layout),
+        viewport: Viewport.fromJSON(config, viewport)
+      };
+
+      this.history.push(layout);
+    } else {
+      this.state = {
+        layout: new GraphLayout(config, model),
+        viewport: new Viewport(config)
+      };
     }
 
     this.onZoom = this.onZoom.bind(this);
@@ -62,7 +67,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   updateLayout(layout: GraphLayout, modifyHistory: boolean = false, animate: boolean = false) {
-    const { updateStoredLayout } = this.props;
+    const { updateStoredGraphData } = this.props;
 
     if (modifyHistory) {
       this.history.push(layout.toJSON())
@@ -70,13 +75,21 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
     this.setState({layout});
 
-    updateStoredLayout(JSON.stringify(layout.toJSON()));
+    updateStoredGraphData(JSON.stringify({
+      layout: layout.toJSON(),
+      viewport: this.state.viewport.toJSON()
+    }));
   }
 
   updateViewport(viewport: Viewport) {
+    const { updateStoredGraphData } = this.props;
+
     this.setState({viewport});
 
-    //TODO update stored viewport?
+    updateStoredGraphData(JSON.stringify({
+      layout: this.state.layout.toJSON(),
+      viewport: viewport.toJSON()
+    }));
   }
 
   onHistoryNavigate(factor:number) {
@@ -86,13 +99,9 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.updateLayout(GraphLayout.fromJSON(config, model, nextLayoutData), false)
   }
 
-
   render() {
-    // const { layout, viewport, updateViewport } = this.props
-    // const config = layout.config
     const { config } = this.props;
     const { layout, viewport } = this.state;
-
 
     // TODO: do these need to be manually passed to the child components if they're stored in the context?
     const layoutContext = {
