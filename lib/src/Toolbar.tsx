@@ -52,12 +52,12 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
   }
 
   onFitToSelection() {
-    const {layout, updateLayout, viewport, updateViewport} = this.props
+    const {layout, viewport, updateViewport} = this.props
     const selection = layout.getSelectedVertices()
     const vertices = selection.length > 0 ? selection : layout.getVertices()
     const points = vertices.filter((v) => !v.isHidden()).map((v) => v.position)
     const rect = Rectangle.fromPoints(...points)
-    updateViewport(viewport.fitToRect(rect))
+    updateViewport(viewport.fitToRect(rect), {animate:true})
   }
 
   onChangeSearch(event: React.FormEvent<HTMLInputElement>) {
@@ -133,42 +133,28 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
         <Divider/>
         <Tooltip content="Align horizontal">
           <AnchorButton icon="drag-handle-horizontal" disabled={disableLayoutButtons} onClick={() => {
-            updateLayout(
-              alignHorizontal(layout),
-              {modifyHistory:true}
-            )
+            updateLayout(alignHorizontal(layout), {modifyHistory:true})
           }} />
         </Tooltip>
         <Tooltip content="Align vertical">
           <AnchorButton icon="drag-handle-vertical" disabled={disableLayoutButtons} onClick={() => {
-            updateLayout(
-              alignVertical(layout),
-              {modifyHistory:true}
-            )
+            updateLayout(alignVertical(layout), {modifyHistory:true})
           }} />
         </Tooltip>
         <Tooltip content="Arrange as circle">
           <AnchorButton icon="layout-circle" disabled={disableLayoutButtons} onClick={() => {
-            updateLayout(
-              alignCircle(layout),
-              {modifyHistory:true}
-            )
+            updateLayout(alignCircle(layout), {modifyHistory:true})
           }} />
         </Tooltip>
         <Tooltip content="Arrange as hierarchy">
           <AnchorButton icon="layout-hierarchy" disabled={disableLayoutButtons} onClick={() => {
-            updateLayout(
-              arrangeTree(layout),
-              {modifyHistory:true}
-            )
+            updateLayout(arrangeTree(layout), {modifyHistory:true})
           }} />
         </Tooltip>
         <Divider/>
         <ToolUpload
           layout={layout}
           updateLayout={updateLayout}
-          viewport={viewport}
-          updateViewport={updateViewport}
         />
         <Tooltip content="Download data">
           <AnchorButton download icon="cloud-download" onMouseDown={(e) => {

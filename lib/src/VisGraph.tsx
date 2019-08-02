@@ -25,11 +25,7 @@ interface IVisGraphState {
 }
 
 export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
-  state: IVisGraphState = {
-    layout: new GraphLayout(new GraphConfig(), new Model(defaultModel)),
-    viewport: new Viewport(new GraphConfig()),
-    animateTransition: false
-  };
+  state: IVisGraphState
   history: History;
 
   constructor(props: any) {

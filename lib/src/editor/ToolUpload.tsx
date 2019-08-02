@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
-import { IGraphContext } from '../GraphContext';
+import { GraphUpdateHandler } from '../GraphContext';
 import { GraphLayout } from '../layout/GraphLayout';
 import {Button, FileInput, Tooltip, Dialog, Classes} from '@blueprintjs/core';
 
-interface IToolUploadProps extends IGraphContext {
+interface IToolUploadProps {
+  layout: GraphLayout,
+  updateLayout: GraphUpdateHandler
 }
 
 export function ToolUpload(props: IToolUploadProps) {
