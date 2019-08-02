@@ -70,7 +70,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     } else {
       layout.clearSelection()
     }
-    updateLayout(layout)
+    updateLayout(layout, {modifyHistory:true})
   }
 
   onSubmitSearch(event: React.FormEvent) {
@@ -82,7 +82,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
   onRemoveSelection() {
     const {layout, updateLayout} = this.props
     layout.removeSelection()
-    updateLayout(layout, true)
+    updateLayout(layout, {modifyHistory:true})
   }
 
   toggleAddVertex() {
@@ -135,7 +135,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
           <AnchorButton icon="drag-handle-horizontal" disabled={disableLayoutButtons} onClick={() => {
             updateLayout(
               alignHorizontal(layout),
-              true
+              {modifyHistory:true}
             )
           }} />
         </Tooltip>
@@ -143,7 +143,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
           <AnchorButton icon="drag-handle-vertical" disabled={disableLayoutButtons} onClick={() => {
             updateLayout(
               alignVertical(layout),
-              true
+              {modifyHistory:true}
             )
           }} />
         </Tooltip>
@@ -151,7 +151,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
           <AnchorButton icon="layout-circle" disabled={disableLayoutButtons} onClick={() => {
             updateLayout(
               alignCircle(layout),
-              true
+              {modifyHistory:true}
             )
           }} />
         </Tooltip>
@@ -159,7 +159,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
           <AnchorButton icon="layout-hierarchy" disabled={disableLayoutButtons} onClick={() => {
             updateLayout(
               arrangeTree(layout),
-              true
+              {modifyHistory:true}
             )
           }} />
         </Tooltip>

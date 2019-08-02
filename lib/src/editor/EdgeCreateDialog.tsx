@@ -91,7 +91,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         layout.addEntity(sourceEntity)
         const edge = Edge.fromValue(layout, type.property, source, target)
         layout.selectElement(edge)
-        updateViewport(viewport.setCenter(edge.getCenter()))
+        updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
       }
       if (type.schema && type.schema.edge && sourceEntity && targetEntity) {
         const entity = layout.model.createEntity(type.schema)
@@ -100,9 +100,9 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         layout.addEntity(entity)
         const edge = Edge.fromEntity(layout, entity, source, target)
         layout.selectElement(edge)
-        updateViewport(viewport.setCenter(edge.getCenter()))
+        updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
       }
-      updateLayout(layout, true)
+      updateLayout(layout, {modifyHistory:true})
       toggleDialog()
     }
   }

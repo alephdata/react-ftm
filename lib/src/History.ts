@@ -15,13 +15,6 @@ export class History {
     this.current = this.stack[this.state]
   }
 
-  // createChangePool(modifier: Function) {
-  //   this.isPooling = true;
-  //   modifier();
-  //   this.isPooling = false;
-  //   this.push(this.layout.toJSON())
-  // }
-
   go(factor: number): IGraphLayoutData {
     const nextPossibleState = this.state += factor;
     let nextState;
@@ -34,8 +27,6 @@ export class History {
 
     this.state = nextState
     this.current = this.stack[this.state];
-    this.current.selection = []
-    this.current.selectionMode = false
     return this.current;
   }
 

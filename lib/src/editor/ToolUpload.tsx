@@ -28,7 +28,8 @@ export function ToolUpload(props: IToolUploadProps) {
               const f = new FileReader();
               f.onload = (c: any) => {
                 updateLayout(
-                  GraphLayout.fromJSON(layout.config, layout.model, JSON.parse(c.target.result))
+                  GraphLayout.fromJSON(layout.config, layout.model, JSON.parse(c.target.result)),
+                  {modifyHistory: true}
                 );
                 setDialog(false)
               }
