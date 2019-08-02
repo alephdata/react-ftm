@@ -15,49 +15,18 @@ const config = new GraphConfig()
 const demoKey = 'LS_v1'
 
 export default class Vis2 extends React.Component {
-  // state: IVisState = {
-  //   layout: new GraphLayout(config, model),
-  //   viewport: new Viewport(config)
-  // }
   saveTimeout: any
   storedGraphData: any
 
   constructor(props: any) {
     super(props)
     const localStorageContents = localStorage.getItem(demoKey);
-
     if (localStorageContents) {
       this.storedGraphData = JSON.parse(localStorageContents)
     }
 
-    //   this.state.layout = GraphLayout.fromJSON(config, model, JSON.parse(jsonLayout))
-    //   this.state.layout.history.push(this.state.layout.toJSON());
-    // }
-    // if (jsonViewport) {
-    //   this.state.viewport = Viewport.fromJSON(config, JSON.parse(jsonViewport))
-    // }
-    //
-    // this.updateLayout = this.updateLayout.bind(this)
-    // this.updateViewport = this.updateViewport.bind(this)
-
     this.updateStoredGraphData = this.updateStoredGraphData.bind(this);
   }
-
-  // updateLayout(layout: GraphLayout) {
-  //   this.setState({layout})
-  //   clearTimeout(this.saveTimeout)
-  //   this.saveTimeout = setTimeout(() => {
-  //     localStorage.setItem(demoKey, JSON.stringify(layout.toJSON()))
-  //   }, 1000)
-  // }
-  //
-  // updateViewport(viewport: Viewport) {
-  //   this.setState({viewport})
-  //   clearTimeout(this.saveTimeout)
-  //   this.saveTimeout = setTimeout(() => {
-  //     localStorage.setItem(demoKeyViewport, JSON.stringify(viewport.toJSON()))
-  //   }, 1000)
-  // }
 
   updateStoredGraphData(storedGraphData: any) {
     this.storedGraphData = storedGraphData;
