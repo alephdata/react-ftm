@@ -9,16 +9,9 @@ node_js:
   - '10'
   - '11'
 
-install:
-  - make install
+install: make install
 
-jobs:
-  include:
-  - stage: build
-    script: make build
-
-stages:
-- build
+script: make build
 
 branches:
   except:
