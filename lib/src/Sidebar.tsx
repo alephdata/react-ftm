@@ -5,8 +5,6 @@ import {EntityViewer} from "./editor/EntityViewer";
 import {EntityList} from "./editor/EntityList";
 
 
-
-
 export class Sidebar extends React.Component<IGraphContext> {
 
   constructor(props: Readonly<IGraphContext>) {
@@ -18,8 +16,7 @@ export class Sidebar extends React.Component<IGraphContext> {
   appendToLayout(entity: Entity) {
     const { layout } = this.props
     layout.addEntity(entity);
-    layout.layout();
-    this.props.updateLayout(layout)
+    this.props.updateLayout(layout, {modifyHistory:true})
   }
 
   onEntitySelected(entity:Entity){

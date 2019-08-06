@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom';
 import { Colors } from '@blueprintjs/core';
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { Viewport } from '../layout/Viewport';
+import { Viewport } from '../Viewport';
 import { Point } from '../layout/Point';
 import { Rectangle } from '../layout/Rectangle';
 import { getRefMatrix, applyMatrix } from './utils';
@@ -15,6 +15,7 @@ interface ICanvasProps {
   selectArea: (area: Rectangle) => any,
   clearSelection: () => any,
   updateViewport: (viewport: Viewport) => any,
+  animateTransition: boolean
 }
 
 export class Canvas extends React.Component <ICanvasProps> {
@@ -22,7 +23,6 @@ export class Canvas extends React.Component <ICanvasProps> {
   selectionRef: React.RefObject<SVGRectElement>
   dragInitial: Point
   dragExtent: Point
-  tempDisableAnimation: boolean
 
   constructor(props: Readonly<ICanvasProps>) {
     super(props)
@@ -35,7 +35,6 @@ export class Canvas extends React.Component <ICanvasProps> {
     this.selectionRef = React.createRef()
     this.dragInitial = new Point(0, 0)
     this.dragExtent = new Point(0, 0)
-    this.tempDisableAnimation = false
   }
 
   componentDidMount() {
@@ -91,7 +90,6 @@ export class Canvas extends React.Component <ICanvasProps> {
     } else if (offset.x || offset.y) {
       const gridOffset = viewport.config.pixelToGrid(offset)
       const center = viewport.center.subtract(gridOffset)
-      this.tempDisableAnimation = true
       this.props.updateViewport(viewport.setCenter(center));
     }
   }
@@ -125,21 +123,15 @@ export class Canvas extends React.Component <ICanvasProps> {
     const target = applyMatrix(matrix, event.clientX, event.clientY)
     const gridTarget = viewport.config.pixelToGrid(target)
     const newViewport = viewport.zoomToPoint(gridTarget, direction)
-    this.tempDisableAnimation = true
     this.props.updateViewport(newViewport)
   }
   componentWillReceiveProps(nextProps: Readonly<ICanvasProps>): void {
-    this.animationHandler(this.props.viewport.viewBox || '' , nextProps.viewport.viewBox || '');
+    this.animationHandler(nextProps.animateTransition, this.props.viewport.viewBox || '' , nextProps.viewport.viewBox || '');
   }
 
-  animationHandler(oldViewBox:string, viewBox:string, userDuration?:number) {
-    if (viewBox && oldViewBox && viewBox !== oldViewBox) {
-      // should only animate on non-user initiated zoom and pan
-      if (this.tempDisableAnimation) {
-        this.tempDisableAnimation = false
-      } else {
-        this._animateTransition(oldViewBox, viewBox)
-      }
+  animationHandler(animateTransition: boolean, oldViewBox:string, viewBox:string, userDuration?:number) {
+    if (animateTransition && viewBox && oldViewBox && viewBox !== oldViewBox) {
+      this._animateTransition(oldViewBox, viewBox)
     } else {
       // @ts-ignore
       ReactDOM.findDOMNode(this).setAttribute("viewBox", viewBox);

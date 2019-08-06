@@ -1,4 +1,4 @@
-import {GraphLayout, IGraphLayoutData} from "./GraphLayout";
+import {GraphLayout, IGraphLayoutData} from "./layout";
 
 export class History {
   static BACK = -1;
@@ -7,11 +7,7 @@ export class History {
   stack: Array<IGraphLayoutData> = [];
   current?: IGraphLayoutData
   state: number = 0;
-  private layout: GraphLayout;
 
-  constructor(layout: GraphLayout) {
-    this.layout = layout
-  }
   push(item: IGraphLayoutData) {
     if (this.isPooling) return undefined;
     this.stack.splice(this.state + 1, this.stack.length, item);
@@ -19,14 +15,7 @@ export class History {
     this.current = this.stack[this.state]
   }
 
-  createChangePool(modifier: Function) {
-    this.isPooling = true;
-    modifier();
-    this.isPooling = false;
-    this.push(this.layout.toJSON())
-  }
-
-  go(factor: number): GraphLayout {
+  go(factor: number): IGraphLayoutData {
     const nextPossibleState = this.state += factor;
     let nextState;
 
@@ -38,9 +27,7 @@ export class History {
 
     this.state = nextState
     this.current = this.stack[this.state];
-    this.current.selection = []
-    this.current.selectionMode = false
-    return this.layout.update(this.current)
+    return this.current;
   }
 
   canGoTo(factor: number): boolean {

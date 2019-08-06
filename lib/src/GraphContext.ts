@@ -1,8 +1,9 @@
 import * as React from 'react'
-import { GraphLayout, Viewport } from "./layout";
+import { GraphLayout } from "./layout";
+import { Viewport } from "./Viewport";
 
-export type GraphUpdateHandler = (graph: GraphLayout) => void
-export type ViewportUpdateHandler = (viewport: Viewport) => void
+export type GraphUpdateHandler = (layout: GraphLayout, transitionSettings?: any) => void
+export type ViewportUpdateHandler = (viewport: Viewport, transitionSettings?: any) => void
 
 export interface IGraphContext {
   layout: GraphLayout,

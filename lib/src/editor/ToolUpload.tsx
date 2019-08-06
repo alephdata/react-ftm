@@ -1,8 +1,11 @@
 import React, {useState} from 'react';
-import {IGraphContext, GraphLayout} from '@alephdata/vislib'
+import { GraphUpdateHandler } from '../GraphContext';
+import { GraphLayout } from '../layout/GraphLayout';
 import {Button, FileInput, Tooltip, Dialog, Classes} from '@blueprintjs/core';
 
-interface IToolUploadProps extends IGraphContext {
+interface IToolUploadProps {
+  layout: GraphLayout,
+  updateLayout: GraphUpdateHandler
 }
 
 export function ToolUpload(props: IToolUploadProps) {
@@ -27,7 +30,8 @@ export function ToolUpload(props: IToolUploadProps) {
               const f = new FileReader();
               f.onload = (c: any) => {
                 updateLayout(
-                  GraphLayout.fromJSON(layout.config, layout.model, JSON.parse(c.target.result))
+                  GraphLayout.fromJSON(layout.config, layout.model, JSON.parse(c.target.result)),
+                  {modifyHistory: true}
                 );
                 setDialog(false)
               }

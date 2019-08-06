@@ -5,7 +5,6 @@ import { Edge } from './Edge'
 import { Point } from './Point';
 import { Rectangle } from './Rectangle';
 import { GraphConfig } from '../GraphConfig';
-import {History} from "./History";
 
 export interface IGraphLayoutData {
   entities: Array<IEntityDatum>
@@ -27,13 +26,11 @@ export class GraphLayout {
   entities = new Map<string, Entity>()
   selection = new Array<string>()
   selectionMode: boolean = true
-  history: History;
   private hasDraggedSelection = false
 
   constructor(config: GraphConfig, model: Model) {
     this.config = config
     this.model = model
-    this.history = new History(this);
 
     this.addVertex = this.addVertex.bind(this)
     this.addEdge = this.addEdge.bind(this)
@@ -110,7 +107,6 @@ export class GraphLayout {
   addEntity(entity: Entity) {
     this.entities.set(entity.id, entity)
     this.layout()
-    this.history.push(this.toJSON())
   }
 
   getEntities(): Entity[] {
@@ -201,10 +197,11 @@ export class GraphLayout {
     this.getSelectedVertices().forEach((vertex) => {
       this.vertices.set(vertex.id, vertex.snapPosition(vertex.position))
     });
-    if (this.hasDraggedSelection === true) {
-      this.history.push(this.toJSON())
+
+    if (this.hasDraggedSelection) {
+      this.hasDraggedSelection = false;
+      return true;
     }
-    this.hasDraggedSelection = false
   }
 
   removeSelection() {
@@ -231,7 +228,6 @@ export class GraphLayout {
       }
     })
     this.generate()
-    this.history.push(this.toJSON())
   }
 
   layout() {
@@ -277,9 +273,7 @@ export class GraphLayout {
   }
 
   update(withData:IGraphLayoutData):GraphLayout{
-    const nextLayout =GraphLayout.fromJSON(this.config, this.model, withData)
-    nextLayout.history = this.history;
-    return nextLayout;
+    return GraphLayout.fromJSON(this.config, this.model, withData)
   }
 
   toJSON(): IGraphLayoutData {
