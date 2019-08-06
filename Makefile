@@ -3,28 +3,15 @@ MAKEFLAGS += -j2
 all: build
 
 install:
-	cd lib && npm install
-	cd app && npm install
-	cd lib && npm link
-	cd app && npm link @alephdata/vislib
+	npm install && npm link
 
-lib/dist:
-	cd lib && npm run build
+dist:
+	npm run build
 
 clean:
-	rm -rf lib/node_modules lib/dist app/node_modules
+	rm -rf node_modules dist
 
-lib:
-	cd lib && npm start
+dev:
+	npm start
 
-app:
-	cd app && npm start
-
-app-build: lib/dist
-	cd app && npm run build
-
-dev: lib app
-
-build: app-build
-
-.PHONY: app lib
+build: dist

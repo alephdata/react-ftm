@@ -12,8 +12,8 @@ import {
 } from "@blueprintjs/core"
 import { IGraphContext} from './GraphContext'
 import { filterVerticesByText } from './filters';
-import { VertexCreateDialog, EdgeCreateDialog, ToolUpload } from "./editor";
-import { GraphLayout, Rectangle, alignCircle, alignHorizontal, alignVertical, arrangeTree, downloadableJSON } from "./layout";
+import { VertexCreateDialog, EdgeCreateDialog } from "./editor";
+import { GraphLayout, Rectangle, alignCircle, alignHorizontal, alignVertical, arrangeTree } from "./layout";
 import { History } from './History';
 
 interface IToolbarProps extends IGraphContext {
@@ -151,20 +151,6 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
             updateLayout(arrangeTree(layout), {modifyHistory:true})
           }} />
         </Tooltip>
-        <Divider/>
-        <ToolUpload
-          layout={layout}
-          updateLayout={updateLayout}
-        />
-        <Tooltip content="Download data">
-          <AnchorButton download icon="cloud-download" onMouseDown={(e) => {
-            e.currentTarget.setAttribute('href', downloadableJSON(layout))
-          }} onBlur={e => {
-            const url = e.currentTarget.getAttribute('href');
-            url && URL.revokeObjectURL(url)
-          }}/>
-        </Tooltip>
-
         <div style={{width: '100%'}}/>
         <form style={{minWidth:'20vw'}} onSubmit={this.onSubmitSearch}>
           <InputGroup leftIcon="search" onChange={this.onChangeSearch} value={this.state.searchText} />
