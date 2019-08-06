@@ -20,7 +20,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
 
   constructor(props: IEntityViewerProps) {
     super(props);
-    this.schemaProperties = Array.from(props.entity.schema.getProperties().values());
+    this.schemaProperties = props.entity.schema.getEditableProperties();
 
     this.state = {
       visibleProps: this.getVisibleProperties(props)
@@ -39,7 +39,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
 
   componentWillReceiveProps(nextProps: Readonly<IEntityViewerProps>): void {
     if (this.props.entity !== nextProps.entity) {
-      this.schemaProperties = Array.from(nextProps.entity.schema.getProperties().values());
+      this.schemaProperties = nextProps.entity.schema.getEditableProperties();
       this.setState({
         visibleProps: this.getVisibleProperties(nextProps)
       })

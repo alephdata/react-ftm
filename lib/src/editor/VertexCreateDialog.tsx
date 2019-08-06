@@ -45,18 +45,17 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
   onSubmit(e: React.ChangeEvent<HTMLFormElement>) {
     const { label } = this.state
     const schema = this.getSchema()
-    const { layout, updateLayout } = this.context as IGraphContext
+    const { layout, updateLayout, viewport, updateViewport } = this.context as IGraphContext
     e.preventDefault()
     if (this.checkValid()) {
       const entity = layout.model.createEntity(schema)
       entity.setProperty('name', label)
       layout.addEntity(entity)
-      layout.layout()
       const vertex = layout.getVertexByEntity(entity)
       if (vertex) {
         layout.selectElement(vertex)
-        layout.viewport = layout.viewport.setCenter(vertex.position)
-        updateLayout(layout)
+        updateLayout(layout, {modifyHistory:true})
+        updateViewport(viewport.setCenter(vertex.position), {animate:true})
         this.setState({label: ''})
         this.props.toggleDialog()
       }

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Viewport } from '../layout/Viewport';
+import { Viewport } from '../Viewport';
 import { Vertex } from '../layout/Vertex';
 import { Point } from '../layout/Point';
 import { Rectangle } from '../layout/Rectangle';
@@ -10,8 +10,11 @@ import { VertexRenderer } from './VertexRenderer'
 import { Edge } from '../layout/Edge';
 import { GraphElement } from '../layout';
 
+interface IGraphRendererProps extends IGraphContext {
+  animateTransition: boolean
+}
 
-export class GraphRenderer extends React.Component<IGraphContext> {
+export class GraphRenderer extends React.Component<IGraphRendererProps> {
   constructor(props: any) {
     super(props)
     this.updateViewport = this.updateViewport.bind(this);
@@ -23,9 +26,7 @@ export class GraphRenderer extends React.Component<IGraphContext> {
   }
 
   updateViewport(viewport: Viewport) {
-    const { layout } = this.props;
-    layout.viewport = viewport
-    this.props.updateLayout(layout)
+    this.props.updateViewport(viewport)
   }
 
   dragSelection(offset: Point) {
@@ -36,8 +37,8 @@ export class GraphRenderer extends React.Component<IGraphContext> {
 
   dropSelection() {
     const { layout } = this.props;
-    layout.dropSelection()
-    this.props.updateLayout(layout)
+    const shouldUpdateHistory = layout.dropSelection()
+    this.props.updateLayout(layout, {modifyHistory:shouldUpdateHistory})
   }
 
   clearSelection() {
@@ -94,13 +95,14 @@ export class GraphRenderer extends React.Component<IGraphContext> {
   }
 
   render(){
-    const { layout } = this.props;
+    const { layout, viewport, animateTransition } = this.props;
     return (
-      <Canvas viewport={layout.viewport}
+      <Canvas viewport={viewport}
               selectArea={this.selectArea}
               selectionMode={layout.selectionMode}
               clearSelection={this.clearSelection}
-              updateViewport={this.updateViewport}>
+              updateViewport={this.updateViewport}
+              animateTransition={animateTransition}>
         {this.renderEdges()}
         {this.renderVertices()}
       </Canvas>

@@ -2,14 +2,11 @@ import { Entity, Model, IEntityDatum } from '@alephdata/followthemoney'
 import { forceSimulation, forceLink, forceCollide } from 'd3-force';
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
-import { Viewport } from './Viewport'
 import { Point } from './Point';
 import { Rectangle } from './Rectangle';
 import { GraphConfig } from '../GraphConfig';
-import {History} from "./History";
 
 export interface IGraphLayoutData {
-  viewport: any
   entities: Array<IEntityDatum>
   vertices: Array<any>
   edges: Array<any>
@@ -24,19 +21,16 @@ export type GraphElement = Vertex | Edge
 export class GraphLayout {
   public readonly config: GraphConfig
   public readonly model: Model
-  viewport: Viewport;
   vertices = new Map<string, Vertex>()
   edges = new Map<string, Edge>()
   entities = new Map<string, Entity>()
   selection = new Array<string>()
   selectionMode: boolean = true
-  history: History;
+  private hasDraggedSelection = false
 
   constructor(config: GraphConfig, model: Model) {
     this.config = config
     this.model = model
-    this.viewport = new Viewport(config)
-    this.history = new History(this);
 
     this.addVertex = this.addVertex.bind(this)
     this.addEdge = this.addEdge.bind(this)
@@ -112,8 +106,7 @@ export class GraphLayout {
 
   addEntity(entity: Entity) {
     this.entities.set(entity.id, entity)
-    this.generate()
-    this.history.push(this.toJSON())
+    this.layout()
   }
 
   getEntities(): Entity[] {
@@ -197,13 +190,18 @@ export class GraphLayout {
       const position = vertex.position.addition(offset)
       this.vertices.set(vertex.id, vertex.setPosition(position))
     })
+    this.hasDraggedSelection = true
   }
 
   dropSelection() {
     this.getSelectedVertices().forEach((vertex) => {
       this.vertices.set(vertex.id, vertex.snapPosition(vertex.position))
     });
-    this.history.push(this.toJSON())
+
+    if (this.hasDraggedSelection) {
+      this.hasDraggedSelection = false;
+      return true;
+    }
   }
 
   removeSelection() {
@@ -230,7 +228,6 @@ export class GraphLayout {
       }
     })
     this.generate()
-    this.history.push(this.toJSON())
   }
 
   layout() {
@@ -240,7 +237,7 @@ export class GraphLayout {
 
   layoutPositions() {
     const nodes = this.getVertices()
-      .filter((vertex) => !vertex.hidden)
+      .filter((vertex) => !vertex.isHidden())
       .map((vertex) => {
         const n = {id: vertex.id, fixed: vertex.fixed} as any
         if (vertex.fixed) {
@@ -255,6 +252,7 @@ export class GraphLayout {
         target: nodes.find((n) => n.id === edge.targetId)
       }
     }).filter((link) => (link.source && link.target))
+
 
     const simulation = forceSimulation(nodes)
       .force('links', forceLink(links).distance(3))
@@ -275,14 +273,11 @@ export class GraphLayout {
   }
 
   update(withData:IGraphLayoutData):GraphLayout{
-    const nextLayout =GraphLayout.fromJSON(this.config, this.model, withData)
-    nextLayout.history = this.history;
-    return nextLayout;
+    return GraphLayout.fromJSON(this.config, this.model, withData)
   }
 
   toJSON(): IGraphLayoutData {
     return {
-      viewport: this.viewport.toJSON(),
       entities: this.getEntities().map((entity) => entity.toJSON()),
       vertices: this.getVertices().map((vertex) => vertex.toJSON()),
       edges: this.getEdges().map((edge) => edge.toJSON()),
@@ -306,7 +301,6 @@ export class GraphLayout {
       layout.edges.set(edge.id, edge)
     })
     layout.generate()
-    layout.viewport = Viewport.fromJSON(config, layoutData.viewport)
     layout.selectionMode = layoutData.selectionMode
     layout.selection = layoutData.selection
     return layout

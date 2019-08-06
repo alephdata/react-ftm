@@ -80,7 +80,7 @@
     "tslint-config-prettier": "^1.18.0",
     "tslint-config-standard": "^8.0.1",
     "typescript": "^3.5.1",
-    "@alephdata/followthemoney": "^1.13.1",
+    "@alephdata/followthemoney": "^1.14.2",
     "@blueprintjs/core": "^3.15.1",
     "@blueprintjs/datetime": "^3.9.0",
     "@blueprintjs/select": "^3.8.0",
@@ -88,7 +88,7 @@
     "react-dom": "^16.8.6"
   },
   "peerDependencies": {
-    "@alephdata/followthemoney": "^1.13.1",
+    "@alephdata/followthemoney": "^1.14.2",
     "@blueprintjs/core": "^3.15.1",
     "@blueprintjs/datetime": "^3.9.0",
     "@blueprintjs/select": "^3.8.0",
