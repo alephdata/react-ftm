@@ -1,27 +1,58 @@
 @import "src/variables.scss";
 
+$width-left: 160px;
+$width-right: 150px;
+
 .Toolbar {
   background-color: $editor-background-color;
-  padding: 5px;
   display: table;
   width: 100%;
   // box-shadow: $editor-box-shadow;
 
-  &__left, &__right {
+  &__left, &__middle, &__right {
     display: table-cell;
     vertical-align: middle;
+    padding: 5px 10px;
   }
 
   &__left {
-    width: calc(100% - 200px);
+    width: $width-left;
+    border-right: 1px solid white;
+  }
+
+  &__middle {
+    width: calc(100% - #{$width-left + $width-right});
   }
 
   &__right {
-    width: 200px;
+    width: $width-right;
   }
+
+  &__logo {
+    display: table;
+    &__image, &__text {
+      display: table-cell;
+    }
+    &__image {
+      height: 30px;
+    }
+    &__text {
+      font-size: 16px;
+      color: white;
+      margin: 0;
+      vertical-align: middle;
+      padding-left: 7px;
+    }
+  }
+
+
 
   .bp3-button {
     background: transparent !important;
+  }
+
+  .bp3-divider {
+    border-color: $disabled-color;
   }
 
   .bp3-icon {
@@ -29,4 +60,10 @@
       fill: white !important;
     }
   }
+  .bp3-disabled {
+    svg {
+      fill: $disabled-color !important;
+    }
+  }
+
 }

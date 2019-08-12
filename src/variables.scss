@@ -1,7 +1,21 @@
 @import "~@blueprintjs/core/lib/scss/variables";
 
-
-$editor-background-color: $dark-gray2;
+$editor-background-color: $dark-gray1;
 // $editor-border-color: $light-gray1;
 $editor-border-radius: 5px;
 $editor-box-shadow: 0 2px 5px $gray4;
+
+$standard-border-radius: 5px;
+
+$sidebar-gutter: 10px;
+
+$text-color-main: white;
+$text-color-secondary: $light-gray1;
+$disabled-color: rgba(255, 255, 255, .1);
+
+
+
+.bp3-input {
+  background: rgba(255, 255, 255, .1) !important;
+  color: white !important;
+}

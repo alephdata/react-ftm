@@ -140,7 +140,9 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               boxSizing: 'border-box',
               overflowY: 'scroll',
               flexBasis: '15vw',
-              padding: '10px'
+              padding: '10px',
+              minWidth: '200px',
+              maxWidth: '260px'
             }}>
               <Sidebar layout={layout} updateLayout={this.updateLayout} viewport={viewport} updateViewport={this.updateViewport}/>
             </div>
