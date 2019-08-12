@@ -1,0 +1,32 @@
+@import "src/variables.scss";
+
+.Toolbar {
+  background-color: $editor-background-color;
+  padding: 5px;
+  display: table;
+  width: 100%;
+  // box-shadow: $editor-box-shadow;
+
+  &__left, &__right {
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  &__left {
+    width: calc(100% - 200px);
+  }
+
+  &__right {
+    width: 200px;
+  }
+
+  .bp3-button {
+    background: transparent !important;
+  }
+
+  .bp3-icon {
+    svg {
+      fill: white !important;
+    }
+  }
+}

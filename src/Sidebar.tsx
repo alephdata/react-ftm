@@ -4,6 +4,8 @@ import {IGraphContext} from './GraphContext'
 import {EntityViewer} from "./editor/EntityViewer";
 import {EntityList} from "./editor/EntityList";
 
+import './Sidebar.scss';
+
 
 export class Sidebar extends React.Component<IGraphContext> {
 
@@ -31,17 +33,25 @@ export class Sidebar extends React.Component<IGraphContext> {
   render() {
     const { layout } = this.props
     const selection = layout.getSelectedEntities()
+    let contents;
 
     if (selection.length === 1) {
-      return <EntityViewer
+      contents = <EntityViewer
         entity={selection[0]}
         onEntityChanged={this.appendToLayout}
       />
     } else if (selection.length){
-      return <EntityList entities={selection} />
+      contents = <EntityList entities={selection} />
+    } else {
+      const vertices = layout.getVertices().filter((v) => !v.isHidden())
+      const entities = vertices.map((v) => v.getEntity()).filter((e) => !!e)
+      contents = <EntityList entities={entities as Entity[]} onEntitySelected={this.onEntitySelected}/>
     }
-    const vertices = layout.getVertices().filter((v) => !v.isHidden())
-    const entities = vertices.map((v) => v.getEntity()).filter((e) => !!e)
-    return <EntityList entities={entities as Entity[]} onEntitySelected={this.onEntitySelected}/>
+
+    return (
+      <div className="Sidebar">
+        {contents}
+      </div>
+    )
   }
 }

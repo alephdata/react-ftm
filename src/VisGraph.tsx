@@ -10,7 +10,6 @@ import { Sidebar } from './Sidebar';
 import { History } from './History';
 import { Model, defaultModel } from '@alephdata/followthemoney'
 
-
 interface IVisGraphProps {
   config: GraphConfig,
   model: Model,
@@ -140,11 +139,8 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               maxHeight: '100%',
               boxSizing: 'border-box',
               overflowY: 'scroll',
-              flexBasis: '10vw',
-              borderLeftWidth: '1px',
-              borderLeftStyle: 'solid',
-              borderLeftColor: config.BORDER_COLOR,
-              padding: config.contentPadding
+              flexBasis: '15vw',
+              padding: '10px'
             }}>
               <Sidebar layout={layout} updateLayout={this.updateLayout} viewport={viewport} updateViewport={this.updateViewport}/>
             </div>

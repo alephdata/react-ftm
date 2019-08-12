@@ -15,6 +15,8 @@ import { filterVerticesByText } from './filters';
 import { VertexCreateDialog, EdgeCreateDialog } from "./editor";
 import { GraphLayout, Rectangle, alignCircle, alignHorizontal, alignVertical, arrangeTree } from "./layout";
 import { History } from './History';
+import './Toolbar.scss';
+
 
 interface IToolbarProps extends IGraphContext {
   onHistoryNavigate: (factor:number) => void,
@@ -100,62 +102,65 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
     const sourceVertex = vertices[0]
     const targetVertex = vertices[1]
-    const toolbarStyle = {backgroundColor: Colors.LIGHT_GRAY5, width: '100%', padding: '3px'}
     const disableLayoutButtons = layout.selection && layout.selection.length <= 1;
 
-    return <React.Fragment>
-      <ButtonGroup style={toolbarStyle} className={Classes.ELEVATION_1}>
-        <Tooltip content="Undo">
-          <AnchorButton icon="undo" onClick={() => onHistoryNavigate(History.BACK)} disabled={!history.canGoTo(History.BACK)} />
-        </Tooltip>
-        <Tooltip content="Redo">
-          <AnchorButton icon="redo" onClick={() => onHistoryNavigate(History.FORWARD)} disabled={!history.canGoTo(History.FORWARD)}/>
-        </Tooltip>
-        <Divider/>
+    return <div className="Toolbar">
+      <div className="Toolbar__left">
+        <ButtonGroup>
+            <Tooltip content="Undo">
+              <AnchorButton icon="undo" onClick={() => onHistoryNavigate(History.BACK)} disabled={!history.canGoTo(History.BACK)} />
+            </Tooltip>
+            <Tooltip content="Redo">
+              <AnchorButton icon="redo" onClick={() => onHistoryNavigate(History.FORWARD)} disabled={!history.canGoTo(History.FORWARD)}/>
+            </Tooltip>
+            <Divider/>
 
-        <Tooltip content="Select elements">
-          <Button icon="select" active={this.props.layout.selectionMode} onClick={this.onToggleSelectionMode}/>
-        </Tooltip>
-        <Tooltip content="Fit view to selection">
-          <Button icon="zoom-to-fit" onClick={this.onFitToSelection}/>
-        </Tooltip>
-        <Divider/>
-        <Tooltip content="Add entities">
-          <Button icon="new-object" onClick={this.toggleAddVertex}/>
-        </Tooltip>
-        <Tooltip content={hasSelection ? "Remove selected" : "To remove a node first you must select a node by clicking on it"}>
-          <AnchorButton icon="graph-remove" onClick={this.onRemoveSelection} disabled={!hasSelection} />
-        </Tooltip>
-        <Divider/>
-        <Tooltip content="Add links">
-          <AnchorButton icon="new-link" onClick={this.toggleAddEdge} disabled={!canAddEdge} />
-        </Tooltip>
-        <Divider/>
-        <Tooltip content="Align horizontal">
-          <AnchorButton icon="drag-handle-horizontal" disabled={disableLayoutButtons} onClick={() => {
-            updateLayout(alignHorizontal(layout), {modifyHistory:true})
-          }} />
-        </Tooltip>
-        <Tooltip content="Align vertical">
-          <AnchorButton icon="drag-handle-vertical" disabled={disableLayoutButtons} onClick={() => {
-            updateLayout(alignVertical(layout), {modifyHistory:true})
-          }} />
-        </Tooltip>
-        <Tooltip content="Arrange as circle">
-          <AnchorButton icon="layout-circle" disabled={disableLayoutButtons} onClick={() => {
-            updateLayout(alignCircle(layout), {modifyHistory:true})
-          }} />
-        </Tooltip>
-        <Tooltip content="Arrange as hierarchy">
-          <AnchorButton icon="layout-hierarchy" disabled={disableLayoutButtons} onClick={() => {
-            updateLayout(arrangeTree(layout), {modifyHistory:true})
-          }} />
-        </Tooltip>
-        <div style={{width: '100%'}}/>
-        <form style={{minWidth:'20vw'}} onSubmit={this.onSubmitSearch}>
-          <InputGroup leftIcon="search" onChange={this.onChangeSearch} value={this.state.searchText} />
-        </form>
-      </ButtonGroup>
+            <Tooltip content="Select elements">
+              <Button icon="select" active={this.props.layout.selectionMode} onClick={this.onToggleSelectionMode}/>
+            </Tooltip>
+            <Tooltip content="Fit view to selection">
+              <Button icon="zoom-to-fit" onClick={this.onFitToSelection}/>
+            </Tooltip>
+            <Divider/>
+            <Tooltip content="Add entities">
+              <Button icon="new-object" onClick={this.toggleAddVertex}/>
+            </Tooltip>
+            <Tooltip content={hasSelection ? "Remove selected" : "To remove a node first you must select a node by clicking on it"}>
+              <AnchorButton icon="graph-remove" onClick={this.onRemoveSelection} disabled={!hasSelection} />
+            </Tooltip>
+            <Divider/>
+            <Tooltip content="Add links">
+              <AnchorButton icon="new-link" onClick={this.toggleAddEdge} disabled={!canAddEdge} />
+            </Tooltip>
+            <Divider/>
+            <Tooltip content="Align horizontal">
+              <AnchorButton icon="drag-handle-horizontal" disabled={disableLayoutButtons} onClick={() => {
+                updateLayout(alignHorizontal(layout), {modifyHistory:true})
+              }} />
+            </Tooltip>
+            <Tooltip content="Align vertical">
+              <AnchorButton icon="drag-handle-vertical" disabled={disableLayoutButtons} onClick={() => {
+                updateLayout(alignVertical(layout), {modifyHistory:true})
+              }} />
+            </Tooltip>
+            <Tooltip content="Arrange as circle">
+              <AnchorButton icon="layout-circle" disabled={disableLayoutButtons} onClick={() => {
+                updateLayout(alignCircle(layout), {modifyHistory:true})
+              }} />
+            </Tooltip>
+            <Tooltip content="Arrange as hierarchy">
+              <AnchorButton icon="layout-hierarchy" disabled={disableLayoutButtons} onClick={() => {
+                updateLayout(arrangeTree(layout), {modifyHistory:true})
+              }} />
+            </Tooltip>
+          </ButtonGroup>
+        </div>
+        <div className="Toolbar__right">
+          <form style={{minWidth:'20vw'}} onSubmit={this.onSubmitSearch}>
+            <InputGroup leftIcon="search" onChange={this.onChangeSearch} value={this.state.searchText} />
+          </form>
+        </div>
+
       <VertexCreateDialog isOpen={this.state.vertexCreateOpen} toggleDialog={this.toggleAddVertex} />
       <EdgeCreateDialog
         layout={layout}
@@ -167,6 +172,6 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
         viewport={viewport}
         updateViewport={this.props.updateViewport}
       />
-    </React.Fragment>
+    </div>
   }
 }

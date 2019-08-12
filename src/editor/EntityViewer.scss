@@ -1,9 +1,11 @@
 .EntityViewer {
   height: 100%;
   padding: 0;
+  color: white;
 
   &__title {
     padding: 10px 0;
+    color: white !important;
   }
   &__property-list {
   }
@@ -11,7 +13,8 @@
     padding: 5px 0 !important;
 
     &__label {
-      font-size: 12px;
+      font-size: 14px;
+      font-weight: bold;
     }
 
     &__value {

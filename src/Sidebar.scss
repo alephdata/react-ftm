@@ -1,0 +1,11 @@
+@import "src/variables.scss";
+
+.Sidebar {
+  padding: 15px;
+  border-radius: 5px;
+  // border: 2px solid $editor-border-color;
+  background-color: $editor-background-color;
+  height: 100%;
+  box-shadow: $editor-box-shadow;
+  color: white;
+}

@@ -79,7 +79,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
         className='EntityViewer__property-list-item'
       >
         <div className='EntityViewer__property-list-item__label'>
-          <span className={Classes.TEXT_MUTED}>
+          <span>
             <PropertyName prop={property}/>
           </span>
         </div>
