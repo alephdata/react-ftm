@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { IconRegistry } from '@alephdata/followthemoney'
 import { Colors } from '@blueprintjs/core'
 import { Vertex } from "../layout/Vertex";
+import { renderIcon } from '../utils'
 
 interface IIconRendererProps {
   vertex:Vertex
@@ -18,11 +18,11 @@ export class IconRenderer extends React.PureComponent<IIconRendererProps>{
     const radius = 12
     const translate = `translate(${-radius} ${-radius - 2})`
     const scale = 'scale(0.5)'
-    const iconPaths = IconRegistry.getSchemaIcon(entity.schema)
-    return iconPaths && (
+    const icon = renderIcon(entity.schema);
+    return (
       <g transform={scale + translate} fill={Colors.WHITE} pointerEvents="none">
-        {iconPaths.map((d, i) => <path key={i} d={d}/>)}/>
+        {icon}
       </g>
-    );
+    )
   }
 }

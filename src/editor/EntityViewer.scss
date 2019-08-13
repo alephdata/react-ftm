@@ -6,8 +6,16 @@
   color: white;
 
   &__title {
-    padding: 10px 0 !important;
-    color: white !important;
+    text-align: center;
+    padding: 25px 15px;
+
+    &__icon {
+      fill: white;
+    }
+    &__text {
+      margin: 10px 0 0 !important;
+      color: white !important;
+    }
   }
 
   &__property-list {
