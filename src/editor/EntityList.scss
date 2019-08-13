@@ -2,6 +2,9 @@
 
 .EntityList {
   background: $black-70 !important;
+  overflow: hidden;
+  padding: 0;
+  
   &__item {
     padding: 7px !important;
     fill: white !important;

@@ -3,7 +3,7 @@ import { Colors } from '@blueprintjs/core';
 import { GraphConfig } from '../GraphConfig';
 import { Edge } from '../layout/Edge'
 import { Vertex } from '../layout/Vertex';
-import { LabelRenderer } from './LabelRenderer';
+import { EdgeLabelRenderer } from './EdgeLabelRenderer';
 
 
 interface IEdgeRendererProps {
@@ -62,9 +62,8 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
         style={lineStyles}
       />
       { highlight && (
-        <LabelRenderer center={center} label={edge.label} onClick={this.onClick} />
+        <EdgeLabelRenderer center={center} labelText={edge.label} onClick={this.onClick} color={Colors.GRAY2}/>
       )}
     </g>
   }
 }
-
