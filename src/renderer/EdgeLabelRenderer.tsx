@@ -36,7 +36,6 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
          <rect className="EdgeLabel__outline"
             x={-extents[0]/2-margin}
             y={-extents[1]/2-margin}
-            rx="2"
             stroke={color}
             strokeWidth=".5px"
             width={extents[0]+2*margin}
