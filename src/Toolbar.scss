@@ -49,21 +49,23 @@ $width-right: 150px;
 
   .bp3-button {
     background: transparent !important;
+
+    .bp3-icon {
+      svg {
+        fill: white !important;
+      }
+    }
+    &.bp3-disabled {
+      svg {
+        fill: $disabled-color !important;
+      }
+    }
   }
 
   .bp3-divider {
     border-color: $disabled-color;
   }
 
-  .bp3-icon {
-    svg {
-      fill: white !important;
-    }
-  }
-  .bp3-disabled {
-    svg {
-      fill: $disabled-color !important;
-    }
-  }
+
 
 }

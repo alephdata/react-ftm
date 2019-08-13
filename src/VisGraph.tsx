@@ -140,7 +140,6 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               boxSizing: 'border-box',
               overflowY: 'scroll',
               flexBasis: '15vw',
-              padding: '10px',
               minWidth: '200px',
               maxWidth: '260px'
             }}>
