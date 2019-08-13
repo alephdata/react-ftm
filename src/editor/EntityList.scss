@@ -1,0 +1,18 @@
+@import "src/variables.scss";
+
+.EntityList {
+  background: $black-70 !important;
+  &__item {
+    padding: 7px !important;
+    fill: white !important;
+    color: white !important;
+    border-radius: 0 !important;
+
+    &:hover {
+      background: $black-50 !important;
+    }
+  }
+  li:not(:last-child) {
+    border-bottom: 1px solid $black-50;
+  }
+}
