@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Schema, IconRegistry } from '@alephdata/followthemoney'
 
 
 export function highlightText(text: string, query: string) {
@@ -56,9 +55,4 @@ export function getHost(url:string) {
   } catch (e) {
     return url;
   }
-}
-
-export function renderIcon(type: Schema) {
-  const iconPaths = IconRegistry.getSchemaIcon(type)
-  return iconPaths && iconPaths.map((d, i) => <path key={i} d={d}/>);
 }

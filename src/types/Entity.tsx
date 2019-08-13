@@ -3,10 +3,8 @@ import {Entity} from "@alephdata/followthemoney";
 import {Classes} from '@blueprintjs/core'
 /// <reference path="../moduleTypes.d.ts"/>
 import truncateText from 'truncate';
-
 import { SchemaIcon } from './Schema';
-
-
+import './Entity.scss'
 
 
 interface IEntityLabel  {
@@ -26,7 +24,7 @@ export class EntityLabel extends React.Component<IEntityLabel> {
     const fullLabel = caption;
     const label = truncate ? truncateText(fullLabel, truncate) : fullLabel;
     return (
-      <span className={!label ? Classes.TEXT_MUTED : ''} title={caption}>
+      <span className="EntityLabel" title={caption}>
         {icon && <SchemaIcon schema={entity.schema} />}
         {!label && ('Untitled')}
         {label}

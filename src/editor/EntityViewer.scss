@@ -9,7 +9,7 @@
     text-align: center;
     padding: 25px 15px;
 
-    &__icon {
+    svg {
       fill: white;
     }
     &__text {
@@ -44,6 +44,7 @@
       margin: 3px 0 !important;
       font-size: 14px;
       color: white !important;
+      fill: white !important;
       cursor: text;
 
       .bp3-input {
@@ -63,6 +64,8 @@
         background: white !important;
         color: $black-80 !important;
       }
+
+
     }
   }
 

@@ -4,7 +4,8 @@ import {Entity, Property} from '@alephdata/followthemoney';
 import {SelectProperty} from './SelectProperty';
 import {PropertyEditor} from './PropertyEditor';
 import { PropertyName, PropertyValues} from '../types';
-import { renderIcon } from '../utils'
+import { SchemaIcon } from '../types';
+
 
 import './EntityViewer.scss';
 import c from 'classnames';
@@ -111,15 +112,12 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     const { entity } = this.props;
     const { visibleProps } = this.state;
     const availableProperties = this.schemaProperties.filter(p => visibleProps.indexOf(p) < 0);
-    const icon = renderIcon(entity.schema)
     return (
       <div
         className='EntityViewer'
         onClick={(e) => this.leaveEditMode(e)} >
           <div className='EntityViewer__title'>
-            <svg className='EntityViewer__title__icon' width="60px" viewBox="0 0 24 24">
-              {icon}
-            </svg>
+            <SchemaIcon size={60} schema={entity.schema} />
             <h2 className='EntityViewer__title__text'>{entity.getCaption()}</h2>
           </div>
           <UL className={c('EntityViewer__property-list', Classes.LIST_UNSTYLED)}>

@@ -2,7 +2,8 @@ import React from 'react';
 import {Schema, IconRegistry} from '@alephdata/followthemoney';
 
 interface ISchemaCommonProps {
-  schema: Schema
+  schema: Schema,
+  size?: number
 }
 
 export class SchemaIcon extends React.Component<ISchemaCommonProps>{
@@ -14,8 +15,8 @@ export class SchemaIcon extends React.Component<ISchemaCommonProps>{
       </svg>
     );
   }
-  render(){
-    return SchemaIcon.get(this.props.schema)
+  render() {
+    return SchemaIcon.get(this.props.schema, this.props.size)
   }
 }
 

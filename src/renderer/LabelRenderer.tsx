@@ -4,16 +4,18 @@ import { Point } from '../layout/Point'
 interface ILabelRendererProps {
   label: string,
   center: Point,
-  onClick?: (e: any) => void
+  onClick?: (e: any) => void,
+  color?: string
 }
 
 export class LabelRenderer extends React.PureComponent<ILabelRendererProps> {
   render() {
-    const { label, center, onClick } = this.props;
+    const { label, center, onClick, color } = this.props;
     const style = {
       fontSize: "5px",
-      fontFamily: "sans-serif"
-    }
+      fontFamily: "sans-serif",
+      fontWeight: "bold"
+    } as React.CSSProperties
     return (
       <text x={center.x}
             y={center.y}
@@ -22,6 +24,7 @@ export class LabelRenderer extends React.PureComponent<ILabelRendererProps> {
             filter="url(#solid)"
             style={style}
             pointerEvents="none"
+            fill={color || 'black'}
             onClick={onClick}>
         {label}
       </text>
