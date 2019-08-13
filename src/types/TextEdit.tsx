@@ -26,7 +26,6 @@ export class TextEdit extends React.PureComponent<ITypeProps> {
           inputRef={(ref) => this.ref = ref}
           tagProps={{
             minimal:true,
-            fill: true
           }}
           addOnBlur
           addOnPaste

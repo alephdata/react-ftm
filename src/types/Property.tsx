@@ -81,7 +81,7 @@ export class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
       <PropertyValue key={value.toString()} prop={prop} value={value} />
     ));
     if (!vals.length) {
-      return (<span className={Classes.TEXT_MUTED}>—</span>);
+      return (<span>—</span>);
     } else {
       return vals.map((val, i) => {
         return <span key={i} style={{display: 'block'}}>{val}</span>

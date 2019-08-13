@@ -77,6 +77,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     return <React.Fragment key={property.name}>
       <li
         className='EntityViewer__property-list-item'
+        onClick={(e) => this.onEditPropertyClick(e, property)}
       >
         <div className='EntityViewer__property-list-item__label'>
           <span>
@@ -85,7 +86,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
         </div>
         <div className='EntityViewer__property-list-item__value'>
           {isEditable && (
-            <div onClick={(e) => e.stopPropagation()}>
+            <div>
               <PropertyEditor
                 key={property.name}
                 onEntityChanged={this.props.onEntityChanged}
@@ -95,7 +96,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
             </div>
           )}
           {!isEditable && (
-            <div onClick={(e) => this.onEditPropertyClick(e, property)}>
+            <div>
               <PropertyValues prop={property} values={entity.getProperty(property)}/>
             </div>
           )}
