@@ -93,6 +93,8 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       updateViewport: this.updateViewport
     };
 
+    const showSidebar = layout.vertices && layout.vertices.size > 0
+
     return (
       <GraphContext.Provider value={layoutContext}>
         <div style={{flex: 1, display: 'flex', flexFlow: 'column', height: '100%'}} >
@@ -116,18 +118,20 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               </div>
               <GraphRenderer layout={layout} updateLayout={this.updateLayout} viewport={viewport} updateViewport={this.updateViewport} animateTransition={animateTransition}/>
             </div>
-            <div style={{
-              flexGrow: 1,
-              flexShrink: 1,
-              maxHeight: '100%',
-              boxSizing: 'border-box',
-              overflowY: 'scroll',
-              flexBasis: '15vw',
-              minWidth: '200px',
-              maxWidth: '260px'
-            }}>
-              <Sidebar layout={layout} updateLayout={this.updateLayout} viewport={viewport} updateViewport={this.updateViewport}/>
-            </div>
+            {showSidebar &&
+              <div style={{
+                flexGrow: 1,
+                flexShrink: 1,
+                maxHeight: '100%',
+                boxSizing: 'border-box',
+                overflowY: 'scroll',
+                flexBasis: '15vw',
+                minWidth: '200px',
+                maxWidth: '260px'
+              }}>
+                <Sidebar layout={layout} updateLayout={this.updateLayout} viewport={viewport} updateViewport={this.updateViewport}/>
+              </div>
+            }
           </div>
         </div>
       </GraphContext.Provider>
