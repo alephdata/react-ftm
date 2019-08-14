@@ -27,6 +27,14 @@
     border-radius: $standard-border-radius;
     cursor: pointer;
 
+    &:hover, &.active {
+      background-color: $black-60;
+    }
+
+    &.active {
+      cursor: auto;
+    }
+
     &:not(:last-child) {
       margin-bottom: 10px !important;
     }
@@ -37,7 +45,6 @@
       color: white;
       text-transform: uppercase;
       margin-bottom: 5px;
-      cursor: text;
     }
 
     &__value {
@@ -45,7 +52,6 @@
       font-size: 14px;
       color: white !important;
       fill: white !important;
-      cursor: text;
 
       .bp3-input {
         background: transparent !important;
@@ -78,6 +84,17 @@
     color: white !important;
     border: 1px solid white;
     background: transparent !important;
+    box-shadow: none !important;
+    transition: all .1s ease-in;
+
+    &:hover {
+      background: $white !important;
+      color: $black-90 !important;
+
+      .bp3-icon {
+        color: $black-90;
+      }
+    }
 
     .bp3-icon {
       color: white;

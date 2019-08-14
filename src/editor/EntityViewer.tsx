@@ -5,10 +5,10 @@ import {SelectProperty} from './SelectProperty';
 import {PropertyEditor} from './PropertyEditor';
 import { PropertyName, PropertyValues} from '../types';
 import { SchemaIcon } from '../types';
+import c from 'classnames';
 
 
 import './EntityViewer.scss';
-import c from 'classnames';
 
 interface IEntityViewerProps {
   entity: Entity,
@@ -79,7 +79,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
 
     return <React.Fragment key={property.name}>
       <li
-        className='EntityViewer__property-list-item'
+        className={c('EntityViewer__property-list-item', {'active': isEditable})}
         onClick={(e) => this.onEditPropertyClick(e, property)}
       >
         <div className='EntityViewer__property-list-item__label'>
