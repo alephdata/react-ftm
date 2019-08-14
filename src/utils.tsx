@@ -56,3 +56,10 @@ export function getHost(url:string) {
     return url;
   }
 }
+
+export function groupBy(xs: any, key: any) {
+  return xs.reduce(function(rv: any, x: any) {
+    var v = key instanceof Function ? key(x) : x[key]; (rv[v] = rv[v] || []).push(x);
+    return rv;
+  }, []);
+};

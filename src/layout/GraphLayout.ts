@@ -5,6 +5,7 @@ import { Edge } from './Edge'
 import { Point } from './Point';
 import { Rectangle } from './Rectangle';
 import { GraphConfig } from '../GraphConfig';
+import { groupBy } from '../utils';
 
 export interface IGraphLayoutData {
   entities: Array<IEntityDatum>
@@ -64,6 +65,10 @@ export class GraphLayout {
   getEdges(): Edge[] {
     return Array.from(this.edges.values())
   }
+
+  // getEdgeGroups(): EdgeGroup[] {
+  //   return Array.from(this.edgeGroups.values())
+  // }
 
   private generate(): void {
     this.edges.forEach(edge => edge.garbage = true);
@@ -165,6 +170,13 @@ export class GraphLayout {
     return this.selection
       .filter((edgeId) => this.edges.has(edgeId))
       .map((edgeId) => this.edges.get(edgeId)) as Edge[]
+  }
+
+  getEdgeGroups() {
+    const edges = Array.from(this.edges.values()).filter((edge) => !edge.isHidden())
+    return groupBy(edges, (edge:Edge) => {
+      return [edge.sourceId, edge.targetId].sort()
+    })
   }
 
   hasSelection(): boolean {

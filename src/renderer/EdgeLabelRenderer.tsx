@@ -30,12 +30,13 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
 
   render() {
     const { labelText, center, onClick, color } = this.props;
-    const margin = 2;
+    const margin = 1;
     const extents = this.state.textExtents;
     const outline = extents ?
          <rect className="EdgeLabel__outline"
             x={-extents[0]/2-margin}
             y={-extents[1]/2-margin}
+            rx={4}
             stroke={color}
             strokeWidth=".5px"
             width={extents[0]+2*margin}

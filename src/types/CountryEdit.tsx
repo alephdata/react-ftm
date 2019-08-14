@@ -52,7 +52,6 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
     const keyToRemove = Array.from(fullCountriesMap.entries())
       .find(([key, val]) => val == valToRemove)[0]
 
-    console.log(keyToRemove)
     const nextPropVals = [...values].filter(key => key !== keyToRemove);
     onPropertyChanged(nextPropVals as unknown as Values, property)
   }

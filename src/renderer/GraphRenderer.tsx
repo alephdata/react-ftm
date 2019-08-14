@@ -61,21 +61,30 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
 
   renderEdges() {
     const { layout } = this.props;
-    const edges = layout.getEdges().filter((edge) => !edge.isHidden())
-    return edges.map((edge) => {
-      const source = layout.vertices.get(edge.sourceId);
-      const target = layout.vertices.get(edge.targetId);
-      return  <EdgeRenderer
-          key={edge.id}
-          config={layout.config}
-          edge={edge}
-          highlight={layout.isEdgeHighlighted(edge)}
-          source={source}
-          target={target}
-          selectEdge={this.selectElement}
-        />
-      }
-    )
+    const edgeGroups = layout.getEdgeGroups()
+    let allEdges = [];
+
+    for (let key in edgeGroups) {
+      const edgeGroup = edgeGroups[key]
+      const edges = edgeGroup.map((edge, i) => {
+          const [vertex1Id, vertex2Id] = [edge.sourceId, edge.targetId].sort()
+          const vertex1 = layout.vertices.get(vertex1Id);
+          const vertex2 = layout.vertices.get(vertex2Id);
+          return  <EdgeRenderer
+              key={edge.id}
+              config={layout.config}
+              edge={edge}
+              highlight={layout.isEdgeHighlighted(edge)}
+              vertex1={vertex1}
+              vertex2={vertex2}
+              selectEdge={this.selectElement}
+              groupEdgeCount={edgeGroup.length}
+              offsetIndex={i}
+            />
+        })
+      allEdges.push(edges)
+    }
+    return allEdges
   }
 
   renderVertices() {

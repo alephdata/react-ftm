@@ -1,19 +1,22 @@
 import * as React from 'react'
 import { Colors } from '@blueprintjs/core';
 import { GraphConfig } from '../GraphConfig';
-import { Edge } from '../layout/Edge'
-import { Vertex } from '../layout/Vertex';
+import { Edge, Vertex, Point } from '../layout'
 import { EdgeLabelRenderer } from './EdgeLabelRenderer';
 
 
 interface IEdgeRendererProps {
   edge: Edge,
   config: GraphConfig,
-  source?: Vertex,
-  target?: Vertex
+  vertex1?: Vertex,
+  vertex2?: Vertex
   highlight: boolean,
-  selectEdge: (edge: Edge, additional?: boolean) => any
+  groupEdgeCount: number,
+  selectEdge: (edge: Edge, additional?: boolean) => any,
+  offsetIndex: number
 }
+
+const linkCurveOffset = 20;
 
 export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
   constructor(props: Readonly<IEdgeRendererProps>) {
@@ -28,36 +31,57 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     e.stopPropagation()
   }
 
+  calcOffset() {
+    const { offsetIndex, groupEdgeCount } = this.props;
+    if (groupEdgeCount === 1) {
+      return 0
+    }
+    const groupCountEven = groupEdgeCount % 2 === 0
+    const offsetBase = groupCountEven ? 0.5 : 0;
+    const offsetMultiplier = groupCountEven ? Math.floor(offsetIndex/2) : Math.ceil(offsetIndex/2)
+    const offsetSign = offsetIndex % 2 === 0 ? 1 : -1;
+    return offsetSign * ((offsetMultiplier + offsetBase) * linkCurveOffset)
+  }
+
+  generatePath(vertex1: any, vertex2: any) {
+    // mid-point of line:
+    const mpx = (vertex2.x + vertex1.x) * 0.5;
+    const mpy = (vertex2.y + vertex1.y) * 0.5;
+
+    // angle of perpendicular to line:
+    const theta = Math.atan2(vertex2.y - vertex1.y, vertex2.x - vertex1.x) - Math.PI / 2;
+
+      // distance of control point from mid-point of line:
+    const offset = this.calcOffset()
+
+    // location of control point:
+    const c1x = mpx - offset * Math.cos(theta);
+    const c1y = mpy - offset * Math.sin(theta);
+
+    return {
+      path:"M" + vertex1.x + " " + vertex1.y + " Q " + c1x + " " + c1y + " " + vertex2.x + " " + vertex2.y,
+      center: new Point(c1x, c1y)
+    }
+  }
+
+
   render() {
-    const { edge, source, target, config, highlight } = this.props;
-    if (!source || !target || source.hidden || target.hidden) {
+    const { edge, vertex1, vertex2, config, highlight } = this.props;
+    if (!vertex1 || !vertex2 || vertex1.hidden || vertex2.hidden) {
       return null;
     }
-    const sourcePosition = config.gridToPixel(source.position)
-    const targetPosition = config.gridToPixel(target.position)
-    const center = config.gridToPixel(edge.getCenter())
+    const vertex1Position = config.gridToPixel(vertex1.position)
+    const vertex2Position = config.gridToPixel(vertex2.position)
     const lineStyles: React.CSSProperties = {
       cursor: 'pointer'
     }
+    const {path, center} = this.generatePath(vertex1Position, vertex2Position)
     return <g className="edge">
-      <line
-        stroke={config.SELECTED_COLOR}
-        strokeWidth='2'
-        strokeOpacity={highlight ? '1' : '0'}
-        x1={sourcePosition.x}
-        y1={sourcePosition.y}
-        x2={targetPosition.x}
-        y2={targetPosition.y}
-        onClick={this.onClick}
-        style={lineStyles}
-      />
-      <line
+      <path
         stroke={Colors.GRAY2}
-        strokeWidth='inherit'
-        x1={sourcePosition.x}
-        y1={sourcePosition.y}
-        x2={targetPosition.x}
-        y2={targetPosition.y}
+        strokeWidth='1'
+        fill='none'
+        d={path}
         onClick={this.onClick}
         style={lineStyles}
       />
