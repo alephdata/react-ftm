@@ -48,19 +48,23 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     const mpx = (vertex2.x + vertex1.x) * 0.5;
     const mpy = (vertex2.y + vertex1.y) * 0.5;
 
-    // angle of perpendicular to line:
+    // angle perpendicular to line:
     const theta = Math.atan2(vertex2.y - vertex1.y, vertex2.x - vertex1.x) - Math.PI / 2;
 
-      // distance of control point from mid-point of line:
+    // distance of control point from mid-point of line:
     const offset = this.calcOffset()
 
     // location of control point:
-    const c1x = mpx - offset * Math.cos(theta);
-    const c1y = mpy - offset * Math.sin(theta);
+    const controlXDist = offset * Math.cos(theta)
+    const controlYDist = offset * Math.sin(theta)
+    const c1x = mpx - controlXDist;
+    const c1y = mpy - controlYDist;
+    const labelx = mpx - controlXDist/2;
+    const labely = mpy - controlYDist/2;
 
     return {
       path:"M" + vertex1.x + " " + vertex1.y + " Q " + c1x + " " + c1y + " " + vertex2.x + " " + vertex2.y,
-      center: new Point(c1x, c1y)
+      center: new Point(labelx, labely)
     }
   }
 
