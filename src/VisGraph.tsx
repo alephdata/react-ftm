@@ -15,7 +15,7 @@ interface IVisGraphProps {
   model: Model,
   layout: GraphLayout,
   viewport: Viewport,
-  updateLayout: (layout:GraphLayout) => void,
+  updateLayout: (layout:GraphLayout, historyModified?: boolean) => void,
   updateViewport: (viewport:Viewport) => void
 }
 
@@ -63,7 +63,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
     this.setState({animateTransition: false });
 
-    updateLayout(layout);
+    updateLayout(layout, modifyHistory);
   }
 
   updateViewport(viewport: Viewport, { animate = false } = {}) {
