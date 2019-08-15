@@ -66,10 +66,6 @@ export class GraphLayout {
     return Array.from(this.edges.values())
   }
 
-  // getEdgeGroups(): EdgeGroup[] {
-  //   return Array.from(this.edgeGroups.values())
-  // }
-
   private generate(): void {
     this.edges.forEach(edge => edge.garbage = true);
     this.vertices.forEach(vertex => vertex.garbage = true);

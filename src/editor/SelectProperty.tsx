@@ -26,7 +26,7 @@ export class SelectProperty extends React.PureComponent<ISelectPropertyProps> {
         active={modifiers.active}
         disabled={modifiers.disabled}
         key={property.name}
-        onClick={(e) => { e.stopPropagation(); handleClick(e);}}
+        onClick={(e: any) => { e.stopPropagation(); handleClick(e);}}
         text={highlightText(property.label, query)}
       />
     );

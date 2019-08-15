@@ -1,14 +1,10 @@
 import * as React from 'react'
 import { Viewport } from '../Viewport';
-import { Vertex } from '../layout/Vertex';
-import { Point } from '../layout/Point';
-import { Rectangle } from '../layout/Rectangle';
+import { Vertex, Point, Rectangle, Edge, GraphElement } from '../layout';
 import { IGraphContext } from '../GraphContext'
 import { Canvas } from './Canvas'
 import { EdgeRenderer } from './EdgeRenderer'
 import { VertexRenderer } from './VertexRenderer'
-import { Edge } from '../layout/Edge';
-import { GraphElement } from '../layout';
 
 interface IGraphRendererProps extends IGraphContext {
   animateTransition: boolean
@@ -66,7 +62,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
 
     for (let key in edgeGroups) {
       const edgeGroup = edgeGroups[key]
-      const edges = edgeGroup.map((edge, i) => {
+      const edges = edgeGroup.map((edge: Edge, i: number) => {
           const [vertex1Id, vertex2Id] = [edge.sourceId, edge.targetId].sort()
           const vertex1 = layout.vertices.get(vertex1Id);
           const vertex2 = layout.vertices.get(vertex2Id);
@@ -90,7 +86,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   renderVertices() {
     const { layout } = this.props;
     const vertices = layout.getVertices().filter((vertex) => !vertex.isHidden())
-    return vertices.map((vertex) =>
+    return vertices.map((vertex: Vertex) =>
       <VertexRenderer
         key={vertex.id}
         config={layout.config}

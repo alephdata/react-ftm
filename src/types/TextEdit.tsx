@@ -5,10 +5,10 @@ import {ITypeProps} from "./common";
 
 export class TextEdit extends React.PureComponent<ITypeProps> {
   static group = new Set(['text', 'string'])
-  private ref: HTMLInputElement;
+  private ref: HTMLInputElement | null = null;
 
   componentDidMount(){
-    this.ref.focus();
+    this.ref && this.ref.focus();
   }
 
   onChange = (values: Array<string | React.ReactNode>) => {

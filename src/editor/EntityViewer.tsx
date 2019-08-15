@@ -17,7 +17,7 @@ interface IEntityViewerProps {
 
 interface IEntityViewerState {
   visibleProps: Property[],
-  currEditing: Property | undefined
+  currEditing: Property | null
 }
 
 
@@ -61,15 +61,15 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   onEditPropertyClick(e:React.MouseEvent, property:Property){
     e.preventDefault()
     e.stopPropagation()
-    this.setState(() => ({
+    this.setState({
       currEditing: property
-    }))
+    })
   }
 
-  leaveEditMode(e) {
-    this.setState(({}) => ({
+  leaveEditMode() {
+    this.setState({
       currEditing: null
-    }))
+    })
   }
 
   renderProperty(property:Property){
@@ -115,7 +115,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     return (
       <div
         className='EntityViewer'
-        onClick={(e) => this.leaveEditMode(e)} >
+        onClick={() => this.leaveEditMode()} >
           <div className='EntityViewer__title'>
             <SchemaIcon size={60} schema={entity.schema} />
             <h2 className='EntityViewer__title__text'>{entity.getCaption()}</h2>

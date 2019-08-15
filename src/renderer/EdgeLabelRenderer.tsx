@@ -17,7 +17,7 @@ interface IEdgeLabelRendererState {
 export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererProps, IEdgeLabelRendererState> {
   text: any
 
-  constructor(props){
+  constructor(props: IEdgeLabelRendererProps){
     super(props);
     this.state = { textExtents:null };
   }

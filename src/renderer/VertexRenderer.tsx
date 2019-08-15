@@ -4,7 +4,7 @@ import { GraphConfig } from '../GraphConfig';
 import { Point } from '../layout/Point'
 import { Vertex } from '../layout/Vertex'
 import { getRefMatrix, applyMatrix } from './utils';
-import { LabelRenderer } from './LabelRenderer';
+import { VertexLabelRenderer } from './VertexLabelRenderer';
 import {IconRenderer} from "./IconRenderer";
 
 interface IVertexRendererProps {
@@ -72,7 +72,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
             <circle r={(config.gridUnit * config.VERTEX_RADIUS) + 1} fill={config.SELECTED_COLOR} />
           )}
           <circle className="handle" r={config.gridUnit * config.VERTEX_RADIUS} fill={config.VERTEX_COLOR} />
-          <LabelRenderer center={labelPosition} label={vertex.label} onClick={this.onClick} color={selected ? config.SELECTED_COLOR : config.VERTEX_COLOR}/>
+          <VertexLabelRenderer center={labelPosition} label={vertex.label} onClick={this.onClick} color={selected ? config.SELECTED_COLOR : config.VERTEX_COLOR}/>
           <IconRenderer vertex={vertex}/>
         </g>
       </DraggableCore>

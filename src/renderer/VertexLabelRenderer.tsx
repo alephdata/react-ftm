@@ -1,14 +1,14 @@
 import * as React from 'react'
 import { Point } from '../layout/Point'
 
-interface ILabelRendererProps {
+interface IVertexLabelRendererProps {
   label: string,
   center: Point,
   onClick?: (e: any) => void,
   color?: string
 }
 
-export class LabelRenderer extends React.PureComponent<ILabelRendererProps> {
+export class VertexLabelRenderer extends React.PureComponent<IVertexLabelRendererProps> {
   render() {
     const { label, center, onClick, color } = this.props;
     const style = {

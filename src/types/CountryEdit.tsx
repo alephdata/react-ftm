@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Values, Property, Entity} from "@alephdata/followthemoney";
+import {Value, Values, Property, Entity} from "@alephdata/followthemoney";
 import {ControlGroup, FormGroup, MenuItem, Position, TagInput} from "@blueprintjs/core";
 import {ItemRenderer, MultiSelect} from "@blueprintjs/select";
 import {ITypeProps} from "./common";
@@ -7,7 +7,6 @@ import {highlightText} from "../utils";
 import {lab} from "d3-color";
 
 const CountryMultiSelect = MultiSelect.ofType<[string, string]>()
-
 
 export class CountryEdit extends React.PureComponent<ITypeProps> {
   static group = new Set(['country'])
@@ -18,17 +17,17 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
     this.onRemove = this.onRemove.bind(this)
   }
 
-  onChange([countryId, label]) {
+  onChange([countryId, label]: [string, string]) {
     const { values, property, onPropertyChanged } = this.props;
     // TODO: @pudo maybe we need to implement Entity.removeProperty in FTM?
-    onPropertyChanged([...values, ...[countryId]] as unknown as Values, property)
+    onPropertyChanged([...values, ...[countryId]] as any, property)
   }
 
   getAvailableOptions() {
     const { values, property } = this.props;
 
     const optionsMap = new Map(property.type.values)
-    values.forEach((valKey: string) => optionsMap.delete(valKey))
+    values.forEach((valKey: any) => optionsMap.delete(valKey))
 
     return Array.from(optionsMap.entries());
   }
@@ -38,22 +37,24 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
 
     const fullCountriesMap = property.type.values
 
-    return values.map((valKey: string) => {
+    return values.map((valKey: any) => {
       const countryLabel = fullCountriesMap.get(valKey)
       return [valKey, countryLabel] as [string, string]
     })
   }
 
   // blueprint function returns the tag label instead of the tag id
-  onRemove(valToRemove) {
+  onRemove(valToRemove: Value) {
     const { property, values, onPropertyChanged } = this.props;
 
     const fullCountriesMap = property.type.values
-    const keyToRemove = Array.from(fullCountriesMap.entries())
-      .find(([key, val]) => val == valToRemove)[0]
+    const toRemove = Array.from(fullCountriesMap.entries())
+      .find(([key, val]) => val == valToRemove)
 
-    const nextPropVals = [...values].filter(key => key !== keyToRemove);
-    onPropertyChanged(nextPropVals as unknown as Values, property)
+    if (toRemove) {
+      const nextPropVals = [...values].filter(key => key !== toRemove[0]);
+      onPropertyChanged(nextPropVals as unknown as Values, property)
+    }
   }
 
   render() {
