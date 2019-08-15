@@ -53,6 +53,15 @@
       color: white !important;
       fill: white !important;
 
+      a {
+        color: white !important;
+        text-decoration: underline;
+
+        &:hover {
+          color: $black-20 !important;
+        }
+      }
+
       .bp3-input {
         background: transparent !important;
         border: none !important;
@@ -71,7 +80,9 @@
         color: $black-80 !important;
       }
 
-
+      .bp3-icon {
+        margin-right: 3px;
+      }
     }
   }
 

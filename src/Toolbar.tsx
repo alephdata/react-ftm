@@ -104,6 +104,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     const sourceVertex = vertices[0]
     const targetVertex = vertices[1]
     const disableLayoutButtons = layout.selection && layout.selection.length <= 1;
+    const showSearch = layout.vertices && layout.vertices.size > 0
 
     return <div className="Toolbar">
       <div className="Toolbar__left">
@@ -161,11 +162,13 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
             </Tooltip>
           </ButtonGroup>
         </div>
-        <div className="Toolbar__right">
-          <form style={{minWidth:'20vw'}} onSubmit={this.onSubmitSearch}>
-            <InputGroup leftIcon="search" onChange={this.onChangeSearch} value={this.state.searchText} />
-          </form>
-        </div>
+        {showSearch &&
+          <div className="Toolbar__right">
+            <form style={{minWidth:'20vw'}} onSubmit={this.onSubmitSearch}>
+              <InputGroup leftIcon="search" onChange={this.onChangeSearch} value={this.state.searchText} />
+            </form>
+          </div>
+        }
 
       <VertexCreateDialog isOpen={this.state.vertexCreateOpen} toggleDialog={this.toggleAddVertex} />
       <EdgeCreateDialog
