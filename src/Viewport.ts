@@ -9,7 +9,7 @@ export class Viewport {
   public ratio: number
   public viewBox?: string
 
-  constructor(config: GraphConfig, zoomLevel: number = 1, ratio: number = 1, center?: Point) {
+  constructor(config: GraphConfig, zoomLevel: number = .3, ratio: number = 1, center?: Point) {
     this.config = config
     this.zoomLevel = zoomLevel
     this.ratio = ratio
