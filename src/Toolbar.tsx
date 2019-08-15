@@ -122,9 +122,16 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
               <AnchorButton icon="redo" onClick={() => onHistoryNavigate(History.FORWARD)} disabled={!history.canGoTo(History.FORWARD)}/>
             </Tooltip>
             <Divider/>
-            <Tooltip content="Select elements">
-              <Button icon="select" active={this.props.layout.selectionMode} onClick={this.onToggleSelectionMode}/>
-            </Tooltip>
+            {!layout.selectionMode &&
+              <Tooltip content="Toggle select mode">
+                <Button icon="select" onClick={this.onToggleSelectionMode}/>
+              </Tooltip>
+            }
+            {layout.selectionMode &&
+              <Tooltip content="Toggle pan mode">
+                <Button icon="hand" onClick={this.onToggleSelectionMode}/>
+              </Tooltip>
+            }
             <Tooltip content="Fit view to selection">
               <Button icon="zoom-to-fit" onClick={this.onFitToSelection}/>
             </Tooltip>
