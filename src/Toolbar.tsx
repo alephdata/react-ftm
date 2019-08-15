@@ -67,7 +67,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     const {layout, updateLayout} = this.props
     const searchText = event.currentTarget.value
     this.setState({searchText})
-    if (searchText.trim().length > 2) {
+    if (searchText.trim().length > 0) {
       const predicate = filterVerticesByText(searchText)
       layout.selectVerticesByFilter(predicate)
     } else {
