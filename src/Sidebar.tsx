@@ -24,6 +24,7 @@ export class Sidebar extends React.Component<IGraphContext> {
   onEntitySelected(entity:Entity){
     const { layout } = this.props;
     const vertexToSelect = layout.getVertexByEntity(entity);
+    console.log('in on entityselected', vertexToSelect)
     if(vertexToSelect) {
       layout.selectElement(vertexToSelect)
       this.props.updateLayout(layout)
@@ -41,7 +42,7 @@ export class Sidebar extends React.Component<IGraphContext> {
         onEntityChanged={this.appendToLayout}
       />
     } else if (selection.length){
-      contents = <EntityList entities={selection} />
+      contents = <EntityList entities={selection} onEntitySelected={this.onEntitySelected} />
     } else {
       const vertices = layout.getVertices().filter((v) => !v.isHidden())
       const entities = vertices.map((v) => v.getEntity()).filter((e) => !!e)

@@ -121,12 +121,10 @@ export class GraphLayout {
   }
 
   selectElement(element: GraphElement, additional: boolean = false) {
-    if (!this.isElementSelected(element)) {
-      if (additional) {
-        this.selection = [element.id, ...this.selection]
-      } else {
-        this.selection = [element.id]
-      }
+    if (additional) {
+      this.selection = [element.id, ...this.selection]
+    } else {
+      this.selection = [element.id]
     }
   }
 

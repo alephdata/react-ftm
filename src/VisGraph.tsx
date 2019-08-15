@@ -108,7 +108,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               history={this.history}
             />
           </div>
-          <div style={{flex: 1, display: 'flex', flexFlow: 'row', flexGrow: 1, flexShrink: 1, flexBasis: '100%'}}>
+          <div style={{flex: 1, display: 'flex', flexFlow: 'row', flexGrow: 1, flexShrink: 1, flexBasis: '100%', overflow: 'hidden'}}>
             <div style={{flexGrow: 4, flexShrink: 1, flexBasis: 'auto', position: 'relative', overflow:'hidden'}}>
               <div style={{position: 'absolute', bottom: '5px', left: '10px'}}>
                 <ButtonGroup vertical>
