@@ -69,10 +69,10 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
         onStop={this.onPanEnd} >
         <g className="vertex" transform={translate} ref={this.gRef} style={groupStyles}>
           { selected && (
-            <circle r={(config.gridUnit * config.VERTEX_RADIUS) + 2} fill={config.SELECTED_COLOR} />
+            <circle r={(config.gridUnit * config.VERTEX_RADIUS) + 1} fill={config.SELECTED_COLOR} />
           )}
           <circle className="handle" r={config.gridUnit * config.VERTEX_RADIUS} fill={config.VERTEX_COLOR} />
-          <LabelRenderer center={labelPosition} label={vertex.label} onClick={this.onClick} color={config.VERTEX_COLOR}/>
+          <LabelRenderer center={labelPosition} label={vertex.label} onClick={this.onClick} color={selected ? config.SELECTED_COLOR : config.VERTEX_COLOR}/>
           <IconRenderer vertex={vertex}/>
         </g>
       </DraggableCore>

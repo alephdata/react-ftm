@@ -82,7 +82,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     const {path, center} = this.generatePath(vertex1Position, vertex2Position)
     return <g className="edge">
       <path
-        stroke={Colors.GRAY2}
+        stroke={highlight ? config.SELECTED_COLOR : Colors.GRAY2}
         strokeWidth='1'
         fill='none'
         d={path}
@@ -90,7 +90,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
         style={lineStyles}
       />
       { highlight && (
-        <EdgeLabelRenderer center={center} labelText={edge.label} onClick={this.onClick} color={Colors.GRAY2}/>
+        <EdgeLabelRenderer center={center} labelText={edge.label} onClick={this.onClick} color={config.SELECTED_COLOR}/>
       )}
     </g>
   }
