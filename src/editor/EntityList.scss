@@ -4,7 +4,17 @@
   background: $black-70 !important;
   overflow: hidden;
   padding: 0;
-  
+
+  &__category {
+    margin: 10px 0;
+    &__title {
+      color: white !important;
+      font-size: 14px;
+      padding-left: 7px;
+      margin: 0 0 5px;
+    }
+  }
+
   &__item {
     padding: 7px !important;
     fill: white !important;
