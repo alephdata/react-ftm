@@ -13,28 +13,23 @@ import {
 } from "@blueprintjs/core"
 import { IGraphContext} from './GraphContext'
 import { filterVerticesByText } from './filters';
-import { VertexCreateDialog, EdgeCreateDialog } from "./editor";
 import { GraphLayout, Rectangle, alignCircle, alignHorizontal, alignVertical, arrangeTree } from "./layout";
 import { History } from './History';
 import './Toolbar.scss';
 
 
 interface IToolbarProps extends IGraphContext {
-  onHistoryNavigate: (factor:number) => void,
+  actions: any,
   history: History
 }
 
 interface IToolbarState {
   searchText: string
-  edgeCreateOpen: boolean
-  vertexCreateOpen: boolean
 }
 
 export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
   state: IToolbarState = {
     searchText: '',
-    vertexCreateOpen: false,
-    edgeCreateOpen: false
   }
 
   constructor(props: Readonly<IToolbarProps>) {
@@ -43,8 +38,6 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     this.onFitToSelection = this.onFitToSelection.bind(this)
     this.onChangeSearch = this.onChangeSearch.bind(this)
     this.onSubmitSearch = this.onSubmitSearch.bind(this)
-    this.toggleAddEdge = this.toggleAddEdge.bind(this)
-    this.toggleAddVertex = this.toggleAddVertex.bind(this)
     this.onRemoveSelection = this.onRemoveSelection.bind(this)
   }
 
@@ -88,16 +81,8 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     updateLayout(layout, {modifyHistory:true})
   }
 
-  toggleAddVertex() {
-    this.setState({ vertexCreateOpen: !this.state.vertexCreateOpen })
-  }
-
-  toggleAddEdge(){
-    this.setState({ edgeCreateOpen: !this.state.edgeCreateOpen })
-  }
-
   render() {
-    const { layout, viewport, updateLayout, updateViewport, onHistoryNavigate, history } = this.props
+    const { layout, viewport, updateLayout, updateViewport, actions, history } = this.props
     const vertices = this.props.layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
@@ -116,10 +101,10 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
       <div className="Toolbar__middle">
         <ButtonGroup>
             <Tooltip content="Undo">
-              <AnchorButton icon="undo" onClick={() => onHistoryNavigate(History.BACK)} disabled={!history.canGoTo(History.BACK)} />
+              <AnchorButton icon="undo" onClick={() => actions.navigateHistory(History.BACK)} disabled={!history.canGoTo(History.BACK)} />
             </Tooltip>
             <Tooltip content="Redo">
-              <AnchorButton icon="redo" onClick={() => onHistoryNavigate(History.FORWARD)} disabled={!history.canGoTo(History.FORWARD)}/>
+              <AnchorButton icon="redo" onClick={() => actions.navigateHistory(History.FORWARD)} disabled={!history.canGoTo(History.FORWARD)}/>
             </Tooltip>
             <Divider/>
             {!layout.selectionMode &&
@@ -137,14 +122,14 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
             </Tooltip>
             <Divider/>
             <Tooltip content="Add entities">
-              <Button icon="new-object" onClick={this.toggleAddVertex}/>
+              <Button icon="new-object" onClick={actions.toggleAddVertex}/>
             </Tooltip>
             <Tooltip content={hasSelection ? "Remove selected" : "To remove a node first you must select a node by clicking on it"}>
               <AnchorButton icon="graph-remove" onClick={this.onRemoveSelection} disabled={!hasSelection} />
             </Tooltip>
             <Divider/>
             <Tooltip content="Add links">
-              <AnchorButton icon="new-link" onClick={this.toggleAddEdge} disabled={!canAddEdge} />
+              <AnchorButton icon="new-link" onClick={actions.toggleAddEdge} disabled={!canAddEdge} />
             </Tooltip>
             <Divider/>
             <Tooltip content="Align horizontal">
@@ -176,18 +161,6 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
             </form>
           </div>
         }
-
-      <VertexCreateDialog isOpen={this.state.vertexCreateOpen} toggleDialog={this.toggleAddVertex} />
-      <EdgeCreateDialog
-        layout={layout}
-        source={sourceVertex}
-        target={targetVertex}
-        isOpen={this.state.edgeCreateOpen}
-        toggleDialog={this.toggleAddEdge}
-        updateLayout={this.props.updateLayout}
-        viewport={viewport}
-        updateViewport={this.props.updateViewport}
-      />
     </div>
   }
 }

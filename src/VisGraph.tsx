@@ -8,6 +8,7 @@ import { IGraphContext, GraphContext } from './GraphContext'
 import { Toolbar } from './Toolbar';
 import { Sidebar } from './Sidebar';
 import { History } from './History';
+import { VertexCreateDialog, EdgeCreateDialog } from "./editor";
 import { Model, defaultModel } from '@alephdata/followthemoney'
 
 interface IVisGraphProps {
@@ -21,10 +22,16 @@ interface IVisGraphProps {
 
 interface IVisGraphState {
   animateTransition: boolean
+  edgeCreateOpen: boolean
+  vertexCreateOpen: boolean
 }
 
 export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
-  state: IVisGraphState
+  state: IVisGraphState = {
+    animateTransition: false,
+    vertexCreateOpen: false,
+    edgeCreateOpen: false
+  }
   history: History;
 
   constructor(props: any) {
@@ -32,9 +39,6 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     const { config, model, layout, viewport } = props
 
     this.history = new History();
-    this.state = {
-      animateTransition: false
-    };
 
     if (layout) {
       this.history.push(layout);
@@ -43,7 +47,9 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.onZoom = this.onZoom.bind(this);
     this.updateLayout = this.updateLayout.bind(this);
     this.updateViewport = this.updateViewport.bind(this);
-    this.onHistoryNavigate = this.onHistoryNavigate.bind(this);
+    this.navigateHistory = this.navigateHistory.bind(this);
+    this.toggleAddEdge = this.toggleAddEdge.bind(this)
+    this.toggleAddVertex = this.toggleAddVertex.bind(this)
   }
 
   onZoom(factor: number) {
@@ -74,23 +80,39 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     updateViewport(viewport);
   }
 
-  onHistoryNavigate(factor:number) {
+  navigateHistory(factor:number) {
     const { config, model } = this.props;
 
     const nextLayoutData = this.history.go(factor);
     this.updateLayout(GraphLayout.fromJSON(config, model, nextLayoutData))
   }
 
+  toggleAddVertex() {
+    this.setState({ vertexCreateOpen: !this.state.vertexCreateOpen })
+  }
+
+  toggleAddEdge(){
+    this.setState({ edgeCreateOpen: !this.state.edgeCreateOpen })
+  }
+
   render() {
     const { config, layout, viewport } = this.props;
     const { animateTransition } = this.state;
+    const vertices = layout.getSelectedVertices()
+    const sourceVertex = vertices[0]
+    const targetVertex = vertices[1]
 
-    // TODO: do these need to be manually passed to the child components if they're stored in the context?
+    const actions = {
+      toggleAddVertex: this.toggleAddVertex,
+      toggleAddEdge: this.toggleAddEdge,
+      navigateHistory: this.navigateHistory
+    }
+
     const layoutContext = {
       layout: layout,
       updateLayout: this.updateLayout,
       viewport: viewport,
-      updateViewport: this.updateViewport
+      updateViewport: this.updateViewport,
     };
 
     const showSidebar = layout.vertices && layout.vertices.size > 0
@@ -104,7 +126,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               updateLayout={this.updateLayout}
               viewport={viewport}
               updateViewport={this.updateViewport}
-              onHistoryNavigate={this.onHistoryNavigate}
+              actions={actions}
               history={this.history}
             />
           </div>
@@ -134,6 +156,18 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
             }
           </div>
         </div>
+
+        <VertexCreateDialog isOpen={this.state.vertexCreateOpen} toggleDialog={this.toggleAddVertex} />
+        <EdgeCreateDialog
+          layout={layout}
+          source={sourceVertex}
+          target={targetVertex}
+          isOpen={this.state.edgeCreateOpen}
+          toggleDialog={this.toggleAddEdge}
+          updateLayout={this.props.updateLayout}
+          viewport={viewport}
+          updateViewport={this.props.updateViewport}
+        />
       </GraphContext.Provider>
     );
   }
