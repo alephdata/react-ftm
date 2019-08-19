@@ -86,8 +86,6 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     const vertices = this.props.layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
-    const sourceVertex = vertices[0]
-    const targetVertex = vertices[1]
     const disableLayoutButtons = layout.selection && layout.selection.length <= 1;
     const showSearch = layout.vertices && layout.vertices.size > 0
 

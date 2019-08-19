@@ -138,7 +138,13 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                   <Button icon="zoom-out" onClick={() => this.onZoom(1.2)}/>
                 </ButtonGroup>
               </div>
-              <GraphRenderer layout={layout} updateLayout={this.updateLayout} viewport={viewport} updateViewport={this.updateViewport} animateTransition={animateTransition}/>
+              <GraphRenderer
+                layout={layout}
+                updateLayout={this.updateLayout}
+                viewport={viewport}
+                updateViewport={this.updateViewport}
+                animateTransition={animateTransition}
+                actions={actions} />
             </div>
             {showSidebar &&
               <div style={{

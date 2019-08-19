@@ -15,7 +15,8 @@ interface ICanvasProps {
   selectArea: (area: Rectangle) => any,
   clearSelection: () => any,
   updateViewport: (viewport: Viewport) => any,
-  animateTransition: boolean
+  animateTransition: boolean,
+  actions: any
 }
 
 export class Canvas extends React.Component <ICanvasProps> {
@@ -30,6 +31,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     this.onDragMove = this.onDragMove.bind(this)
     this.onDragEnd = this.onDragEnd.bind(this)
     this.onZoom = this.onZoom.bind(this)
+    this.onDoubleClick = this.onDoubleClick.bind(this)
     this.onResize = this.onResize.bind(this)
     this.svgRef = React.createRef()
     this.selectionRef = React.createRef()
@@ -42,6 +44,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     const svg = this.svgRef.current;
     if (svg !== null) {
       svg.addEventListener('wheel', this.onZoom)
+      svg.addEventListener('dblclick', this.onDoubleClick)
       window.addEventListener('resize', this.onResize)
     }
   }
@@ -50,6 +53,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     const svg = this.svgRef.current;
     if (svg !== null) {
       svg.removeEventListener('wheel', this.onZoom)
+      svg.removeEventListener('dblclick', this.onDoubleClick)
       window.removeEventListener('resize', this.onResize)
     }
   }
@@ -125,6 +129,11 @@ export class Canvas extends React.Component <ICanvasProps> {
     const newViewport = viewport.zoomToPoint(gridTarget, direction)
     this.props.updateViewport(newViewport)
   }
+
+  private onDoubleClick(event: MouseEvent) {
+    this.props.actions.toggleAddVertex()
+  }
+
   componentWillReceiveProps(nextProps: Readonly<ICanvasProps>): void {
     this.animationHandler(nextProps.animateTransition, this.props.viewport.viewBox || '' , nextProps.viewport.viewBox || '');
   }
