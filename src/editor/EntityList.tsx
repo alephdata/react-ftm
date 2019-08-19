@@ -16,7 +16,7 @@ export class EntityList extends React.PureComponent<IEntityListProps>{
     () => this.props.onEntitySelected && this.props.onEntitySelected(entity)
   render(){
     const {entities} = this.props;
-    const entityGroups = groupBy(entities, (e:Entity) => e.schema)
+    const entityGroups = groupBy(entities, (e:Entity) => e.schema.label)
     return <Menu className="EntityList">
       {Object.entries(entityGroups).map(([key, values]:any) => {
         return (
