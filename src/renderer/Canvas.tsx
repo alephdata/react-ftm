@@ -30,6 +30,8 @@ export class Canvas extends React.Component <ICanvasProps> {
     this.onDragStart = this.onDragStart.bind(this)
     this.onDragMove = this.onDragMove.bind(this)
     this.onDragEnd = this.onDragEnd.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
+    this.onKeyUp = this.onKeyUp.bind(this)
     this.onZoom = this.onZoom.bind(this)
     this.onDoubleClick = this.onDoubleClick.bind(this)
     this.onResize = this.onResize.bind(this)
@@ -45,6 +47,9 @@ export class Canvas extends React.Component <ICanvasProps> {
     if (svg !== null) {
       svg.addEventListener('wheel', this.onZoom)
       svg.addEventListener('dblclick', this.onDoubleClick)
+      svg.addEventListener('keydown', this.onKeyDown)
+      svg.addEventListener('keyup', this.onKeyUp)
+
       window.addEventListener('resize', this.onResize)
     }
   }
@@ -55,6 +60,8 @@ export class Canvas extends React.Component <ICanvasProps> {
       svg.removeEventListener('wheel', this.onZoom)
       svg.removeEventListener('dblclick', this.onDoubleClick)
       window.removeEventListener('resize', this.onResize)
+      svg.removeEventListener('keydown', this.onKeyDown)
+      svg.removeEventListener('keyup', this.onKeyUp)
     }
   }
 
@@ -97,6 +104,24 @@ export class Canvas extends React.Component <ICanvasProps> {
       this.props.updateViewport(viewport.setCenter(center));
     }
   }
+
+
+  private onKeyDown(e: any) {
+    const key = e.code;
+  }
+
+  private onKeyUp(e: any) {
+    const { actions } = this.props
+    const key = e.code;
+
+    switch (key) {
+      case 'Backspace':
+        actions.removeSelection()
+        return
+    }
+  }
+
+
 
   onDragEnd(e: DraggableEvent, data: DraggableData) {
     const { selectionMode, viewport } = this.props
@@ -197,7 +222,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     const grid = `M ${viewport.config.gridUnit} 0 L 0 0 0 ${viewport.config.gridUnit}`
     const style:React.CSSProperties = {width: "100%", height: "100%", cursor: selectionMode ? 'crosshair' : 'grab'}
     return (
-      <svg viewBox={viewport.viewBox} style={style} ref={this.svgRef} xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox={viewport.viewBox} style={style} ref={this.svgRef} xmlns="http://www.w3.org/2000/svg" tabIndex={0}>
         <DraggableCore
           handle="#canvas-handle"
           onStart={this.onDragStart}

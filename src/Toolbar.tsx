@@ -38,7 +38,6 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     this.onFitToSelection = this.onFitToSelection.bind(this)
     this.onChangeSearch = this.onChangeSearch.bind(this)
     this.onSubmitSearch = this.onSubmitSearch.bind(this)
-    this.onRemoveSelection = this.onRemoveSelection.bind(this)
   }
 
   onToggleSelectionMode() {
@@ -73,12 +72,6 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     this.onFitToSelection()
     event.preventDefault()
     event.stopPropagation()
-  }
-
-  onRemoveSelection() {
-    const {layout, updateLayout} = this.props
-    layout.removeSelection()
-    updateLayout(layout, {modifyHistory:true})
   }
 
   render() {
@@ -123,7 +116,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
               <Button icon="new-object" onClick={actions.toggleAddVertex}/>
             </Tooltip>
             <Tooltip content={hasSelection ? "Remove selected" : "To remove a node first you must select a node by clicking on it"}>
-              <AnchorButton icon="graph-remove" onClick={this.onRemoveSelection} disabled={!hasSelection} />
+              <AnchorButton icon="graph-remove" onClick={actions.removeSelection} disabled={!hasSelection} />
             </Tooltip>
             <Divider/>
             <Tooltip content="Add links">

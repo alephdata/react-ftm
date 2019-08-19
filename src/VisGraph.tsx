@@ -50,6 +50,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.navigateHistory = this.navigateHistory.bind(this);
     this.toggleAddEdge = this.toggleAddEdge.bind(this)
     this.toggleAddVertex = this.toggleAddVertex.bind(this)
+    this.removeSelection = this.removeSelection.bind(this)
   }
 
   onZoom(factor: number) {
@@ -95,6 +96,12 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.setState({ edgeCreateOpen: !this.state.edgeCreateOpen })
   }
 
+  removeSelection() {
+    const { layout } = this.props
+    layout.removeSelection()
+    this.updateLayout(layout, {modifyHistory:true})
+  }
+
   render() {
     const { config, layout, viewport } = this.props;
     const { animateTransition } = this.state;
@@ -105,7 +112,8 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     const actions = {
       toggleAddVertex: this.toggleAddVertex,
       toggleAddEdge: this.toggleAddEdge,
-      navigateHistory: this.navigateHistory
+      navigateHistory: this.navigateHistory,
+      removeSelection: this.removeSelection
     }
 
     const layoutContext = {
