@@ -4,3 +4,5 @@ declare module 'truncate' {
     ellipsis: boolean | string
   }): string;
 }
+
+declare module '*.png'

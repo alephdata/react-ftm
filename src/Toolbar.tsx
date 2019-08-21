@@ -1,4 +1,5 @@
 import * as React from 'react'
+import logo from './static/logo.png';
 
 import {
   Button,
@@ -85,7 +86,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     return <div className="Toolbar">
       <div className="Toolbar__left">
         <div className="Toolbar__logo">
-          <img className="Toolbar__logo__image" src="https://cdn.occrp.org/common/logo/RedTransparent_globe.png" alt="OCCRP Data"></img>
+          <img className="Toolbar__logo__image" src={logo} alt="OCCRP Data"></img>
           <h5 className="Toolbar__logo__text">VIS Desktop</h5>
         </div>
       </div>
