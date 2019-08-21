@@ -13,7 +13,6 @@ interface ICanvasProps {
   svgRef: React.RefObject<SVGSVGElement>,
   viewport: Viewport,
   selectionMode: boolean,
-  edgeCreateMode: boolean,
   selectArea: (area: Rectangle) => any,
   clearSelection: () => any,
   updateViewport: (viewport: Viewport) => any,
@@ -33,7 +32,6 @@ export class Canvas extends React.Component <ICanvasProps> {
     this.onDragEnd = this.onDragEnd.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
     this.onKeyUp = this.onKeyUp.bind(this)
-    this.onMouseMove = this.onMouseMove.bind(this)
     this.onZoom = this.onZoom.bind(this)
     this.onDoubleClick = this.onDoubleClick.bind(this)
     this.onResize = this.onResize.bind(this)
@@ -50,7 +48,6 @@ export class Canvas extends React.Component <ICanvasProps> {
       svg.addEventListener('dblclick', this.onDoubleClick)
       svg.addEventListener('keydown', this.onKeyDown)
       svg.addEventListener('keyup', this.onKeyUp)
-      svg.addEventListener('mousemove', this.onMouseMove)
 
       window.addEventListener('resize', this.onResize)
     }
@@ -64,7 +61,6 @@ export class Canvas extends React.Component <ICanvasProps> {
       window.removeEventListener('resize', this.onResize)
       svg.removeEventListener('keydown', this.onKeyDown)
       svg.removeEventListener('keyup', this.onKeyUp)
-      svg.removeEventListener('mousemove', this.onMouseMove)
     }
   }
 
@@ -106,15 +102,6 @@ export class Canvas extends React.Component <ICanvasProps> {
       const center = viewport.center.subtract(gridOffset)
       this.props.updateViewport(viewport.setCenter(center));
     }
-  }
-
-  private onMouseMove(e: MouseEvent) {
-    const { edgeCreateMode } = this.props
-    console.log('mousemoving')
-    if (edgeCreateMode) {
-
-    }
-
   }
 
   private onKeyDown(e: any) {

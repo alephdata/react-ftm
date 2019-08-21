@@ -4,6 +4,7 @@ import { Vertex, Point, Rectangle, Edge, GraphElement } from '../layout';
 import { IGraphContext } from '../GraphContext'
 import { Canvas } from './Canvas'
 import { EdgeRenderer } from './EdgeRenderer'
+import { EdgeDrawer } from './EdgeDrawer'
 import { VertexRenderer } from './VertexRenderer'
 
 interface IGraphRendererProps extends IGraphContext {
@@ -103,13 +104,9 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     )
   }
 
-  renderEdgeCreate() {
-    // const vertices = layout.getSelectedVertices()
-    // const sourceVertex = vertices[0]
-    // const targetVertex = vertices[1]
-
-
-
+  getEdgeCreateVertex() {
+    const vertices = this.props.layout.getSelectedVertices()
+    return vertices[0]
   }
 
   render(){
@@ -120,11 +117,15 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
               viewport={viewport}
               selectArea={this.selectArea}
               selectionMode={layout.selectionMode}
-              edgeCreateMode={edgeCreateMode}
               clearSelection={this.clearSelection}
               updateViewport={this.updateViewport}
               animateTransition={animateTransition}
               actions={actions}>
+        {edgeCreateMode &&
+          <EdgeDrawer
+            svgRef={svgRef}
+            sourceVertex={this.getEdgeCreateVertex()}/>
+        }
         {this.renderEdges()}
         {this.renderVertices()}
       </Canvas>
