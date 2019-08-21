@@ -152,7 +152,11 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   private onDoubleClick(event: MouseEvent) {
-    this.props.actions.toggleAddVertex()
+    const { viewport } = this.props
+    const matrix = getRefMatrix(this.props.svgRef)
+    const target = applyMatrix(matrix, event.clientX, event.clientY)
+    const gridTarget = viewport.config.pixelToGrid(target)
+    this.props.actions.toggleAddVertex(gridTarget)
   }
 
   componentWillReceiveProps(nextProps: Readonly<ICanvasProps>): void {

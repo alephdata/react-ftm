@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Button, ButtonGroup } from '@blueprintjs/core';
 import { GraphRenderer } from './renderer/GraphRenderer'
-import { GraphLayout, Rectangle } from './layout';
+import { GraphLayout, Rectangle, Point } from './layout';
 import { Viewport } from './Viewport';
 import { GraphConfig } from './GraphConfig';
 import { IGraphContext, GraphContext } from './GraphContext'
@@ -25,6 +25,7 @@ interface IVisGraphState {
   animateTransition: boolean
   edgeCreateOpen: boolean
   vertexCreateOpen: boolean
+  vertexCreateInitialPos?: Point
 }
 
 export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
@@ -92,8 +93,11 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.updateLayout(GraphLayout.fromJSON(config, model, nextLayoutData))
   }
 
-  toggleAddVertex() {
-    this.setState({ vertexCreateOpen: !this.state.vertexCreateOpen })
+  toggleAddVertex(initialPos?: Point) {
+    this.setState({
+      vertexCreateOpen: !this.state.vertexCreateOpen,
+      vertexCreateInitialPos: initialPos
+    })
   }
 
   toggleAddEdge(){
@@ -192,7 +196,11 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
           </div>
         </div>
 
-        <VertexCreateDialog isOpen={this.state.vertexCreateOpen} toggleDialog={this.toggleAddVertex} />
+        <VertexCreateDialog
+          isOpen={this.state.vertexCreateOpen}
+          toggleDialog={this.toggleAddVertex}
+          vertexInitialPos={this.state.vertexCreateInitialPos} />
+
         <EdgeCreateDialog
           layout={layout}
           source={sourceVertex}

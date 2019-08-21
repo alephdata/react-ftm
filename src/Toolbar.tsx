@@ -114,7 +114,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
             </Tooltip>
             <Divider/>
             <Tooltip content="Add entities">
-              <Button icon="new-object" onClick={actions.toggleAddVertex}/>
+              <Button icon="new-object" onClick={() => actions.toggleAddVertex()}/>
             </Tooltip>
             <Tooltip content={hasSelection ? "Remove selected" : "To remove a node first you must select a node by clicking on it"}>
               <AnchorButton icon="graph-remove" onClick={actions.removeSelection} disabled={!hasSelection} />
