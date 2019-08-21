@@ -23,7 +23,7 @@ interface IVisGraphProps {
 
 interface IVisGraphState {
   animateTransition: boolean
-  edgeCreateOpen: boolean
+  edgeCreateMode: boolean
   vertexCreateOpen: boolean
 }
 
@@ -31,7 +31,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   state: IVisGraphState = {
     animateTransition: false,
     vertexCreateOpen: false,
-    edgeCreateOpen: false
+    edgeCreateMode: false
   }
   history: History;
   svgRef: React.RefObject<SVGSVGElement>
@@ -97,7 +97,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   toggleAddEdge(){
-    this.setState({ edgeCreateOpen: !this.state.edgeCreateOpen })
+    this.setState({ edgeCreateMode: !this.state.edgeCreateMode })
   }
 
   removeSelection() {
@@ -122,11 +122,8 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   render() {
-    const { config, layout, viewport } = this.props;
-    const { animateTransition } = this.state;
-    const vertices = layout.getSelectedVertices()
-    const sourceVertex = vertices[0]
-    const targetVertex = vertices[1]
+    const { config, layout, viewport} = this.props;
+    const { animateTransition, edgeCreateMode } = this.state;
 
     const actions = {
       toggleAddVertex: this.toggleAddVertex,
@@ -173,7 +170,8 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                 viewport={viewport}
                 updateViewport={this.updateViewport}
                 animateTransition={animateTransition}
-                actions={actions} />
+                actions={actions}
+                edgeCreateMode={edgeCreateMode}/>
             </div>
             {showSidebar &&
               <div style={{
@@ -193,16 +191,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
         </div>
 
         <VertexCreateDialog isOpen={this.state.vertexCreateOpen} toggleDialog={this.toggleAddVertex} />
-        <EdgeCreateDialog
-          layout={layout}
-          source={sourceVertex}
-          target={targetVertex}
-          isOpen={this.state.edgeCreateOpen}
-          toggleDialog={this.toggleAddEdge}
-          updateLayout={this.props.updateLayout}
-          viewport={viewport}
-          updateViewport={this.props.updateViewport}
-        />
+        
       </GraphContext.Provider>
     );
   }

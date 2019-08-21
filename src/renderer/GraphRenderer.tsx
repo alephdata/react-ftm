@@ -9,7 +9,8 @@ import { VertexRenderer } from './VertexRenderer'
 interface IGraphRendererProps extends IGraphContext {
   svgRef: React.RefObject<SVGSVGElement>,
   animateTransition: boolean,
-  actions: any
+  actions: any,
+  edgeCreateMode: boolean
 }
 
 export class GraphRenderer extends React.Component<IGraphRendererProps> {
@@ -102,13 +103,24 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     )
   }
 
+  renderEdgeCreate() {
+    // const vertices = layout.getSelectedVertices()
+    // const sourceVertex = vertices[0]
+    // const targetVertex = vertices[1]
+
+
+
+  }
+
   render(){
-    const { svgRef, layout, viewport, animateTransition, actions } = this.props;
+    const { svgRef, layout, viewport, animateTransition, actions, edgeCreateMode } = this.props;
+
     return (
       <Canvas svgRef={svgRef}
               viewport={viewport}
               selectArea={this.selectArea}
               selectionMode={layout.selectionMode}
+              edgeCreateMode={edgeCreateMode}
               clearSelection={this.clearSelection}
               updateViewport={this.updateViewport}
               animateTransition={animateTransition}
