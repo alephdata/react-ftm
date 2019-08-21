@@ -69,6 +69,7 @@
         border-bottom: 1px solid white !important;
         border-radius: 0 !important;
         padding: 0 !important;
+
       }
 
       .bp3-input-ghost {
@@ -82,6 +83,10 @@
 
       .bp3-icon {
         margin-right: 3px;
+      }
+
+      .date-input input {
+        color: white !important;
       }
     }
   }
