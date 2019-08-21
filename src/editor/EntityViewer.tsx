@@ -39,7 +39,8 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
 
   getVisibleProperties(props = this.props) {
     const {entity} = props;
-    return [...entity.getProperties()]
+
+    return Array.from(new Set([...entity.schema.getFeaturedProperties(), ...entity.getProperties()]))
   }
 
   componentWillReceiveProps(nextProps: Readonly<IEntityViewerProps>): void {
