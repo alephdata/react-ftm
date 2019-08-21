@@ -143,6 +143,10 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
                 updateLayout(arrangeTree(layout), {modifyHistory:true})
               }} />
             </Tooltip>
+            <Divider/>
+            <Tooltip content="Export as SVG">
+              <AnchorButton icon="export" onClick={actions.exportSvg} />
+            </Tooltip>
           </ButtonGroup>
         </div>
         {showSearch &&

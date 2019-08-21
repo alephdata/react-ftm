@@ -7,6 +7,7 @@ import { EdgeRenderer } from './EdgeRenderer'
 import { VertexRenderer } from './VertexRenderer'
 
 interface IGraphRendererProps extends IGraphContext {
+  svgRef: React.RefObject<SVGSVGElement>,
   animateTransition: boolean,
   actions: any
 }
@@ -102,9 +103,10 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   render(){
-    const { layout, viewport, animateTransition, actions } = this.props;
+    const { svgRef, layout, viewport, animateTransition, actions } = this.props;
     return (
-      <Canvas viewport={viewport}
+      <Canvas svgRef={svgRef}
+              viewport={viewport}
               selectArea={this.selectArea}
               selectionMode={layout.selectionMode}
               clearSelection={this.clearSelection}

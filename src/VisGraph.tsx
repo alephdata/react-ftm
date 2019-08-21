@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Button, ButtonGroup } from '@blueprintjs/core';
 import { GraphRenderer } from './renderer/GraphRenderer'
-import { GraphLayout } from './layout/GraphLayout';
+import { GraphLayout, Rectangle } from './layout';
 import { Viewport } from './Viewport';
 import { GraphConfig } from './GraphConfig';
 import { IGraphContext, GraphContext } from './GraphContext'
@@ -18,6 +18,7 @@ interface IVisGraphProps {
   viewport: Viewport,
   updateLayout: (layout:GraphLayout, historyModified?: boolean) => void,
   updateViewport: (viewport:Viewport) => void
+  exportSvg: (data: any) => void
 }
 
 interface IVisGraphState {
@@ -33,12 +34,14 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     edgeCreateOpen: false
   }
   history: History;
+  svgRef: React.RefObject<SVGSVGElement>
 
   constructor(props: any) {
     super(props)
     const { config, model, layout, viewport } = props
 
     this.history = new History();
+    this.svgRef = React.createRef()
 
     if (layout) {
       this.history.push(layout);
@@ -48,6 +51,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.updateLayout = this.updateLayout.bind(this);
     this.updateViewport = this.updateViewport.bind(this);
     this.navigateHistory = this.navigateHistory.bind(this);
+    this.exportSvg = this.exportSvg.bind(this);
     this.toggleAddEdge = this.toggleAddEdge.bind(this)
     this.toggleAddVertex = this.toggleAddVertex.bind(this)
     this.removeSelection = this.removeSelection.bind(this)
@@ -102,6 +106,21 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.updateLayout(layout, {modifyHistory:true})
   }
 
+  exportSvg() {
+    const {layout, viewport} = this.props
+    const svgData = this.svgRef.current
+    const points = layout.getVertices().filter((v) => !v.isHidden()).map((v) => v.position)
+    const rect = Rectangle.fromPoints(...points)
+    const viewBox = viewport.fitToRect(rect).viewBox;
+
+    if (svgData) {
+      const svgClone = svgData.cloneNode(true) as HTMLElement
+      svgClone.setAttribute("viewBox",viewBox as string)
+      const svgBlob = new XMLSerializer().serializeToString(svgClone)
+      this.props.exportSvg(svgBlob)
+    }
+  }
+
   render() {
     const { config, layout, viewport } = this.props;
     const { animateTransition } = this.state;
@@ -113,7 +132,8 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       toggleAddVertex: this.toggleAddVertex,
       toggleAddEdge: this.toggleAddEdge,
       navigateHistory: this.navigateHistory,
-      removeSelection: this.removeSelection
+      removeSelection: this.removeSelection,
+      exportSvg: this.exportSvg
     }
 
     const layoutContext = {
@@ -147,6 +167,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                 </ButtonGroup>
               </div>
               <GraphRenderer
+                svgRef={this.svgRef}
                 layout={layout}
                 updateLayout={this.updateLayout}
                 viewport={viewport}
