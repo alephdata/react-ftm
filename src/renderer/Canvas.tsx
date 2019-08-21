@@ -10,16 +10,17 @@ import { GraphLayout } from '../layout/GraphLayout';
 
 
 interface ICanvasProps {
+  svgRef: React.RefObject<SVGSVGElement>,
   viewport: Viewport,
   selectionMode: boolean,
   selectArea: (area: Rectangle) => any,
   clearSelection: () => any,
   updateViewport: (viewport: Viewport) => any,
-  animateTransition: boolean
+  animateTransition: boolean,
+  actions: any
 }
 
 export class Canvas extends React.Component <ICanvasProps> {
-  svgRef: React.RefObject<SVGSVGElement>
   selectionRef: React.RefObject<SVGRectElement>
   dragInitial: Point
   dragExtent: Point
@@ -29,9 +30,11 @@ export class Canvas extends React.Component <ICanvasProps> {
     this.onDragStart = this.onDragStart.bind(this)
     this.onDragMove = this.onDragMove.bind(this)
     this.onDragEnd = this.onDragEnd.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
+    this.onKeyUp = this.onKeyUp.bind(this)
     this.onZoom = this.onZoom.bind(this)
+    this.onDoubleClick = this.onDoubleClick.bind(this)
     this.onResize = this.onResize.bind(this)
-    this.svgRef = React.createRef()
     this.selectionRef = React.createRef()
     this.dragInitial = new Point(0, 0)
     this.dragExtent = new Point(0, 0)
@@ -39,24 +42,31 @@ export class Canvas extends React.Component <ICanvasProps> {
 
   componentDidMount() {
     this.onResize()
-    const svg = this.svgRef.current;
+    const svg = this.props.svgRef.current;
     if (svg !== null) {
       svg.addEventListener('wheel', this.onZoom)
+      svg.addEventListener('dblclick', this.onDoubleClick)
+      svg.addEventListener('keydown', this.onKeyDown)
+      svg.addEventListener('keyup', this.onKeyUp)
+
       window.addEventListener('resize', this.onResize)
     }
   }
 
   componentWillUnmount() {
-    const svg = this.svgRef.current;
+    const svg = this.props.svgRef.current;
     if (svg !== null) {
       svg.removeEventListener('wheel', this.onZoom)
+      svg.removeEventListener('dblclick', this.onDoubleClick)
       window.removeEventListener('resize', this.onResize)
+      svg.removeEventListener('keydown', this.onKeyDown)
+      svg.removeEventListener('keyup', this.onKeyUp)
     }
   }
 
   private onResize() {
     const { viewport } = this.props;
-    const svg = this.svgRef.current;
+    const svg = this.props.svgRef.current;
     if (svg !== null) {
       const rect = svg.getBoundingClientRect()
       const ratio = rect.height / rect.width
@@ -76,8 +86,8 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   private onDragMove(e: DraggableEvent, data: DraggableData) {
-    const { selectionMode, viewport } = this.props
-    const matrix = getRefMatrix(this.svgRef)
+    const { selectionMode, viewport, svgRef } = this.props
+    const matrix = getRefMatrix(svgRef)
     const current = applyMatrix(matrix, data.x, data.y)
     const last = applyMatrix(matrix, data.lastX, data.lastY)
     const offset = current.subtract(last)
@@ -91,6 +101,21 @@ export class Canvas extends React.Component <ICanvasProps> {
       const gridOffset = viewport.config.pixelToGrid(offset)
       const center = viewport.center.subtract(gridOffset)
       this.props.updateViewport(viewport.setCenter(center));
+    }
+  }
+
+  private onKeyDown(e: any) {
+    const key = e.code;
+  }
+
+  private onKeyUp(e: any) {
+    const { actions } = this.props
+    const key = e.code;
+
+    switch (key) {
+      case 'Backspace':
+        actions.removeSelection()
+        return
     }
   }
 
@@ -109,7 +134,7 @@ export class Canvas extends React.Component <ICanvasProps> {
 
   onDragStart(e: DraggableEvent, data: DraggableData) {
     this.props.clearSelection()
-    const matrix = getRefMatrix(this.svgRef)
+    const matrix = getRefMatrix(this.props.svgRef)
     this.dragInitial = applyMatrix(matrix, data.x, data.y)
     this.dragExtent = this.dragInitial
   }
@@ -119,12 +144,17 @@ export class Canvas extends React.Component <ICanvasProps> {
     event.stopPropagation()
     const { viewport } = this.props
     const direction = event.deltaY < 0 ? -.5 : .5
-    const matrix = getRefMatrix(this.svgRef)
+    const matrix = getRefMatrix(this.props.svgRef)
     const target = applyMatrix(matrix, event.clientX, event.clientY)
     const gridTarget = viewport.config.pixelToGrid(target)
     const newViewport = viewport.zoomToPoint(gridTarget, direction)
     this.props.updateViewport(newViewport)
   }
+
+  private onDoubleClick(event: MouseEvent) {
+    this.props.actions.toggleAddVertex()
+  }
+
   componentWillReceiveProps(nextProps: Readonly<ICanvasProps>): void {
     this.animationHandler(nextProps.animateTransition, this.props.viewport.viewBox || '' , nextProps.viewport.viewBox || '');
   }
@@ -184,11 +214,11 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   render() {
-    const { viewport, selectionMode} = this.props
+    const { viewport, selectionMode, svgRef} = this.props
     const grid = `M ${viewport.config.gridUnit} 0 L 0 0 0 ${viewport.config.gridUnit}`
     const style:React.CSSProperties = {width: "100%", height: "100%", cursor: selectionMode ? 'crosshair' : 'grab'}
     return (
-      <svg viewBox={viewport.viewBox} style={style} ref={this.svgRef} xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox={viewport.viewBox} style={style} ref={svgRef} xmlns="http://www.w3.org/2000/svg" tabIndex={0}>
         <DraggableCore
           handle="#canvas-handle"
           onStart={this.onDragStart}

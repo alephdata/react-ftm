@@ -1,13 +1,14 @@
 import * as React from 'react'
 import { Button, ButtonGroup } from '@blueprintjs/core';
 import { GraphRenderer } from './renderer/GraphRenderer'
-import { GraphLayout } from './layout/GraphLayout';
+import { GraphLayout, Rectangle } from './layout';
 import { Viewport } from './Viewport';
 import { GraphConfig } from './GraphConfig';
 import { IGraphContext, GraphContext } from './GraphContext'
 import { Toolbar } from './Toolbar';
 import { Sidebar } from './Sidebar';
 import { History } from './History';
+import { VertexCreateDialog, EdgeCreateDialog } from "./editor";
 import { Model, defaultModel } from '@alephdata/followthemoney'
 
 interface IVisGraphProps {
@@ -17,24 +18,30 @@ interface IVisGraphProps {
   viewport: Viewport,
   updateLayout: (layout:GraphLayout, historyModified?: boolean) => void,
   updateViewport: (viewport:Viewport) => void
+  exportSvg: (data: any) => void
 }
 
 interface IVisGraphState {
   animateTransition: boolean
+  edgeCreateOpen: boolean
+  vertexCreateOpen: boolean
 }
 
 export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
-  state: IVisGraphState
+  state: IVisGraphState = {
+    animateTransition: false,
+    vertexCreateOpen: false,
+    edgeCreateOpen: false
+  }
   history: History;
+  svgRef: React.RefObject<SVGSVGElement>
 
   constructor(props: any) {
     super(props)
     const { config, model, layout, viewport } = props
 
     this.history = new History();
-    this.state = {
-      animateTransition: false
-    };
+    this.svgRef = React.createRef()
 
     if (layout) {
       this.history.push(layout);
@@ -43,7 +50,11 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.onZoom = this.onZoom.bind(this);
     this.updateLayout = this.updateLayout.bind(this);
     this.updateViewport = this.updateViewport.bind(this);
-    this.onHistoryNavigate = this.onHistoryNavigate.bind(this);
+    this.navigateHistory = this.navigateHistory.bind(this);
+    this.exportSvg = this.exportSvg.bind(this);
+    this.toggleAddEdge = this.toggleAddEdge.bind(this)
+    this.toggleAddVertex = this.toggleAddVertex.bind(this)
+    this.removeSelection = this.removeSelection.bind(this)
   }
 
   onZoom(factor: number) {
@@ -74,23 +85,62 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     updateViewport(viewport);
   }
 
-  onHistoryNavigate(factor:number) {
+  navigateHistory(factor:number) {
     const { config, model } = this.props;
 
     const nextLayoutData = this.history.go(factor);
     this.updateLayout(GraphLayout.fromJSON(config, model, nextLayoutData))
   }
 
+  toggleAddVertex() {
+    this.setState({ vertexCreateOpen: !this.state.vertexCreateOpen })
+  }
+
+  toggleAddEdge(){
+    this.setState({ edgeCreateOpen: !this.state.edgeCreateOpen })
+  }
+
+  removeSelection() {
+    const { layout } = this.props
+    layout.removeSelection()
+    this.updateLayout(layout, {modifyHistory:true})
+  }
+
+  exportSvg() {
+    const {layout, viewport} = this.props
+    const svgData = this.svgRef.current
+    const points = layout.getVertices().filter((v) => !v.isHidden()).map((v) => v.position)
+    const rect = Rectangle.fromPoints(...points)
+    const viewBox = viewport.fitToRect(rect).viewBox;
+
+    if (svgData) {
+      const svgClone = svgData.cloneNode(true) as HTMLElement
+      svgClone.setAttribute("viewBox",viewBox as string)
+      const svgBlob = new XMLSerializer().serializeToString(svgClone)
+      this.props.exportSvg(svgBlob)
+    }
+  }
+
   render() {
     const { config, layout, viewport } = this.props;
     const { animateTransition } = this.state;
+    const vertices = layout.getSelectedVertices()
+    const sourceVertex = vertices[0]
+    const targetVertex = vertices[1]
 
-    // TODO: do these need to be manually passed to the child components if they're stored in the context?
+    const actions = {
+      toggleAddVertex: this.toggleAddVertex,
+      toggleAddEdge: this.toggleAddEdge,
+      navigateHistory: this.navigateHistory,
+      removeSelection: this.removeSelection,
+      exportSvg: this.exportSvg
+    }
+
     const layoutContext = {
       layout: layout,
       updateLayout: this.updateLayout,
       viewport: viewport,
-      updateViewport: this.updateViewport
+      updateViewport: this.updateViewport,
     };
 
     const showSidebar = layout.vertices && layout.vertices.size > 0
@@ -104,7 +154,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               updateLayout={this.updateLayout}
               viewport={viewport}
               updateViewport={this.updateViewport}
-              onHistoryNavigate={this.onHistoryNavigate}
+              actions={actions}
               history={this.history}
             />
           </div>
@@ -116,7 +166,14 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                   <Button icon="zoom-out" onClick={() => this.onZoom(1.2)}/>
                 </ButtonGroup>
               </div>
-              <GraphRenderer layout={layout} updateLayout={this.updateLayout} viewport={viewport} updateViewport={this.updateViewport} animateTransition={animateTransition}/>
+              <GraphRenderer
+                svgRef={this.svgRef}
+                layout={layout}
+                updateLayout={this.updateLayout}
+                viewport={viewport}
+                updateViewport={this.updateViewport}
+                animateTransition={animateTransition}
+                actions={actions} />
             </div>
             {showSidebar &&
               <div style={{
@@ -134,6 +191,18 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
             }
           </div>
         </div>
+
+        <VertexCreateDialog isOpen={this.state.vertexCreateOpen} toggleDialog={this.toggleAddVertex} />
+        <EdgeCreateDialog
+          layout={layout}
+          source={sourceVertex}
+          target={targetVertex}
+          isOpen={this.state.edgeCreateOpen}
+          toggleDialog={this.toggleAddEdge}
+          updateLayout={this.props.updateLayout}
+          viewport={viewport}
+          updateViewport={this.props.updateViewport}
+        />
       </GraphContext.Provider>
     );
   }

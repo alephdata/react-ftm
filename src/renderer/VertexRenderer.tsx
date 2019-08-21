@@ -14,6 +14,7 @@ interface IVertexRendererProps {
   selectVertex: (vertex: Vertex, additional?: boolean) => any
   dragSelection: (offset: Point) => any
   dropSelection: () => any
+  toggleAddEdge: any
 }
 
 export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
@@ -25,7 +26,22 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
     this.onPanMove = this.onPanMove.bind(this)
     this.onPanEnd = this.onPanEnd.bind(this)
     this.onClick = this.onClick.bind(this)
+    this.onDoubleClick = this.onDoubleClick.bind(this)
     this.gRef = React.createRef()
+  }
+
+  componentDidMount() {
+    const g = this.gRef.current;
+    if (g !== null) {
+      g.addEventListener('dblclick', this.onDoubleClick)
+    }
+  }
+
+  componentWillUnmount() {
+    const g = this.gRef.current;
+    if (g !== null) {
+      g.removeEventListener('dblclick', this.onDoubleClick)
+    }
   }
 
   private onPanMove(e: DraggableEvent, data: DraggableData) {
@@ -50,6 +66,12 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
   onClick(e: any) {
     const { vertex, selectVertex } = this.props
     selectVertex(vertex, e.shiftKey)
+  }
+
+  onDoubleClick(e: MouseEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+    this.props.toggleAddEdge()
   }
 
   render() {

@@ -7,7 +7,9 @@ import { EdgeRenderer } from './EdgeRenderer'
 import { VertexRenderer } from './VertexRenderer'
 
 interface IGraphRendererProps extends IGraphContext {
-  animateTransition: boolean
+  svgRef: React.RefObject<SVGSVGElement>,
+  animateTransition: boolean,
+  actions: any
 }
 
 export class GraphRenderer extends React.Component<IGraphRendererProps> {
@@ -84,7 +86,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   renderVertices() {
-    const { layout } = this.props;
+    const { layout, actions } = this.props;
     const vertices = layout.getVertices().filter((vertex) => !vertex.isHidden())
     return vertices.map((vertex: Vertex) =>
       <VertexRenderer
@@ -95,19 +97,22 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
         selectVertex={this.selectElement}
         dragSelection={this.dragSelection}
         dropSelection={this.dropSelection}
+        toggleAddEdge={actions.toggleAddEdge}
       />
     )
   }
 
   render(){
-    const { layout, viewport, animateTransition } = this.props;
+    const { svgRef, layout, viewport, animateTransition, actions } = this.props;
     return (
-      <Canvas viewport={viewport}
+      <Canvas svgRef={svgRef}
+              viewport={viewport}
               selectArea={this.selectArea}
               selectionMode={layout.selectionMode}
               clearSelection={this.clearSelection}
               updateViewport={this.updateViewport}
-              animateTransition={animateTransition}>
+              animateTransition={animateTransition}
+              actions={actions}>
         {this.renderEdges()}
         {this.renderVertices()}
       </Canvas>

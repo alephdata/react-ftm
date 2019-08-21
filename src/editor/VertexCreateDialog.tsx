@@ -49,7 +49,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
     e.preventDefault()
     if (this.checkValid()) {
       const entity = layout.model.createEntity(schema)
-      entity.setProperty('name', label)
+      entity.setCaption(label)
       layout.addEntity(entity)
       const vertex = layout.getVertexByEntity(entity)
       if (vertex) {
@@ -64,7 +64,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
 
   checkValid(): boolean {
     const { label } = this.state;
-    if (label.trim().length < 3) {
+    if (label.trim().length < 1) {
       return false;
     }
     return true;

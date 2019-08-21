@@ -20,8 +20,7 @@ export class DateComponent extends React.PureComponent<IDateComponentProps> {
 
   render() {
     const { value: dateString } = this.props;
-    const dateObject:Date = Reflect.construct(Date, [dateString]);
-    return [dateObject.getFullYear(), dateObject.getMonth(), dateObject.getDay()].join('/')
+    const dateObject:Date = new Date(dateString)
+    return dateObject.toLocaleDateString()
   }
 }
-

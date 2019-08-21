@@ -8,13 +8,16 @@ export class DateEdit extends React.PureComponent<ITypeProps> {
   static group = new Set(['date'])
 
   onChange = (value: Date) => {
-    this.props.onPropertyChanged([value.toString()] as unknown as Values, this.props.property)
+    if (value instanceof Date) {
+      this.props.onPropertyChanged([value.toString()] as unknown as Values, this.props.property)
+    } else {
+      this.props.onPropertyChanged(['-'] as unknown as Values, this.props.property)
+    }
   };
 
   private jsDateFormatter: IDateFormatProps = {
     formatDate: date => date.toLocaleDateString(),
-    parseDate: str => new Date(str),
-    placeholder: 'YYYY-MM-DD',
+    parseDate: str => new Date(str)
   };
 
   render() {
@@ -22,6 +25,7 @@ export class DateEdit extends React.PureComponent<ITypeProps> {
     return <FormGroup>
       <DateInput
         {...this.jsDateFormatter}
+        className="date-input"
         popoverProps={{
           position: Position.BOTTOM_LEFT,
           minimal: true,

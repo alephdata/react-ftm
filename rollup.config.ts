@@ -4,6 +4,7 @@ import sourceMaps from 'rollup-plugin-sourcemaps'
 import typescript from 'rollup-plugin-typescript2'
 import json from 'rollup-plugin-json'
 import sass from 'rollup-plugin-sass'
+import image from 'rollup-plugin-img'
 
 const pkg = require('./package.json');
 const external = pkg['peerDependencies'] && Object.keys(pkg['peerDependencies']);
@@ -24,6 +25,7 @@ export default {
       output: true,
       insert: true
     }),
+    image(),
     // Allow node_modules resolution, so you can use 'external' to control
     // which external modules to include in the bundle
     // https://github.com/rollup/rollup-plugin-node-resolve#usage
