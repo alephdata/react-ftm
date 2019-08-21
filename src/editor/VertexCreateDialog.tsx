@@ -64,7 +64,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
 
   checkValid(): boolean {
     const { label } = this.state;
-    if (label.trim().length < 3) {
+    if (label.trim().length < 1) {
       return false;
     }
     return true;
