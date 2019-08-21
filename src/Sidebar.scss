@@ -3,7 +3,7 @@
 .Sidebar {
   padding: 15px;
   background-color: $black-80;
-  height: 100%;
+  min-height: 100%;
   box-shadow: $editor-box-shadow;
   color: white;
 }
