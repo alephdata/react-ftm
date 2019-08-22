@@ -1,20 +1,31 @@
 import * as React from 'react'
 import { Colors } from '@blueprintjs/core';
 import { GraphConfig } from '../GraphConfig';
-import { Edge, Vertex, Point } from '../layout'
+import { Edge, Point } from '../layout'
+import { Viewport } from "../Viewport";
+import { getRefMatrix, applyMatrix } from './utils';
 
 
 interface IEdgeDrawerProps {
   svgRef: React.RefObject<SVGSVGElement>,
-  sourceVertex: Vertex
+  viewport: Viewport
+  sourcePoint?: Point
+}
+
+interface IEdgeDrawerState {
+  targetPoint?: Point
 }
 
 const linkCurveOffset = 20;
 
-export class EdgeDrawer extends React.PureComponent<IEdgeDrawerProps>{
+export class EdgeDrawer extends React.PureComponent<IEdgeDrawerProps, IEdgeDrawerState>{
+
   constructor(props: Readonly<IEdgeDrawerProps>) {
     super(props)
     this.onMouseMove = this.onMouseMove.bind(this)
+    this.state = {
+      targetPoint: props.sourcePoint
+    }
   }
 
   componentDidMount() {
@@ -32,23 +43,31 @@ export class EdgeDrawer extends React.PureComponent<IEdgeDrawerProps>{
   }
 
   onMouseMove(e: MouseEvent) {
-    console.log('mouse moving', e)
+    const { svgRef, viewport } = this.props
+    const matrix = getRefMatrix(svgRef)
+    const targetPoint = applyMatrix(matrix, e.clientX, e.clientY)
+    this.setState({targetPoint})
   }
 
   render() {
-    const {  } = this.props;
+    const { sourcePoint } = this.props
+    const { targetPoint } = this.state
 
-    return null
+    console.log(sourcePoint, targetPoint)
 
-    // return <g className="edge-drawer">
-    //   <path
-    //     stroke={highlight ? config.SELECTED_COLOR : Colors.GRAY2}
-    //     strokeWidth='1'
-    //     fill='none'
-    //     d={path}
-    //     onClick={this.onClick}
-    //     style={lineStyles}
-    //   />
-    // </g>
+    if (!sourcePoint || !targetPoint) {
+      return null
+    }
+
+    return <g className="edge-drawer">
+      <line
+        stroke={Colors.GRAY2}
+        strokeWidth='1'
+        x1={sourcePoint.x}
+        y1={sourcePoint.y}
+        x2={targetPoint.x}
+        y2={targetPoint.y}
+      />
+    </g>
   }
 }

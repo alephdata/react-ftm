@@ -88,7 +88,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   renderVertices() {
-    const { layout, actions } = this.props;
+    const { layout, actions, edgeCreateMode } = this.props;
     const vertices = layout.getVertices().filter((vertex) => !vertex.isHidden())
     return vertices.map((vertex: Vertex) =>
       <VertexRenderer
@@ -99,14 +99,17 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
         selectVertex={this.selectElement}
         dragSelection={this.dragSelection}
         dropSelection={this.dropSelection}
-        toggleAddEdge={actions.toggleAddEdge}
+        edgeCreateMode={edgeCreateMode}
+        actions={actions}
       />
     )
   }
 
-  getEdgeCreateVertex() {
+  getEdgeCreateSourcePoint() {
     const vertices = this.props.layout.getSelectedVertices()
-    return vertices[0]
+    if (vertices && vertices.length) {
+      return vertices[0].getPosition()
+    }
   }
 
   render(){
@@ -117,6 +120,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
               viewport={viewport}
               selectArea={this.selectArea}
               selectionMode={layout.selectionMode}
+              edgeCreateMode={edgeCreateMode}
               clearSelection={this.clearSelection}
               updateViewport={this.updateViewport}
               animateTransition={animateTransition}
@@ -124,7 +128,8 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
         {edgeCreateMode &&
           <EdgeDrawer
             svgRef={svgRef}
-            sourceVertex={this.getEdgeCreateVertex()}/>
+            viewport={viewport}
+            sourcePoint={this.getEdgeCreateSourcePoint()}/>
         }
         {this.renderEdges()}
         {this.renderVertices()}

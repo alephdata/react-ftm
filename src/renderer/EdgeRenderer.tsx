@@ -2,6 +2,7 @@ import * as React from 'react'
 import { GraphConfig } from '../GraphConfig';
 import { Edge, Vertex, Point } from '../layout'
 import { EdgeLabelRenderer } from './EdgeLabelRenderer';
+import { Colors } from '@blueprintjs/core';
 
 
 interface IEdgeRendererProps {

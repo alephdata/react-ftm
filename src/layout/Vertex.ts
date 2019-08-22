@@ -62,6 +62,10 @@ export class Vertex {
     return Vertex.fromJSON(this.layout, this.toJSON())
   }
 
+  getPosition(): Point {
+    return this.position
+  }
+
   setPosition(position: Point): Vertex {
     const vertex = this.clone()
     vertex.position = position

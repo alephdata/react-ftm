@@ -13,6 +13,7 @@ interface ICanvasProps {
   svgRef: React.RefObject<SVGSVGElement>,
   viewport: Viewport,
   selectionMode: boolean,
+  edgeCreateMode: boolean,
   selectArea: (area: Rectangle) => any,
   clearSelection: () => any,
   updateViewport: (viewport: Viewport) => any,
@@ -120,6 +121,8 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   onDragEnd(e: DraggableEvent, data: DraggableData) {
+    console.log('in on drag end')
+
     const { selectionMode, viewport } = this.props
     if (selectionMode) {
       const initial = viewport.config.pixelToGrid(this.dragInitial)
@@ -133,6 +136,8 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   onDragStart(e: DraggableEvent, data: DraggableData) {
+    console.log('in on drag start')
+    this.props.actions.setEdgeCreateMode(false)
     this.props.clearSelection()
     const matrix = getRefMatrix(this.props.svgRef)
     this.dragInitial = applyMatrix(matrix, data.x, data.y)

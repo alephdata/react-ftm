@@ -14,7 +14,8 @@ interface IVertexRendererProps {
   selectVertex: (vertex: Vertex, additional?: boolean) => any
   dragSelection: (offset: Point) => any
   dropSelection: () => any
-  toggleAddEdge: any
+  edgeCreateMode: boolean
+  actions: any
 }
 
 export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
@@ -64,14 +65,18 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
   }
 
   onClick(e: any) {
-    const { vertex, selectVertex } = this.props
+    const { vertex, selectVertex, edgeCreateMode, actions } = this.props
+    if (edgeCreateMode) {
+      selectVertex(vertex, true)
+      actions.toggleEdgeCreateOpen()
+    }
     selectVertex(vertex, e.shiftKey)
   }
 
   onDoubleClick(e: MouseEvent) {
     e.preventDefault()
     e.stopPropagation()
-    this.props.toggleAddEdge()
+    this.props.actions.setEdgeCreateMode(true)
   }
 
   render() {

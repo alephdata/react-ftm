@@ -25,6 +25,7 @@ interface IVisGraphState {
   animateTransition: boolean
   edgeCreateMode: boolean
   vertexCreateOpen: boolean
+  edgeCreateDialogOpen: boolean
   vertexCreateInitialPos?: Point
 }
 
@@ -32,7 +33,8 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   state: IVisGraphState = {
     animateTransition: false,
     vertexCreateOpen: false,
-    edgeCreateMode: false
+    edgeCreateMode: false,
+    edgeCreateDialogOpen: false
   }
   history: History;
   svgRef: React.RefObject<SVGSVGElement>
@@ -53,9 +55,10 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.updateViewport = this.updateViewport.bind(this);
     this.navigateHistory = this.navigateHistory.bind(this);
     this.exportSvg = this.exportSvg.bind(this);
-    this.toggleAddEdge = this.toggleAddEdge.bind(this)
+    this.setEdgeCreateMode = this.setEdgeCreateMode.bind(this)
     this.toggleAddVertex = this.toggleAddVertex.bind(this)
     this.removeSelection = this.removeSelection.bind(this)
+    this.toggleEdgeCreateOpen = this.toggleEdgeCreateOpen.bind(this)
   }
 
   onZoom(factor: number) {
@@ -100,8 +103,12 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     })
   }
 
-  toggleAddEdge(){
-    this.setState({ edgeCreateMode: !this.state.edgeCreateMode })
+  setEdgeCreateMode(newVal: boolean){
+    this.setState({ edgeCreateMode: newVal })
+  }
+
+  toggleEdgeCreateOpen() {
+    this.setState({ edgeCreateMode: false, edgeCreateDialogOpen: !this.state.edgeCreateDialogOpen })
   }
 
   removeSelection() {
@@ -128,10 +135,13 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   render() {
     const { config, layout, viewport} = this.props;
     const { animateTransition, edgeCreateMode } = this.state;
+    const vertices = layout.getSelectedVertices()
+    const [sourceVertex, targetVertex] = vertices
 
     const actions = {
       toggleAddVertex: this.toggleAddVertex,
-      toggleAddEdge: this.toggleAddEdge,
+      setEdgeCreateMode: this.setEdgeCreateMode,
+      toggleEdgeCreateOpen: this.toggleEdgeCreateOpen,
       navigateHistory: this.navigateHistory,
       removeSelection: this.removeSelection,
       exportSvg: this.exportSvg
@@ -203,12 +213,13 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
           layout={layout}
           source={sourceVertex}
           target={targetVertex}
-          isOpen={this.state.edgeCreateOpen}
-          toggleDialog={this.toggleAddEdge}
+          isOpen={this.state.edgeCreateDialogOpen}
+          toggleDialog={this.toggleEdgeCreateOpen}
           updateLayout={this.props.updateLayout}
           viewport={viewport}
           updateViewport={this.props.updateViewport}
         />
+
       </GraphContext.Provider>
     );
   }
