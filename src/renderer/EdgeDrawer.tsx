@@ -53,8 +53,6 @@ export class EdgeDrawer extends React.PureComponent<IEdgeDrawerProps, IEdgeDrawe
     const { sourcePoint } = this.props
     const { targetPoint } = this.state
 
-    console.log(sourcePoint, targetPoint)
-
     if (!sourcePoint || !targetPoint) {
       return null
     }

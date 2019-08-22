@@ -71,6 +71,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
     if (interactionMode === modes.EDGE_DRAW) {
       selectVertex(vertex, true)
       actions.setInteractionMode(modes.EDGE_CREATE)
+      return
     }
     selectVertex(vertex, e.shiftKey)
   }

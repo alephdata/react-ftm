@@ -101,12 +101,12 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
               <AnchorButton icon="redo" onClick={() => actions.navigateHistory(History.FORWARD)} disabled={!history.canGoTo(History.FORWARD)}/>
             </Tooltip>
             <Divider/>
-            {interactionMode === modes.PAN &&
+            {interactionMode !== modes.SELECT &&
               <Tooltip content="Toggle select mode">
                 <Button icon="select" onClick={() => this.onSetInteractionMode(modes.SELECT)}/>
               </Tooltip>
             }
-            {interactionMode === modes.SELECT &&
+            {interactionMode !== modes.PAN &&
               <Tooltip content="Toggle pan mode">
                 <Button icon="hand" onClick={() => this.onSetInteractionMode(modes.PAN)}/>
               </Tooltip>

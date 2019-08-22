@@ -110,7 +110,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   getEdgeCreateSourcePoint() {
     const vertices = this.props.layout.getSelectedVertices()
     if (vertices && vertices.length) {
-      return vertices[0].getPosition()
+      return this.props.viewport.config.gridToPixel(vertices[0].getPosition())
     }
   }
 
