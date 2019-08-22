@@ -31,8 +31,8 @@ export class EdgeDrawer extends React.PureComponent<IEdgeDrawerProps>{
     }
   }
 
-  onMouseMove() {
-    console.log('mouse moving')
+  onMouseMove(e: MouseEvent) {
+    console.log('mouse moving', e)
   }
 
   render() {

@@ -3,11 +3,13 @@ import { Dialog, Intent, ControlGroup, InputGroup } from '@blueprintjs/core'
 import { Schema } from '@alephdata/followthemoney'
 import { GraphContext, IGraphContext } from '../GraphContext'
 import { VertexSchemaSelect } from './VertexSchemaSelect'
+import { Point } from '../layout'
 
 
 interface IVertexCreateDialogProps {
   isOpen: boolean,
-  toggleDialog: () => any
+  toggleDialog: () => any,
+  vertexInitialPos?: Point
 }
 
 interface IVertexCreateDialogState {
@@ -43,6 +45,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
   }
 
   onSubmit(e: React.ChangeEvent<HTMLFormElement>) {
+    const { vertexInitialPos } = this.props
     const { label } = this.state
     const schema = this.getSchema()
     const { layout, updateLayout, viewport, updateViewport } = this.context as IGraphContext
@@ -53,9 +56,10 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
       layout.addEntity(entity)
       const vertex = layout.getVertexByEntity(entity)
       if (vertex) {
+        vertexInitialPos && layout.vertices.set(vertex.id, vertex.setPosition(vertexInitialPos))
         layout.selectElement(vertex)
         updateLayout(layout, {modifyHistory:true})
-        updateViewport(viewport.setCenter(vertex.position), {animate:true})
+        updateViewport(viewport.setCenter(vertexInitialPos || vertex.position), {animate:true})
         this.setState({label: ''})
         this.props.toggleDialog()
       }

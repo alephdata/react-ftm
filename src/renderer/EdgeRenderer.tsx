@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Colors } from '@blueprintjs/core';
 import { GraphConfig } from '../GraphConfig';
 import { Edge, Vertex, Point } from '../layout'
 import { EdgeLabelRenderer } from './EdgeLabelRenderer';
@@ -16,7 +15,7 @@ interface IEdgeRendererProps {
   offsetIndex: number
 }
 
-const linkCurveOffset = 20;
+const linkCurveOffset = 30;
 
 export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
   constructor(props: Readonly<IEdgeRendererProps>) {
@@ -90,7 +89,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
         style={lineStyles}
       />
       { highlight && (
-        <EdgeLabelRenderer center={center} labelText={edge.label} onClick={this.onClick} color={config.SELECTED_COLOR}/>
+        <EdgeLabelRenderer center={center} labelText={edge.label} onClick={this.onClick} outlineColor={config.SELECTED_COLOR} textColor={config.VERTEX_COLOR}/>
       )}
     </g>
   }
