@@ -7,13 +7,13 @@ import { Point } from '../layout/Point';
 import { Rectangle } from '../layout/Rectangle';
 import { getRefMatrix, applyMatrix } from './utils';
 import { GraphLayout } from '../layout/GraphLayout';
+import { modes } from '../interactionModes'
 
 
 interface ICanvasProps {
   svgRef: React.RefObject<SVGSVGElement>,
   viewport: Viewport,
-  selectionMode: boolean,
-  edgeCreateMode: boolean,
+  interactionMode: string,
   selectArea: (area: Rectangle) => any,
   clearSelection: () => any,
   updateViewport: (viewport: Viewport) => any,
@@ -87,12 +87,12 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   private onDragMove(e: DraggableEvent, data: DraggableData) {
-    const { selectionMode, viewport, svgRef } = this.props
+    const { interactionMode, viewport, svgRef } = this.props
     const matrix = getRefMatrix(svgRef)
     const current = applyMatrix(matrix, data.x, data.y)
     const last = applyMatrix(matrix, data.lastX, data.lastY)
     const offset = current.subtract(last)
-    if (selectionMode) {
+    if (interactionMode === modes.SELECT) {
       this.dragExtent = new Point(
         this.dragExtent.x + offset.x,
         this.dragExtent.y + offset.y
@@ -123,8 +123,8 @@ export class Canvas extends React.Component <ICanvasProps> {
   onDragEnd(e: DraggableEvent, data: DraggableData) {
     console.log('in on drag end')
 
-    const { selectionMode, viewport } = this.props
-    if (selectionMode) {
+    const { interactionMode, viewport } = this.props
+    if (interactionMode === modes.SELECT) {
       const initial = viewport.config.pixelToGrid(this.dragInitial)
       const extent = viewport.config.pixelToGrid(this.dragExtent)
       const area = Rectangle.fromPoints(initial, extent)
@@ -137,7 +137,6 @@ export class Canvas extends React.Component <ICanvasProps> {
 
   onDragStart(e: DraggableEvent, data: DraggableData) {
     console.log('in on drag start')
-    this.props.actions.setEdgeCreateMode(false)
     this.props.clearSelection()
     const matrix = getRefMatrix(this.props.svgRef)
     this.dragInitial = applyMatrix(matrix, data.x, data.y)
@@ -161,7 +160,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     const matrix = getRefMatrix(this.props.svgRef)
     const target = applyMatrix(matrix, event.clientX, event.clientY)
     const gridTarget = viewport.config.pixelToGrid(target)
-    this.props.actions.toggleAddVertex(gridTarget)
+    this.props.actions.addVertexToPosition(gridTarget)
   }
 
   componentWillReceiveProps(nextProps: Readonly<ICanvasProps>): void {
@@ -223,9 +222,9 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   render() {
-    const { viewport, selectionMode, svgRef} = this.props
+    const { viewport, interactionMode, svgRef} = this.props
     const grid = `M ${viewport.config.gridUnit} 0 L 0 0 0 ${viewport.config.gridUnit}`
-    const style:React.CSSProperties = {width: "100%", height: "100%", cursor: selectionMode ? 'crosshair' : 'grab'}
+    const style:React.CSSProperties = {width: "100%", height: "100%", cursor: interactionMode === modes.SELECT ? 'crosshair' : 'grab'}
     return (
       <svg viewBox={viewport.viewBox} style={style} ref={svgRef} xmlns="http://www.w3.org/2000/svg" tabIndex={0}>
         <DraggableCore

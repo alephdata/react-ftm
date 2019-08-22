@@ -1,5 +1,6 @@
 import * as React from 'react'
 import logo from './static/logo.png';
+import { modes } from './interactionModes'
 
 import {
   Button,
@@ -21,7 +22,8 @@ import './Toolbar.scss';
 
 interface IToolbarProps extends IGraphContext {
   actions: any,
-  history: History
+  history: History,
+  interactionMode: string
 }
 
 interface IToolbarState {
@@ -35,15 +37,15 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
 
   constructor(props: Readonly<IToolbarProps>) {
     super(props);
-    this.onToggleSelectionMode = this.onToggleSelectionMode.bind(this)
+    this.onSetInteractionMode = this.onSetInteractionMode.bind(this)
     this.onFitToSelection = this.onFitToSelection.bind(this)
     this.onChangeSearch = this.onChangeSearch.bind(this)
     this.onSubmitSearch = this.onSubmitSearch.bind(this)
   }
 
-  onToggleSelectionMode() {
-    const {layout, updateLayout} = this.props
-    layout.selectionMode = !layout.selectionMode
+  onSetInteractionMode(newMode: string) {
+    const {layout, updateLayout, actions} = this.props
+    actions.setInteractionMode(newMode)
     updateLayout(layout)
   }
 
@@ -76,7 +78,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
   }
 
   render() {
-    const { layout, viewport, updateLayout, updateViewport, actions, history } = this.props
+    const { layout, viewport, updateLayout, updateViewport, actions, history, interactionMode } = this.props
     const vertices = this.props.layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
@@ -99,14 +101,14 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
               <AnchorButton icon="redo" onClick={() => actions.navigateHistory(History.FORWARD)} disabled={!history.canGoTo(History.FORWARD)}/>
             </Tooltip>
             <Divider/>
-            {!layout.selectionMode &&
+            {interactionMode === modes.PAN &&
               <Tooltip content="Toggle select mode">
-                <Button icon="select" onClick={this.onToggleSelectionMode}/>
+                <Button icon="select" onClick={() => this.onSetInteractionMode(modes.SELECT)}/>
               </Tooltip>
             }
-            {layout.selectionMode &&
+            {interactionMode === modes.SELECT &&
               <Tooltip content="Toggle pan mode">
-                <Button icon="hand" onClick={this.onToggleSelectionMode}/>
+                <Button icon="hand" onClick={() => this.onSetInteractionMode(modes.PAN)}/>
               </Tooltip>
             }
             <Tooltip content="Fit view to selection">
@@ -114,14 +116,14 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
             </Tooltip>
             <Divider/>
             <Tooltip content="Add entities">
-              <Button icon="new-object" onClick={() => actions.toggleAddVertex()}/>
+              <Button icon="new-object" onClick={() => this.onSetInteractionMode(modes.VERTEX_CREATE)}/>
             </Tooltip>
             <Tooltip content={hasSelection ? "Remove selected" : "To remove a node first you must select a node by clicking on it"}>
               <AnchorButton icon="graph-remove" onClick={actions.removeSelection} disabled={!hasSelection} />
             </Tooltip>
             <Divider/>
             <Tooltip content="Add links">
-              <AnchorButton icon="new-link" onClick={() => actions.setEdgeCreateMode(true)} disabled={!canAddEdge} />
+              <AnchorButton icon="new-link" onClick={() => this.onSetInteractionMode(modes.EDGE_DRAW)} disabled={!canAddEdge} />
             </Tooltip>
             <Divider/>
             <Tooltip content="Align horizontal">

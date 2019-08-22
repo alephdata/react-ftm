@@ -6,6 +6,8 @@ import { Vertex } from '../layout/Vertex'
 import { getRefMatrix, applyMatrix } from './utils';
 import { VertexLabelRenderer } from './VertexLabelRenderer';
 import {IconRenderer} from "./IconRenderer";
+import { modes } from '../interactionModes'
+
 
 interface IVertexRendererProps {
   vertex: Vertex
@@ -14,7 +16,7 @@ interface IVertexRendererProps {
   selectVertex: (vertex: Vertex, additional?: boolean) => any
   dragSelection: (offset: Point) => any
   dropSelection: () => any
-  edgeCreateMode: boolean
+  interactionMode: string
   actions: any
 }
 
@@ -65,10 +67,10 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
   }
 
   onClick(e: any) {
-    const { vertex, selectVertex, edgeCreateMode, actions } = this.props
-    if (edgeCreateMode) {
+    const { vertex, selectVertex, interactionMode, actions } = this.props
+    if (interactionMode === modes.EDGE_DRAW) {
       selectVertex(vertex, true)
-      actions.toggleEdgeCreateOpen()
+      actions.setInteractionMode(modes.EDGE_CREATE)
     }
     selectVertex(vertex, e.shiftKey)
   }
@@ -76,7 +78,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
   onDoubleClick(e: MouseEvent) {
     e.preventDefault()
     e.stopPropagation()
-    this.props.actions.setEdgeCreateMode(true)
+    this.props.actions.setInteractionMode(modes.EDGE_DRAW)
   }
 
   render() {

@@ -10,6 +10,7 @@ import { Sidebar } from './Sidebar';
 import { History } from './History';
 import { VertexCreateDialog, EdgeCreateDialog } from "./editor";
 import { Model, defaultModel } from '@alephdata/followthemoney'
+import { modes } from './interactionModes'
 
 interface IVisGraphProps {
   config: GraphConfig,
@@ -23,18 +24,14 @@ interface IVisGraphProps {
 
 interface IVisGraphState {
   animateTransition: boolean
-  edgeCreateMode: boolean
-  vertexCreateOpen: boolean
-  edgeCreateDialogOpen: boolean
   vertexCreateInitialPos?: Point
+  interactionMode: string
 }
 
 export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   state: IVisGraphState = {
     animateTransition: false,
-    vertexCreateOpen: false,
-    edgeCreateMode: false,
-    edgeCreateDialogOpen: false
+    interactionMode: modes.SELECT
   }
   history: History;
   svgRef: React.RefObject<SVGSVGElement>
@@ -55,10 +52,9 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.updateViewport = this.updateViewport.bind(this);
     this.navigateHistory = this.navigateHistory.bind(this);
     this.exportSvg = this.exportSvg.bind(this);
-    this.setEdgeCreateMode = this.setEdgeCreateMode.bind(this)
-    this.toggleAddVertex = this.toggleAddVertex.bind(this)
+    this.setInteractionMode = this.setInteractionMode.bind(this)
     this.removeSelection = this.removeSelection.bind(this)
-    this.toggleEdgeCreateOpen = this.toggleEdgeCreateOpen.bind(this)
+    this.addVertexToPosition = this.addVertexToPosition.bind(this)
   }
 
   onZoom(factor: number) {
@@ -96,19 +92,15 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.updateLayout(GraphLayout.fromJSON(config, model, nextLayoutData))
   }
 
-  toggleAddVertex(initialPos?: Point) {
+  addVertexToPosition(initialPos?: Point) {
     this.setState({
-      vertexCreateOpen: !this.state.vertexCreateOpen,
+      interactionMode: modes.VERTEX_CREATE,
       vertexCreateInitialPos: initialPos
     })
   }
 
-  setEdgeCreateMode(newVal: boolean){
-    this.setState({ edgeCreateMode: newVal })
-  }
-
-  toggleEdgeCreateOpen() {
-    this.setState({ edgeCreateMode: false, edgeCreateDialogOpen: !this.state.edgeCreateDialogOpen })
+  setInteractionMode(newMode?: string){
+    this.setState({ interactionMode: newMode || modes.SELECT })
   }
 
   removeSelection() {
@@ -134,14 +126,15 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
   render() {
     const { config, layout, viewport} = this.props;
-    const { animateTransition, edgeCreateMode } = this.state;
+    const { animateTransition, interactionMode } = this.state;
     const vertices = layout.getSelectedVertices()
     const [sourceVertex, targetVertex] = vertices
 
+    console.log(interactionMode)
+
     const actions = {
-      toggleAddVertex: this.toggleAddVertex,
-      setEdgeCreateMode: this.setEdgeCreateMode,
-      toggleEdgeCreateOpen: this.toggleEdgeCreateOpen,
+      addVertexToPosition: this.addVertexToPosition,
+      setInteractionMode: this.setInteractionMode,
       navigateHistory: this.navigateHistory,
       removeSelection: this.removeSelection,
       exportSvg: this.exportSvg
@@ -167,6 +160,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               updateViewport={this.updateViewport}
               actions={actions}
               history={this.history}
+              interactionMode={this.state.interactionMode}
             />
           </div>
           <div style={{flex: 1, display: 'flex', flexFlow: 'row', flexGrow: 1, flexShrink: 1, flexBasis: '100%', overflow: 'hidden'}}>
@@ -185,7 +179,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                 updateViewport={this.updateViewport}
                 animateTransition={animateTransition}
                 actions={actions}
-                edgeCreateMode={edgeCreateMode}/>
+                interactionMode={interactionMode}/>
             </div>
             {showSidebar &&
               <div style={{
@@ -205,16 +199,16 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
         </div>
 
         <VertexCreateDialog
-          isOpen={this.state.vertexCreateOpen}
-          toggleDialog={this.toggleAddVertex}
+          isOpen={interactionMode === modes.VERTEX_CREATE}
+          toggleDialog={this.setInteractionMode}
           vertexInitialPos={this.state.vertexCreateInitialPos} />
 
         <EdgeCreateDialog
           layout={layout}
           source={sourceVertex}
           target={targetVertex}
-          isOpen={this.state.edgeCreateDialogOpen}
-          toggleDialog={this.toggleEdgeCreateOpen}
+          isOpen={interactionMode === modes.EDGE_CREATE}
+          toggleDialog={this.setInteractionMode}
           updateLayout={this.props.updateLayout}
           viewport={viewport}
           updateViewport={this.props.updateViewport}

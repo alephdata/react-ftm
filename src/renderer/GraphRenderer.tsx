@@ -6,12 +6,14 @@ import { Canvas } from './Canvas'
 import { EdgeRenderer } from './EdgeRenderer'
 import { EdgeDrawer } from './EdgeDrawer'
 import { VertexRenderer } from './VertexRenderer'
+import { modes } from '../interactionModes'
+
 
 interface IGraphRendererProps extends IGraphContext {
   svgRef: React.RefObject<SVGSVGElement>,
   animateTransition: boolean,
   actions: any,
-  edgeCreateMode: boolean
+  interactionMode: string
 }
 
 export class GraphRenderer extends React.Component<IGraphRendererProps> {
@@ -88,7 +90,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   renderVertices() {
-    const { layout, actions, edgeCreateMode } = this.props;
+    const { layout, actions, interactionMode } = this.props;
     const vertices = layout.getVertices().filter((vertex) => !vertex.isHidden())
     return vertices.map((vertex: Vertex) =>
       <VertexRenderer
@@ -99,7 +101,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
         selectVertex={this.selectElement}
         dragSelection={this.dragSelection}
         dropSelection={this.dropSelection}
-        edgeCreateMode={edgeCreateMode}
+        interactionMode={interactionMode}
         actions={actions}
       />
     )
@@ -113,19 +115,18 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   render(){
-    const { svgRef, layout, viewport, animateTransition, actions, edgeCreateMode } = this.props;
+    const { svgRef, layout, viewport, animateTransition, actions, interactionMode } = this.props;
 
     return (
       <Canvas svgRef={svgRef}
               viewport={viewport}
               selectArea={this.selectArea}
-              selectionMode={layout.selectionMode}
-              edgeCreateMode={edgeCreateMode}
+              interactionMode={interactionMode}
               clearSelection={this.clearSelection}
               updateViewport={this.updateViewport}
               animateTransition={animateTransition}
               actions={actions}>
-        {edgeCreateMode &&
+        {interactionMode === modes.EDGE_DRAW &&
           <EdgeDrawer
             svgRef={svgRef}
             viewport={viewport}
