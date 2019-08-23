@@ -130,8 +130,6 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     const vertices = layout.getSelectedVertices()
     const [sourceVertex, targetVertex] = vertices
 
-    console.log(layout.selection)
-
     const actions = {
       addVertexToPosition: this.addVertexToPosition,
       setInteractionMode: this.setInteractionMode,

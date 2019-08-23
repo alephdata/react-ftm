@@ -123,7 +123,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
             </Tooltip>
             <Divider/>
             <Tooltip content="Add links">
-              <AnchorButton icon="new-link" onClick={() => this.onSetInteractionMode(modes.EDGE_DRAW)} disabled={!canAddEdge} />
+              <AnchorButton icon="new-link" onClick={() => this.onSetInteractionMode(modes.EDGE_CREATE)} disabled={!canAddEdge} />
             </Tooltip>
             <Divider/>
             <Tooltip content="Align horizontal">

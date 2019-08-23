@@ -20,16 +20,24 @@ interface IVertexRendererProps {
   actions: any
 }
 
-export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
+interface IVertexRendererState {
+  hovered: boolean
+}
+
+export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IVertexRendererState> {
   gRef: React.RefObject<SVGGElement>
 
   constructor(props: Readonly<IVertexRendererProps>) {
     super(props)
+
+    this.state = { hovered: false }
     this.onPanStart = this.onPanStart.bind(this)
     this.onPanMove = this.onPanMove.bind(this)
     this.onPanEnd = this.onPanEnd.bind(this)
     this.onClick = this.onClick.bind(this)
     this.onDoubleClick = this.onDoubleClick.bind(this)
+    this.onMouseOver = this.onMouseOver.bind(this)
+    this.onMouseOut = this.onMouseOut.bind(this)
     this.gRef = React.createRef()
   }
 
@@ -82,13 +90,22 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
     this.props.actions.setInteractionMode(modes.EDGE_DRAW)
   }
 
+  onMouseOver() {
+    this.props.interactionMode === modes.EDGE_DRAW && this.setState({hovered: true})
+  }
+
+  onMouseOut() {
+    this.setState({hovered: false})
+  }
+
   render() {
-    const { vertex, config, selected } = this.props
+    const { vertex, config, selected, interactionMode } = this.props
+    const { hovered } = this.state
     const { x, y } = config.gridToPixel(vertex.position)
     const translate = `translate(${x} ${y})`
     const labelPosition = new Point(0, config.VERTEX_RADIUS * config.gridUnit + config.gridUnit/2)
     const groupStyles: React.CSSProperties = {
-      cursor: selected ? 'grab' : 'pointer'
+      cursor: selected ? 'grab' : 'pointer',
     }
 
     return (
@@ -97,11 +114,12 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps> {
         onStart={this.onPanStart}
         onDrag={this.onPanMove}
         onStop={this.onPanEnd} >
-        <g className="vertex" transform={translate} ref={this.gRef} style={groupStyles}>
+        <g className='vertex' transform={translate} ref={this.gRef} style={groupStyles}>
           <circle
             className="handle"
             r={config.gridUnit * config.VERTEX_RADIUS}
-            fill={selected ? config.SELECTED_COLOR : config.VERTEX_COLOR}
+            fill={selected || hovered ? config.SELECTED_COLOR : config.VERTEX_COLOR}
+            onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}
             />
           <VertexLabelRenderer center={labelPosition} label={vertex.label} onClick={this.onClick} color={selected ? config.SELECTED_COLOR : config.VERTEX_COLOR}/>
           <IconRenderer vertex={vertex}/>
