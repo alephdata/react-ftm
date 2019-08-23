@@ -76,17 +76,28 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     }
     const vertex1Position = config.gridToPixel(vertex1.position)
     const vertex2Position = config.gridToPixel(vertex2.position)
-    const lineStyles: React.CSSProperties = {
+
+    const clickableLineStyles: React.CSSProperties = {
       cursor: 'pointer'
+    }
+    const lineStyles: React.CSSProperties = {
+      pointerEvents:'none'
     }
     const {path, center} = this.generatePath(vertex1Position, vertex2Position)
     return <g className="edge">
+      <path
+        stroke="rgba(0,0,0,0)"
+        strokeWidth='4'
+        fill='none'
+        d={path}
+        onClick={this.onClick}
+        style={clickableLineStyles}
+      />
       <path
         stroke={highlight ? config.SELECTED_COLOR : Colors.GRAY2}
         strokeWidth='1'
         fill='none'
         d={path}
-        onClick={this.onClick}
         style={lineStyles}
       />
       { highlight && (
