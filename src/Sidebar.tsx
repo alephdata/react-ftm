@@ -13,12 +13,22 @@ export class Sidebar extends React.Component<IGraphContext> {
     super(props);
     this.appendToLayout  = this.appendToLayout.bind(this);
     this.onEntitySelected = this.onEntitySelected.bind(this);
+    this.setEntityColor = this.setEntityColor.bind(this)
   }
 
   appendToLayout(entity: Entity) {
     const { layout } = this.props
     layout.addEntity(entity);
     this.props.updateLayout(layout, {modifyHistory:true})
+  }
+
+  setEntityColor(entity: Entity, color: string) {
+    const { layout, updateLayout } = this.props
+    const vertex = layout.getVertexByEntity(entity)
+    if (vertex) {
+      layout.vertices.set(vertex.id, vertex.setColor(color))
+      updateLayout(layout, {modifyHistory:true})
+    }
   }
 
   onEntitySelected(entity:Entity){
@@ -37,9 +47,19 @@ export class Sidebar extends React.Component<IGraphContext> {
     let contents;
 
     if (selection.length === 1) {
+      const entity = selection[0]
+      let entityColor
+      if (!entity.schema.edge) {
+        const vertex = layout.getVertexByEntity(entity)
+        if (vertex) {
+          entityColor = vertex.color
+        }
+      }
       contents = <EntityViewer
-        entity={selection[0]}
+        entity={entity}
+        entityColor={entityColor}
         onEntityChanged={this.appendToLayout}
+        onEntityColorSelected={this.setEntityColor}
       />
     } else if (selection.length){
       contents = <EntityList entities={selection} onEntitySelected={this.onEntitySelected} />

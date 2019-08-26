@@ -35,14 +35,15 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
     const margin = 1.5;
     const extents = this.state.textExtents;
     const outline = extents ?
-         <rect className="EdgeLabel__outline"
-            x={-extents[0]/2-margin}
-            y={-extents[1]/2-margin}
-            rx={3}
-            stroke={outlineColor}
-            strokeWidth=".8px"
-            width={extents[0]+2*margin}
-            height={extents[1]+2*margin}></rect>
+           <rect className="EdgeLabel__outline"
+              x={-extents[0]/2-margin}
+              y={-extents[1]/2-margin}
+              rx={3}
+              stroke={outlineColor}
+              strokeWidth=".8px"
+              width={extents[0]+2*margin}
+              height={extents[1]+2*margin}>
+            </rect>
          : null;
 
     return <g

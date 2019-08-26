@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
+import { Colors } from '@blueprintjs/core';
 import { GraphConfig } from '../GraphConfig';
 import { Point } from '../layout/Point'
 import { Vertex } from '../layout/Vertex'
@@ -98,15 +99,26 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     this.setState({hovered: false})
   }
 
+  getColor() {
+    const { vertex, config, selected } = this.props
+    const { hovered } = this.state
+
+    const baseColor = vertex.color || config.DEFAULT_VERTEX_COLOR
+    const suffix = selected || hovered ? '5' : '1'
+    const colorCode = `${baseColor}${suffix}`
+
+    return Colors[colorCode]
+  }
+
   render() {
     const { vertex, config, selected, interactionMode } = this.props
-    const { hovered } = this.state
     const { x, y } = config.gridToPixel(vertex.position)
     const isEntity = vertex.isEntity()
     const vertexRadius = isEntity ? config.gridUnit * config.VERTEX_RADIUS : config.gridUnit * config.VERTEX_RADIUS / 2
     const translate = `translate(${x} ${y})`
     const labelPosition = new Point(0, vertexRadius + config.gridUnit/2)
-    const vertexColor = selected || hovered ? config.SELECTED_COLOR : config.VERTEX_COLOR
+
+    const vertexColor = this.getColor()
     const groupStyles: React.CSSProperties = {
       cursor: selected ? 'grab' : 'pointer',
     }
@@ -125,7 +137,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
             stroke={isEntity ? 'none' : vertexColor}
             onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}
             />
-          <VertexLabelRenderer center={labelPosition} label={vertex.label} onClick={this.onClick} color={selected ? config.SELECTED_COLOR : config.VERTEX_COLOR}/>
+          <VertexLabelRenderer center={labelPosition} label={vertex.label} onClick={this.onClick} color={vertexColor}/>
           <IconRenderer vertex={vertex}/>
         </g>
       </DraggableCore>

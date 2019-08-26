@@ -9,6 +9,7 @@ interface IVertexData {
   label: string
   fixed: boolean
   hidden: boolean
+  color: string
   position?: IPointData
   entityId?: string
 }
@@ -21,6 +22,7 @@ export class Vertex {
   public readonly entityId?: string
   public fixed: boolean
   public hidden: boolean
+  public color: string
   public position: Point
   public garbage: boolean = false;
 
@@ -31,6 +33,7 @@ export class Vertex {
     this.label = data.label
     this.fixed = data.fixed
     this.hidden = data.hidden
+    this.color = data.color
     this.position = data.position ? Point.fromJSON(data.position) : new Point()
     this.entityId = data.entityId
   }
@@ -80,10 +83,17 @@ export class Vertex {
     ))
   }
 
+  setColor(color: string): Vertex {
+    const vertex = this.clone()
+    vertex.color = color
+    return vertex
+  }
+
   update(other: Vertex): Vertex {
     const data = other.toJSON()
     data.hidden = this.hidden
     data.fixed = this.fixed
+    data.color = this.color
     data.position = this.position.toJSON()
     return Vertex.fromJSON(this.layout, data)
   }
@@ -95,6 +105,7 @@ export class Vertex {
       label: this.label,
       fixed: this.fixed,
       hidden: this.hidden,
+      color: this.color,
       position: this.position.toJSON(),
       entityId: this.entityId
     }
@@ -115,6 +126,7 @@ export class Vertex {
       label: entity.getCaption(),
       fixed: false,
       hidden: false,
+      color: layout.config.DEFAULT_VERTEX_COLOR,
       entityId: entity.id
     });
   }
@@ -136,7 +148,8 @@ export class Vertex {
       type: type,
       label: value,
       fixed: false,
-      hidden: false
+      hidden: false,
+      color: 'GRAY'
     });
   }
 

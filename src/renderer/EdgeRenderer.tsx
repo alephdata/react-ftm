@@ -97,7 +97,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
         style={clickableLineStyles}
       />
       <path
-        stroke={highlight ? config.SELECTED_COLOR : Colors.GRAY2}
+        stroke={highlight ? config.EDGE_SELECTED_COLOR : config.EDGE_COLOR}
         strokeWidth='1'
         fill='none'
         d={path}
@@ -107,7 +107,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
         markerStart={isEntity && direction === 'backward' ? arrowRef : ''}
       />
       { highlight && (
-        <EdgeLabelRenderer center={center} labelText={edge.label} onClick={this.onClick} outlineColor={config.SELECTED_COLOR} textColor={config.VERTEX_COLOR}/>
+        <EdgeLabelRenderer center={center} labelText={edge.label} onClick={this.onClick} outlineColor={config.EDGE_SELECTED_COLOR} textColor={config.EDGE_COLOR}/>
       )}
     </g>
   }

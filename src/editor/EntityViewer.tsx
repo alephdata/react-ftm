@@ -5,6 +5,7 @@ import {SelectProperty} from './SelectProperty';
 import {PropertyEditor} from './PropertyEditor';
 import { PropertyName, PropertyValues} from '../types';
 import { SchemaIcon } from '../types';
+import {ColorPicker} from './ColorPicker'
 import c from 'classnames';
 
 
@@ -12,7 +13,9 @@ import './EntityViewer.scss';
 
 interface IEntityViewerProps {
   entity: Entity,
+  entityColor?: string,
   onEntityChanged: (entity: Entity) => void
+  onEntityColorSelected: (entity: Entity, color: string) => void
 }
 
 interface IEntityViewerState {
@@ -35,6 +38,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
 
     this.onNewPropertySelected = this.onNewPropertySelected.bind(this);
     this.renderProperty = this.renderProperty.bind(this);
+    this.onEntityColorSelected = this.onEntityColorSelected.bind(this)
   }
 
   getVisibleProperties(props = this.props) {
@@ -71,6 +75,10 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     this.setState({
       currEditing: null
     })
+  }
+
+  onEntityColorSelected(color: string) {
+    this.props.onEntityColorSelected(this.props.entity, color)
   }
 
   renderProperty(property:Property){
@@ -110,7 +118,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   render() {
-    const { entity } = this.props;
+    const { entity, entityColor } = this.props;
     const { visibleProps } = this.state;
     const availableProperties = this.schemaProperties.filter(p => visibleProps.indexOf(p) < 0);
     return (
@@ -120,7 +128,13 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
           <div className='EntityViewer__title'>
             <SchemaIcon size={60} schema={entity.schema} />
             <h2 className='EntityViewer__title__text'>{entity.getCaption()}</h2>
+            {entityColor &&
+              <ColorPicker
+                entityColor={entityColor}
+                onSelect={this.onEntityColorSelected} />
+            }
           </div>
+
           <UL className={c('EntityViewer__property-list', Classes.LIST_UNSTYLED)}>
             {visibleProps.map(this.renderProperty)}
           </UL>
