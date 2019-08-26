@@ -82,6 +82,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
               selectEdge={this.selectElement}
               groupEdgeCount={edgeGroup.length}
               offsetIndex={i}
+              direction={edge.sourceId === vertex1Id ? 'backward' : 'forward'}
             />
         })
       allEdges.push(edges)

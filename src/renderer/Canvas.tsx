@@ -256,6 +256,16 @@ export class Canvas extends React.Component <ICanvasProps> {
           <pattern id="grid" width={viewport.config.gridUnit} height={viewport.config.gridUnit} patternUnits="userSpaceOnUse">
             <path d={grid} fill="none" stroke={Colors.LIGHT_GRAY3} strokeWidth="0.5"/>
           </pattern>
+          <marker id="arrow" viewBox="0 0 10 10" refX="28" refY="5"
+              markerWidth="5" markerHeight="5"
+              orient="auto-start-reverse" fill={Colors.GRAY2}>
+            <path d="M 0 0 L 10 5 L 0 10 z" />
+          </marker>
+          <marker id="arrow-selected" viewBox="0 0 10 10" refX="28" refY="5"
+              markerWidth="5" markerHeight="5"
+              orient="auto-start-reverse" fill={viewport.config.SELECTED_COLOR}>
+            <path d="M 0 0 L 10 5 L 0 10 z" />
+          </marker>
           <filter x="0" y="0" width="1" height="1" id="solid">
             <feFlood floodColor="#ffffff"/>
             <feComposite in="SourceGraphic"/>

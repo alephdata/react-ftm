@@ -13,7 +13,8 @@ interface IEdgeRendererProps {
   highlight: boolean,
   groupEdgeCount: number,
   selectEdge: (edge: Edge, additional?: boolean) => any,
-  offsetIndex: number
+  offsetIndex: number,
+  direction: string
 }
 
 const linkCurveOffset = 30;
@@ -70,7 +71,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
 
 
   render() {
-    const { edge, vertex1, vertex2, config, highlight } = this.props;
+    const { edge, vertex1, vertex2, config, highlight, direction } = this.props;
     if (!vertex1 || !vertex2 || vertex1.hidden || vertex2.hidden) {
       return null;
     }
@@ -84,6 +85,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
       pointerEvents:'none'
     }
     const {path, center} = this.generatePath(vertex1Position, vertex2Position)
+    const arrowRef = highlight ? "url(#arrow-selected)" : "url(#arrow)"
     return <g className="edge">
       <path
         stroke="rgba(0,0,0,0)"
@@ -99,6 +101,8 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
         fill='none'
         d={path}
         style={lineStyles}
+        markerEnd={direction === 'forward' ? arrowRef : ''}
+        markerStart={direction === 'backward' ? arrowRef : ''}
       />
       { highlight && (
         <EdgeLabelRenderer center={center} labelText={edge.label} onClick={this.onClick} outlineColor={config.SELECTED_COLOR} textColor={config.VERTEX_COLOR}/>
