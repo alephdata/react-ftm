@@ -19,16 +19,11 @@ interface IGraphRendererProps extends IGraphContext {
 export class GraphRenderer extends React.Component<IGraphRendererProps> {
   constructor(props: any) {
     super(props)
-    this.updateViewport = this.updateViewport.bind(this);
     this.selectElement = this.selectElement.bind(this);
     this.selectArea = this.selectArea.bind(this);
     this.dragSelection = this.dragSelection.bind(this);
     this.dropSelection = this.dropSelection.bind(this);
     this.clearSelection = this.clearSelection.bind(this);
-  }
-
-  updateViewport(viewport: Viewport) {
-    this.props.updateViewport(viewport)
   }
 
   dragSelection(offset: Point) {
@@ -124,7 +119,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
               selectArea={this.selectArea}
               interactionMode={interactionMode}
               clearSelection={this.clearSelection}
-              updateViewport={this.updateViewport}
+              updateViewport={this.props.updateViewport}
               animateTransition={animateTransition}
               actions={actions}>
         {interactionMode === modes.EDGE_DRAW &&

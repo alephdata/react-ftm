@@ -16,7 +16,7 @@ interface ICanvasProps {
   interactionMode: string,
   selectArea: (area: Rectangle) => any,
   clearSelection: () => any,
-  updateViewport: (viewport: Viewport) => any,
+  updateViewport: (viewport: Viewport, transitionSettings?: any) => any,
   animateTransition: boolean,
   actions: any
 }
@@ -33,7 +33,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     this.onDragEnd = this.onDragEnd.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
     this.onKeyUp = this.onKeyUp.bind(this)
-    this.onZoom = this.onZoom.bind(this)
+    this.onMouseZoom = this.onMouseZoom.bind(this)
     this.onDoubleClick = this.onDoubleClick.bind(this)
     this.onResize = this.onResize.bind(this)
     this.selectionRef = React.createRef()
@@ -45,7 +45,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     this.onResize()
     const svg = this.props.svgRef.current;
     if (svg !== null) {
-      svg.addEventListener('wheel', this.onZoom)
+      svg.addEventListener('wheel', this.onMouseZoom)
       svg.addEventListener('dblclick', this.onDoubleClick)
       svg.addEventListener('keydown', this.onKeyDown)
       svg.addEventListener('keyup', this.onKeyUp)
@@ -57,7 +57,7 @@ export class Canvas extends React.Component <ICanvasProps> {
   componentWillUnmount() {
     const svg = this.props.svgRef.current;
     if (svg !== null) {
-      svg.removeEventListener('wheel', this.onZoom)
+      svg.removeEventListener('wheel', this.onMouseZoom)
       svg.removeEventListener('dblclick', this.onDoubleClick)
       window.removeEventListener('resize', this.onResize)
       svg.removeEventListener('keydown', this.onKeyDown)
@@ -123,9 +123,16 @@ export class Canvas extends React.Component <ICanvasProps> {
       case 'Backspace':
         actions.removeSelection()
         return
+      case 'Equal':
+        this.onKeyZoom(e, 'in')
+        return
+      case 'Minus':
+        this.onKeyZoom(e, 'out')
+        return
       case 'Space':
         this.props.actions.setInteractionMode(modes.SELECT)
         return
+
     }
   }
 
@@ -153,7 +160,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     this.dragExtent = this.dragInitial
   }
 
-  private onZoom(event: MouseWheelEvent) {
+  private onMouseZoom(event: MouseWheelEvent) {
     event.preventDefault()
     event.stopPropagation()
     const { viewport } = this.props
@@ -163,6 +170,14 @@ export class Canvas extends React.Component <ICanvasProps> {
     const gridTarget = viewport.config.pixelToGrid(target)
     const newViewport = viewport.zoomToPoint(gridTarget, direction)
     this.props.updateViewport(newViewport)
+  }
+
+  private onKeyZoom(event: KeyboardEvent, direction: string) {
+    event.preventDefault()
+    event.stopPropagation()
+    const { viewport } = this.props
+    const newViewport = viewport.zoomToPoint(viewport.center, direction === 'in' ? -3 : 3)
+    this.props.updateViewport(newViewport, {animate: true})
   }
 
   private onDoubleClick(event: MouseEvent) {
