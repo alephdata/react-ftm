@@ -3,6 +3,7 @@ import {Entity} from '@alephdata/followthemoney';
 import {IGraphContext} from './GraphContext'
 import {EntityViewer} from "./editor/EntityViewer";
 import {EntityList} from "./editor/EntityList";
+import {Vertex} from './layout'
 
 import './Sidebar.scss';
 
@@ -13,7 +14,7 @@ export class Sidebar extends React.Component<IGraphContext> {
     super(props);
     this.appendToLayout  = this.appendToLayout.bind(this);
     this.onEntitySelected = this.onEntitySelected.bind(this);
-    this.setEntityColor = this.setEntityColor.bind(this)
+    this.setVertexColor = this.setVertexColor.bind(this)
   }
 
   appendToLayout(entity: Entity) {
@@ -22,9 +23,8 @@ export class Sidebar extends React.Component<IGraphContext> {
     this.props.updateLayout(layout, {modifyHistory:true})
   }
 
-  setEntityColor(entity: Entity, color: string) {
+  setVertexColor(vertex: Vertex, color: string) {
     const { layout, updateLayout } = this.props
-    const vertex = layout.getVertexByEntity(entity)
     if (vertex) {
       layout.vertices.set(vertex.id, vertex.setColor(color))
       updateLayout(layout, {modifyHistory:true})
@@ -34,7 +34,6 @@ export class Sidebar extends React.Component<IGraphContext> {
   onEntitySelected(entity:Entity){
     const { layout } = this.props;
     const vertexToSelect = layout.getVertexByEntity(entity);
-    console.log('in on entityselected', vertexToSelect)
     if(vertexToSelect) {
       layout.selectElement(vertexToSelect)
       this.props.updateLayout(layout)
@@ -48,18 +47,15 @@ export class Sidebar extends React.Component<IGraphContext> {
 
     if (selection.length === 1) {
       const entity = selection[0]
-      let entityColor
+      let vertexRef
       if (!entity.schema.edge) {
-        const vertex = layout.getVertexByEntity(entity)
-        if (vertex) {
-          entityColor = vertex.color
-        }
+        vertexRef = layout.getVertexByEntity(entity)
       }
       contents = <EntityViewer
         entity={entity}
-        entityColor={entityColor}
         onEntityChanged={this.appendToLayout}
-        onEntityColorSelected={this.setEntityColor}
+        vertexRef={vertexRef}
+        onVertexColorSelected={this.setVertexColor}
       />
     } else if (selection.length){
       contents = <EntityList entities={selection} onEntitySelected={this.onEntitySelected} />

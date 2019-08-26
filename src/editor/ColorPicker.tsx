@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Colors } from '@blueprintjs/core';
-import c from 'classnames';
+import { Vertex } from '../layout'
 
 import './ColorPicker.scss';
 
@@ -9,35 +9,26 @@ const colorOptions = [
 ]
 
 interface IColorPickerProps {
-  entityColor: string
-  onSelect: (color: string) => void
-}
-
-interface IColorPickerState {
-  selectedColor: string
+  vertex: Vertex
+  onSelect: (vertex: Vertex, color: string) => void
 }
 
 
-export class ColorPicker extends React.PureComponent<IColorPickerProps, IColorPickerState> {
+export class ColorPicker extends React.PureComponent<IColorPickerProps> {
   constructor(props: IColorPickerProps) {
     super(props);
-
-    this.state = {
-      selectedColor: props.entityColor
-    }
 
     this.renderColor = this.renderColor.bind(this);
   }
 
   renderColor(color: string) {
-    const { entityColor, onSelect } = this.props
-    console.log(entityColor, color, entityColor === color)
+    const { vertex, onSelect } = this.props
     const style = {
       backgroundColor: Colors[`${color}1`],
-      border: entityColor === color ? '3px solid white' : '1px solid white'
+      border: vertex.color === color ? '3px solid white' : '1px solid white'
     }
     return (
-      <div key={color} className='ColorPicker__item' onClick={() => onSelect(color)}>
+      <div key={color} className='ColorPicker__item' onClick={() => onSelect(vertex, color)}>
         <div
           className='ColorPicker__item__swatch'
           style={style}>
