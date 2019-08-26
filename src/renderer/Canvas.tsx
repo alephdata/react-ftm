@@ -107,6 +107,12 @@ export class Canvas extends React.Component <ICanvasProps> {
 
   private onKeyDown(e: any) {
     const key = e.code;
+
+    switch (key) {
+      case 'Space':
+        this.props.actions.setInteractionMode(modes.PAN)
+        return
+    }
   }
 
   private onKeyUp(e: any) {
@@ -117,12 +123,13 @@ export class Canvas extends React.Component <ICanvasProps> {
       case 'Backspace':
         actions.removeSelection()
         return
+      case 'Space':
+        this.props.actions.setInteractionMode(modes.SELECT)
+        return
     }
   }
 
   onDragEnd(e: DraggableEvent, data: DraggableData) {
-    console.log('in on drag end')
-
     const { interactionMode, viewport } = this.props
     if (interactionMode === modes.SELECT) {
       const initial = viewport.config.pixelToGrid(this.dragInitial)
@@ -136,7 +143,6 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   onDragStart(e: DraggableEvent, data: DraggableData) {
-    console.log('in on drag start')
     const { interactionMode, clearSelection, actions } = this.props
     if (interactionMode === modes.EDGE_DRAW) {
       actions.setInteractionMode()
@@ -256,12 +262,12 @@ export class Canvas extends React.Component <ICanvasProps> {
           <pattern id="grid" width={viewport.config.gridUnit} height={viewport.config.gridUnit} patternUnits="userSpaceOnUse">
             <path d={grid} fill="none" stroke={Colors.LIGHT_GRAY3} strokeWidth="0.5"/>
           </pattern>
-          <marker id="arrow" viewBox="0 0 10 10" refX="28" refY="5"
+          <marker id="arrow" viewBox="0 0 10 10" refX="29" refY="5"
               markerWidth="5" markerHeight="5"
               orient="auto-start-reverse" fill={Colors.GRAY2}>
             <path d="M 0 0 L 10 5 L 0 10 z" />
           </marker>
-          <marker id="arrow-selected" viewBox="0 0 10 10" refX="28" refY="5"
+          <marker id="arrow-selected" viewBox="0 0 10 10" refX="29" refY="5"
               markerWidth="5" markerHeight="5"
               orient="auto-start-reverse" fill={viewport.config.SELECTED_COLOR}>
             <path d="M 0 0 L 10 5 L 0 10 z" />
