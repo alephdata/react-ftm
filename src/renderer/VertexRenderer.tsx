@@ -102,8 +102,11 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     const { vertex, config, selected, interactionMode } = this.props
     const { hovered } = this.state
     const { x, y } = config.gridToPixel(vertex.position)
+    const isEntity = vertex.isEntity()
+    const vertexRadius = isEntity ? config.gridUnit * config.VERTEX_RADIUS : config.gridUnit * config.VERTEX_RADIUS / 2
     const translate = `translate(${x} ${y})`
-    const labelPosition = new Point(0, config.VERTEX_RADIUS * config.gridUnit + config.gridUnit/2)
+    const labelPosition = new Point(0, vertexRadius + config.gridUnit/2)
+    const vertexColor = selected || hovered ? config.SELECTED_COLOR : config.VERTEX_COLOR
     const groupStyles: React.CSSProperties = {
       cursor: selected ? 'grab' : 'pointer',
     }
@@ -117,8 +120,9 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
         <g className='vertex' transform={translate} ref={this.gRef} style={groupStyles}>
           <circle
             className="handle"
-            r={config.gridUnit * config.VERTEX_RADIUS}
-            fill={selected || hovered ? config.SELECTED_COLOR : config.VERTEX_COLOR}
+            r={vertexRadius}
+            fill={isEntity ? vertexColor : 'white'}
+            stroke={isEntity ? 'none' : vertexColor}
             onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}
             />
           <VertexLabelRenderer center={labelPosition} label={vertex.label} onClick={this.onClick} color={selected ? config.SELECTED_COLOR : config.VERTEX_COLOR}/>

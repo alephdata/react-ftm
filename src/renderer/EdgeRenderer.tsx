@@ -75,8 +75,10 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     if (!vertex1 || !vertex2 || vertex1.hidden || vertex2.hidden) {
       return null;
     }
+    const isEntity = edge.isEntity()
     const vertex1Position = config.gridToPixel(vertex1.position)
     const vertex2Position = config.gridToPixel(vertex2.position)
+    const {path, center} = this.generatePath(vertex1Position, vertex2Position)
 
     const clickableLineStyles: React.CSSProperties = {
       cursor: 'pointer'
@@ -84,7 +86,6 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     const lineStyles: React.CSSProperties = {
       pointerEvents:'none'
     }
-    const {path, center} = this.generatePath(vertex1Position, vertex2Position)
     const arrowRef = highlight ? "url(#arrow-selected)" : "url(#arrow)"
     return <g className="edge">
       <path
@@ -100,9 +101,10 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
         strokeWidth='1'
         fill='none'
         d={path}
+        strokeDasharray={isEntity ? '0' : '1'}
         style={lineStyles}
-        markerEnd={direction === 'forward' ? arrowRef : ''}
-        markerStart={direction === 'backward' ? arrowRef : ''}
+        markerEnd={isEntity && direction === 'forward' ? arrowRef : ''}
+        markerStart={isEntity && direction === 'backward' ? arrowRef : ''}
       />
       { highlight && (
         <EdgeLabelRenderer center={center} labelText={edge.label} onClick={this.onClick} outlineColor={config.SELECTED_COLOR} textColor={config.VERTEX_COLOR}/>

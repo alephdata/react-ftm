@@ -125,7 +125,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   render() {
-    const { config, layout, viewport} = this.props;
+    const { config, layout, viewport } = this.props;
     const { animateTransition, interactionMode } = this.state;
     const vertices = layout.getSelectedVertices()
     const [sourceVertex, targetVertex] = vertices
