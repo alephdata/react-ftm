@@ -51,10 +51,27 @@ export class EntityEdit extends React.PureComponent<IEntityTypeProps> {
     this.props.onPropertyChanged(nextValues, this.props.property)
   }
 
+  getItemsList() {
+    const { property, entity } = this.props;
+    console.log(entity)
+
+    let excludeIds: string[] = []
+
+    // exclude source and target entities from options (to avoid self-referential edges)
+    if (entity.schema.edge) {
+      const {source, target} = entity.schema.edge
+      const sourceProp = entity.schema.getProperty(source)
+      const targetProp = entity.schema.getProperty(target)
+      const sourceEntities = entity.properties.get(sourceProp) as Entity[]
+      const targetEntities = entity.properties.get(targetProp) as Entity[]
+      excludeIds = [...sourceEntities, ...targetEntities].map(e => e.id)
+    }
+    return Array.from(this.props.entities.values())
+      .filter(e => e.schema.isA(property.getRange()) && !this.props.values.includes(e.id) && excludeIds.indexOf(e.id) === -1);
+  }
+
   render() {
-    const { property } = this.props;
-    const items = Array.from(this.props.entities.values())
-      .filter(e => e.schema.isA(property.getRange()) && !this.props.values.includes(e.id));
+    const items = this.getItemsList()
     const selectedEntity = this.ensureInstance()[0];
     const buttonText = selectedEntity ? selectedEntity.getCaption() : 'Select from list?';
 

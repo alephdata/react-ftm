@@ -76,11 +76,17 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   onClick(e: any) {
-    const { vertex, selectVertex, interactionMode, actions } = this.props
+    const { vertex, selected, selectVertex, interactionMode, actions } = this.props
     if (interactionMode === modes.EDGE_DRAW) {
-      selectVertex(vertex, true)
-      actions.setInteractionMode(modes.EDGE_CREATE)
-      return
+      // can't draw link to self
+      if (selected) {
+        actions.setInteractionMode(modes.SELECT)
+        return
+      } else {
+        selectVertex(vertex, true)
+        actions.setInteractionMode(modes.EDGE_CREATE)
+        return
+      }
     }
     selectVertex(vertex, e.shiftKey)
   }
