@@ -5,7 +5,7 @@ import { Vertex } from '../layout'
 import './ColorPicker.scss';
 
 const colorOptions = [
-  Colors.BLUE2, Colors.GREEN2, Colors.ORANGE2, Colors.RED2, Colors.VIOLET2, Colors.TURQUOISE2
+  Colors.BLUE1, Colors.GREEN1, Colors.ORANGE1, Colors.RED1, Colors.VIOLET1, Colors.TURQUOISE1
 ]
 
 interface IColorPickerProps {
