@@ -126,7 +126,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
 
     const vertexColor = this.getColor()
     const groupStyles: React.CSSProperties = {
-      cursor: selected ? 'grab' : 'pointer',
+      cursor: 'pointer'
     }
 
     return (
