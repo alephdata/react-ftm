@@ -12,7 +12,6 @@ export interface IGraphLayoutData {
   vertices: Array<any>
   edges: Array<any>
   selection: Array<string>
-  selectionMode: boolean
 }
 
 export type VertexPredicate = (vertex: Vertex) => boolean
@@ -26,7 +25,6 @@ export class GraphLayout {
   edges = new Map<string, Edge>()
   entities = new Map<string, Entity>()
   selection = new Array<string>()
-  selectionMode: boolean = true
   private hasDraggedSelection = false
 
   constructor(config: GraphConfig, model: Model) {
@@ -287,8 +285,7 @@ export class GraphLayout {
       entities: this.getEntities().map((entity) => entity.toJSON()),
       vertices: this.getVertices().map((vertex) => vertex.toJSON()),
       edges: this.getEdges().map((edge) => edge.toJSON()),
-      selection: this.selection,
-      selectionMode: this.selectionMode
+      selection: this.selection
     }
   }
 
@@ -307,7 +304,6 @@ export class GraphLayout {
       layout.edges.set(edge.id, edge)
     })
     layout.generate()
-    layout.selectionMode = layoutData.selectionMode
     layout.selection = layoutData.selection
     return layout
   }

@@ -1,0 +1,7 @@
+export const modes = {
+  SELECT: 'SELECT',
+  PAN: 'PAN',
+  EDGE_DRAW: 'EDGE_DRAW',
+  EDGE_CREATE: 'EDGE_CREATE',
+  VERTEX_CREATE: 'VERTEX_CREATE'
+}

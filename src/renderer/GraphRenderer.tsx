@@ -4,27 +4,26 @@ import { Vertex, Point, Rectangle, Edge, GraphElement } from '../layout';
 import { IGraphContext } from '../GraphContext'
 import { Canvas } from './Canvas'
 import { EdgeRenderer } from './EdgeRenderer'
+import { EdgeDrawer } from './EdgeDrawer'
 import { VertexRenderer } from './VertexRenderer'
+import { modes } from '../interactionModes'
+
 
 interface IGraphRendererProps extends IGraphContext {
   svgRef: React.RefObject<SVGSVGElement>,
   animateTransition: boolean,
-  actions: any
+  actions: any,
+  interactionMode: string
 }
 
 export class GraphRenderer extends React.Component<IGraphRendererProps> {
   constructor(props: any) {
     super(props)
-    this.updateViewport = this.updateViewport.bind(this);
     this.selectElement = this.selectElement.bind(this);
     this.selectArea = this.selectArea.bind(this);
     this.dragSelection = this.dragSelection.bind(this);
     this.dropSelection = this.dropSelection.bind(this);
     this.clearSelection = this.clearSelection.bind(this);
-  }
-
-  updateViewport(viewport: Viewport) {
-    this.props.updateViewport(viewport)
   }
 
   dragSelection(offset: Point) {
@@ -72,12 +71,13 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
               key={edge.id}
               config={layout.config}
               edge={edge}
-              highlight={layout.isEdgeHighlighted(edge)}
+              highlight={layout.isEdgeHighlighted(edge) || layout.selection.length === 0}
               vertex1={vertex1}
               vertex2={vertex2}
               selectEdge={this.selectElement}
               groupEdgeCount={edgeGroup.length}
               offsetIndex={i}
+              direction={edge.sourceId === vertex1Id ? 'backward' : 'forward'}
             />
         })
       allEdges.push(edges)
@@ -86,33 +86,48 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   renderVertices() {
-    const { layout, actions } = this.props;
+    const { layout, actions, interactionMode } = this.props;
     const vertices = layout.getVertices().filter((vertex) => !vertex.isHidden())
     return vertices.map((vertex: Vertex) =>
       <VertexRenderer
         key={vertex.id}
         config={layout.config}
-        selected={layout.isElementSelected(vertex)}
+        selected={layout.isElementSelected(vertex) || layout.selection.length === 0}
         vertex={vertex}
         selectVertex={this.selectElement}
         dragSelection={this.dragSelection}
         dropSelection={this.dropSelection}
-        toggleAddEdge={actions.toggleAddEdge}
+        interactionMode={interactionMode}
+        actions={actions}
       />
     )
   }
 
+  getEdgeCreateSourcePoint() {
+    const vertices = this.props.layout.getSelectedVertices()
+    if (vertices && vertices.length) {
+      return this.props.viewport.config.gridToPixel(vertices[0].getPosition())
+    }
+  }
+
   render(){
-    const { svgRef, layout, viewport, animateTransition, actions } = this.props;
+    const { svgRef, layout, viewport, animateTransition, actions, interactionMode } = this.props;
+
     return (
       <Canvas svgRef={svgRef}
               viewport={viewport}
               selectArea={this.selectArea}
-              selectionMode={layout.selectionMode}
+              interactionMode={interactionMode}
               clearSelection={this.clearSelection}
-              updateViewport={this.updateViewport}
+              updateViewport={this.props.updateViewport}
               animateTransition={animateTransition}
               actions={actions}>
+        {interactionMode === modes.EDGE_DRAW &&
+          <EdgeDrawer
+            svgRef={svgRef}
+            viewport={viewport}
+            sourcePoint={this.getEdgeCreateSourcePoint()}/>
+        }
         {this.renderEdges()}
         {this.renderVertices()}
       </Canvas>

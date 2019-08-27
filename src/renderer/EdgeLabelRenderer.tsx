@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Point } from '../layout/Point'
+import { Colors } from '@blueprintjs/core';
 
 import './EdgeLabelRenderer.scss'
 
@@ -7,7 +8,8 @@ interface IEdgeLabelRendererProps {
   labelText: string,
   center: Point,
   onClick?: (e: any) => void,
-  color?: string
+  outlineColor?: string,
+  textColor?: string
 }
 
 interface IEdgeLabelRendererState {
@@ -29,18 +31,19 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
   }
 
   render() {
-    const { labelText, center, onClick, color } = this.props;
+    const { labelText, center, onClick, outlineColor, textColor } = this.props;
     const margin = 1.5;
     const extents = this.state.textExtents;
     const outline = extents ?
-         <rect className="EdgeLabel__outline"
-            x={-extents[0]/2-margin}
-            y={-extents[1]/2-margin}
-            rx={3}
-            stroke={color}
-            strokeWidth=".5px"
-            width={extents[0]+2*margin}
-            height={extents[1]+2*margin}></rect>
+           <rect className="EdgeLabel__outline"
+              x={-extents[0]/2-margin}
+              y={-extents[1]/2-margin}
+              rx={3}
+              stroke={outlineColor}
+              strokeWidth=".8px"
+              width={extents[0]+2*margin}
+              height={extents[1]+2*margin}>
+            </rect>
          : null;
 
     return <g
@@ -53,7 +56,7 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
           textAnchor="middle"
           dy={extents?(extents[1]/4):0}
           className="EdgeLabel__text"
-          fill={color}>
+          fill={textColor}>
           {labelText}
         </text>
       </g>;

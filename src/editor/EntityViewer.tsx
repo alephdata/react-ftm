@@ -5,6 +5,8 @@ import {SelectProperty} from './SelectProperty';
 import {PropertyEditor} from './PropertyEditor';
 import { PropertyName, PropertyValues} from '../types';
 import { SchemaIcon } from '../types';
+import { Vertex } from '../layout'
+import {ColorPicker} from './ColorPicker'
 import c from 'classnames';
 
 
@@ -12,7 +14,9 @@ import './EntityViewer.scss';
 
 interface IEntityViewerProps {
   entity: Entity,
+  vertexRef?: Vertex,
   onEntityChanged: (entity: Entity) => void
+  onVertexColorSelected: (vertex: Vertex, color: string) => void
 }
 
 interface IEntityViewerState {
@@ -110,7 +114,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   render() {
-    const { entity } = this.props;
+    const { entity, vertexRef } = this.props;
     const { visibleProps } = this.state;
     const availableProperties = this.schemaProperties.filter(p => visibleProps.indexOf(p) < 0);
     return (
@@ -120,7 +124,13 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
           <div className='EntityViewer__title'>
             <SchemaIcon size={60} schema={entity.schema} />
             <h2 className='EntityViewer__title__text'>{entity.getCaption()}</h2>
+            {vertexRef &&
+              <ColorPicker
+                vertex={vertexRef}
+                onSelect={this.props.onVertexColorSelected} />
+            }
           </div>
+
           <UL className={c('EntityViewer__property-list', Classes.LIST_UNSTYLED)}>
             {visibleProps.map(this.renderProperty)}
           </UL>

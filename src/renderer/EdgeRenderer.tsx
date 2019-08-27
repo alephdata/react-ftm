@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { Colors } from '@blueprintjs/core';
 import { GraphConfig } from '../GraphConfig';
 import { Edge, Vertex, Point } from '../layout'
 import { EdgeLabelRenderer } from './EdgeLabelRenderer';
+import { Colors } from '@blueprintjs/core';
 
 
 interface IEdgeRendererProps {
@@ -13,10 +13,11 @@ interface IEdgeRendererProps {
   highlight: boolean,
   groupEdgeCount: number,
   selectEdge: (edge: Edge, additional?: boolean) => any,
-  offsetIndex: number
+  offsetIndex: number,
+  direction: string
 }
 
-const linkCurveOffset = 20;
+const linkCurveOffset = 30;
 
 export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
   constructor(props: Readonly<IEdgeRendererProps>) {
@@ -70,27 +71,43 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
 
 
   render() {
-    const { edge, vertex1, vertex2, config, highlight } = this.props;
+    const { edge, vertex1, vertex2, config, highlight, direction } = this.props;
     if (!vertex1 || !vertex2 || vertex1.hidden || vertex2.hidden) {
       return null;
     }
+    const isEntity = edge.isEntity()
     const vertex1Position = config.gridToPixel(vertex1.position)
     const vertex2Position = config.gridToPixel(vertex2.position)
-    const lineStyles: React.CSSProperties = {
+    const {path, center} = this.generatePath(vertex1Position, vertex2Position)
+
+    const clickableLineStyles: React.CSSProperties = {
       cursor: 'pointer'
     }
-    const {path, center} = this.generatePath(vertex1Position, vertex2Position)
+    const lineStyles: React.CSSProperties = {
+      pointerEvents:'none'
+    }
+    const arrowRef = highlight ?  "url(#arrow)" : "url(#arrow-unselected)"
     return <g className="edge">
       <path
-        stroke={highlight ? config.SELECTED_COLOR : Colors.GRAY2}
-        strokeWidth='1'
+        stroke="rgba(0,0,0,0)"
+        strokeWidth='4'
         fill='none'
         d={path}
         onClick={this.onClick}
+        style={clickableLineStyles}
+      />
+      <path
+        stroke={highlight ? config.EDGE_COLOR : config.UNSELECTED_COLOR}
+        strokeWidth='1'
+        fill='none'
+        d={path}
+        strokeDasharray={isEntity ? '0' : '1'}
         style={lineStyles}
+        markerEnd={isEntity && direction === 'forward' ? arrowRef : ''}
+        markerStart={isEntity && direction === 'backward' ? arrowRef : ''}
       />
       { highlight && (
-        <EdgeLabelRenderer center={center} labelText={edge.label} onClick={this.onClick} color={config.SELECTED_COLOR}/>
+        <EdgeLabelRenderer center={center} labelText={edge.label} onClick={this.onClick} outlineColor={config.EDGE_COLOR} textColor={config.EDGE_COLOR}/>
       )}
     </g>
   }
