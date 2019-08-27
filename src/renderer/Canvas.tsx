@@ -282,9 +282,9 @@ export class Canvas extends React.Component <ICanvasProps> {
               orient="auto-start-reverse" fill={viewport.config.EDGE_COLOR}>
             <path d="M 0 0 L 10 5 L 0 10 z" />
           </marker>
-          <marker id="arrow-selected" viewBox="0 0 10 10" refX="29" refY="5"
+          <marker id="arrow-unselected" viewBox="0 0 10 10" refX="29" refY="5"
               markerWidth="5" markerHeight="5"
-              orient="auto-start-reverse" fill={viewport.config.EDGE_SELECTED_COLOR}>
+              orient="auto-start-reverse" fill={viewport.config.UNSELECTED_COLOR}>
             <path d="M 0 0 L 10 5 L 0 10 z" />
           </marker>
           <filter x="0" y="0" width="1" height="1" id="solid">

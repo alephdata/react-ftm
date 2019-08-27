@@ -5,7 +5,7 @@ import { Vertex } from '../layout'
 import './ColorPicker.scss';
 
 const colorOptions = [
-  'BLUE', 'GREEN', 'ORANGE', 'RED', 'VIOLET', 'TURQUOISE'
+  Colors.BLUE2, Colors.GREEN2, Colors.ORANGE2, Colors.RED2, Colors.VIOLET2, Colors.TURQUOISE2
 ]
 
 interface IColorPickerProps {
@@ -24,7 +24,7 @@ export class ColorPicker extends React.PureComponent<IColorPickerProps> {
   renderColor(color: string) {
     const { vertex, onSelect } = this.props
     const style = {
-      backgroundColor: Colors[`${color}1`],
+      backgroundColor: color,
       border: vertex.color === color ? '3px solid white' : '1px solid white'
     }
     return (

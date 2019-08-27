@@ -71,7 +71,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
               key={edge.id}
               config={layout.config}
               edge={edge}
-              highlight={layout.isEdgeHighlighted(edge)}
+              highlight={layout.isEdgeHighlighted(edge) || layout.selection.length === 0}
               vertex1={vertex1}
               vertex2={vertex2}
               selectEdge={this.selectElement}
@@ -92,7 +92,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
       <VertexRenderer
         key={vertex.id}
         config={layout.config}
-        selected={layout.isElementSelected(vertex)}
+        selected={layout.isElementSelected(vertex) || layout.selection.length === 0}
         vertex={vertex}
         selectVertex={this.selectElement}
         dragSelection={this.dragSelection}

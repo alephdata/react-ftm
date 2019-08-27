@@ -103,11 +103,11 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     const { vertex, config, selected } = this.props
     const { hovered } = this.state
 
-    const baseColor = vertex.color || config.DEFAULT_VERTEX_COLOR
-    const suffix = selected || hovered ? '5' : '1'
-    const colorCode = `${baseColor}${suffix}`
-
-    return Colors[colorCode]
+    if (selected || hovered) {
+      return vertex.color || config.DEFAULT_VERTEX_COLOR
+    } else {
+      return config.UNSELECTED_COLOR
+    }
   }
 
   render() {
