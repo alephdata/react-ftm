@@ -120,10 +120,12 @@ export class GraphLayout {
   }
 
   selectElement(element: GraphElement, additional: boolean = false) {
-    if (additional) {
-      this.selection = [element.id, ...this.selection]
-    } else {
-      this.selection = [element.id]
+    if (!this.isElementSelected(element)) {
+      if (additional) {
+        this.selection = [element.id, ...this.selection]
+      } else {
+        this.selection = [element.id]
+      }
     }
   }
 
@@ -165,6 +167,11 @@ export class GraphLayout {
       .map((edgeId) => this.edges.get(edgeId)) as Edge[]
   }
 
+  getHighlightedEdges(): Edge[] {
+    return this.getEdges()
+      .filter(edge => this.isEdgeHighlighted(edge))
+  }
+
   getEdgeGroups() {
     const edges = Array.from(this.edges.values()).filter((edge) => !edge.isHidden())
     return groupBy(edges, (edge:Edge) => {
@@ -191,22 +198,26 @@ export class GraphLayout {
   }
 
   dragSelection(offset: Point) {
-    console.log('in drag selection', offset);
     this.getSelectedVertices().forEach((vertex) => {
       const position = vertex.position.addition(offset)
       this.vertices.set(vertex.id, vertex.setPosition(position))
     })
-    this.getSelectedEdges().forEach((edge) => {
-      let labelPosition;
-      if (edge.labelPosition) {
-        labelPosition = edge.labelPosition.addition(offset)
-      } else {
-        labelPosition = offset
-      }
 
-      this.edges.set(edge.id, edge.setLabelPosition(labelPosition))
+    this.getHighlightedEdges().forEach((edge) => {
+      this.dragEdgeLabel(edge, offset)
     })
+
     this.hasDraggedSelection = true
+  }
+
+  dragEdgeLabel(edge: Edge, offset: Point) {
+    let labelPosition;
+    if (edge.labelPosition) {
+      labelPosition = edge.labelPosition.addition(offset)
+    } else {
+      labelPosition = offset
+    }
+    this.edges.set(edge.id, edge.setLabelPosition(labelPosition))
   }
 
   dropSelection() {
@@ -263,6 +274,7 @@ export class GraphLayout {
         return n
       })
     const links = this.getEdges().map((edge) => {
+      console.log(edge);
       return {
         source: nodes.find((n) => n.id === edge.sourceId),
         target: nodes.find((n) => n.id === edge.targetId)

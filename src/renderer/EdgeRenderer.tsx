@@ -68,8 +68,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     // location of control point:
     if (edge.labelPosition) {
       const test = Bezier.quadraticFromPoints(vertex1, config.gridToPixel(edge.labelPosition), vertex2, .5);
-      // (1 - t)^2 * P0 + 2 * (1 - t) * t * P1 + t^2 * P2
-      console.log(test);
+
       c1x = test.points[1].x
       c1y = test.points[1].y
 

@@ -91,6 +91,10 @@ export class Edge {
 
   update(other: Edge): Edge {
     const data = other.toJSON()
+    if (this.labelPosition) {
+      data.labelPosition = this.labelPosition.toJSON()
+    }
+
     // TODO: remove if there are no changes
     return Edge.fromJSON(this.layout, data)
   }
@@ -105,6 +109,7 @@ export class Edge {
 
   setLabelPosition(labelPosition?: Point): Edge {
     const edge = this.clone()
+
     edge.labelPosition = labelPosition
     // vertex.fixed = true
     return edge
