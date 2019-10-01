@@ -75,6 +75,8 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
               vertex1={vertex1}
               vertex2={vertex2}
               selectEdge={this.selectElement}
+              dragSelection={this.dragSelection}
+              dropSelection={this.dropSelection}
               groupEdgeCount={edgeGroup.length}
               offsetIndex={i}
               direction={edge.sourceId === vertex1Id ? 'backward' : 'forward'}
@@ -113,6 +115,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   render(){
     const { svgRef, layout, viewport, animateTransition, actions, interactionMode } = this.props;
 
+    console.log(layout)
     return (
       <Canvas svgRef={svgRef}
               viewport={viewport}

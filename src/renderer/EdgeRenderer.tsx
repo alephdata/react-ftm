@@ -1,4 +1,5 @@
 import * as React from 'react'
+import Bezier from 'bezier-js'
 import { GraphConfig } from '../GraphConfig';
 import { Edge, Vertex, Point } from '../layout'
 import { EdgeLabelRenderer } from './EdgeLabelRenderer';
@@ -13,6 +14,8 @@ interface IEdgeRendererProps {
   highlight: boolean,
   groupEdgeCount: number,
   selectEdge: (edge: Edge, additional?: boolean) => any,
+  dragSelection: (offset: Point) => any,
+  dropSelection: () => any,
   offsetIndex: number,
   direction: string
 }
@@ -45,6 +48,9 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
   }
 
   generatePath(vertex1: any, vertex2: any) {
+    const { edge, config } = this.props
+    let center, c1x, c1y, labelx, labely;
+
     // mid-point of line:
     const mpx = (vertex2.x + vertex1.x) * 0.5;
     const mpy = (vertex2.y + vertex1.y) * 0.5;
@@ -54,24 +60,38 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
 
     // distance of control point from mid-point of line:
     const offset = this.calcOffset()
-
-    // location of control point:
     const controlXDist = offset * Math.cos(theta)
     const controlYDist = offset * Math.sin(theta)
-    const c1x = mpx - controlXDist;
-    const c1y = mpy - controlYDist;
-    const labelx = mpx - controlXDist/2;
-    const labely = mpy - controlYDist/2;
+
+    console.log()
+
+    // location of control point:
+    if (edge.labelPosition) {
+      const test = Bezier.quadraticFromPoints(vertex1, config.gridToPixel(edge.labelPosition), vertex2, .5);
+      // (1 - t)^2 * P0 + 2 * (1 - t) * t * P1 + t^2 * P2
+      console.log(test);
+      c1x = test.points[1].x
+      c1y = test.points[1].y
+
+      center = edge.labelPosition
+    } else {
+      c1x = mpx - controlXDist;
+      c1y = mpy - controlYDist;
+      labelx = mpx - controlXDist/2;
+      labely = mpy - controlYDist/2;
+
+      center = config.pixelToGrid(new Point(labelx, labely))
+    }
 
     return {
       path:"M" + vertex1.x + " " + vertex1.y + " Q " + c1x + " " + c1y + " " + vertex2.x + " " + vertex2.y,
-      center: new Point(labelx, labely)
+      center: center
     }
   }
 
 
   render() {
-    const { edge, vertex1, vertex2, config, highlight, direction } = this.props;
+    const { edge, vertex1, vertex2, config, highlight, direction, dragSelection, dropSelection } = this.props;
     if (!vertex1 || !vertex2 || vertex1.hidden || vertex2.hidden) {
       return null;
     }
@@ -87,28 +107,38 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
       pointerEvents:'none'
     }
     const arrowRef = highlight ?  "url(#arrow)" : "url(#arrow-unselected)"
-    return <g className="edge">
-      <path
-        stroke="rgba(0,0,0,0)"
-        strokeWidth='4'
-        fill='none'
-        d={path}
-        onClick={this.onClick}
-        style={clickableLineStyles}
-      />
-      <path
-        stroke={highlight ? config.EDGE_COLOR : config.UNSELECTED_COLOR}
-        strokeWidth='1'
-        fill='none'
-        d={path}
-        strokeDasharray={isEntity ? '0' : '1'}
-        style={lineStyles}
-        markerEnd={isEntity && direction === 'forward' ? arrowRef : ''}
-        markerStart={isEntity && direction === 'backward' ? arrowRef : ''}
-      />
+    return <React.Fragment>
+      <g className="edge">
+        <path
+          stroke="rgba(0,0,0,0)"
+          strokeWidth='4'
+          fill='none'
+          d={path}
+          onClick={this.onClick}
+          style={clickableLineStyles}
+        />
+        <path
+          stroke={highlight ? config.EDGE_COLOR : config.UNSELECTED_COLOR}
+          strokeWidth='1'
+          fill='none'
+          d={path}
+          strokeDasharray={isEntity ? '0' : '1'}
+          style={lineStyles}
+          markerEnd={isEntity && direction === 'forward' ? arrowRef : ''}
+          markerStart={isEntity && direction === 'backward' ? arrowRef : ''}
+        />
+      </g>
       { highlight && (
-        <EdgeLabelRenderer center={center} labelText={edge.label} onClick={this.onClick} outlineColor={config.EDGE_COLOR} textColor={config.EDGE_COLOR}/>
+        <EdgeLabelRenderer
+          config={config}
+          center={center}
+          labelText={edge.label}
+          onClick={this.onClick}
+          dragSelection={dragSelection}
+          dropSelection={dropSelection}
+          outlineColor={config.EDGE_COLOR}
+          textColor={config.EDGE_COLOR}/>
       )}
-    </g>
+    </React.Fragment>
   }
 }

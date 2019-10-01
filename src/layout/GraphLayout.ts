@@ -1,5 +1,6 @@
 import { Entity, Model, IEntityDatum } from '@alephdata/followthemoney'
 import { forceSimulation, forceLink, forceCollide } from 'd3-force';
+import { DraggableEvent } from 'react-draggable';
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
 import { Point } from './Point';
@@ -190,9 +191,20 @@ export class GraphLayout {
   }
 
   dragSelection(offset: Point) {
+    console.log('in drag selection', offset);
     this.getSelectedVertices().forEach((vertex) => {
       const position = vertex.position.addition(offset)
       this.vertices.set(vertex.id, vertex.setPosition(position))
+    })
+    this.getSelectedEdges().forEach((edge) => {
+      let labelPosition;
+      if (edge.labelPosition) {
+        labelPosition = edge.labelPosition.addition(offset)
+      } else {
+        labelPosition = offset
+      }
+
+      this.edges.set(edge.id, edge.setLabelPosition(labelPosition))
     })
     this.hasDraggedSelection = true
   }
