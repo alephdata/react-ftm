@@ -26,9 +26,9 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     this.clearSelection = this.clearSelection.bind(this);
   }
 
-  dragSelection(offset: Point) {
+  dragSelection(offset: Point, gridPosition?: Point) {
     const { layout } = this.props;
-    layout.dragSelection(offset)
+    layout.dragSelection(offset, gridPosition)
     this.props.updateLayout(layout)
   }
 
@@ -57,7 +57,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   renderEdges() {
-    const { layout } = this.props;
+    const { layout, svgRef } = this.props;
     const edgeGroups = layout.getEdgeGroups()
     let allEdges = [];
 
@@ -70,6 +70,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
           return  <EdgeRenderer
               key={edge.id}
               config={layout.config}
+              svgRef={svgRef}
               edge={edge}
               highlight={layout.isEdgeHighlighted(edge) || layout.selection.length === 0}
               vertex1={vertex1}

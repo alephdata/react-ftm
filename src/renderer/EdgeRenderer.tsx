@@ -13,8 +13,9 @@ interface IEdgeRendererProps {
   vertex2?: Vertex
   highlight: boolean,
   groupEdgeCount: number,
+  svgRef: React.RefObject<SVGSVGElement>,
   selectEdge: (edge: Edge, additional?: boolean) => any,
-  dragSelection: (offset: Point) => any,
+  dragSelection: (offset: Point, gridPosition?: Point) => any,
   dropSelection: () => any,
   offsetIndex: number,
   direction: string
@@ -63,8 +64,6 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     const controlXDist = offset * Math.cos(theta)
     const controlYDist = offset * Math.sin(theta)
 
-    console.log()
-
     // location of control point:
     if (edge.labelPosition) {
       const test = Bezier.quadraticFromPoints(vertex1, config.gridToPixel(edge.labelPosition), vertex2, .5);
@@ -90,7 +89,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
 
 
   render() {
-    const { edge, vertex1, vertex2, config, highlight, direction, dragSelection, dropSelection } = this.props;
+    const { edge, vertex1, vertex2, config, highlight, svgRef, direction, dragSelection, dropSelection } = this.props;
     if (!vertex1 || !vertex2 || vertex1.hidden || vertex2.hidden) {
       return null;
     }
@@ -130,6 +129,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
       { highlight && (
         <EdgeLabelRenderer
           config={config}
+          svgRef={svgRef}
           center={center}
           labelText={edge.label}
           onClick={this.onClick}

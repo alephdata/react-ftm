@@ -169,7 +169,7 @@ export class GraphLayout {
 
   getHighlightedEdges(): Edge[] {
     return this.getEdges()
-      .filter(edge => this.isEdgeHighlighted(edge))
+      .filter(edge => edge.isEntity() && this.isEdgeHighlighted(edge))
   }
 
   getEdgeGroups() {
@@ -197,27 +197,26 @@ export class GraphLayout {
       this.selection.indexOf(edge.targetId) !== -1;
   }
 
-  dragSelection(offset: Point) {
+  dragSelection(offset: Point, gridPosition?: Point) {
     this.getSelectedVertices().forEach((vertex) => {
       const position = vertex.position.addition(offset)
       this.vertices.set(vertex.id, vertex.setPosition(position))
     })
 
     this.getHighlightedEdges().forEach((edge) => {
-      this.dragEdgeLabel(edge, offset)
+      let labelPosition;
+
+      if (edge.labelPosition) {
+        labelPosition = edge.labelPosition.addition(offset)
+      } else if (gridPosition) {
+        labelPosition = gridPosition
+      } else {
+        return;
+      }
+      this.edges.set(edge.id, edge.setLabelPosition(labelPosition))
     })
 
     this.hasDraggedSelection = true
-  }
-
-  dragEdgeLabel(edge: Edge, offset: Point) {
-    let labelPosition;
-    if (edge.labelPosition) {
-      labelPosition = edge.labelPosition.addition(offset)
-    } else {
-      labelPosition = offset
-    }
-    this.edges.set(edge.id, edge.setLabelPosition(labelPosition))
   }
 
   dropSelection() {
@@ -274,7 +273,6 @@ export class GraphLayout {
         return n
       })
     const links = this.getEdges().map((edge) => {
-      console.log(edge);
       return {
         source: nodes.find((n) => n.id === edge.sourceId),
         target: nodes.find((n) => n.id === edge.targetId)
@@ -287,6 +285,7 @@ export class GraphLayout {
       .force('collide', forceCollide(this.config.VERTEX_RADIUS).strength(2))
     simulation.stop()
     simulation.tick(500)
+
     nodes.forEach((node) => {
       if (!node.fixed) {
         const vertex = this.vertices.get(node.id) as Vertex

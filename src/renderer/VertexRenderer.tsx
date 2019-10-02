@@ -15,7 +15,7 @@ interface IVertexRendererProps {
   config: GraphConfig
   selected: boolean
   selectVertex: (vertex: Vertex, additional?: boolean) => any
-  dragSelection: (offset: Point) => any
+  dragSelection: (offset: Point, gridPosition?: Point) => any
   dropSelection: () => any
   interactionMode: string
   actions: any
@@ -62,8 +62,9 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     const current = applyMatrix(matrix, data.x, data.y)
     const last = applyMatrix(matrix, data.lastX, data.lastY)
     const offset = config.pixelToGrid(current.subtract(last))
+
     if (offset.x || offset.y) {
-      this.props.dragSelection(offset)
+      this.props.dragSelection(offset, new Point(0,0))
     }
   }
 
@@ -76,7 +77,6 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   onClick(e: any) {
-    console.log('click', e);
     const { vertex, selected, selectVertex, interactionMode, actions } = this.props
     if (interactionMode === modes.EDGE_DRAW) {
       // can't draw link to self

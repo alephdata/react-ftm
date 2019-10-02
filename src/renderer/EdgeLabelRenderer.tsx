@@ -12,10 +12,11 @@ interface IEdgeLabelRendererProps {
   config: GraphConfig,
   center: Point,
   onClick: (e: any) => void,
-  dragSelection: (offset: Point) => any,
+  dragSelection: (offset: Point, gridPosition?: Point) => any,
   dropSelection: () => any,
   outlineColor?: string,
-  textColor?: string
+  textColor?: string,
+  svgRef: React.RefObject<SVGSVGElement>
 }
 
 interface IEdgeLabelRendererState {
@@ -25,14 +26,16 @@ interface IEdgeLabelRendererState {
 export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererProps, IEdgeLabelRendererState> {
   gRef: React.RefObject<SVGGElement>
   text: any
+  dragInitial: Point
 
   constructor(props: IEdgeLabelRendererProps){
     super(props);
     this.state = { textExtents:null };
-    this.onPanStart = this.onPanStart.bind(this)
-    this.onPanMove = this.onPanMove.bind(this)
-    this.onPanEnd = this.onPanEnd.bind(this)
+    this.onDragStart = this.onDragStart.bind(this)
+    this.onDragMove = this.onDragMove.bind(this)
+    this.onDragEnd = this.onDragEnd.bind(this)
     this.gRef = React.createRef()
+    this.dragInitial = new Point(0, 0)
   }
 
   componentDidMount() {
@@ -41,7 +44,7 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
     this.setState({textExtents:[box.width,box.height]});
   }
 
-  private onPanMove(e: DraggableEvent, data: DraggableData) {
+  private onDragMove(e: DraggableEvent, data: DraggableData) {
     const { config } = this.props
 
     const matrix = getRefMatrix(this.gRef)
@@ -50,15 +53,20 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
     const offset = config.pixelToGrid(current.subtract(last))
 
     if (offset.x || offset.y) {
-      this.props.dragSelection(offset)
+      this.props.dragSelection(offset, config.pixelToGrid(this.dragInitial))
     }
   }
 
-  onPanEnd(e: DraggableEvent, data: DraggableData) {
+  onDragEnd(e: DraggableEvent, data: DraggableData) {
+    this.dragInitial = new Point(0, 0)
     this.props.dropSelection()
   }
 
-  onPanStart(e: DraggableEvent, data: DraggableData) {
+  onDragStart(e: DraggableEvent, data: DraggableData) {
+    const { config, svgRef } = this.props
+    const matrix = getRefMatrix(svgRef)
+    this.dragInitial = applyMatrix(matrix, data.x, data.y)
+
     this.props.onClick(e)
   }
 
@@ -84,9 +92,9 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
     return (
       <DraggableCore
         handle='.edge-handle'
-        onStart={this.onPanStart}
-        onDrag={this.onPanMove}
-        onStop={this.onPanEnd} >
+        onStart={this.onDragStart}
+        onDrag={this.onDragMove}
+        onStop={this.onDragEnd} >
         <g
           transform={translate}
           onClick={onClick}
