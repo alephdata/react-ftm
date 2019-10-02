@@ -4,6 +4,8 @@ import {Rectangle} from "../Rectangle";
 
 export function alignCircle(layout:GraphLayout):GraphLayout{
   const vertices = layout.getSelectedVertices().filter(v=>!v.isHidden())
+  const adjacentEdges = layout.getSelectionAdjacentEdges()
+
   const radius = vertices.length;
   // const center = 0;
   const center = Rectangle.fromPoints(
@@ -16,7 +18,9 @@ export function alignCircle(layout:GraphLayout):GraphLayout{
       Math.round(center.x + radius * Math.cos(angle) - layout.config.VERTEX_RADIUS),
       Math.round(center.y + radius * Math.sin(angle) - layout.config.VERTEX_RADIUS)
     )))
-
+  })
+  adjacentEdges.forEach((edge) => {
+    layout.edges.set(edge.id, edge.setLabelPosition(undefined))
   })
   return layout
 }

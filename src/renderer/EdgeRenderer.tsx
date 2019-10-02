@@ -12,12 +12,12 @@ interface IEdgeRendererProps {
   vertex1?: Vertex,
   vertex2?: Vertex
   highlight: boolean,
-  groupEdgeCount: number,
+  groupEdgeCount?: number,
   svgRef: React.RefObject<SVGSVGElement>,
   selectEdge: (edge: Edge, additional?: boolean) => any,
   dragSelection: (offset: Point, initialPosition?: Point) => any,
   dropSelection: () => any,
-  offsetIndex: number,
+  offsetIndex?: number,
   direction: string
 }
 
@@ -38,7 +38,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
 
   calcOffset() {
     const { offsetIndex, groupEdgeCount } = this.props;
-    if (groupEdgeCount === 1) {
+    if (!groupEdgeCount || !offsetIndex || groupEdgeCount === 1) {
       return 0
     }
     const groupCountEven = groupEdgeCount % 2 === 0
@@ -89,7 +89,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
 
 
   render() {
-    const { edge, vertex1, vertex2, config, highlight, svgRef, direction, dragSelection, dropSelection } = this.props;
+    const { edge, vertex1, vertex2, config, highlight, direction, dragSelection, dropSelection, svgRef } = this.props;
     if (!vertex1 || !vertex2 || vertex1.hidden || vertex2.hidden) {
       return null;
     }

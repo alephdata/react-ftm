@@ -8,6 +8,9 @@ import {Rectangle} from "../Rectangle";
 export function arrangeTree(layout:GraphLayout):GraphLayout{
   const selectedVertices = layout.getSelectedVertices()
     .filter((vertex) => !vertex.isHidden())
+  const adjacentEdges = layout.getSelectionAdjacentEdges()
+
+
   const nodes = selectedVertices.map((vertex) => ({
       id: vertex.id,
       width: layout.config.VERTEX_RADIUS*2,
@@ -37,6 +40,9 @@ export function arrangeTree(layout:GraphLayout):GraphLayout{
   nodes.forEach(node=>  g.setNode(node.id, node) )
   // @ts-ignore
   links.forEach(link => g.setEdge(link.source.id, link.target.id))
+  adjacentEdges.forEach((edge) => {
+    layout.edges.set(edge.id, edge.setLabelPosition(undefined))
+  })
 
   dagre.layout(g);
   g.nodes().forEach((node:any) => {
