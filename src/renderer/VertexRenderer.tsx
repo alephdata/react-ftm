@@ -15,7 +15,7 @@ interface IVertexRendererProps {
   config: GraphConfig
   selected: boolean
   selectVertex: (vertex: Vertex, additional?: boolean) => any
-  dragSelection: (offset: Point, gridPosition?: Point) => any
+  dragSelection: (offset: Point) => any
   dropSelection: () => any
   interactionMode: string
   actions: any
@@ -64,7 +64,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     const offset = config.pixelToGrid(current.subtract(last))
 
     if (offset.x || offset.y) {
-      this.props.dragSelection(offset, new Point(0,0))
+      this.props.dragSelection(offset)
     }
   }
 

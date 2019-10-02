@@ -172,6 +172,11 @@ export class GraphLayout {
       .filter(edge => edge.isEntity() && this.isEdgeHighlighted(edge))
   }
 
+  getSelectionAdjacentEdges(): Edge[] {
+    return this.getEdges()
+      .filter(edge => edge.isEntity() && this.isEdgeSelectionAdjacent(edge))
+  }
+
   getEdgeGroups() {
     const edges = Array.from(this.edges.values()).filter((edge) => !edge.isHidden())
     return groupBy(edges, (edge:Edge) => {
@@ -192,31 +197,42 @@ export class GraphLayout {
   }
 
   isEdgeHighlighted(edge: Edge): boolean {
-    return this.isElementSelected(edge) ||
-      this.selection.indexOf(edge.sourceId) !== -1 ||
+    return this.isElementSelected(edge) || this.isEdgeSelectionAdjacent(edge)
+  }
+
+  isEdgeSelectionAdjacent(edge: Edge): boolean {
+    return this.selection.indexOf(edge.sourceId) !== -1 ||
       this.selection.indexOf(edge.targetId) !== -1;
   }
 
-  dragSelection(offset: Point, gridPosition?: Point) {
+  dragSelection(offset: Point, initialPosition?: Point) {
     this.getSelectedVertices().forEach((vertex) => {
       const position = vertex.position.addition(offset)
       this.vertices.set(vertex.id, vertex.setPosition(position))
     })
 
-    this.getHighlightedEdges().forEach((edge) => {
-      let labelPosition;
+    this.getSelectedEdges().forEach((edge) => {
+      this.dragEdge(edge, offset, initialPosition)
+    })
 
-      if (edge.labelPosition) {
-        labelPosition = edge.labelPosition.addition(offset)
-      } else if (gridPosition) {
-        labelPosition = gridPosition
-      } else {
-        return;
-      }
-      this.edges.set(edge.id, edge.setLabelPosition(labelPosition))
+    this.getSelectionAdjacentEdges().forEach((edge) => {
+      this.dragEdge(edge, offset)
     })
 
     this.hasDraggedSelection = true
+  }
+
+  dragEdge(edge: Edge, offset: Point, initialPosition?: Point) {
+    let labelPosition;
+
+    if (edge.labelPosition) {
+      labelPosition = edge.labelPosition.addition(offset)
+    } else if (initialPosition) {
+      labelPosition = initialPosition
+    } else {
+      return;
+    }
+    this.edges.set(edge.id, edge.setLabelPosition(labelPosition))
   }
 
   dropSelection() {

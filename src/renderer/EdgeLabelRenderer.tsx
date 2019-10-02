@@ -12,7 +12,7 @@ interface IEdgeLabelRendererProps {
   config: GraphConfig,
   center: Point,
   onClick: (e: any) => void,
-  dragSelection: (offset: Point, gridPosition?: Point) => any,
+  dragSelection: (offset: Point, initialPosition?: Point) => any,
   dropSelection: () => any,
   outlineColor?: string,
   textColor?: string,

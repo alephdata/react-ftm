@@ -26,9 +26,9 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     this.clearSelection = this.clearSelection.bind(this);
   }
 
-  dragSelection(offset: Point, gridPosition?: Point) {
+  dragSelection(offset: Point, initialPosition?: Point) {
     const { layout } = this.props;
-    layout.dragSelection(offset, gridPosition)
+    layout.dragSelection(offset, initialPosition)
     this.props.updateLayout(layout)
   }
 

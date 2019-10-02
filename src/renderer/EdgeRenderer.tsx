@@ -15,7 +15,7 @@ interface IEdgeRendererProps {
   groupEdgeCount: number,
   svgRef: React.RefObject<SVGSVGElement>,
   selectEdge: (edge: Edge, additional?: boolean) => any,
-  dragSelection: (offset: Point, gridPosition?: Point) => any,
+  dragSelection: (offset: Point, initialPosition?: Point) => any,
   dropSelection: () => any,
   offsetIndex: number,
   direction: string
