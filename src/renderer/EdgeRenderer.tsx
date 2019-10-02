@@ -12,13 +12,10 @@ interface IEdgeRendererProps {
   vertex1?: Vertex,
   vertex2?: Vertex
   highlight: boolean,
-  groupEdgeCount?: number,
   svgRef: React.RefObject<SVGSVGElement>,
   selectEdge: (edge: Edge, additional?: boolean) => any,
   dragSelection: (offset: Point, initialPosition?: Point) => any,
-  dropSelection: () => any,
-  offsetIndex?: number,
-  direction: string
+  dropSelection: () => any
 }
 
 const linkCurveOffset = 30;
@@ -36,60 +33,33 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     e.stopPropagation()
   }
 
-  calcOffset() {
-    const { offsetIndex, groupEdgeCount } = this.props;
-    if (!groupEdgeCount || !offsetIndex || groupEdgeCount === 1) {
-      return 0
-    }
-    const groupCountEven = groupEdgeCount % 2 === 0
-    const offsetBase = groupCountEven ? 0.5 : 0;
-    const offsetMultiplier = groupCountEven ? Math.floor(offsetIndex/2) : Math.ceil(offsetIndex/2)
-    const offsetSign = offsetIndex % 2 === 0 ? 1 : -1;
-    return offsetSign * ((offsetMultiplier + offsetBase) * linkCurveOffset)
-  }
-
   generatePath(vertex1: any, vertex2: any) {
     const { edge, config } = this.props
-    let center, c1x, c1y, labelx, labely;
 
-    // mid-point of line:
-    const mpx = (vertex2.x + vertex1.x) * 0.5;
-    const mpy = (vertex2.y + vertex1.y) * 0.5;
-
-    // angle perpendicular to line:
-    const theta = Math.atan2(vertex2.y - vertex1.y, vertex2.x - vertex1.x) - Math.PI / 2;
-
-    // distance of control point from mid-point of line:
-    const offset = this.calcOffset()
-    const controlXDist = offset * Math.cos(theta)
-    const controlYDist = offset * Math.sin(theta)
-
-    // location of control point:
     if (edge.labelPosition) {
-      const test = Bezier.quadraticFromPoints(vertex1, config.gridToPixel(edge.labelPosition), vertex2, .5);
+      const curveGenerator = Bezier.quadraticFromPoints(vertex1, config.gridToPixel(edge.labelPosition), vertex2, .5);
+      // location of control point:
+      const {x, y} = curveGenerator.points[1]
 
-      c1x = test.points[1].x
-      c1y = test.points[1].y
-
-      center = edge.labelPosition
+      return {
+        path:"M" + vertex1.x + " " + vertex1.y + " Q " + x + " " + y + " " + vertex2.x + " " + vertex2.y,
+        center: edge.labelPosition
+      }
     } else {
-      c1x = mpx - controlXDist;
-      c1y = mpy - controlYDist;
-      labelx = mpx - controlXDist/2;
-      labely = mpy - controlYDist/2;
+      // mid-point of line:
+      const mpx = (vertex2.x + vertex1.x) * 0.5;
+      const mpy = (vertex2.y + vertex1.y) * 0.5;
 
-      center = config.pixelToGrid(new Point(labelx, labely))
-    }
-
-    return {
-      path:"M" + vertex1.x + " " + vertex1.y + " Q " + c1x + " " + c1y + " " + vertex2.x + " " + vertex2.y,
-      center: center
+      return {
+        path:"M" + vertex1.x + " " + vertex1.y + " L " + vertex2.x + " " + vertex2.y,
+        center: config.pixelToGrid(new Point(mpx, mpy))
+      }
     }
   }
 
 
   render() {
-    const { edge, vertex1, vertex2, config, highlight, direction, dragSelection, dropSelection, svgRef } = this.props;
+    const { edge, vertex1, vertex2, config, highlight, dragSelection, dropSelection, svgRef } = this.props;
     if (!vertex1 || !vertex2 || vertex1.hidden || vertex2.hidden) {
       return null;
     }
@@ -122,8 +92,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
           d={path}
           strokeDasharray={isEntity ? '0' : '1'}
           style={lineStyles}
-          markerEnd={isEntity && direction === 'forward' ? arrowRef : ''}
-          markerStart={isEntity && direction === 'backward' ? arrowRef : ''}
+          markerEnd={isEntity ? arrowRef : ''}
         />
       </g>
       { highlight && (

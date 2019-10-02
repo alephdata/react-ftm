@@ -177,13 +177,6 @@ export class GraphLayout {
       .filter(edge => edge.isEntity() && this.isEdgeSelectionAdjacent(edge))
   }
 
-  getEdgeGroups() {
-    const edges = Array.from(this.edges.values()).filter((edge) => !edge.isHidden())
-    return groupBy(edges, (edge:Edge) => {
-      return [edge.sourceId, edge.targetId].sort()
-    })
-  }
-
   hasSelection(): boolean {
     return this.selection.length > 0
   }

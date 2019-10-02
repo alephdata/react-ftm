@@ -58,34 +58,23 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
 
   renderEdges() {
     const { layout, svgRef } = this.props;
-    const edgeGroups = layout.getEdgeGroups()
-    let allEdges = [];
 
-    for (let key in edgeGroups) {
-      const edgeGroup = edgeGroups[key]
-      const edges = edgeGroup.map((edge: Edge, i: number) => {
-          const [vertex1Id, vertex2Id] = [edge.sourceId, edge.targetId].sort()
-          const vertex1 = layout.vertices.get(vertex1Id);
-          const vertex2 = layout.vertices.get(vertex2Id);
-          return  <EdgeRenderer
-              key={edge.id}
-              config={layout.config}
-              svgRef={svgRef}
-              edge={edge}
-              highlight={layout.isEdgeHighlighted(edge) || layout.selection.length === 0}
-              vertex1={vertex1}
-              vertex2={vertex2}
-              selectEdge={this.selectElement}
-              dragSelection={this.dragSelection}
-              dropSelection={this.dropSelection}
-              groupEdgeCount={edgeGroup.length}
-              offsetIndex={i}
-              direction={edge.sourceId === vertex1Id ? 'backward' : 'forward'}
-            />
-        })
-      allEdges.push(edges)
-    }
-    return allEdges
+    return layout.getEdges().map((edge) => {
+      const vertex1 = layout.vertices.get(edge.sourceId);
+      const vertex2 = layout.vertices.get(edge.targetId);
+      return  <EdgeRenderer
+          key={edge.id}
+          config={layout.config}
+          svgRef={svgRef}
+          edge={edge}
+          highlight={layout.isEdgeHighlighted(edge) || layout.selection.length === 0}
+          vertex1={vertex1}
+          vertex2={vertex2}
+          selectEdge={this.selectElement}
+          dragSelection={this.dragSelection}
+          dropSelection={this.dropSelection}
+        />
+    })
   }
 
   renderVertices() {
