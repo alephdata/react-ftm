@@ -121,6 +121,12 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
             <Tooltip content={hasSelection ? "Remove selected" : "To remove a node first you must select a node by clicking on it"}>
               <AnchorButton icon="graph-remove" onClick={actions.removeSelection} disabled={!hasSelection} />
             </Tooltip>
+            <Tooltip content={"Group selected"}>
+              <AnchorButton icon="group-objects" onClick={actions.groupSelection} disabled={!hasSelection} />
+            </Tooltip>
+            <Tooltip content={"Ungroup selected"}>
+              <AnchorButton icon="ungroup-objects" onClick={actions.ungroupSelection} disabled={!hasSelection} />
+            </Tooltip>
             <Divider/>
             <Tooltip content="Add links">
               <AnchorButton icon="new-link" onClick={() => this.onSetInteractionMode(modes.EDGE_CREATE)} disabled={!canAddEdge} />

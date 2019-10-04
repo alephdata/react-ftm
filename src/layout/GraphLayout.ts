@@ -234,6 +234,14 @@ export class GraphLayout {
     this.generate()
   }
 
+  groupSelection() {
+    console.log('grouping selection');
+  }
+
+  ungroupSelection() {
+    console.log('ungrouping selection');
+  }
+
   layout() {
     this.generate()
     this.layoutPositions()
