@@ -1,11 +1,12 @@
 import * as React from 'react'
 import { Viewport } from '../Viewport';
-import { Vertex, Point, Rectangle, Edge, GraphElement } from '../layout';
+import { Vertex, Point, Rectangle, Edge, GraphElement, Grouping } from '../layout';
 import { IGraphContext } from '../GraphContext'
 import { Canvas } from './Canvas'
 import { EdgeRenderer } from './EdgeRenderer'
 import { EdgeDrawer } from './EdgeDrawer'
 import { VertexRenderer } from './VertexRenderer'
+import { GroupingRenderer } from './GroupingRenderer'
 import { modes } from '../interactionModes'
 
 
@@ -54,6 +55,23 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     const { layout } = this.props;
     layout.selectArea(area)
     this.props.updateLayout(layout)
+  }
+
+  renderGroupings() {
+    const { layout } = this.props;
+    const groupings = layout.getGroupings();
+    return groupings.map((grouping: Grouping) => {
+      const vertices = grouping.vertices.map((vertexId) => layout.vertices.get(vertexId)) as Vertex[]
+
+      return (
+        <GroupingRenderer
+          key={grouping.id}
+          config={layout.config}
+          grouping={grouping}
+          vertices={vertices}
+        />
+      )
+    })
   }
 
   renderEdges() {
@@ -113,6 +131,8 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   render(){
     const { svgRef, layout, viewport, animateTransition, actions, interactionMode } = this.props;
 
+    console.log(layout.groupings);
+
     return (
       <Canvas svgRef={svgRef}
               viewport={viewport}
@@ -128,6 +148,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
             viewport={viewport}
             sourcePoint={this.getEdgeCreateSourcePoint()}/>
         }
+        {this.renderGroupings()}
         {this.renderEdges()}
         {this.renderVertices()}
       </Canvas>

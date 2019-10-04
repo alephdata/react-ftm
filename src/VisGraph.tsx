@@ -8,7 +8,7 @@ import { IGraphContext, GraphContext } from './GraphContext'
 import { Toolbar } from './Toolbar';
 import { Sidebar } from './Sidebar';
 import { History } from './History';
-import { VertexCreateDialog, EdgeCreateDialog } from "./editor";
+import { VertexCreateDialog, EdgeCreateDialog, GroupingCreateDialog } from "./editor";
 import { Model, defaultModel } from '@alephdata/followthemoney'
 import { modes } from './interactionModes'
 
@@ -54,7 +54,6 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.exportSvg = this.exportSvg.bind(this);
     this.setInteractionMode = this.setInteractionMode.bind(this)
     this.removeSelection = this.removeSelection.bind(this)
-    this.groupSelection = this.groupSelection.bind(this)
     this.ungroupSelection = this.ungroupSelection.bind(this)
     this.addVertexToPosition = this.addVertexToPosition.bind(this)
   }
@@ -111,12 +110,6 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.updateLayout(layout, {modifyHistory:true})
   }
 
-  groupSelection() {
-    const { layout } = this.props
-    layout.groupSelection()
-    this.updateLayout(layout, {modifyHistory:true})
-  }
-
   ungroupSelection() {
     const { layout } = this.props
     layout.ungroupSelection()
@@ -149,7 +142,6 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       setInteractionMode: this.setInteractionMode,
       navigateHistory: this.navigateHistory,
       removeSelection: this.removeSelection,
-      groupSelection: this.groupSelection,
       ungroupSelection: this.ungroupSelection,
       exportSvg: this.exportSvg
     }
@@ -216,6 +208,10 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
           isOpen={interactionMode === modes.VERTEX_CREATE}
           toggleDialog={this.setInteractionMode}
           vertexInitialPos={this.state.vertexCreateInitialPos} />
+
+        <GroupingCreateDialog
+          isOpen={interactionMode === modes.GROUPING_CREATE}
+          toggleDialog={this.setInteractionMode} />
 
         <EdgeCreateDialog
           layout={layout}

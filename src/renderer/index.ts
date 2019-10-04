@@ -4,5 +4,6 @@ export * from './VertexRenderer';
 export * from './EdgeRenderer';
 export * from './EdgeLabelRenderer';
 export * from './Canvas';
-export * from './IconRenderer'
+export * from './IconRenderer';
+export * from './GroupingRenderer';
 export * from './utils'

@@ -82,6 +82,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     const vertices = this.props.layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
+    const canGroupSelection = layout.getSelectedVertices().length > 1
     const disableLayoutButtons = layout.selection && layout.selection.length <= 1;
     const showSearch = layout.vertices && layout.vertices.size > 0
 
@@ -122,7 +123,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
               <AnchorButton icon="graph-remove" onClick={actions.removeSelection} disabled={!hasSelection} />
             </Tooltip>
             <Tooltip content={"Group selected"}>
-              <AnchorButton icon="group-objects" onClick={actions.groupSelection} disabled={!hasSelection} />
+              <AnchorButton icon="group-objects" onClick={() => this.onSetInteractionMode(modes.GROUPING_CREATE)} disabled={!canGroupSelection} />
             </Tooltip>
             <Tooltip content={"Ungroup selected"}>
               <AnchorButton icon="ungroup-objects" onClick={actions.ungroupSelection} disabled={!hasSelection} />

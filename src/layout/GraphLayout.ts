@@ -2,6 +2,7 @@ import { Entity, Model, IEntityDatum } from '@alephdata/followthemoney'
 import { forceSimulation, forceLink, forceCollide } from 'd3-force';
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
+import { Grouping } from './Grouping'
 import { Point } from './Point';
 import { Rectangle } from './Rectangle';
 import { GraphConfig } from '../GraphConfig';
@@ -11,6 +12,7 @@ export interface IGraphLayoutData {
   entities: Array<IEntityDatum>
   vertices: Array<any>
   edges: Array<any>
+  groupings: Array<any>
   selection: Array<string>
 }
 
@@ -24,6 +26,7 @@ export class GraphLayout {
   vertices = new Map<string, Vertex>()
   edges = new Map<string, Edge>()
   entities = new Map<string, Entity>()
+  groupings = new Array<Grouping>()
   selection = new Array<string>()
   private hasDraggedSelection = false
 
@@ -110,6 +113,15 @@ export class GraphLayout {
 
   getEntities(): Entity[] {
     return Array.from(this.entities.values())
+  }
+
+  addGrouping(grouping: Grouping) {
+    this.groupings.push(grouping)
+    // this.layout()
+  }
+
+  getGroupings(): Grouping[] {
+    return this.groupings
   }
 
   getVertexByEntity(entity: Entity): Vertex | undefined {
@@ -234,9 +246,18 @@ export class GraphLayout {
     this.generate()
   }
 
-  groupSelection() {
-    console.log('grouping selection');
-  }
+  // groupSelection() {
+  //   // this.getSelectedVertices()
+  //   console.log('grouping selection');
+  //
+  //   // const existing = this.edges.get(edge.id)
+  //   // if (existing) {
+  //   //   this.edges.set(edge.id, existing.update(edge))
+  //   // } else {
+  //   //   this.edges.set(edge.id, edge)
+  //   // }
+  //   // return this.edges.get(edge.id) as Edge
+  // }
 
   ungroupSelection() {
     console.log('ungrouping selection');
@@ -293,6 +314,7 @@ export class GraphLayout {
       entities: this.getEntities().map((entity) => entity.toJSON()),
       vertices: this.getVertices().map((vertex) => vertex.toJSON()),
       edges: this.getEdges().map((edge) => edge.toJSON()),
+      groupings: this.groupings,
       selection: this.selection
     }
   }
@@ -312,6 +334,7 @@ export class GraphLayout {
       layout.edges.set(edge.id, edge)
     })
     layout.generate()
+    layout.groupings = layoutData.groupings
     layout.selection = layoutData.selection
     return layout
   }

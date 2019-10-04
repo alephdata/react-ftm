@@ -9,8 +9,8 @@ const colorOptions = [
 ]
 
 interface IColorPickerProps {
-  vertex: Vertex
-  onSelect: (vertex: Vertex, color: string) => void
+  currSelected?: string
+  onSelect: (color: string) => void
 }
 
 
@@ -22,13 +22,13 @@ export class ColorPicker extends React.PureComponent<IColorPickerProps> {
   }
 
   renderColor(color: string) {
-    const { vertex, onSelect } = this.props
+    const { currSelected, onSelect } = this.props
     const style = {
       backgroundColor: color,
-      border: vertex.color === color ? '3px solid white' : '1px solid white'
+      border: currSelected === color ? '3px solid white' : '1px solid white'
     }
     return (
-      <div key={color} className='ColorPicker__item' onClick={() => onSelect(vertex, color)}>
+      <div key={color} className='ColorPicker__item' onClick={() => onSelect(color)}>
         <div
           className='ColorPicker__item__swatch'
           style={style}>
