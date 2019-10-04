@@ -59,7 +59,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   renderEdges() {
     const { layout, svgRef } = this.props;
 
-    return layout.getEdges().map((edge) => {
+    return layout.getEdges().filter((edge) => !edge.isHidden()).map((edge) => {
       const vertex1 = layout.vertices.get(edge.sourceId);
       const vertex2 = layout.vertices.get(edge.targetId);
       return  <EdgeRenderer

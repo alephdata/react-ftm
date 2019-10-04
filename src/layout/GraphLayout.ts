@@ -205,7 +205,9 @@ export class GraphLayout {
     })
 
     this.getSelectedEdges().forEach((edge) => {
-      this.dragEdge(edge, offset, initialPosition)
+      if (edge.isEntity()) {
+        this.dragEdge(edge, offset, initialPosition)
+      }
     })
 
     this.getSelectionAdjacentEdges().forEach((edge) => {
