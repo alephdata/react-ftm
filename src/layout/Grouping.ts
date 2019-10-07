@@ -17,14 +17,14 @@ export class Grouping {
   public readonly id: string
   public readonly label: string
   public color: string
-  public readonly vertices: Array<string>
+  public readonly vertices: Set<string>
 
   constructor(layout: GraphLayout, data: IGroupingData) {
     this.layout = layout
     this.id = data.id
     this.label = data.label
     this.color = data.color
-    this.vertices = data.vertices
+    this.vertices = new Set(data.vertices)
   }
 
   setColor(color: string): Grouping {
@@ -33,8 +33,28 @@ export class Grouping {
     return grouping
   }
 
+  hasVertex(vertex: Vertex): boolean {
+    return this.vertices.has(vertex.id)
+  }
+
+  addVertex(vertex: Vertex): Grouping {
+    this.vertices.add(vertex.id);
+    return this
+  }
+
+  removeVertex(vertex: Vertex): Grouping {
+    if (this.hasVertex(vertex)) {
+      this.vertices.delete(vertex.id);
+    }
+    return this
+  }
+
+  getVertexIds(): Array<string> {
+    return Array.from(this.vertices)
+  }
+
   getVertices(): Array<Vertex> {
-    return this.vertices
+    return this.getVertexIds()
       .map((vertexId) => this.layout.vertices.get(vertexId)) as Vertex[]
   }
 
@@ -51,7 +71,7 @@ export class Grouping {
       id: this.id,
       label: this.label,
       color: this.color,
-      vertices: this.vertices,
+      vertices: this.getVertexIds(),
     }
   }
 

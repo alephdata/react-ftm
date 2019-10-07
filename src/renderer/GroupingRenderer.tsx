@@ -14,16 +14,23 @@ interface IGroupingRendererProps {
   dropSelection: () => any
 }
 
-export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps> {
+interface IGroupingRendererState {
+  hovered: boolean
+}
+
+export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps, IGroupingRendererState> {
   gRef: React.RefObject<SVGGElement>
 
   constructor(props: Readonly<IGroupingRendererProps>) {
     super(props)
 
+    this.state = { hovered: false }
     this.onDragStart = this.onDragStart.bind(this)
     this.onDragMove = this.onDragMove.bind(this)
     this.onDragEnd = this.onDragEnd.bind(this)
     this.onClick = this.onClick.bind(this)
+    this.onMouseOver = this.onMouseOver.bind(this)
+    this.onMouseOut = this.onMouseOut.bind(this)
     this.gRef = React.createRef()
   }
 
@@ -39,6 +46,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   onDragEnd(e: DraggableEvent, data: DraggableData) {
+    console.log('dropping', e);
     this.props.dropSelection()
   }
 
@@ -48,8 +56,17 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
 
   onClick(e: any) {
     const { vertices } = this.props
-    console.log('clicked grouping');
     this.props.selectGrouping(vertices, e.shiftKey);
+  }
+
+  onMouseOver() {
+    // console.log('hovered');
+    this.setState({hovered: true})
+  }
+
+  onMouseOut() {
+    // console.log('mouse out');
+    this.setState({hovered: false})
   }
 
   getBoundingRect() {
@@ -61,6 +78,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
 
   render() {
     const { config, grouping, selected } = this.props
+    const { hovered } = this.state
 
     const {x, y, width, height} = this.getBoundingRect();
     const padding = config.VERTEX_RADIUS*config.gridUnit + 8;
@@ -68,6 +86,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
     const groupStyles: React.CSSProperties = {
       cursor: selected ? 'grab' : 'pointer',
     }
+    const displayColor = selected || hovered ? grouping.color : config.UNSELECTED_COLOR
 
     return (
       <DraggableCore
@@ -75,20 +94,25 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
         onStart={this.onDragStart}
         onDrag={this.onDragMove}
         onStop={this.onDragEnd} >
-        <g className="grouping-handle" style={groupStyles} ref={this.gRef} >
+        <g
+          className="grouping-handle"
+          style={groupStyles}
+          onMouseOver={this.onMouseOver}
+          onMouseOut={this.onMouseOut}
+          ref={this.gRef} >
           <rect
             x={x - padding}
             y={y - padding}
             rx="5"
             width={width + padding*2}
             height={height + padding*2}
-            fill={selected ? grouping.color : config.UNSELECTED_COLOR}
+            fill={displayColor}
             fillOpacity={selected ? ".1" : ".2"}
           />
           <text
             x={x + width + padding - 5}
             y={y + height + padding - 5}
-            fill={selected ? grouping.color : config.UNSELECTED_COLOR}
+            fill={displayColor}
             textAnchor="end"
             fontSize="8"
           >

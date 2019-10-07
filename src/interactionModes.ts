@@ -1,5 +1,6 @@
 export const modes = {
   SELECT: 'SELECT',
+  ITEM_DRAG: 'ITEM_DRAG',
   PAN: 'PAN',
   EDGE_DRAW: 'EDGE_DRAW',
   EDGE_CREATE: 'EDGE_CREATE',

@@ -118,11 +118,15 @@ export class GraphLayout {
 
   addGrouping(grouping: Grouping) {
     this.groupings.set(grouping.id, grouping)
-    // this.layout()
   }
 
   getGroupings(): Grouping[] {
     return Array.from(this.groupings.values())
+  }
+
+  getGroupingRect(grouping: Grouping): Rectangle {
+    const points = grouping.getVertices().map((v) => v.position)
+    return Rectangle.fromPoints(...points)
   }
 
   getVertexByEntity(entity: Entity): Vertex | undefined {
@@ -132,7 +136,6 @@ export class GraphLayout {
   }
 
   selectElement(element: GraphElement | Array<GraphElement>, additional: boolean = false) {
-    console.log('additional', additional)
     const newSelection = Array.isArray(element) ? element.map(e => e.id) : [element.id]
     if (additional) {
       this.selection = [...newSelection, ...this.selection]
@@ -207,7 +210,8 @@ export class GraphLayout {
     const selectedVertices = this.selection
       .filter((vertexId) => this.vertices.has(vertexId))
 
-    return grouping.vertices.every(v => selectedVertices.includes(v));
+    return grouping.getVertexIds()
+      .every(v => selectedVertices.includes(v));
   }
 
   isEdgeHighlighted(edge: Edge): boolean {
@@ -225,8 +229,10 @@ export class GraphLayout {
   }
 
   dropSelection() {
-    this.getSelectedVertices().forEach((vertex) => {
+    const vertices = this.getSelectedVertices();
+    vertices.forEach((vertex) => {
       this.vertices.set(vertex.id, vertex.snapPosition(vertex.position))
+      this.addVertexToGroupings(vertex)
     });
 
     if (this.hasDraggedSelection) {
@@ -247,6 +253,9 @@ export class GraphLayout {
       } else {
         vertex.hidden = true
       }
+      this.groupings.forEach(grouping => {
+        grouping.removeVertex(vertex)
+      })
     })
     this.getSelectedEdges().forEach((edge) => {
       const entity = edge.getEntity()
@@ -261,23 +270,18 @@ export class GraphLayout {
     this.generate()
   }
 
-  // groupSelection() {
-  //   // this.getSelectedVertices()
-  //   console.log('grouping selection');
-  //
-  //   // const existing = this.edges.get(edge.id)
-  //   // if (existing) {
-  //   //   this.edges.set(edge.id, existing.update(edge))
-  //   // } else {
-  //   //   this.edges.set(edge.id, edge)
-  //   // }
-  //   // return this.edges.get(edge.id) as Edge
-  // }
-
   ungroupSelection() {
-    console.log('ungrouping selection');
     this.getSelectedGroupings().forEach((grouping) => {
       this.groupings.delete(grouping.id)
+    })
+  }
+
+  addVertexToGroupings(vertex: Vertex) {
+    this.getGroupings().forEach(grouping => {
+      const area = this.getGroupingRect(grouping);
+      if (area.contains(vertex.position)) {
+        this.groupings.set(grouping.id, grouping.addVertex(vertex))
+      }
     })
   }
 

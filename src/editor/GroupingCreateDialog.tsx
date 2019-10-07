@@ -43,8 +43,6 @@ export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogP
     e.preventDefault()
 
     const selectedVertices = layout.getSelectedVertices().filter(vertex => !vertex.isHidden())
-
-    console.log('selected verts', selectedVertices);
     const grouping = Grouping.fromVertices(layout, label, selectedVertices, color);
 
     if (grouping) {
