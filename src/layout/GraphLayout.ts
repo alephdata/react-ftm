@@ -26,7 +26,7 @@ export class GraphLayout {
   vertices = new Map<string, Vertex>()
   edges = new Map<string, Edge>()
   entities = new Map<string, Entity>()
-  groupings = new Array<Grouping>()
+  groupings = new Map<string, Grouping>()
   selection = new Array<string>()
   private hasDraggedSelection = false
 
@@ -37,6 +37,7 @@ export class GraphLayout {
     this.addVertex = this.addVertex.bind(this)
     this.addEdge = this.addEdge.bind(this)
     this.addEntity = this.addEntity.bind(this);
+    this.isGroupingSelected = this.isGroupingSelected.bind(this);
   }
 
   addVertex(vertex: Vertex): Vertex {
@@ -116,12 +117,12 @@ export class GraphLayout {
   }
 
   addGrouping(grouping: Grouping) {
-    this.groupings.push(grouping)
+    this.groupings.set(grouping.id, grouping)
     // this.layout()
   }
 
   getGroupings(): Grouping[] {
-    return this.groupings
+    return Array.from(this.groupings.values())
   }
 
   getVertexByEntity(entity: Entity): Vertex | undefined {
@@ -130,11 +131,12 @@ export class GraphLayout {
       .find((v) => v.entityId === entity.id)
   }
 
-  selectElement(element: GraphElement, additional: boolean = false) {
+  selectElement(element: GraphElement | Array<GraphElement>, additional: boolean = false) {
+    const newSelection = Array.isArray(element) ? element.map(e => e.id) : [element.id]
     if (additional) {
-      this.selection = [element.id, ...this.selection]
+      this.selection = [...newSelection, ...this.selection]
     } else {
-      this.selection = [element.id]
+      this.selection = newSelection
     }
   }
 
@@ -153,10 +155,15 @@ export class GraphLayout {
       .map((vertexId) => this.vertices.get(vertexId)) as Vertex[]
   }
 
-  getSelectedEntities(){
+  getSelectedEntities() {
     return this.getRelatedEntities(
       ...this.getSelectedVertices(), ...this.getSelectedEdges()
     )
+  }
+
+  getSelectedGroupings(): Grouping[] {
+    return this.getGroupings()
+      .filter(this.isGroupingSelected)
   }
 
   getRelatedEntities(...elements: Array<GraphElement>): Array<Entity> {
@@ -193,6 +200,13 @@ export class GraphLayout {
 
   isElementSelected(element: GraphElement) {
     return this.selection.indexOf(element.id) !== -1;
+  }
+
+  isGroupingSelected(grouping: Grouping) {
+    const selectedVertices = this.selection
+      .filter((vertexId) => this.vertices.has(vertexId))
+
+    return grouping.vertices.every(v => selectedVertices.includes(v));
   }
 
   isEdgeHighlighted(edge: Edge): boolean {
@@ -314,7 +328,7 @@ export class GraphLayout {
       entities: this.getEntities().map((entity) => entity.toJSON()),
       vertices: this.getVertices().map((vertex) => vertex.toJSON()),
       edges: this.getEdges().map((edge) => edge.toJSON()),
-      groupings: this.groupings,
+      groupings: this.getGroupings().map((grouping) => grouping.toJSON()),
       selection: this.selection
     }
   }
@@ -334,7 +348,10 @@ export class GraphLayout {
       layout.edges.set(edge.id, edge)
     })
     layout.generate()
-    layout.groupings = layoutData.groupings
+    layoutData.groupings.forEach((gdata) => {
+      const grouping = Grouping.fromJSON(layout, gdata)
+      layout.groupings.set(grouping.id, grouping)
+    })
     layout.selection = layoutData.selection
     return layout
   }

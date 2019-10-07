@@ -1,9 +1,11 @@
 import * as React from 'react'
 import {Entity} from '@alephdata/followthemoney';
 import {IGraphContext} from './GraphContext'
+import {GroupingViewer} from "./editor/GroupingViewer";
 import {EntityViewer} from "./editor/EntityViewer";
+
 import {EntityList} from "./editor/EntityList";
-import {Vertex} from './layout'
+import {Grouping, Vertex} from './layout'
 
 import './Sidebar.scss';
 
@@ -15,6 +17,8 @@ export class Sidebar extends React.Component<IGraphContext> {
     this.appendToLayout  = this.appendToLayout.bind(this);
     this.onEntitySelected = this.onEntitySelected.bind(this);
     this.setVertexColor = this.setVertexColor.bind(this)
+    this.setGroupingColor = this.setGroupingColor.bind(this)
+
   }
 
   appendToLayout(entity: Entity) {
@@ -31,6 +35,14 @@ export class Sidebar extends React.Component<IGraphContext> {
     }
   }
 
+  setGroupingColor(grouping: Grouping, color: string) {
+    const { layout, updateLayout } = this.props
+    if (grouping) {
+      layout.groupings.set(grouping.id, grouping.setColor(color))
+      updateLayout(layout, {modifyHistory:true})
+    }
+  }
+
   onEntitySelected(entity:Entity){
     const { layout } = this.props;
     const vertexToSelect = layout.getVertexByEntity(entity);
@@ -43,6 +55,7 @@ export class Sidebar extends React.Component<IGraphContext> {
   render() {
     const { layout } = this.props
     const selection = layout.getSelectedEntities()
+    const selectedGroupings = layout.getSelectedGroupings()
     let contents;
 
     if (selection.length === 1) {
@@ -57,7 +70,14 @@ export class Sidebar extends React.Component<IGraphContext> {
         vertexRef={vertexRef}
         onVertexColorSelected={this.setVertexColor}
       />
-    } else if (selection.length){
+    } else if (selectedGroupings.length === 1) {
+      const grouping = selectedGroupings[0]
+      contents = <GroupingViewer
+        grouping={grouping}
+        entites={grouping.getEntities()}
+        onColorSelected={this.setGroupingColor}
+      />
+    } else if (selection.length) {
       contents = <EntityList entities={selection} onEntitySelected={this.onEntitySelected} />
     } else {
       const vertices = layout.getVertices().filter((v) => !v.isHidden())

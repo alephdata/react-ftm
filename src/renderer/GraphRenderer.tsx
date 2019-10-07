@@ -45,8 +45,9 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     this.props.updateLayout(layout)
   }
 
-  selectElement(element: GraphElement, additional: boolean = false) {
+  selectElement(element: GraphElement | Array<GraphElement>, additional: boolean = false) {
     const { layout } = this.props;
+    console.log('in selectelement', element)
     layout.selectElement(element, additional)
     this.props.updateLayout(layout)
   }
@@ -69,6 +70,8 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
           config={layout.config}
           grouping={grouping}
           vertices={vertices}
+          selected={layout.isGroupingSelected(grouping) || layout.selection.length === 0}
+          selectGrouping={this.selectElement}
         />
       )
     })
@@ -106,6 +109,8 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   renderVertices() {
     const { layout, actions, interactionMode } = this.props;
     const vertices = layout.getVertices().filter((vertex) => !vertex.isHidden())
+
+    console.log('vertices to render', vertices)
     return vertices.map((vertex: Vertex) =>
       <VertexRenderer
         key={vertex.id}
@@ -131,7 +136,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   render(){
     const { svgRef, layout, viewport, animateTransition, actions, interactionMode } = this.props;
 
-    console.log(layout.groupings);
+    console.log(layout.selection, layout.vertices);
 
     return (
       <Canvas svgRef={svgRef}

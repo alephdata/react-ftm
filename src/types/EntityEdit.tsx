@@ -53,7 +53,6 @@ export class EntityEdit extends React.PureComponent<IEntityTypeProps> {
 
   getItemsList() {
     const { property, entity } = this.props;
-    console.log(entity)
 
     let excludeIds: string[] = []
 

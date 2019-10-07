@@ -9,7 +9,7 @@ interface IGroupingData {
   id: string
   label: string
   color: string
-  vertices: Array<any>
+  vertices: Array<string>
 }
 
 export class Grouping {
@@ -17,7 +17,7 @@ export class Grouping {
   public readonly id: string
   public readonly label: string
   public color: string
-  public readonly vertices: Array<any>
+  public readonly vertices: Array<string>
 
   constructor(layout: GraphLayout, data: IGroupingData) {
     this.layout = layout
@@ -25,6 +25,21 @@ export class Grouping {
     this.label = data.label
     this.color = data.color
     this.vertices = data.vertices
+  }
+
+  setColor(color: string): Grouping {
+    const grouping = this.clone()
+    grouping.color = color
+    return grouping
+  }
+
+  getVertices(): Array<Vertex> {
+    return this.vertices
+      .map((vertexId) => this.layout.vertices.get(vertexId)) as Vertex[]
+  }
+
+  getEntities(): Array<Entity> {
+    return this.layout.getRelatedEntities(...this.getVertices())
   }
 
   clone(): Grouping {

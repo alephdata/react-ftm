@@ -1,14 +1,22 @@
 import * as React from 'react'
 import { GraphConfig } from '../GraphConfig';
-import { Grouping, Rectangle, Vertex } from '../layout'
+import { GraphElement, Grouping, Rectangle, Vertex } from '../layout'
 
 interface IGroupingRendererProps {
   grouping: Grouping
   config: GraphConfig
   vertices: Vertex[]
+  selected: boolean
+  selectGrouping: (element: Array<GraphElement>, additional?: boolean) => any
 }
 
 export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps> {
+  onClick() {
+    const { grouping, vertices } = this.props
+    console.log('clicked grouping');
+    this.props.selectGrouping(vertices, true);
+  }
+
   getBoundingRect() {
     const { config, vertices } = this.props
 
@@ -17,25 +25,26 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   render() {
-    const { config, grouping } = this.props
+    const { config, grouping, selected } = this.props
 
     const {x, y, width, height} = this.getBoundingRect();
-    const padding = config.VERTEX_RADIUS*config.gridUnit + 2;
+    const padding = config.VERTEX_RADIUS*config.gridUnit + 8;
 
     return (
-      <g>
+      <g onClick={this.onClick}>
         <rect
           x={x - padding}
           y={y - padding}
+          rx="5"
           width={width + padding*2}
           height={height + padding*2}
-          fill={grouping.color}
-          fillOpacity=".1"
+          fill={selected ? grouping.color : config.UNSELECTED_COLOR}
+          fillOpacity={selected ? ".1" : ".2"}
         />
         <text
-          x={x + width + padding}
-          y={y + height + padding}
-          fill={grouping.color}
+          x={x + width + padding - 5}
+          y={y + height + padding - 5}
+          fill={selected ? grouping.color : config.UNSELECTED_COLOR}
           textAnchor="end"
           fontSize="8"
         >
