@@ -43,13 +43,13 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   onDragStart(e: DraggableEvent, data: DraggableData) {
-    this.onClick()
+    this.onClick(e)
   }
 
-  onClick() {
+  onClick(e: any) {
     const { vertices } = this.props
     console.log('clicked grouping');
-    this.props.selectGrouping(vertices, true);
+    this.props.selectGrouping(vertices, e.shiftKey);
   }
 
   getBoundingRect() {

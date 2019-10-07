@@ -132,6 +132,7 @@ export class GraphLayout {
   }
 
   selectElement(element: GraphElement | Array<GraphElement>, additional: boolean = false) {
+    console.log('additional', additional)
     const newSelection = Array.isArray(element) ? element.map(e => e.id) : [element.id]
     if (additional) {
       this.selection = [...newSelection, ...this.selection]
@@ -275,6 +276,9 @@ export class GraphLayout {
 
   ungroupSelection() {
     console.log('ungrouping selection');
+    this.getSelectedGroupings().forEach((grouping) => {
+      this.groupings.delete(grouping.id)
+    })
   }
 
   layout() {
