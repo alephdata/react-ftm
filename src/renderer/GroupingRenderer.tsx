@@ -3,6 +3,7 @@ import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
 import { GraphConfig } from '../GraphConfig';
 import { GraphElement, Grouping, Point, Rectangle, Vertex } from '../layout'
 import { getRefMatrix, applyMatrix } from './utils';
+import { modes } from '../interactionModes'
 
 interface IGroupingRendererProps {
   grouping: Grouping
@@ -12,6 +13,7 @@ interface IGroupingRendererProps {
   selectGrouping: (element: Array<GraphElement>, additional?: boolean) => any
   dragSelection: (offset: Point) => any
   dropSelection: () => any
+  interactionMode: string
 }
 
 interface IGroupingRendererState {
@@ -60,8 +62,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   onMouseOver() {
-    // console.log('hovered');
-    this.setState({hovered: true})
+    this.props.interactionMode === modes.ITEM_DRAG && this.setState({hovered: true})
   }
 
   onMouseOut() {
@@ -110,10 +111,11 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
             fillOpacity={selected ? ".1" : ".2"}
           />
           <text
-            x={x + width + padding - 5}
-            y={y + height + padding - 5}
+            x={x + width/2}
+            y={y + height + padding + 8}
             fill={displayColor}
-            textAnchor="end"
+            textAnchor="middle"
+            fontWeight="bold"
             fontSize="8"
           >
             {grouping.label}

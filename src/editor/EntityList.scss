@@ -3,7 +3,7 @@
 .EntityList {
   background: $black-70 !important;
   overflow: hidden;
-  padding: 5px 10px !important;
+  padding: 5px !important;
 
   &__category {
     margin: 15px 0;
@@ -11,7 +11,7 @@
     &__title {
       color: white !important;
       font-size: 14px;
-      margin: 5px;
+      margin: 5px 10px 7px;
     }
     // &:not(:last-child) {
     //   border-bottom: 1px solid $black-50;
@@ -19,13 +19,30 @@
   }
 
   &__item {
-    padding: 5px !important;
+    padding: 0 3px !important;
     fill: white !important;
     color: white !important;
     border-radius: 0 !important;
+    display: table;
+    width: 100%;
 
-    &:hover {
-      background: $black-50 !important;
+    &__left, &__right {
+      display: table-cell;
+      cursor: pointer;
     }
+
+    &__right {
+      width: 20px;
+      border-radius: 3px;
+      padding: 3px;
+
+      &:hover {
+        background-color: rgba(167, 182, 194, 0.3);
+      }
+    }
+
+    // &:hover {
+    //   background: $black-50 !important;
+    // }
   }
 }

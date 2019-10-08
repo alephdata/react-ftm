@@ -15,21 +15,14 @@ import './GroupingViewer.scss';
 interface IGroupingViewerProps {
   grouping: Grouping,
   entites: Array<any>
+  onEntitySelected: (entity:Entity) => void
+  onEntityRemoved: (grouping: Grouping, entity:Entity) => void
   onColorSelected: (grouping: Grouping, color: string) => void
 }
 
 export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
-  onEntitySelected(entity:Entity) {
-    // const { layout } = this.props;
-    // const vertexToSelect = layout.getVertexByEntity(entity);
-    // if (vertexToSelect) {
-    //   layout.selectElement(vertexToSelect)
-    //   this.props.updateLayout(layout)
-    // }
-  }
-
   render() {
-    const { grouping, onColorSelected } = this.props;
+    const { grouping, onEntitySelected, onEntityRemoved, onColorSelected } = this.props;
     return (
       <div
         className='GroupingViewer'
@@ -41,8 +34,11 @@ export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
             currSelected={grouping.color}
             onSelect={(color: string) => this.props.onColorSelected(grouping, color)} />
         </div>
-        <EntityList entities={grouping.getEntities()} onEntitySelected={this.onEntitySelected} />
-
+        <EntityList
+          entities={grouping.getEntities()}
+          onEntitySelected={onEntitySelected}
+          onEntityRemoved={(entity) => onEntityRemoved(grouping, entity)}
+        />
       </div>
     )
   }

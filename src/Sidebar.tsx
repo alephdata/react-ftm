@@ -16,15 +16,26 @@ export class Sidebar extends React.Component<IGraphContext> {
     super(props);
     this.appendToLayout  = this.appendToLayout.bind(this);
     this.onEntitySelected = this.onEntitySelected.bind(this);
+    this.removeGroupingEntity = this.removeGroupingEntity.bind(this);
     this.setVertexColor = this.setVertexColor.bind(this)
     this.setGroupingColor = this.setGroupingColor.bind(this)
-
   }
 
   appendToLayout(entity: Entity) {
     const { layout } = this.props
     layout.addEntity(entity);
     this.props.updateLayout(layout, {modifyHistory:true})
+  }
+
+  removeGroupingEntity(grouping: Grouping, entity: Entity) {
+    const { layout } = this.props
+
+    const vertex = layout.getVertexByEntity(entity);
+
+    if (vertex) {
+      layout.groupings.set(grouping.id, grouping.removeVertex(vertex))
+      this.props.updateLayout(layout, {modifyHistory:true})
+    }
   }
 
   setVertexColor(vertex: Vertex, color: string) {
@@ -75,6 +86,8 @@ export class Sidebar extends React.Component<IGraphContext> {
       contents = <GroupingViewer
         grouping={grouping}
         entites={grouping.getEntities()}
+        onEntitySelected={this.onEntitySelected}
+        onEntityRemoved={this.removeGroupingEntity}
         onColorSelected={this.setGroupingColor}
       />
     } else if (selection.length) {
