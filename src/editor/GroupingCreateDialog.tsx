@@ -56,7 +56,7 @@ export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogP
     const { layout } = this.context as IGraphContext
     const { isOpen, toggleDialog } = this.props
     return (
-      <Dialog icon="new-object" isOpen={isOpen} title="Group items" onClose={toggleDialog}>
+      <Dialog icon="group-objects" isOpen={isOpen} title="Group items" onClose={toggleDialog}>
         <form onSubmit={this.onSubmit}>
           <div className="bp3-dialog-body">
             <ControlGroup fill>
@@ -67,10 +67,6 @@ export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogP
                 value={this.state.label}
                 onChange={this.onChangeLabel}
                 placeholder="Select a label for the grouping"
-              />
-              <ColorPicker
-                currSelected={this.state.color}
-                onSelect={this.onChangeColor}
               />
             </ControlGroup>
           </div>

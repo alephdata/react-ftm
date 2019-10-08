@@ -32,7 +32,9 @@ export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
           <h2 className='GroupingViewer__title__text'>{grouping.label}</h2>
           <ColorPicker
             currSelected={grouping.color}
-            onSelect={(color: string) => this.props.onColorSelected(grouping, color)} />
+            onSelect={(color: string) => this.props.onColorSelected(grouping, color)}
+            swatchShape="square"
+          />
         </div>
         <EntityList
           entities={grouping.getEntities()}

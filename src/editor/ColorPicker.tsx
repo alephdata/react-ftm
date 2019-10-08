@@ -11,6 +11,7 @@ const colorOptions = [
 interface IColorPickerProps {
   currSelected?: string
   onSelect: (color: string) => void
+  swatchShape?: string
 }
 
 
@@ -22,7 +23,7 @@ export class ColorPicker extends React.PureComponent<IColorPickerProps> {
   }
 
   renderColor(color: string) {
-    const { currSelected, onSelect } = this.props
+    const { currSelected, onSelect, swatchShape } = this.props
     const style = {
       backgroundColor: color,
       border: currSelected === color ? '3px solid white' : '1px solid white'
@@ -30,7 +31,7 @@ export class ColorPicker extends React.PureComponent<IColorPickerProps> {
     return (
       <div key={color} className='ColorPicker__item' onClick={() => onSelect(color)}>
         <div
-          className='ColorPicker__item__swatch'
+          className={`ColorPicker__item__swatch ${swatchShape}`}
           style={style}>
         </div>
       </div>

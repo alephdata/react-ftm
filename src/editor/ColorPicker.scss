@@ -21,6 +21,10 @@ $swatch-width: 20px;
       cursor: pointer;
       transition: all .1s ease-in-out;
 
+      &.square {
+        border-radius: 5px;
+      }
+
       &:hover {
         border-width: 3px !important;
       }
