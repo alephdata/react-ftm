@@ -253,8 +253,11 @@ export class GraphLayout {
       } else {
         vertex.hidden = true
       }
-      this.groupings.forEach(grouping => {
+      this.getGroupings().forEach(grouping => {
         grouping.removeVertex(vertex)
+        if (grouping.vertices.size < 2) {
+          this.groupings.delete(grouping.id)
+        }
       })
     })
     this.getSelectedEdges().forEach((edge) => {
@@ -267,6 +270,7 @@ export class GraphLayout {
         }
       }
     })
+
     this.generate()
   }
 

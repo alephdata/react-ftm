@@ -62,12 +62,12 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   onMouseOver() {
-    this.props.interactionMode === modes.ITEM_DRAG && this.setState({hovered: true})
+    // this.props.interactionMode === modes.ITEM_DRAG && this.setState({hovered: true})
   }
 
   onMouseOut() {
     // console.log('mouse out');
-    this.setState({hovered: false})
+    // this.setState({hovered: false})
   }
 
   getBoundingRect() {
@@ -82,7 +82,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
     const { hovered } = this.state
 
     const {x, y, width, height} = this.getBoundingRect();
-    const padding = config.VERTEX_RADIUS*config.gridUnit + 8;
+    const padding = config.VERTEX_RADIUS*config.gridUnit + 12;
 
     const groupStyles: React.CSSProperties = {
       cursor: selected ? 'grab' : 'pointer',
@@ -112,11 +112,11 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
           />
           <text
             x={x + width/2}
-            y={y + height + padding + 8}
+            y={y + height + padding + 10}
             fill={displayColor}
             textAnchor="middle"
             fontWeight="bold"
-            fontSize="8"
+            fontSize="6"
           >
             {grouping.label}
           </text>

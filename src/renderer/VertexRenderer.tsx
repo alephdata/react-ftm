@@ -68,8 +68,11 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   onPanEnd(e: DraggableEvent, data: DraggableData) {
-    this.props.actions.setInteractionMode(modes.SELECT)
-    this.props.dropSelection()
+    const { interactionMode, actions, dropSelection } = this.props;
+    if (interactionMode === modes.ITEM_DRAG) {
+      actions.setInteractionMode(modes.SELECT)
+    }
+    dropSelection()
   }
 
   onPanStart(e: DraggableEvent, data: DraggableData) {
@@ -128,9 +131,9 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
 
     const vertexColor = this.getColor()
     const groupStyles: React.CSSProperties = {
-      cursor: selected ? 'grab' : 'pointer',
+      cursor: 'pointer'
       // sets pointer events to none while dragging in order to detect mouseover on other elements
-      pointerEvents: interactionMode === modes.ITEM_DRAG ? 'none' : 'auto'
+      // pointerEvents: interactionMode === modes.ITEM_DRAG ? 'none' : 'auto'
     }
 
     return (
