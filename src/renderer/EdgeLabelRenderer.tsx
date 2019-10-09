@@ -76,6 +76,11 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
     const extents = this.state.textExtents;
     const { x, y } = config.gridToPixel(center);
     const translate = `translate(${x} ${y})`
+    const style = {
+      fontSize: "5px",
+      fontFamily: "sans-serif",
+      fontWeight: "bold"
+    } as React.CSSProperties
 
     const outline = extents ?
            <rect className="EdgeLabel__outline"
@@ -84,6 +89,7 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
               rx={3}
               stroke={outlineColor}
               strokeWidth=".8px"
+              fill="white"
               width={extents[0]+2*margin}
               height={extents[1]+2*margin}>
             </rect>
@@ -107,7 +113,9 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
                 textAnchor="middle"
                 dy={extents?(extents[1]/4):0}
                 className="EdgeLabel__text"
-                fill={textColor}>
+                fill={textColor}
+                style={style}
+              >
                 {labelText}
               </text>
             </g>

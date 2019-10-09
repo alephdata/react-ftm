@@ -87,6 +87,11 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
     const groupStyles: React.CSSProperties = {
       cursor: selected ? 'grab' : 'pointer',
     }
+    const textStyle: React.CSSProperties = {
+      fontSize: "5px",
+      fontFamily: "sans-serif",
+      fontWeight: "bold"
+    }
     const displayColor = selected || hovered ? grouping.color : config.UNSELECTED_COLOR
 
     return (
@@ -115,8 +120,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
             y={y + height + padding + 10}
             fill={displayColor}
             textAnchor="middle"
-            fontWeight="bold"
-            fontSize="6"
+            style={textStyle}
           >
             {grouping.label}
           </text>
