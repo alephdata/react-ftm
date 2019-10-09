@@ -29,7 +29,7 @@ export class EntityList extends React.PureComponent<IEntityListProps>{
           onClick={() => onEntitySelected && onEntitySelected(entity)}
         >
             <Icon icon={SchemaIcon.get(entity.schema)} />
-            <div className="bp3-text-overflow-ellipsis bp3-fill">
+            <div className="bp3-fill">
               {entity.getCaption()}
             </div>
         </div>
@@ -46,7 +46,7 @@ export class EntityList extends React.PureComponent<IEntityListProps>{
   }
 
   render() {
-    const {entities} = this.props;
+    const { entities } = this.props;
     const entityGroups = groupBy(entities, (e:Entity) => e.schema.plural)
     return <Menu className="EntityList">
       {Object.entries(entityGroups).map(([key, values]:any) => {
