@@ -1,21 +1,23 @@
 @import "src/variables.scss";
 
 .EntityList {
-  background: $black-70 !important;
+  background: none !important;
   overflow: hidden;
-  padding: 5px !important;
 
   &__category {
-    margin: 15px 0;
+    margin-bottom: 20px;
 
     &__title {
       color: white !important;
       font-size: 14px;
-      margin: 5px 10px 7px;
+      margin: 5px 10px 7px 0;
     }
-    // &:not(:last-child) {
-    //   border-bottom: 1px solid $black-50;
-    // }
+
+    &__values {
+      background: $black-70;
+      border-radius: 5px;
+      padding: 5px !important;
+    }
   }
 
   &__item {
