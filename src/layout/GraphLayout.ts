@@ -139,13 +139,11 @@ export class GraphLayout {
   selectElement(element: GraphElement | Array<GraphElement>, additional: boolean = false) {
     const newSelection = Array.isArray(element) ? element.map(e => e.id) : [element.id]
 
-    // if (!this.isElementSelected(element)) {
-      if (additional) {
-        this.selection = [...newSelection, ...this.selection]
-      } else {
-        this.selection = newSelection
-      }
-    // }
+    if (!additional) {
+      this.selection = newSelection
+    } else if (!this.isElementSelected(element)) {
+      this.selection = [...newSelection, ...this.selection]
+    }
   }
 
   selectVerticesByFilter(predicate: VertexPredicate) {
@@ -213,6 +211,8 @@ export class GraphLayout {
     if (Array.isArray(element)) {
       return element.every(elem => this.selection.includes(elem.id));
     } else {
+      console.log(this.getSelectedGroupings())
+      const selectedGroupings = this.getSelectedGroupings();
       return this.selection.indexOf(element.id) !== -1;
     }
   }
