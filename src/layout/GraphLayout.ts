@@ -360,10 +360,14 @@ export class GraphLayout {
       layout.edges.set(edge.id, edge)
     })
     layout.generate()
-    layoutData.groupings.forEach((gdata) => {
-      const grouping = Grouping.fromJSON(layout, gdata)
-      layout.groupings.set(grouping.id, grouping)
-    })
+    if (layoutData.groupings) {
+      layoutData.groupings.forEach((gdata) => {
+        const grouping = Grouping.fromJSON(layout, gdata)
+        layout.groupings.set(grouping.id, grouping)
+      })
+    } else {
+      layout.groupings = new Map()
+    }
     layout.selection = layoutData.selection
     return layout
   }
