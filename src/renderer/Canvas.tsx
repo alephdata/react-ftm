@@ -77,6 +77,7 @@ export class Canvas extends React.Component <ICanvasProps> {
 
   private resizeSelection() {
     const selection = this.selectionRef.current
+
     if (selection) {
       const rect = Rectangle.fromPoints(this.dragInitial, this.dragExtent)
       selection.setAttribute('x', rect.x + '')
@@ -185,6 +186,8 @@ export class Canvas extends React.Component <ICanvasProps> {
     const matrix = getRefMatrix(this.props.svgRef)
     const target = applyMatrix(matrix, event.clientX, event.clientY)
     const gridTarget = viewport.config.pixelToGrid(target)
+
+
     this.props.actions.addVertexToPosition(gridTarget)
   }
 

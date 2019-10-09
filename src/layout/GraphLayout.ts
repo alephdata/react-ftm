@@ -1,5 +1,6 @@
 import { Entity, Model, IEntityDatum } from '@alephdata/followthemoney'
 import { forceSimulation, forceLink, forceCollide } from 'd3-force';
+import { DraggableEvent } from 'react-draggable';
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
 import { Grouping } from './Grouping'
@@ -137,11 +138,14 @@ export class GraphLayout {
 
   selectElement(element: GraphElement | Array<GraphElement>, additional: boolean = false) {
     const newSelection = Array.isArray(element) ? element.map(e => e.id) : [element.id]
-    if (additional) {
-      this.selection = [...newSelection, ...this.selection]
-    } else {
-      this.selection = newSelection
-    }
+
+    // if (!this.isElementSelected(element)) {
+      if (additional) {
+        this.selection = [...newSelection, ...this.selection]
+      } else {
+        this.selection = newSelection
+      }
+    // }
   }
 
   selectVerticesByFilter(predicate: VertexPredicate) {
@@ -187,11 +191,14 @@ export class GraphLayout {
       .map((edgeId) => this.edges.get(edgeId)) as Edge[]
   }
 
-  getEdgeGroups() {
-    const edges = Array.from(this.edges.values()).filter((edge) => !edge.isHidden())
-    return groupBy(edges, (edge:Edge) => {
-      return [edge.sourceId, edge.targetId].sort()
-    })
+  getHighlightedEdges(): Edge[] {
+    return this.getEdges()
+      .filter(edge => edge.isEntity() && this.isEdgeHighlighted(edge))
+  }
+
+  getSelectionAdjacentEdges(): Edge[] {
+    return this.getEdges()
+      .filter(edge => edge.isEntity() && this.isEdgeSelectionAdjacent(edge))
   }
 
   hasSelection(): boolean {
@@ -202,8 +209,12 @@ export class GraphLayout {
     this.selection = [];
   }
 
-  isElementSelected(element: GraphElement) {
-    return this.selection.indexOf(element.id) !== -1;
+  isElementSelected(element: GraphElement | Array<GraphElement>) {
+    if (Array.isArray(element)) {
+      return element.every(elem => this.selection.includes(elem.id));
+    } else {
+      return this.selection.indexOf(element.id) !== -1;
+    }
   }
 
   isGroupingSelected(grouping: Grouping) {
@@ -215,17 +226,44 @@ export class GraphLayout {
   }
 
   isEdgeHighlighted(edge: Edge): boolean {
-    return this.isElementSelected(edge) ||
-      this.selection.indexOf(edge.sourceId) !== -1 ||
+    return this.isElementSelected(edge) || this.isEdgeSelectionAdjacent(edge)
+  }
+
+  isEdgeSelectionAdjacent(edge: Edge): boolean {
+    return this.selection.indexOf(edge.sourceId) !== -1 ||
       this.selection.indexOf(edge.targetId) !== -1;
   }
 
-  dragSelection(offset: Point) {
+  dragSelection(offset: Point, initialPosition?: Point) {
     this.getSelectedVertices().forEach((vertex) => {
       const position = vertex.position.addition(offset)
       this.vertices.set(vertex.id, vertex.setPosition(position))
     })
+
+    this.getSelectedEdges().forEach((edge) => {
+      if (edge.isEntity()) {
+        this.dragEdge(edge, offset, initialPosition)
+      }
+    })
+
+    this.getSelectionAdjacentEdges().forEach((edge) => {
+      this.dragEdge(edge, offset)
+    })
+
     this.hasDraggedSelection = true
+  }
+
+  dragEdge(edge: Edge, offset: Point, initialPosition?: Point) {
+    let labelPosition;
+
+    if (edge.labelPosition) {
+      labelPosition = edge.labelPosition.addition(offset)
+    } else if (initialPosition) {
+      labelPosition = initialPosition
+    } else {
+      return;
+    }
+    this.edges.set(edge.id, edge.setLabelPosition(labelPosition))
   }
 
   dropSelection() {
@@ -318,6 +356,7 @@ export class GraphLayout {
       .force('collide', forceCollide(this.config.VERTEX_RADIUS).strength(2))
     simulation.stop()
     simulation.tick(500)
+
     nodes.forEach((node) => {
       if (!node.fixed) {
         const vertex = this.vertices.get(node.id) as Vertex

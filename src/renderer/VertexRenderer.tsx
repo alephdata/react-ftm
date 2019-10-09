@@ -62,6 +62,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     const current = applyMatrix(matrix, data.x, data.y)
     const last = applyMatrix(matrix, data.lastX, data.lastY)
     const offset = config.pixelToGrid(current.subtract(last))
+
     if (offset.x || offset.y) {
       this.props.dragSelection(offset)
     }

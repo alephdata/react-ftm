@@ -2,7 +2,7 @@ import { Vertex } from './Vertex'
 import { Entity, PropertyType, Property, Value } from '@alephdata/followthemoney';
 import { GraphLayout } from './GraphLayout';
 import { Rectangle } from './Rectangle';
-import { Point } from './Point';
+import { Point, IPointData } from './Point';
 
 interface IEdgeData {
   id: string
@@ -10,6 +10,7 @@ interface IEdgeData {
   label: string
   sourceId: string
   targetId: string
+  labelPosition?: IPointData
   entityId?: string
   propertyQName?: string
 }
@@ -21,6 +22,7 @@ export class Edge {
   public readonly label: string
   public readonly sourceId: string
   public readonly targetId: string
+  public labelPosition?: Point
   public readonly entityId?: string
   public readonly propertyQName?: string
 
@@ -35,6 +37,7 @@ export class Edge {
     this.sourceId = data.sourceId
     this.targetId = data.targetId
     this.entityId = data.entityId
+    this.labelPosition = data.labelPosition ? Point.fromJSON(data.labelPosition) : undefined
     this.propertyQName = data.propertyQName
   }
 
@@ -88,12 +91,26 @@ export class Edge {
 
   update(other: Edge): Edge {
     const data = other.toJSON()
+    if (this.labelPosition) {
+      data.labelPosition = this.labelPosition.toJSON()
+    }
+
     // TODO: remove if there are no changes
     return Edge.fromJSON(this.layout, data)
   }
 
   clone(): Edge {
     return Edge.fromJSON(this.layout, this.toJSON())
+  }
+
+  getLabelPosition() {
+    return this.labelPosition
+  }
+
+  setLabelPosition(labelPosition?: Point): Edge {
+    const edge = this.clone()
+    edge.labelPosition = labelPosition
+    return edge
   }
 
   toJSON(): IEdgeData {
@@ -104,6 +121,7 @@ export class Edge {
       sourceId: this.sourceId,
       targetId: this.targetId,
       entityId: this.entityId,
+      labelPosition: this.labelPosition && this.labelPosition.toJSON(),
       propertyQName: this.propertyQName
     }
   }
