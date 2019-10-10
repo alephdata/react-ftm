@@ -15,13 +15,12 @@
 
     &__values {
       background: $black-70;
-      border-radius: 5px;
+      border-radius: 3px;
       padding: 5px !important;
     }
   }
 
   &__item {
-    padding: 0 3px !important;
     fill: white !important;
     color: white !important;
     border-radius: 0 !important;

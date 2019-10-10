@@ -211,7 +211,6 @@ export class GraphLayout {
     if (Array.isArray(element)) {
       return element.every(elem => this.selection.includes(elem.id));
     } else {
-      console.log(this.getSelectedGroupings())
       const selectedGroupings = this.getSelectedGroupings();
       return this.selection.indexOf(element.id) !== -1;
     }

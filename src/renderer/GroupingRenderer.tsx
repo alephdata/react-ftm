@@ -48,7 +48,6 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   onDragEnd(e: DraggableEvent, data: DraggableData) {
-    console.log('dropping', e);
     this.props.dropSelection()
   }
 
