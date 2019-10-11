@@ -32,23 +32,16 @@
       border: none;
     }
 
-    &__left, &__right {
-      display: table-cell;
-      cursor: pointer;
-    }
-
     &__right {
       width: 20px;
       border-radius: 3px;
       padding: 3px;
+      display: table-cell;
+      cursor: pointer;
 
       &:hover {
         background-color: rgba(167, 182, 194, 0.3);
       }
     }
-
-    // &:hover {
-    //   background: $black-50 !important;
-    // }
   }
 }
