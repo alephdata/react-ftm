@@ -7,6 +7,10 @@ interface IURLProps {
 }
 
 export class URL extends React.PureComponent<IURLProps> {
+  onClick(e: React.MouseEvent) {
+    e.stopPropagation()
+  }
+
   render() {
     const { value, ...restProps } = this.props;
     if (!value) {
@@ -14,11 +18,10 @@ export class URL extends React.PureComponent<IURLProps> {
     }
 
     return (
-      <a {...restProps} href={value} className="URL" rel="noopener noreferrer" target="_blank" title={value}>
+      <a {...restProps} href={value} className="URL" rel="noopener noreferrer" target="_blank" title={value} onClick={this.onClick}>
         <Icon icon="link" iconSize={14} />
         {getHost(value)}
       </a>
     );
   }
 }
-

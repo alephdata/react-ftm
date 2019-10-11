@@ -132,9 +132,13 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
 
     const vertexColor = this.getColor()
     const groupStyles: React.CSSProperties = {
+<<<<<<< HEAD
       cursor: 'pointer',
       // sets pointer events to none while dragging in order to detect mouseover on other elements
       pointerEvents: interactionMode === modes.ITEM_DRAG ? 'none' : 'auto'
+=======
+      cursor: 'pointer'
+>>>>>>> master
     }
 
     return (
