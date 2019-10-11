@@ -192,7 +192,6 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     const { source, target, type } = this.state
     const types = this.getTypes()
 
-    console.log('source and target', source, target);
     return (
       <Dialog icon="new-link" isOpen={isOpen} title="Add link" onClose={toggleDialog} style={{width: '800px'}}>
         <form onSubmit={this.onSubmit}>

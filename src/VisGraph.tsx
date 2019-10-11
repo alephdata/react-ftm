@@ -126,9 +126,11 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     if (svgData) {
       const svgClone = svgData.cloneNode(true) as HTMLElement
       svgClone.setAttribute("viewBox",viewBox as string)
-      // console.log(svgClone.getElementById("canvas-handle"))
-      // svgClone.getElementById("canvas-handle")
-      //   .setAttribute('fill', 'none');
+      svgClone.setStyle('cursor', 'auto')
+
+      const canvas = svgClone.querySelector("#canvas-handle")
+      canvas && canvas.setAttribute('fill', 'none');
+
       const svgBlob = new XMLSerializer().serializeToString(svgClone)
       this.props.exportSvg(svgBlob)
     }
@@ -139,8 +141,6 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     const { animateTransition, interactionMode } = this.state;
     const vertices = layout.getSelectedVertices()
     const [sourceVertex, targetVertex] = vertices
-
-    console.log('in visgraph', sourceVertex, targetVertex)
 
     const actions = {
       addVertexToPosition: this.addVertexToPosition,

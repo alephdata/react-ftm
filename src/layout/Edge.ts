@@ -131,7 +131,6 @@ export class Edge {
   }
 
   static fromEntity(layout: GraphLayout, entity: Entity, source: Vertex, target: Vertex): Edge {
-    console.log('creating from entity', entity, source, target);
     return new Edge(layout, {
       id: `${entity.id}(${source.id}, ${target.id})`,
       type: PropertyType.ENTITY,
