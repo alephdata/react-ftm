@@ -44,6 +44,14 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
     this.setState({textExtents:[box.width,box.height]});
   }
 
+  componentDidUpdate(prevProps: IEdgeLabelRendererProps) {
+    if (prevProps.labelText !== this.props.labelText) {
+      const box = this.text.getBBox();
+
+      this.setState({textExtents:[box.width,box.height]});
+    }
+  }
+
   private onDragMove(e: DraggableEvent, data: DraggableData) {
     const { config } = this.props
 
@@ -79,7 +87,6 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
     const style = {
       fontSize: "5px",
       fontFamily: "sans-serif",
-      fontWeight: "bold"
     } as React.CSSProperties
 
     const outline = extents ?

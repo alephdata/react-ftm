@@ -134,7 +134,7 @@ export class Edge {
     return new Edge(layout, {
       id: `${entity.id}(${source.id}, ${target.id})`,
       type: PropertyType.ENTITY,
-      label: entity.getCaption(),
+      label: entity.getEdgeCaption(),
       sourceId: source.id,
       targetId: target.id,
       entityId: entity.id
