@@ -92,7 +92,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
           d={path}
           strokeDasharray={isEntity ? '0' : '1'}
           style={lineStyles}
-          markerStart={isEntity ? arrowRef : ''}
+          markerEnd={isEntity ? arrowRef : ''}
         />
       </g>
       { highlight && (

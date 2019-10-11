@@ -142,7 +142,7 @@ export class GraphLayout {
     if (!additional) {
       this.selection = newSelection
     } else if (!this.isElementSelected(element)) {
-      this.selection = [...newSelection, ...this.selection]
+      this.selection = [...this.selection, ...newSelection]
     }
   }
 
