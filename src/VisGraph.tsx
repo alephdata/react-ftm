@@ -126,7 +126,6 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     if (svgData) {
       const svgClone = svgData.cloneNode(true) as HTMLElement
       svgClone.setAttribute("viewBox",viewBox as string)
-      svgClone.setStyle('cursor', 'auto')
 
       const canvas = svgClone.querySelector("#canvas-handle")
       canvas && canvas.setAttribute('fill', 'none');
