@@ -62,6 +62,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     const current = applyMatrix(matrix, data.x, data.y)
     const last = applyMatrix(matrix, data.lastX, data.lastY)
     const offset = config.pixelToGrid(current.subtract(last))
+    this.props.actions.setInteractionMode(modes.ITEM_DRAG)
 
     if (offset.x || offset.y) {
       this.props.dragSelection(offset)
@@ -77,7 +78,6 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   onPanStart(e: DraggableEvent, data: DraggableData) {
-    this.props.actions.setInteractionMode(modes.ITEM_DRAG)
     this.onClick(e)
   }
 
@@ -132,9 +132,9 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
 
     const vertexColor = this.getColor()
     const groupStyles: React.CSSProperties = {
-      cursor: 'pointer'
+      cursor: 'pointer',
       // sets pointer events to none while dragging in order to detect mouseover on other elements
-      // pointerEvents: interactionMode === modes.ITEM_DRAG ? 'none' : 'auto'
+      pointerEvents: interactionMode === modes.ITEM_DRAG ? 'none' : 'auto'
     }
 
     return (

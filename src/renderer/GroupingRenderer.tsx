@@ -61,12 +61,11 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   onMouseOver() {
-    // this.props.interactionMode === modes.ITEM_DRAG && this.setState({hovered: true})
+    this.props.interactionMode === modes.ITEM_DRAG && this.setState({hovered: true})
   }
 
   onMouseOut() {
-    // console.log('mouse out');
-    // this.setState({hovered: false})
+    this.setState({hovered: false})
   }
 
   getBoundingRect() {
@@ -112,7 +111,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
             width={width + padding*2}
             height={height + padding*2}
             fill={displayColor}
-            fillOpacity={selected ? ".1" : ".2"}
+            fillOpacity={selected || hovered ? ".1" : ".2"}
           />
           <text
             x={x + width/2}
