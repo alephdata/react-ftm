@@ -12,7 +12,7 @@
   "typings": "dist/types/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/alephdata/vis2.js"
+    "url": "https://github.com/alephdata/vislib"
   },
   "license": "MIT",
   "engines": {
