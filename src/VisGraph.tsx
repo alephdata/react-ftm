@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button, ButtonGroup } from '@blueprintjs/core';
+import { Button, ButtonGroup, Tooltip } from '@blueprintjs/core';
 import { GraphRenderer } from './renderer/GraphRenderer'
 import { GraphLayout, Rectangle, Point } from './layout';
 import { Viewport } from './Viewport';
@@ -52,6 +52,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.updateViewport = this.updateViewport.bind(this);
     this.navigateHistory = this.navigateHistory.bind(this);
     this.exportSvg = this.exportSvg.bind(this);
+    this.fitToSelection = this.fitToSelection.bind(this)
     this.setInteractionMode = this.setInteractionMode.bind(this)
     this.removeSelection = this.removeSelection.bind(this)
     this.ungroupSelection = this.ungroupSelection.bind(this)
@@ -104,6 +105,16 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.setState({ interactionMode: newMode || modes.SELECT })
   }
 
+  fitToSelection() {
+    const {layout, viewport} = this.props
+    const selection = layout.getSelectedVertices()
+    const vertices = selection.length > 0 ? selection : layout.getVertices()
+    const points = vertices.filter((v) => !v.isHidden()).map((v) => v.position)
+    const rect = Rectangle.fromPoints(...points)
+    this.updateViewport(viewport.fitToRect(rect), {animate:true})
+  }
+
+
   removeSelection() {
     const { layout } = this.props
     layout.removeSelection()
@@ -143,12 +154,13 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
     const actions = {
       addVertexToPosition: this.addVertexToPosition,
-      setInteractionMode: this.setInteractionMode,
+      exportSvg: this.exportSvg,
+      fitToSelection: this.fitToSelection,
       navigateHistory: this.navigateHistory,
       removeSelection: this.removeSelection,
+      setInteractionMode: this.setInteractionMode,
       ungroupSelection: this.ungroupSelection,
-      exportSvg: this.exportSvg
-    }
+    };
 
     const layoutContext = {
       layout: layout,
@@ -188,6 +200,9 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
             <div style={{flexGrow: 4, flexShrink: 1, flexBasis: 'auto', position: 'relative', overflow:'hidden'}}>
               <div style={{position: 'absolute', bottom: '5px', left: '10px'}}>
                 <ButtonGroup vertical>
+                  <Tooltip content="Fit view to selection">
+                    <Button icon="zoom-to-fit" onClick={this.fitToSelection}/>
+                  </Tooltip>
                   <Button icon="zoom-in" onClick={() => this.onZoom(0.8)}/>
                   <Button icon="zoom-out" onClick={() => this.onZoom(1.2)}/>
                 </ButtonGroup>

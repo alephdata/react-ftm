@@ -38,7 +38,6 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
   constructor(props: Readonly<IToolbarProps>) {
     super(props);
     this.onSetInteractionMode = this.onSetInteractionMode.bind(this)
-    this.onFitToSelection = this.onFitToSelection.bind(this)
     this.onChangeSearch = this.onChangeSearch.bind(this)
     this.onSubmitSearch = this.onSubmitSearch.bind(this)
   }
@@ -47,15 +46,6 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     const {layout, updateLayout, actions} = this.props
     actions.setInteractionMode(newMode)
     updateLayout(layout)
-  }
-
-  onFitToSelection() {
-    const {layout, viewport, updateViewport} = this.props
-    const selection = layout.getSelectedVertices()
-    const vertices = selection.length > 0 ? selection : layout.getVertices()
-    const points = vertices.filter((v) => !v.isHidden()).map((v) => v.position)
-    const rect = Rectangle.fromPoints(...points)
-    updateViewport(viewport.fitToRect(rect), {animate:true})
   }
 
   onChangeSearch(event: React.FormEvent<HTMLInputElement>) {
@@ -72,7 +62,8 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
   }
 
   onSubmitSearch(event: React.FormEvent) {
-    this.onFitToSelection()
+    const {actions} = this.props
+    actions.fitToSelection()
     event.preventDefault()
     event.stopPropagation()
   }
@@ -103,24 +94,13 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
               <AnchorButton icon="redo" onClick={() => actions.navigateHistory(History.FORWARD)} disabled={!history.canGoTo(History.FORWARD)}/>
             </Tooltip>
             <Divider/>
-            {interactionMode === modes.PAN &&
-              <Tooltip content="Toggle select mode">
-                <Button icon="select" onClick={() => this.onSetInteractionMode(modes.SELECT)}/>
-              </Tooltip>
-            }
-            {interactionMode !== modes.PAN &&
-              <Tooltip content="Toggle pan mode">
-                <Button icon="hand" onClick={() => this.onSetInteractionMode(modes.PAN)}/>
-              </Tooltip>
-            }
-            <Tooltip content="Fit view to selection">
-              <Button icon="zoom-to-fit" onClick={this.onFitToSelection}/>
-            </Tooltip>
-            <Divider/>
             <Tooltip content="Add entities">
               <Button icon="new-object" onClick={() => this.onSetInteractionMode(modes.VERTEX_CREATE)}/>
             </Tooltip>
-            <Tooltip content={hasSelection ? "Remove selected" : "To remove a node first you must select a node by clicking on it"}>
+            <Tooltip content="Add links">
+              <AnchorButton icon="new-link" onClick={() => this.onSetInteractionMode(modes.EDGE_CREATE)} disabled={!canAddEdge} />
+            </Tooltip>
+            <Tooltip content={hasSelection ? "Delete selection" : "To remove an entity or link first you must first select it"}>
               <AnchorButton icon="graph-remove" onClick={actions.removeSelection} disabled={!hasSelection} />
             </Tooltip>
             <Divider/>
@@ -131,9 +111,16 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
               <AnchorButton icon="ungroup-objects" onClick={actions.ungroupSelection} disabled={!canUngroupSelection} />
             </Tooltip>
             <Divider/>
-            <Tooltip content="Add links">
-              <AnchorButton icon="new-link" onClick={() => this.onSetInteractionMode(modes.EDGE_CREATE)} disabled={!canAddEdge} />
-            </Tooltip>
+            {interactionMode === modes.PAN &&
+              <Tooltip content="Toggle select mode">
+                <Button icon="select" onClick={() => this.onSetInteractionMode(modes.SELECT)}/>
+              </Tooltip>
+            }
+            {interactionMode !== modes.PAN &&
+              <Tooltip content="Toggle pan mode">
+                <Button icon="hand" onClick={() => this.onSetInteractionMode(modes.PAN)}/>
+              </Tooltip>
+            }
             <Divider/>
             <Tooltip content="Align horizontal">
               <AnchorButton icon="drag-handle-horizontal" disabled={disableLayoutButtons} onClick={() => {
