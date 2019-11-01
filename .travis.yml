@@ -11,8 +11,8 @@ node_js:
 jobs:
   include:
   - stage: test
-    name: linting and unit-testing, reporting coverage
-    script: npm run test:prod &&  npm run report-coverage
+    name: linting and unit-testing
+    script: npm run test:prod
   - stage: build
     script: npm run build
 
