@@ -1,0 +1,9 @@
+@import "src/variables.scss";
+
+.Sidebar {
+  padding: 15px;
+  background-color: $black-80;
+  min-height: 100%;
+  box-shadow: $editor-box-shadow;
+  color: white;
+}

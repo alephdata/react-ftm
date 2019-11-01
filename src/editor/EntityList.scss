@@ -1,0 +1,47 @@
+@import "src/variables.scss";
+
+.EntityList {
+  background: none !important;
+  overflow: hidden;
+
+  &__category {
+    margin-bottom: 20px;
+
+    &__title {
+      color: white !important;
+      font-size: 14px;
+      margin: 5px 10px 7px 0;
+    }
+
+    &__values {
+      background: $black-70;
+      border-radius: 3px;
+      padding: 5px !important;
+    }
+  }
+
+  &__item {
+    fill: white !important;
+    color: white !important;
+    border-radius: 0 !important;
+    display: table;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+
+    &:last-child {
+      border: none;
+    }
+
+    &__right {
+      width: 20px;
+      border-radius: 3px;
+      padding: 3px;
+      display: table-cell;
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba(167, 182, 194, 0.3);
+      }
+    }
+  }
+}

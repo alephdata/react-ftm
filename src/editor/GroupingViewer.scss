@@ -1,0 +1,49 @@
+@import "src/variables.scss";
+
+.GroupingViewer {
+  height: 100%;
+  padding: 0;
+  color: white;
+
+  &__title {
+    text-align: center;
+    padding: 25px 15px;
+
+    svg {
+      fill: white;
+    }
+    
+    &__text {
+      margin: 10px 0 0 !important;
+      color: white !important;
+    }
+  }
+
+
+  .bp3-divider {
+    margin: 15px 0;
+    border-color: white;
+  }
+
+  .bp3-button {
+    color: white !important;
+    border: 1px solid white;
+    background: transparent !important;
+    box-shadow: none !important;
+    transition: all .1s ease-in;
+
+    &:hover {
+      background: $white !important;
+      color: $black-90 !important;
+
+      .bp3-icon {
+        color: $black-90;
+      }
+    }
+
+    .bp3-icon {
+      color: white;
+    }
+  }
+
+}
