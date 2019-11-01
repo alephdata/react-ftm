@@ -1,15 +1,19 @@
 import React from 'react';
-import {IGraphContext, PropertyEditor, PropertyValues, VertexSchemaSelect} from '@alephdata/vislib';
-import {Cell, Column, RenderMode, Table} from "@blueprintjs/table";
-import {Callout, Card, Popover, PopoverInteractionKind, Tab, Tabs} from "@blueprintjs/core";
-import {Entity, Schema} from "@alephdata/followthemoney";
-import '@blueprintjs/table/lib/css/table.css'
+import { GraphLayout } from '../layout';
+import { GraphUpdateHandler, IGraphContext } from '../GraphContext';
+import { PropertyEditor, VertexSchemaSelect } from '.';
+import { PropertyValues } from '../types';
+import { Cell, Column, RenderMode, Table } from "@blueprintjs/table";
+import { Callout, Card, Popover, Tab, Tabs } from "@blueprintjs/core";
+import { Entity, Schema } from "@alephdata/followthemoney";
+
+// import '@blueprintjs/table/lib/css/table.css'
 
 
-interface ITableEditorProps extends IGraphContext {
+interface ITableEditorProps {
+  layout: GraphLayout,
+  updateLayout: GraphUpdateHandler,
 }
-
-
 
 export const TableEditor = React.memo(function TableEditor(props: ITableEditorProps) {
   const {layout, updateLayout} = props;
@@ -43,8 +47,10 @@ export const TableEditor = React.memo(function TableEditor(props: ITableEditorPr
   </Tabs>)
 })
 
-interface ITableForSchemaProps extends IGraphContext {
+interface ITableForSchemaProps {
   schema: Schema
+  layout: GraphLayout,
+  updateLayout: (layout:GraphLayout, historyModified?: boolean) => void,
 }
 
 function TableForSchema({layout, schema, updateLayout}: ITableForSchemaProps) {
@@ -76,7 +82,7 @@ function TableForSchema({layout, schema, updateLayout}: ITableForSchemaProps) {
           <Popover
             usePortal
             lazy
-            interactionKind={PopoverInteractionKind.CLICK}
+            interactionKind={'click'}
           >
             <PropertyValues values={entity.getProperty(property)} prop={property}/>
             <Card>

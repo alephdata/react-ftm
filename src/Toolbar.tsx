@@ -143,6 +143,10 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
               }} />
             </Tooltip>
             <Divider/>
+            <Tooltip content="Toggle table edit mode">
+              <AnchorButton icon="th" onClick={actions.toggleTableView} />
+            </Tooltip>
+            <Divider/>
             <Tooltip content="Export as SVG">
               <AnchorButton icon="export" onClick={actions.exportSvg} />
             </Tooltip>

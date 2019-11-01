@@ -1,14 +1,14 @@
 import * as React from 'react'
-import { Button, ButtonGroup, Tooltip } from '@blueprintjs/core';
+import { Button, ButtonGroup, Classes, Drawer, Position, Tooltip } from '@blueprintjs/core';
+import { GraphConfig } from './GraphConfig';
 import { GraphRenderer } from './renderer/GraphRenderer'
 import { GraphLayout, Rectangle, Point } from './layout';
 import { Viewport } from './Viewport';
-import { GraphConfig } from './GraphConfig';
 import { IGraphContext, GraphContext } from './GraphContext'
 import { Toolbar } from './Toolbar';
 import { Sidebar } from './Sidebar';
 import { History } from './History';
-import { VertexCreateDialog, EdgeCreateDialog, GroupingCreateDialog } from "./editor";
+import { EdgeCreateDialog, GroupingCreateDialog, VertexCreateDialog, TableEditor } from "./editor";
 import { Model, defaultModel } from '@alephdata/followthemoney'
 import { modes } from './interactionModes'
 
@@ -24,14 +24,16 @@ interface IVisGraphProps {
 
 interface IVisGraphState {
   animateTransition: boolean
-  vertexCreateInitialPos?: Point
   interactionMode: string
+  tableView: boolean
+  vertexCreateInitialPos?: Point
 }
 
 export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   state: IVisGraphState = {
     animateTransition: false,
-    interactionMode: modes.SELECT
+    interactionMode: modes.SELECT,
+    tableView: false,
   }
   history: History;
   svgRef: React.RefObject<SVGSVGElement>
@@ -47,16 +49,17 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       this.history.push(layout);
     }
 
-    this.onZoom = this.onZoom.bind(this);
-    this.updateLayout = this.updateLayout.bind(this);
-    this.updateViewport = this.updateViewport.bind(this);
-    this.navigateHistory = this.navigateHistory.bind(this);
+    this.addVertexToPosition = this.addVertexToPosition.bind(this)
     this.exportSvg = this.exportSvg.bind(this);
     this.fitToSelection = this.fitToSelection.bind(this)
-    this.setInteractionMode = this.setInteractionMode.bind(this)
+    this.navigateHistory = this.navigateHistory.bind(this);
+    this.onZoom = this.onZoom.bind(this);
     this.removeSelection = this.removeSelection.bind(this)
+    this.setInteractionMode = this.setInteractionMode.bind(this)
+    this.toggleTableView = this.toggleTableView.bind(this)
     this.ungroupSelection = this.ungroupSelection.bind(this)
-    this.addVertexToPosition = this.addVertexToPosition.bind(this)
+    this.updateLayout = this.updateLayout.bind(this);
+    this.updateViewport = this.updateViewport.bind(this);
   }
 
   onZoom(factor: number) {
@@ -101,8 +104,12 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     })
   }
 
-  setInteractionMode(newMode?: string){
+  setInteractionMode(newMode?: string) {
     this.setState({ interactionMode: newMode || modes.SELECT })
+  }
+
+  toggleTableView() {
+    this.setState({ tableView: !this.state.tableView })
   }
 
   fitToSelection() {
@@ -148,7 +155,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
   render() {
     const { config, layout, viewport } = this.props;
-    const { animateTransition, interactionMode } = this.state;
+    const { animateTransition, interactionMode, tableView } = this.state;
     const vertices = layout.getSelectedVertices()
     const [sourceVertex, targetVertex] = vertices
 
@@ -159,6 +166,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       navigateHistory: this.navigateHistory,
       removeSelection: this.removeSelection,
       setInteractionMode: this.setInteractionMode,
+      toggleTableView: this.toggleTableView,
       ungroupSelection: this.ungroupSelection,
     };
 
@@ -170,30 +178,16 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     };
 
     const showSidebar = layout.vertices && layout.vertices.size > 0
-    // <Drawer
-    //   position={Position.BOTTOM}
-    //   icon="th"
-    //   transitionDuration={0}
-    //   isOpen
-    //   canOutsideClickClose
-    //   title="Table editor"
-    //   onClose={() => history.push('/')}>
-    //   <div className={Classes.DRAWER_BODY}>
-    //     {layoutContext.layout && <TableEditor {...layoutContext}/>}
-    //   </div>
-    // </Drawer>
+
     return (
       <GraphContext.Provider value={layoutContext}>
         <div style={{flex: 1, display: 'flex', flexFlow: 'column', height: '100%'}} >
           <div style={{flexGrow: 0, flexShrink: 1, flexBasis: 'auto'}}>
             <Toolbar
-              layout={layout}
-              updateLayout={this.updateLayout}
-              viewport={viewport}
-              updateViewport={this.updateViewport}
               actions={actions}
               history={this.history}
               interactionMode={this.state.interactionMode}
+              {...layoutContext}
             />
           </div>
           <div style={{flex: 1, display: 'flex', flexFlow: 'row', flexGrow: 1, flexShrink: 1, flexBasis: '100%', overflow: 'hidden'}}>
@@ -209,13 +203,25 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               </div>
               <GraphRenderer
                 svgRef={this.svgRef}
-                layout={layout}
-                updateLayout={this.updateLayout}
-                viewport={viewport}
-                updateViewport={this.updateViewport}
                 animateTransition={animateTransition}
                 actions={actions}
-                interactionMode={interactionMode}/>
+                interactionMode={interactionMode}
+                {...layoutContext}
+              />
+              {tableView &&
+                <Drawer
+                  position={Position.BOTTOM}
+                  icon="th"
+                  transitionDuration={0}
+                  isOpen
+                  canOutsideClickClose
+                  title="Table editor"
+                  onClose={this.toggleTableView}>
+                  <div className={Classes.DRAWER_BODY}>
+                    <TableEditor layout={layout} updateLayout={this.updateLayout} />
+                  </div>
+                </Drawer>
+              }
             </div>
             {showSidebar &&
               <div style={{
@@ -228,7 +234,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                 minWidth: '200px',
                 maxWidth: '260px'
               }}>
-                <Sidebar layout={layout} updateLayout={this.updateLayout} viewport={viewport} updateViewport={this.updateViewport}/>
+                <Sidebar {...layoutContext} />
               </div>
             }
           </div>
@@ -244,14 +250,11 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
           toggleDialog={this.setInteractionMode} />
 
         <EdgeCreateDialog
-          layout={layout}
           source={sourceVertex}
           target={targetVertex}
           isOpen={interactionMode === modes.EDGE_CREATE}
           toggleDialog={this.setInteractionMode}
-          updateLayout={this.props.updateLayout}
-          viewport={viewport}
-          updateViewport={this.props.updateViewport}
+          {...layoutContext}
         />
 
       </GraphContext.Provider>
