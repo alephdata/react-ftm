@@ -60,6 +60,7 @@
     "@blueprintjs/core": "^3.15.1",
     "@blueprintjs/datetime": "^3.14.0",
     "@blueprintjs/select": "^3.11.1",
+    "@blueprintjs/table": "^3.8.1",
     "@types/bezier-js": "0.0.8",
     "@types/classnames": "^2.2.7",
     "@types/d3": "^5.7.2",
