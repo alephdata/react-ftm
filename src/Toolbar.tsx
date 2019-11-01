@@ -103,6 +103,23 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
               <AnchorButton icon="redo" onClick={() => actions.navigateHistory(History.FORWARD)} disabled={!history.canGoTo(History.FORWARD)}/>
             </Tooltip>
             <Divider/>
+            <Tooltip content="Add entities">
+              <Button icon="new-object" onClick={() => this.onSetInteractionMode(modes.VERTEX_CREATE)}/>
+            </Tooltip>
+            <Tooltip content="Add links">
+              <AnchorButton icon="new-link" onClick={() => this.onSetInteractionMode(modes.EDGE_CREATE)} disabled={!canAddEdge} />
+            </Tooltip>
+            <Tooltip content={hasSelection ? "Delete selection" : "To remove an entity or link first you must first select it"}>
+              <AnchorButton icon="trash" onClick={actions.removeSelection} disabled={!hasSelection} />
+            </Tooltip>
+            <Divider/>
+            <Tooltip content={"Group selected"}>
+              <AnchorButton icon="group-objects" onClick={() => this.onSetInteractionMode(modes.GROUPING_CREATE)} disabled={!canGroupSelection} />
+            </Tooltip>
+            <Tooltip content={"Ungroup selected"}>
+              <AnchorButton icon="ungroup-objects" onClick={actions.ungroupSelection} disabled={!canUngroupSelection} />
+            </Tooltip>
+            <Divider/>
             {interactionMode === modes.PAN &&
               <Tooltip content="Toggle select mode">
                 <Button icon="select" onClick={() => this.onSetInteractionMode(modes.SELECT)}/>
@@ -115,24 +132,6 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
             }
             <Tooltip content="Fit view to selection">
               <Button icon="zoom-to-fit" onClick={this.onFitToSelection}/>
-            </Tooltip>
-            <Divider/>
-            <Tooltip content="Add entities">
-              <Button icon="new-object" onClick={() => this.onSetInteractionMode(modes.VERTEX_CREATE)}/>
-            </Tooltip>
-            <Tooltip content={hasSelection ? "Remove selected" : "To remove a node first you must select a node by clicking on it"}>
-              <AnchorButton icon="graph-remove" onClick={actions.removeSelection} disabled={!hasSelection} />
-            </Tooltip>
-            <Divider/>
-            <Tooltip content={"Group selected"}>
-              <AnchorButton icon="group-objects" onClick={() => this.onSetInteractionMode(modes.GROUPING_CREATE)} disabled={!canGroupSelection} />
-            </Tooltip>
-            <Tooltip content={"Ungroup selected"}>
-              <AnchorButton icon="ungroup-objects" onClick={actions.ungroupSelection} disabled={!canUngroupSelection} />
-            </Tooltip>
-            <Divider/>
-            <Tooltip content="Add links">
-              <AnchorButton icon="new-link" onClick={() => this.onSetInteractionMode(modes.EDGE_CREATE)} disabled={!canAddEdge} />
             </Tooltip>
             <Divider/>
             <Tooltip content="Align horizontal">
