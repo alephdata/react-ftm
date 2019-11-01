@@ -87,7 +87,7 @@
     "rollup-plugin-scss": "^1.0.1",
     "rollup-plugin-sourcemaps": "^0.4.2",
     "rollup-plugin-typescript2": "^0.20.1",
-    "rollup-plugin-visualizer": "^1.1.1",
+    "rollup-plugin-visualizer": "^2.6.0",
     "ts-jest": "^24.0.0",
     "ts-node": "^8.0.3",
     "tslint": "^5.15.0",
