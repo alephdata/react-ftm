@@ -56,18 +56,10 @@
     ]
   },
   "devDependencies": {
-<<<<<<< HEAD
-    "@alephdata/followthemoney": "^1.21.3",
-    "@blueprintjs/core": "^3.18.1",
-    "@blueprintjs/datetime": "^3.13.0",
-    "@blueprintjs/select": "^3.10.0",
-    "@blueprintjs/table": "^3.7.1",
-=======
     "@alephdata/followthemoney": "^1.21.5",
     "@blueprintjs/core": "^3.15.1",
     "@blueprintjs/datetime": "^3.14.0",
     "@blueprintjs/select": "^3.11.1",
->>>>>>> master
     "@types/bezier-js": "0.0.8",
     "@types/classnames": "^2.2.7",
     "@types/d3": "^5.7.2",
@@ -84,11 +76,7 @@
     "jest-config": "^24.7.1",
     "node-sass": "^4.12.0",
     "react": "^16.11.0",
-<<<<<<< HEAD
     "react-dom": "^16.11.0",
-=======
-    "react-dom": "^16.8.6",
->>>>>>> master
     "rimraf": "^2.6.2",
     "rollup": "^1.26.0",
     "rollup-plugin-commonjs": "^9.3.4",
