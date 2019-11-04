@@ -208,20 +208,18 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                 interactionMode={interactionMode}
                 {...layoutContext}
               />
-              {tableView &&
-                <Drawer
-                  position={Position.BOTTOM}
-                  icon="th"
-                  transitionDuration={0}
-                  isOpen
-                  canOutsideClickClose
-                  title="Table editor"
-                  onClose={this.toggleTableView}>
-                  <div className={Classes.DRAWER_BODY}>
-                    <TableEditor layout={layout} updateLayout={this.updateLayout} />
-                  </div>
-                </Drawer>
-              }
+              <Drawer
+                position={Position.BOTTOM}
+                icon="th"
+                isOpen={tableView}
+                canOutsideClickClose
+                title="Table editor"
+                onClose={this.toggleTableView}
+                style={{ maxHeight: '50%', height: 'auto' }}>
+                <div className={Classes.DRAWER_BODY}>
+                  <TableEditor layout={layout} updateLayout={this.updateLayout} />
+                </div>
+              </Drawer>
             </div>
             {showSidebar &&
               <div style={{

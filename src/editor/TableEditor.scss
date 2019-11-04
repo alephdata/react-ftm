@@ -1,0 +1,11 @@
+.TableEditor {
+  padding: 20px;
+
+  .bp3-tabs.bp3-vertical > .bp3-tab-panel {
+    overflow: scroll;
+  }
+
+  &__schemaAdd {
+    margin-top: 10px;
+  }
+}

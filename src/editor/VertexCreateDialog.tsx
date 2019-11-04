@@ -1,8 +1,9 @@
 import * as React from 'react'
-import { Dialog, Intent, ControlGroup, InputGroup } from '@blueprintjs/core'
+import { Alignment, Button, ControlGroup, Dialog, InputGroup, Intent } from '@blueprintjs/core'
 import { Schema } from '@alephdata/followthemoney'
 import { GraphContext, IGraphContext } from '../GraphContext'
 import { VertexSchemaSelect } from './VertexSchemaSelect'
+import { SchemaIcon } from '../types';
 import { Point } from '../layout'
 
 
@@ -80,6 +81,8 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
     const schema = this.getSchema()
     const placeholder = `${schema.label} name`
     const isValid = this.checkValid()
+    const vertexSelectText = schema ? schema.label : 'pick a type';
+    const vertexSelectIcon = schema ? SchemaIcon.get(schema) : 'select'
     return (
       <Dialog icon="new-object" isOpen={isOpen} title="Add entity" onClose={toggleDialog}>
         <form onSubmit={this.onSubmit}>
@@ -89,7 +92,15 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
                 model={layout.model}
                 schema={schema}
                 onSelect={this.onSchemaSelect}
-              />
+              >
+                <Button
+                  large
+                  text={vertexSelectText}
+                  alignText={Alignment.LEFT}
+                  icon={vertexSelectIcon}
+                  rightIcon='double-caret-vertical'
+                />
+              </VertexSchemaSelect>
               <InputGroup
                 autoFocus
                 large
