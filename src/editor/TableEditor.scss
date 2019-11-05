@@ -13,6 +13,7 @@
     }
   }
 
+
   &__schemaAdd {
     margin-top: 10px;
   }
@@ -20,6 +21,24 @@
   &__table {
     .bp3-table-container {
       box-shadow: none;
+    }
+
+    .bp3-popover-target {
+      display: block;
+    }
+  }
+
+  &__popover {
+    .bp3-card {
+      padding: 5px;
+    }
+
+    .bp3-form-group {
+      margin: 0;
+    }
+
+    .bp3-input {
+      border-radius: 3px !important;
     }
   }
 }

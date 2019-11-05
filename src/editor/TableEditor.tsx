@@ -117,9 +117,11 @@ function TableForSchema({layout, schema, updateLayout}: ITableForSchemaProps) {
             return (
               <Cell>
                 <Popover
-                  usePortal
+                  minimal
                   lazy
+                  usePortal
                   interactionKind={'click'}
+                  popoverClassName="TableEditor__popover"
                 >
                   <PropertyValues values={entity.getProperty(property)} prop={property}/>
                   <Card>
