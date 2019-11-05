@@ -89,7 +89,7 @@ interface ITableForSchemaProps {
 
 function TableForSchema({layout, schema, updateLayout}: ITableForSchemaProps) {
   const entities = layout.getEntities()
-    .filter(e => e.schema.isA(schema))
+    .filter(e => e.schema === schema)
     .concat(layout.model.createEntity(schema)); //we do +1 to enable creating a new row
 
   const numRows = entities.length;
