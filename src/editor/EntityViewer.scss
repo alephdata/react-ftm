@@ -88,6 +88,12 @@
       .date-input input {
         color: white !important;
       }
+
+      .TextEdit__singleInput {
+        & > .bp3-input, & > .bp3-input-action {
+          color: white !important;
+        }
+      }
     }
   }
 

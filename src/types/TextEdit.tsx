@@ -1,38 +1,82 @@
 import * as React from 'react'
 import {Values} from "@alephdata/followthemoney";
-import {ControlGroup, FormGroup, TagInput} from "@blueprintjs/core";
+import {Button, ControlGroup, FormGroup, InputGroup, TagInput} from "@blueprintjs/core";
 import {ITypeProps} from "./common";
 
-export class TextEdit extends React.PureComponent<ITypeProps> {
+import "./TextEdit.scss";
+
+interface ITextEditState {
+  forceMultiEdit: boolean
+}
+
+export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
   static group = new Set(['text', 'string'])
   private ref: HTMLInputElement | null = null;
 
-  componentDidMount(){
+  constructor(props: ITypeProps) {
+    super(props);
+    this.triggerMultiEdit = this.triggerMultiEdit.bind(this);
+
+    this.state = {
+      forceMultiEdit: false,
+    }
+  }
+
+  componentDidMount() {
     this.ref && this.ref.focus();
   }
 
   onChange = (values: Array<string | React.ReactNode>) => {
-    // TODO: @pudo maybe we need to implement Entity.removeProperty in FTM?
-
     // remove duplicates
     this.props.onPropertyChanged(Array.from(new Set(values)) as unknown as Values, this.props.property)
+    if (values.length <= 1) {
+      this.setState({ forceMultiEdit: false });
+    }
+  }
+
+  triggerMultiEdit() {
+    this.setState({ forceMultiEdit: true });
   }
 
   render() {
-    const {property} = this.props;
+    const { property, values } = this.props;
+    const { forceMultiEdit } = this.state;
+    const numVals = values.length;
+
     return <FormGroup>
       <ControlGroup vertical fill >
-        <TagInput
-          inputRef={(ref) => this.ref = ref}
-          tagProps={{
-            minimal:true,
-          }}
-          addOnBlur
-          addOnPaste
-          fill
-          onChange={this.onChange}
-          values={this.props.values}
-        />
+        {(!forceMultiEdit && numVals <= 1) && (
+          <InputGroup
+            className="TextEdit__singleInput"
+            inputRef={(ref) => this.ref = ref}
+            autoFocus
+            fill
+            value={values[0] as string}
+            onChange={(e:React.ChangeEvent<HTMLInputElement>) => this.onChange([e.target.value])}
+            rightElement={
+              <Button
+                className="TextEdit__toggleMulti"
+                minimal
+                small
+                icon="plus"
+                onClick={this.triggerMultiEdit}
+              />
+            }
+          />
+        )}
+        {(forceMultiEdit || numVals > 1) && (
+          <TagInput
+            inputRef={(ref) => this.ref = ref}
+            tagProps={{
+              minimal:true,
+            }}
+            addOnBlur
+            addOnPaste
+            fill
+            onChange={this.onChange}
+            values={this.props.values}
+          />
+        )}
       </ControlGroup>
     </FormGroup>
   }
