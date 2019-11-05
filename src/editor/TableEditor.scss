@@ -1,11 +1,25 @@
 .TableEditor {
   padding: 20px;
+  height: 100%;
 
-  .bp3-tabs.bp3-vertical > .bp3-tab-panel {
-    overflow: scroll;
+  .bp3-tabs.bp3-vertical {
+    height: 100%;
+
+    & > .bp3-tab-panel {
+      overflow: scroll;
+      margin-left: 20px;
+      border-left: 1px solid rgba(16, 22, 26, 0.15);
+      height: 100%;
+    }
   }
 
   &__schemaAdd {
     margin-top: 10px;
+  }
+
+  &__table {
+    .bp3-table-container {
+      box-shadow: none;
+    }
   }
 }
