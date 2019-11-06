@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {Values} from "@alephdata/followthemoney";
-import {Button, ControlGroup, FormGroup, InputGroup, TagInput} from "@blueprintjs/core";
+import {Button, ControlGroup, FormGroup, InputGroup, TagInput, Tooltip} from "@blueprintjs/core";
 import {ITypeProps} from "./common";
 
 import "./TextEdit.scss";
@@ -65,13 +65,15 @@ export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
             value={values[0] as string}
             onChange={(e:React.ChangeEvent<HTMLInputElement>) => this.onChange([e.target.value])}
             rightElement={showMultiToggleButton ? (
-              <Button
-                className="TextEdit__toggleMulti"
-                minimal
-                small
-                icon="plus"
-                onClick={this.triggerMultiEdit}
-              />
+              <Tooltip content="Add additional values">
+                <Button
+                  className="TextEdit__toggleMulti"
+                  minimal
+                  small
+                  icon="plus"
+                  onClick={this.triggerMultiEdit}
+                />
+              </Tooltip>
             ) : undefined}
           />
         )}
