@@ -54,8 +54,8 @@ export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
     // don't show multi button if there is no existing input
     const showMultiToggleButton = numVals !== 0 && values[0] !== '';
 
-    return <FormGroup>
-      <ControlGroup vertical fill >
+    return (
+      <FormGroup>
         {(!forceMultiEdit && numVals <= 1) && (
           <InputGroup
             className="TextEdit__singleInput"
@@ -90,7 +90,7 @@ export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
             values={this.props.values}
           />
         )}
-      </ControlGroup>
-    </FormGroup>
+      </FormGroup>
+    );
   }
 }

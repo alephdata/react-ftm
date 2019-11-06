@@ -34,7 +34,6 @@ export class SelectProperty extends React.PureComponent<ISelectPropertyProps> {
 
   render() {
     const { properties } = this.props;
-    console.log(properties);
     const items = properties
       .sort((a, b) => a.label > b.label ? 1 : -1);
     return <PropertySelect
