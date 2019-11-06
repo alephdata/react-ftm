@@ -62,7 +62,7 @@ export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
             inputRef={(ref) => this.singleInputRef = ref}
             autoFocus
             fill
-            value={values[0] as string}
+            value={values[0] as string || ''}
             onChange={(e:React.ChangeEvent<HTMLInputElement>) => this.onChange([e.target.value])}
             rightElement={showMultiToggleButton ? (
               <Tooltip content="Add additional values">
