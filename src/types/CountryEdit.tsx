@@ -34,7 +34,8 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
     const optionsMap = new Map(property.type.values)
     values.forEach((valKey: any) => optionsMap.delete(valKey))
 
-    return Array.from(optionsMap.entries());
+    return Array.from(optionsMap.entries())
+      .sort((a, b) => a[1] > b[1] ? 1 : -1);
   }
 
   getIdLabelPairs() {

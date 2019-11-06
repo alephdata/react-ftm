@@ -71,7 +71,8 @@ export class EntityEdit extends React.Component<IEntityTypeProps> {
       excludeIds = [...sourceEntities, ...targetEntities].map(e => e.id)
     }
     return Array.from(this.props.entities.values())
-      .filter(e => e.schema.isA(property.getRange()) && !this.props.values.includes(e.id) && excludeIds.indexOf(e.id) === -1);
+      .filter(e => e.schema.isA(property.getRange()) && !this.props.values.includes(e.id) && excludeIds.indexOf(e.id) === -1)
+      .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
   }
 
   render() {
