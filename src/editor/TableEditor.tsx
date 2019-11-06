@@ -4,7 +4,7 @@ import { GraphUpdateHandler, IGraphContext } from '../GraphContext';
 import { PropertyEditor, VertexSchemaSelect } from '.';
 import { PropertyValues } from '../types';
 import { Cell, Column, RenderMode, Table } from "@blueprintjs/table";
-import { Button, Callout, Card, Popover, Tab, Tabs } from "@blueprintjs/core";
+import { Button, Callout, Card, Popover, Position, Tab, Tabs } from "@blueprintjs/core";
 import { Entity, Schema } from "@alephdata/followthemoney";
 
 import "./TableEditor.scss"
@@ -122,11 +122,13 @@ function TableForSchema({layout, schema, updateLayout}: ITableForSchemaProps) {
                   usePortal
                   interactionKind={'click'}
                   popoverClassName="TableEditor__popover"
+                  position={Position.BOTTOM}
+                  modifiers={{
+                    inner: {enabled: true},
+                  }}
                 >
-                  <PropertyValues values={entity.getProperty(property)} prop={property}/>
-                  <Card>
-                    <PropertyEditor entity={entity} property={property} onEntityChanged={onEntityChanged}/>
-                  </Card>
+                  <PropertyValues values={entity.getProperty(property)} prop={property} />
+                  <PropertyEditor entity={entity} property={property} onEntityChanged={onEntityChanged} />
                 </Popover>
               </Cell>
             );
