@@ -87,58 +87,61 @@ interface ITableForSchemaProps {
   updateLayout: GraphUpdateHandler,
 }
 
-function TableForSchema({layout, schema, updateLayout}: ITableForSchemaProps) {
-  const entities = layout.getEntities()
-    .filter(e => e.schema === schema)
-    .concat(layout.model.createEntity(schema)); //we do +1 to enable creating a new row
+class TableForSchema extends React.Component<ITableForSchemaProps> {
+  render() {
+    const {layout, schema, updateLayout} = this.props;
+    const entities = layout.getEntities()
+      .filter(e => e.schema === schema);
+      // .concat(layout.model.createEntity(schema)); //we do +1 to enable creating a new row
 
-  const numRows = entities.length;
+    const numRows = entities.length;
 
-  let filledProperties = entities.reduce((acc, entity: Entity) => [...acc, ...entity.getProperties()], [] as Property[]);
-  let featuredProperties = schema.getFeaturedProperties();
-  const properties = Array.from(new Set([...filledProperties, ...featuredProperties]))
-    .sort((a, b) => (a.label > b.label ? 1 : -1));
+    let filledProperties = entities.reduce((acc, entity: Entity) => [...acc, ...entity.getProperties()], [] as Property[]);
+    let featuredProperties = schema.getFeaturedProperties();
+    const properties = Array.from(new Set([...filledProperties, ...featuredProperties]))
+      .sort((a, b) => (a.label > b.label ? 1 : -1));
 
-  const onEntityChanged = (nextEntity: Entity) => {
-    layout.addEntity(nextEntity);
-    updateLayout(layout, { modifyHistory:true });
+    const onEntityChanged = (nextEntity: Entity) => {
+      layout.addEntity(nextEntity);
+      updateLayout(layout, { modifyHistory:true });
+    }
+
+    return (
+      <div className="TableEditor__table">
+        <Table
+          renderMode={RenderMode.BATCH}
+          numRows={numRows}
+          enableMultipleSelection={false}
+          enableGhostCells
+          enableRowHeader
+        >
+          {properties.map(property => <Column
+            key={property.qname}
+            name={property.label}
+            cellRenderer={(i) => {
+              const entity = entities[i];
+              return (
+                <Cell>
+                  <Popover
+                    minimal
+                    lazy
+                    usePortal
+                    interactionKind={'click'}
+                    popoverClassName="TableEditor__popover"
+                    position={Position.BOTTOM}
+                    modifiers={{
+                      inner: {enabled: true},
+                    }}
+                  >
+                    <PropertyValues values={entity.getProperty(property)} prop={property} />
+                    <PropertyEditor entity={entity} property={property} onEntityChanged={onEntityChanged} />
+                  </Popover>
+                </Cell>
+              );
+            }}
+          />)}
+        </Table>
+      </div>
+    )
   }
-
-  return (
-    <div className="TableEditor__table">
-      <Table
-        renderMode={RenderMode.BATCH}
-        numRows={numRows}
-        enableMultipleSelection={false}
-        enableGhostCells
-        enableRowHeader
-      >
-        {properties.map(property => <Column
-          key={property.qname}
-          name={property.label}
-          cellRenderer={(i) => {
-            const entity = entities[i];
-            return (
-              <Cell>
-                <Popover
-                  minimal
-                  lazy
-                  usePortal
-                  interactionKind={'click'}
-                  popoverClassName="TableEditor__popover"
-                  position={Position.BOTTOM}
-                  modifiers={{
-                    inner: {enabled: true},
-                  }}
-                >
-                  <PropertyValues values={entity.getProperty(property)} prop={property} />
-                  <PropertyEditor entity={entity} property={property} onEntityChanged={onEntityChanged} />
-                </Popover>
-              </Cell>
-            );
-          }}
-        />)}
-      </Table>
-    </div>
-  )
 }
