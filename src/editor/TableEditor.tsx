@@ -5,7 +5,7 @@ import { PropertyEditor, VertexSchemaSelect } from '.';
 import { PropertyValues } from '../types';
 import { Cell, Column, RenderMode, Table } from "@blueprintjs/table";
 import { Button, Callout, Card, Popover, Position, Tab, Tabs } from "@blueprintjs/core";
-import { Entity, Schema } from "@alephdata/followthemoney";
+import { Entity, Property, Schema } from "@alephdata/followthemoney";
 
 import "./TableEditor.scss"
 
@@ -93,7 +93,11 @@ function TableForSchema({layout, schema, updateLayout}: ITableForSchemaProps) {
     .concat(layout.model.createEntity(schema)); //we do +1 to enable creating a new row
 
   const numRows = entities.length;
-  const properties = Array.from(schema.getProperties().values());
+
+  let filledProperties = entities.reduce((acc, entity: Entity) => [...acc, ...entity.getProperties()], [] as Property[]);
+  let featuredProperties = schema.getFeaturedProperties();
+  const properties = Array.from(new Set([...filledProperties, ...featuredProperties]))
+    .sort((a, b) => (a.label > b.label ? 1 : -1));
 
   const onEntityChanged = (nextEntity: Entity) => {
     layout.addEntity(nextEntity);
@@ -111,7 +115,7 @@ function TableForSchema({layout, schema, updateLayout}: ITableForSchemaProps) {
       >
         {properties.map(property => <Column
           key={property.qname}
-          name={property.name}
+          name={property.label}
           cellRenderer={(i) => {
             const entity = entities[i];
             return (
