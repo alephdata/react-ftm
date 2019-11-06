@@ -11,7 +11,8 @@ interface ITextEditState {
 
 export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
   static group = new Set(['text', 'string'])
-  private ref: HTMLInputElement | null = null;
+  private multiInputRef: HTMLInputElement | null = null;
+  private singleInputRef: HTMLInputElement | null = null;
 
   constructor(props: ITypeProps) {
     super(props);
@@ -23,7 +24,16 @@ export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
   }
 
   componentDidMount() {
-    this.ref && this.ref.focus();
+    console.log(this.singleInputRef, this.multiInputRef);
+    this.singleInputRef && this.singleInputRef.focus();
+    this.multiInputRef && this.multiInputRef.focus();
+  }
+
+  componentDidUpdate(prevProps: ITypeProps, prevState: ITextEditState) {
+    // ensure multi input is focused
+    if (this.state.forceMultiEdit && !prevState.forceMultiEdit) {
+      this.multiInputRef && this.multiInputRef.focus();
+    }
   }
 
   onChange = (values: Array<string | React.ReactNode>) => {
@@ -42,18 +52,20 @@ export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
     const { property, values } = this.props;
     const { forceMultiEdit } = this.state;
     const numVals = values.length;
+    // don't show multi button if there is no existing input
+    const showMultiToggleButton = numVals !== 0 && values[0] !== '';
 
     return <FormGroup>
       <ControlGroup vertical fill >
         {(!forceMultiEdit && numVals <= 1) && (
           <InputGroup
             className="TextEdit__singleInput"
-            inputRef={(ref) => this.ref = ref}
+            inputRef={(ref) => this.singleInputRef = ref}
             autoFocus
             fill
             value={values[0] as string}
             onChange={(e:React.ChangeEvent<HTMLInputElement>) => this.onChange([e.target.value])}
-            rightElement={
+            rightElement={showMultiToggleButton ? (
               <Button
                 className="TextEdit__toggleMulti"
                 minimal
@@ -61,12 +73,12 @@ export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
                 icon="plus"
                 onClick={this.triggerMultiEdit}
               />
-            }
+            ) : undefined}
           />
         )}
         {(forceMultiEdit || numVals > 1) && (
           <TagInput
-            inputRef={(ref) => this.ref = ref}
+            inputRef={(ref) => this.multiInputRef = ref}
             tagProps={{
               minimal:true,
             }}
