@@ -12,8 +12,13 @@ interface IEntityTypeProps extends ITypeProps {
 const EntitySelect = Select.ofType<Entity>();
 
 
-export class EntityEdit extends React.PureComponent<IEntityTypeProps> {
+export class EntityEdit extends React.Component<IEntityTypeProps> {
   static group = new Set(['entity'])
+  private inputRef: HTMLElement | null = null;
+
+  componentDidMount() {
+    this.inputRef && this.inputRef.focus();
+  }
 
   itemPredicate: ItemPredicate<Entity> = (query: string, entity: Entity) => {
     return matchText(entity.getCaption() || '', query)
@@ -82,6 +87,7 @@ export class EntityEdit extends React.PureComponent<IEntityTypeProps> {
           minimal: true,
           targetProps: {style: {width: '100%'}}
         }}
+
         itemPredicate={this.itemPredicate}
         itemRenderer={this.itemRenderer}
         onItemSelect={this.onSelect}
@@ -91,7 +97,9 @@ export class EntityEdit extends React.PureComponent<IEntityTypeProps> {
           text={buttonText}
           fill
           alignText={Alignment.LEFT}
-          rightIcon="double-caret-vertical" />
+          rightIcon="double-caret-vertical"
+          elementRef={(ref) => this.inputRef = ref }
+        />
       </EntitySelect>
     </FormGroup>
   }

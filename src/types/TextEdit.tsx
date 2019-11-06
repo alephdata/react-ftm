@@ -24,7 +24,6 @@ export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
   }
 
   componentDidMount() {
-    console.log(this.singleInputRef, this.multiInputRef);
     this.singleInputRef && this.singleInputRef.focus();
     this.multiInputRef && this.multiInputRef.focus();
   }

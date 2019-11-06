@@ -10,11 +10,16 @@ const CountryMultiSelect = MultiSelect.ofType<[string, string]>()
 
 export class CountryEdit extends React.PureComponent<ITypeProps> {
   static group = new Set(['country'])
+  private inputRef: HTMLInputElement | null = null;
 
   constructor(props: any) {
     super(props);
     this.onChange = this.onChange.bind(this)
     this.onRemove = this.onRemove.bind(this)
+  }
+
+  componentDidMount() {
+    this.inputRef && this.inputRef.focus();
   }
 
   onChange([countryId, label]: [string, string]) {
@@ -90,7 +95,12 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
           }}
           items={availableOptions}
           popoverProps={{ minimal: true, position: Position.BOTTOM_LEFT }}
-          tagInputProps={{ tagProps: {interactive: false, minimal: true, fill: true}, onRemove: this.onRemove, placeholder: '' }}
+          tagInputProps={{
+            inputRef: (ref) => this.inputRef = ref,
+            tagProps: {interactive: false, minimal: true, fill: true},
+            onRemove: this.onRemove,
+            placeholder: '',
+          }}
           selectedItems={selectedOptions}
           openOnKeyDown
           resetOnSelect

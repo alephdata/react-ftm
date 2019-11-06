@@ -4,8 +4,13 @@ import {DateInput, IDateFormatProps} from '@blueprintjs/datetime';
 import {FormGroup, Position} from '@blueprintjs/core';
 import {ITypeProps} from './common';
 
-export class DateEdit extends React.PureComponent<ITypeProps> {
+export class DateEdit extends React.Component<ITypeProps> {
   static group = new Set(['date'])
+  private inputRef: HTMLInputElement | null = null;
+
+  componentDidMount() {
+    this.inputRef && this.inputRef.focus();
+  }
 
   onChange = (value: Date) => {
     if (value instanceof Date) {
@@ -26,6 +31,7 @@ export class DateEdit extends React.PureComponent<ITypeProps> {
       <DateInput
         {...this.jsDateFormatter}
         className="date-input"
+        inputProps={{ inputRef: (ref) => this.inputRef = ref }}
         popoverProps={{
           position: Position.BOTTOM_LEFT,
           minimal: true,
