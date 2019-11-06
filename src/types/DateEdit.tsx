@@ -32,13 +32,14 @@ export class DateEdit extends React.Component<ITypeProps> {
         {...this.jsDateFormatter}
         className="date-input"
         inputProps={{ inputRef: (ref) => this.inputRef = ref }}
+        minDate={new Date(1900, 1, 1)}
+        onChange={this.onChange}
         popoverProps={{
           position: Position.BOTTOM_LEFT,
           minimal: true,
           targetProps: {style: {width: '100%'}}
         }}
         value={values[0] ? new Date(values[0] as string) : undefined}
-        onChange={this.onChange}
       />
     </FormGroup>
   }
