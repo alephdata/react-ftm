@@ -6,6 +6,7 @@ import { VertexSchemaSelect } from './VertexSchemaSelect'
 import { SchemaIcon } from '../types';
 import { Point } from '../layout'
 
+import "./VertexCreateDialog.scss";
 
 interface IVertexCreateDialogProps {
   isOpen: boolean,
@@ -84,7 +85,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
     const vertexSelectText = schema ? schema.label : 'pick a type';
     const vertexSelectIcon = schema ? SchemaIcon.get(schema) : 'select'
     return (
-      <Dialog icon="new-object" isOpen={isOpen} title="Add entity" onClose={toggleDialog}>
+      <Dialog icon="new-object" isOpen={isOpen} title="Add entity" onClose={toggleDialog} className="VertexCreateDialog">
         <form onSubmit={this.onSubmit}>
           <div className="bp3-dialog-body">
             <ControlGroup fill>
