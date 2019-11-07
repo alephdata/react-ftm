@@ -5,7 +5,7 @@ import { PropertyEditor, VertexSchemaSelect } from '.';
 import { PropertyValues } from '../types';
 import { SelectProperty } from './SelectProperty';
 import { Cell, Column, ColumnHeaderCell, RenderMode, SelectionModes, Table } from "@blueprintjs/table";
-import { Button, Callout, Card, Icon, Intent, Popover, Position, Tab, Tabs, Tooltip } from "@blueprintjs/core";
+import { Button, Callout, Card, Icon, Intent, Popover, Position, Tab, TabId, Tabs, Tooltip } from "@blueprintjs/core";
 import { Entity, Property, Schema } from "@alephdata/followthemoney";
 
 import "./TableEditor.scss"
@@ -18,6 +18,7 @@ interface ITableEditorProps {
 }
 
 interface ITableEditorState {
+  activeTabId: TabId,
   schemata: Array<Schema>,
 }
 
@@ -30,30 +31,39 @@ export class TableEditor extends React.Component<ITableEditorProps, ITableEditor
       .map(entity => entity.schema)
       .filter((schema, index, list) => list.indexOf(schema) === index)
       .sort((a, b) => a.label.localeCompare(b.label));
+    const activeTabId = schemata && schemata.length ? schemata[0].name : 0;
 
-    this.state = {
-      schemata,
-    };
+    this.state = { schemata, activeTabId };
 
     this.addSchema = this.addSchema.bind(this);
+    this.setActiveTab = this.setActiveTab.bind(this);
   }
 
   addSchema(schema: Schema) {
     const schemata = [...this.state.schemata, ...[schema]]
       .sort((a, b) => a.label.localeCompare(b.label))
-    this.setState({ schemata });
+    this.setState({ schemata, activeTabId: schema.name });
+  }
+
+  setActiveTab(newTabId: TabId) {
+    this.setState({ activeTabId: newTabId });
   }
 
   render() {
     const { layout, updateLayout } = this.props;
-    const { schemata } = this.state;
+    const { activeTabId, schemata } = this.state;
 
     return (
       <div className="TableEditor">
-        <Tabs vertical renderActiveTabPanelOnly>
+        <Tabs
+          vertical
+          renderActiveTabPanelOnly
+          selectedTabId={activeTabId}
+          onChange={this.setActiveTab}
+        >
           {schemata.map(schema => (
               <Tab
-                id={schema.label}
+                id={schema.name}
                 key={schema.name}
                 title={schema.label}
                 panel={(
