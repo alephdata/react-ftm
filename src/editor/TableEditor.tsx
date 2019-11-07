@@ -5,7 +5,7 @@ import { PropertyEditor, VertexSchemaSelect } from '.';
 import { PropertyValues } from '../types';
 import { SelectProperty } from './SelectProperty';
 import { Cell, Column, ColumnHeaderCell, RenderMode, SelectionModes, Table } from "@blueprintjs/table";
-import { Button, Callout, Card, Popover, Position, Tab, Tabs } from "@blueprintjs/core";
+import { Button, Callout, Card, Icon, Intent, Popover, Position, Tab, Tabs, Tooltip } from "@blueprintjs/core";
 import { Entity, Property, Schema } from "@alephdata/followthemoney";
 
 import "./TableEditor.scss"
@@ -131,6 +131,13 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
     updateLayout(layout, { modifyHistory:true });
   }
 
+  onDeleteRow = (entity: Entity) => {
+    const { layout, schema, updateLayout } = this.props;
+
+    layout.removeEntity(entity);
+    updateLayout(layout, { modifyHistory:true });
+  }
+
   onAddColumn(newColumn: Property) {
     this.setState(({visibleProps}) => ({
       visibleProps: [...visibleProps, ...[newColumn]],
@@ -154,6 +161,9 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
       .filter(prop => visibleProps.indexOf(prop) < 0)
       .sort(propSort);
 
+    const columnWidths = new Array(visibleProps.length + 2);
+    columnWidths[0] = 25;
+
 
     return (
       <div className="TableEditor__contents">
@@ -164,36 +174,66 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
           enableGhostCells={false}
           selectionModes={SelectionModes.ROWS_AND_CELLS}
           enableMultipleSelection={false}
+          columnWidths={columnWidths}
+          defaultRowHeight={24}
         >
+          <Column
+            id="remove"
+            columnHeaderCellRenderer={() => (
+              <ColumnHeaderCell />
+            )}
+            cellRenderer={(i) => {
+              const isLastCell = i === (numRows - 1);
+              return (
+                <Cell className="narrow">
+                  <>
+                    <Tooltip content={isLastCell ? "Add an entity" : "Delete this entity"}>
+                      <Button
+                        small
+                        minimal
+                        icon={isLastCell ? "new-object" : "graph-remove"}
+                        onClick={isLastCell ? () => this.onAddRow() : () => this.onDeleteRow(entities[i])}
+                      />
+                    </Tooltip>
+                  </>
+                </Cell>
+              );
+            }}
+          />
           {visibleProps.map(property => <Column
             key={property.qname}
+            id={property.qname}
             name={property.label}
             cellRenderer={(i) => {
               const entity = entities[i];
               return (
                 <Cell onKeyDown={(e) => console.log('asdasdasda')}>
-                  <Popover
-                    minimal
-                    lazy
-                    usePortal
-                    interactionKind={'click'}
-                    popoverClassName="TableEditor__popover"
-                    position={Position.BOTTOM}
-                    autoFocus={false}
-                    modifiers={{
-                      inner: {enabled: true},
-                    }}
-                  >
-                    <PropertyValues values={entity.getProperty(property)} prop={property} />
-                    <PropertyEditor entity={entity} property={property} onEntityChanged={this.onEntityChanged} />
-                  </Popover>
+                  {entity && (
+                    <Popover
+                      minimal
+                      lazy
+                      usePortal
+                      interactionKind={'click'}
+                      popoverClassName="TableEditor__popover"
+                      position={Position.BOTTOM}
+                      autoFocus={false}
+                      modifiers={{
+                        inner: {enabled: true},
+                      }}
+                    >
+                      <PropertyValues values={entity.getProperty(property)} prop={property} />
+                      <PropertyEditor entity={entity} property={property} onEntityChanged={this.onEntityChanged} />
+                    </Popover>
+                  )}
                 </Cell>
               );
             }}
           />)}
+
           <Column
+            id="add-field"
             cellRenderer={() => (
-              <Cell style={{ backgroundColor: 'white', boxShadow: 'none', pointerEvents: 'none' }} />
+              <Cell className="TableEditor__ghostCell" />
             )}
             columnHeaderCellRenderer={() => (
               <ColumnHeaderCell>

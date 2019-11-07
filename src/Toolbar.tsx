@@ -100,7 +100,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
             <Tooltip content="Add links">
               <AnchorButton icon="new-link" onClick={() => this.onSetInteractionMode(modes.EDGE_CREATE)} disabled={!canAddEdge} />
             </Tooltip>
-            <Tooltip content={hasSelection ? "Delete selection" : "To remove an entity or link first you must first select it"}>
+            <Tooltip content={hasSelection ? "Delete selection" : "To remove an entity or link you must first select it"}>
               <AnchorButton icon="graph-remove" onClick={actions.removeSelection} disabled={!hasSelection} />
             </Tooltip>
             <Divider/>

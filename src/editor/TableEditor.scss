@@ -62,4 +62,17 @@ $border-color: rgba(16, 22, 26, 0.15);
     padding-top: $table-editor-padding;
     border-top: 1px solid $border-color;
   }
+
+  &__ghostCell.bp3-table-cell {
+    background-color: white;
+    box-shadow: none;
+    pointer-events: none;
+  }
+
+  .bp3-table-cell {
+    padding-top: 2px;
+    &.narrow {
+      padding: 0;
+    }
+  }
 }
