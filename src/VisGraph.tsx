@@ -215,7 +215,8 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                 canOutsideClickClose
                 title="Table editor"
                 onClose={this.toggleTableView}
-                style={{ maxHeight: '50%', height: 'auto' }}>
+                style={{ height: '60%' }}
+              >
                 <div className={Classes.DRAWER_BODY}>
                   <TableEditor layout={layout} updateLayout={this.updateLayout} />
                 </div>

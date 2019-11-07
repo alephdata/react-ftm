@@ -1,36 +1,46 @@
+
+$table-editor-padding: 20px;
+$border-color: rgba(16, 22, 26, 0.15);
+
+.bp3-drawer-body {
+  overflow: hidden;
+}
+
 .TableEditor {
-  padding: 20px;
+  padding: $table-editor-padding;
   height: 100%;
 
   .bp3-tabs.bp3-vertical {
     height: 100%;
 
     & > .bp3-tab-panel {
-      overflow: scroll;
-      margin-left: 20px;
-      border-left: 1px solid rgba(16, 22, 26, 0.15);
+      overflow: hidden;
+      margin-left: $table-editor-padding;
+      border-left: 1px solid $border-color;
       height: 100%;
+      width: 100%;
     }
   }
 
   &__contents {
-    &__main, &__right {
-      display: table-cell;
-      vertical-align: middle;
+    height: inherit;
+
+    .bp3-table-container {
+      box-shadow: none;
+      height: inherit;
     }
-
-    &__right {
-      padding: 0 10px;
-      margin-left: 10px;
-      min-width: 150px;
-      border: 1px solid rgba(16, 22, 26, 0.15);
-      border-left: none;
-    }
-  }
-
-
-  &__schemaAdd {
-    margin-top: 10px;
+    // &__main, &__right {
+    //   display: table-cell;
+    //   vertical-align: middle;
+    // }
+    //
+    // &__right {
+    //   padding: 0 10px;
+    //   margin-left: 10px;
+    //   min-width: 150px;
+    //   border: 1px solid $border-color;
+    //   border-left: none;
+    // }
   }
 
   &__table {
@@ -55,5 +65,11 @@
     .bp3-input {
       border-radius: 3px !important;
     }
+  }
+
+  &__schemaAdd {
+    margin-top: $table-editor-padding;
+    padding-top: $table-editor-padding;
+    border-top: 1px solid $border-color;
   }
 }

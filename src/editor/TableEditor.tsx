@@ -155,15 +155,13 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
       .filter(prop => visibleProps.indexOf(prop) < 0)
       .sort(propSort);
 
+
     return (
       <div className="TableEditor__contents">
-        <div className="TableEditor__contents__main">
-          <div className="TableEditor__table">
             <Table
+              renderMode={RenderMode.BATCH}
               numRows={numRows}
-              enableMultipleSelection={false}
-              enableGhostCells
-              enableRowHeader
+              enableGhostCells={false}
             >
               {visibleProps.map(property => <Column
                 key={property.qname}
@@ -191,14 +189,6 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
                 }}
               />)}
             </Table>
-          </div>
-        </div>
-        <div className="TableEditor__contents__right">
-          <SelectProperty
-            properties={otherProps}
-            onSelected={this.onAddColumn}
-          />
-        </div>
       </div>
     )
   }
