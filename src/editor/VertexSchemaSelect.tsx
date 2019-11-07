@@ -43,11 +43,9 @@ export class VertexSchemaSelect extends React.PureComponent<ISelectSchemaProps> 
   render() {
     const { schema } = this.props
 
-    console.log(this.props.children);
-
     return (
       <SchemaSelect
-        popoverProps={{position: Position.BOTTOM_LEFT, minimal: true}}
+        popoverProps={{boundary:"viewport", position: Position.BOTTOM_LEFT, minimal: true}}
         filterable={false}
         items={this.getSchemata()}
         itemRenderer={this.renderSchema}

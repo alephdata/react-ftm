@@ -1,10 +1,5 @@
-
 $table-editor-padding: 20px;
 $border-color: rgba(16, 22, 26, 0.15);
-
-.bp3-drawer-body {
-  overflow: hidden;
-}
 
 .TableEditor {
   padding: $table-editor-padding;
@@ -20,6 +15,10 @@ $border-color: rgba(16, 22, 26, 0.15);
       height: 100%;
       width: 100%;
     }
+
+    & > .bp3-tab-list {
+      overflow-y: scroll;
+    }
   }
 
   &__contents {
@@ -29,27 +28,13 @@ $border-color: rgba(16, 22, 26, 0.15);
       box-shadow: none;
       height: inherit;
     }
-    // &__main, &__right {
-    //   display: table-cell;
-    //   vertical-align: middle;
-    // }
-    //
-    // &__right {
-    //   padding: 0 10px;
-    //   margin-left: 10px;
-    //   min-width: 150px;
-    //   border: 1px solid $border-color;
-    //   border-left: none;
-    // }
-  }
-
-  &__table {
-    .bp3-table-container {
-      box-shadow: none;
-    }
 
     .bp3-popover-target {
       display: block;
+    }
+
+    .bp3-table-quadrant {
+      background: white;
     }
   }
 
@@ -64,6 +49,11 @@ $border-color: rgba(16, 22, 26, 0.15);
 
     .bp3-input {
       border-radius: 3px !important;
+      box-shadow: none !important;
+    }
+
+    .bp3-button {
+      box-shadow: none !important;
     }
   }
 

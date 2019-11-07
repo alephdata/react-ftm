@@ -4,7 +4,7 @@ import { GraphUpdateHandler, IGraphContext } from '../GraphContext';
 import { PropertyEditor, VertexSchemaSelect } from '.';
 import { PropertyValues } from '../types';
 import { SelectProperty } from './SelectProperty';
-import { Cell, Column, RenderMode, Table } from "@blueprintjs/table";
+import { Cell, Column, ColumnHeaderCell, RenderMode, SelectionModes, Table } from "@blueprintjs/table";
 import { Button, Callout, Card, Popover, Position, Tab, Tabs } from "@blueprintjs/core";
 import { Entity, Property, Schema } from "@alephdata/followthemoney";
 
@@ -72,7 +72,7 @@ export class TableEditor extends React.Component<ITableEditorProps, ITableEditor
               optionsFilter={(schema => !schemata.includes(schema))}
             >
               <Button
-                text="Add a schema type"
+                text="Add an entity type"
                 icon="plus"
               />
             </VertexSchemaSelect>
@@ -120,8 +120,7 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
     const filledProps = entities.reduce((acc, entity: Entity) => [...acc, ...entity.getProperties()], [] as Property[]);
     const featuredProps = schema.getFeaturedProperties();
 
-    return Array.from(new Set([...filledProps, ...featuredProps]))
-      .sort(propSort);
+    return Array.from(new Set([...featuredProps, ...filledProps]));
   }
 
   onAddRow = () => {
@@ -134,7 +133,7 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
 
   onAddColumn(newColumn: Property) {
     this.setState(({visibleProps}) => ({
-      visibleProps: [...visibleProps, ...[newColumn]].sort(propSort),
+      visibleProps: [...visibleProps, ...[newColumn]],
     }));
   }
 
@@ -158,37 +157,56 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
 
     return (
       <div className="TableEditor__contents">
-            <Table
-              renderMode={RenderMode.BATCH}
-              numRows={numRows}
-              enableGhostCells={false}
-            >
-              {visibleProps.map(property => <Column
-                key={property.qname}
-                name={property.label}
-                cellRenderer={(i) => {
-                  const entity = entities[i];
-                  return (
-                    <Cell>
-                      <Popover
-                        minimal
-                        lazy
-                        usePortal
-                        interactionKind={'click'}
-                        popoverClassName="TableEditor__popover"
-                        position={Position.BOTTOM}
-                        modifiers={{
-                          inner: {enabled: true},
-                        }}
-                      >
-                        <PropertyValues values={entity.getProperty(property)} prop={property} />
-                        <PropertyEditor entity={entity} property={property} onEntityChanged={this.onEntityChanged} />
-                      </Popover>
-                    </Cell>
-                  );
-                }}
-              />)}
-            </Table>
+      {/*
+        // @ts-ignore */}
+        <Table
+          numRows={numRows}
+          enableGhostCells={false}
+          selectionModes={SelectionModes.ROWS_AND_CELLS}
+          enableMultipleSelection={false}
+        >
+          {visibleProps.map(property => <Column
+            key={property.qname}
+            name={property.label}
+            cellRenderer={(i) => {
+              const entity = entities[i];
+              return (
+                <Cell onKeyDown={(e) => console.log('asdasdasda')}>
+                  <Popover
+                    minimal
+                    lazy
+                    usePortal
+                    interactionKind={'click'}
+                    popoverClassName="TableEditor__popover"
+                    position={Position.BOTTOM}
+                    autoFocus={false}
+                    modifiers={{
+                      inner: {enabled: true},
+                    }}
+                  >
+                    <PropertyValues values={entity.getProperty(property)} prop={property} />
+                    <PropertyEditor entity={entity} property={property} onEntityChanged={this.onEntityChanged} />
+                  </Popover>
+                </Cell>
+              );
+            }}
+          />)}
+          <Column
+            cellRenderer={() => (
+              <Cell style={{ backgroundColor: 'white', boxShadow: 'none', pointerEvents: 'none' }} />
+            )}
+            columnHeaderCellRenderer={() => (
+              <ColumnHeaderCell>
+                <SelectProperty
+                  properties={otherProps}
+                  onSelected={this.onAddColumn}
+                  buttonProps={{minimal: true}}
+                />
+              </ColumnHeaderCell>
+            )}
+          />
+
+        </Table>
       </div>
     )
   }

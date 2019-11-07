@@ -78,7 +78,7 @@ export class EntityEdit extends React.Component<IEntityTypeProps> {
   render() {
     const items = this.getItemsList()
     const selectedEntity = this.ensureInstance()[0];
-    const buttonText = selectedEntity ? selectedEntity.getCaption() : 'Select from list?';
+    const buttonText = selectedEntity ? selectedEntity.getCaption() : 'Select an entity';
 
     return <FormGroup>
       <EntitySelect

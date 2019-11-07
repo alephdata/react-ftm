@@ -23,7 +23,7 @@ export class PropertyEditor extends React.Component<IPropertyEditorProps> {
 
   render() {
     if (!this.context) return null;
-    
+
     const { entity, property } = this.props;
     const values = entity.getProperty(property);
     const commonProps = {
