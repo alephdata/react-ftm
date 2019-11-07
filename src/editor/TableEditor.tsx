@@ -29,8 +29,9 @@ export class TableEditor extends React.Component<ITableEditorProps, ITableEditor
     const { layout } = this.props;
     const schemata = layout.getEntities()
       .map(entity => entity.schema)
-      .filter((schema, index, list) => list.indexOf(schema) === index)
+      .filter((schema, index, list) => !schema.isEdge && list.indexOf(schema) === index)
       .sort((a, b) => a.label.localeCompare(b.label));
+
     const activeTabId = schemata && schemata.length ? schemata[0].name : 0;
 
     this.state = { schemata, activeTabId };
