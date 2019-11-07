@@ -66,7 +66,7 @@ export class TableEditor extends React.Component<ITableEditorProps, ITableEditor
               <Tab
                 id={schema.name}
                 key={schema.name}
-                title={schema.label}
+                title={schema.plural}
                 panel={(
                   <TableForSchema
                     schema={schema}

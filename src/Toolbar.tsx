@@ -100,14 +100,14 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
             <Tooltip content="Add links">
               <AnchorButton icon="new-link" onClick={() => this.onSetInteractionMode(modes.EDGE_CREATE)} disabled={!canAddEdge} />
             </Tooltip>
-            <Tooltip content={hasSelection ? "Delete selection" : "To remove an entity or link you must first select it"}>
+            <Tooltip content="Delete selection">
               <AnchorButton icon="graph-remove" onClick={actions.removeSelection} disabled={!hasSelection} />
             </Tooltip>
             <Divider/>
-            <Tooltip content={"Group selected"}>
+            <Tooltip content="Group selected">
               <AnchorButton icon="group-objects" onClick={() => this.onSetInteractionMode(modes.GROUPING_CREATE)} disabled={!canGroupSelection} />
             </Tooltip>
-            <Tooltip content={"Ungroup selected"}>
+            <Tooltip content="Ungroup selected">
               <AnchorButton icon="ungroup-objects" onClick={actions.ungroupSelection} disabled={!canUngroupSelection} />
             </Tooltip>
             <Divider/>
@@ -143,7 +143,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
               }} />
             </Tooltip>
             <Divider/>
-            <Tooltip content="Toggle table edit mode">
+            <Tooltip content="View as table">
               <AnchorButton icon="th" onClick={actions.toggleTableView} />
             </Tooltip>
             <Divider/>
