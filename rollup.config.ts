@@ -3,7 +3,8 @@ import commonjs from 'rollup-plugin-commonjs'
 import sourceMaps from 'rollup-plugin-sourcemaps'
 import typescript from 'rollup-plugin-typescript2'
 import json from 'rollup-plugin-json'
-import sass from 'rollup-plugin-sass'
+import postcss from 'rollup-plugin-postcss';
+
 import image from 'rollup-plugin-img'
 
 const pkg = require('./package.json');
@@ -21,15 +22,14 @@ export default {
   },
   plugins: [
     json(),
-    sass({
-      output: true,
-      insert: true
+    postcss({
+      extensions: [ '.css', '.scss' ],
     }),
     image(),
     // Allow node_modules resolution, so you can use 'external' to control
     // which external modules to include in the bundle
     // https://github.com/rollup/rollup-plugin-node-resolve#usage
-    resolve({browser: true,}),
+    resolve({browser: true}),
     // Compile TypeScript files
     typescript({useTsconfigDeclarationDir: true, objectHashIgnoreUnknownHack: true}),
     // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
