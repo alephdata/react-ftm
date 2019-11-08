@@ -9,6 +9,7 @@ const PropertySelect = Select.ofType<Property>()
 interface ISelectPropertyProps {
   properties: Property[]
   onSelected: (property: Property) => void
+  buttonProps?: any
 }
 
 export class SelectProperty extends React.PureComponent<ISelectPropertyProps> {
@@ -33,6 +34,9 @@ export class SelectProperty extends React.PureComponent<ISelectPropertyProps> {
   }
 
   render() {
+    const { buttonProps, properties } = this.props;
+    const items = properties
+      .sort((a, b) => a.label > b.label ? 1 : -1);
     return <PropertySelect
       popoverProps={{
         position: Position.BOTTOM_LEFT,
@@ -45,7 +49,7 @@ export class SelectProperty extends React.PureComponent<ISelectPropertyProps> {
       resetOnSelect={true}
       onItemSelect={this.props.onSelected}
       items={this.props.properties}>
-      <Button icon='plus' text='Add a field' fill alignText={Alignment.LEFT} />
+      <Button icon='plus' text='Add a field' fill alignText={Alignment.LEFT} {...buttonProps} />
     </PropertySelect>
   }
 }
