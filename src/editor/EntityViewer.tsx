@@ -95,12 +95,14 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
         <div className='EntityViewer__property-list-item__value'>
           {isEditable && (
             <div>
-              <PropertyEditor
-                key={property.name}
-                onEntityChanged={this.props.onEntityChanged}
-                entity={entity}
-                property={property}
-              />
+              <form onSubmit={e => { e.preventDefault(); this.leaveEditMode(); }}>
+                <PropertyEditor
+                  key={property.name}
+                  onEntityChanged={this.props.onEntityChanged}
+                  entity={entity}
+                  property={property}
+                />
+              </form>
             </div>
           )}
           {!isEditable && (

@@ -12,8 +12,13 @@ interface IEntityTypeProps extends ITypeProps {
 const EntitySelect = Select.ofType<Entity>();
 
 
-export class EntityEdit extends React.PureComponent<IEntityTypeProps> {
+export class EntityEdit extends React.Component<IEntityTypeProps> {
   static group = new Set(['entity'])
+  private inputRef: HTMLElement | null = null;
+
+  componentDidMount() {
+    this.inputRef && this.inputRef.focus();
+  }
 
   itemPredicate: ItemPredicate<Entity> = (query: string, entity: Entity) => {
     return matchText(entity.getCaption() || '', query)
@@ -66,13 +71,14 @@ export class EntityEdit extends React.PureComponent<IEntityTypeProps> {
       excludeIds = [...sourceEntities, ...targetEntities].map(e => e.id)
     }
     return Array.from(this.props.entities.values())
-      .filter(e => e.schema.isA(property.getRange()) && !this.props.values.includes(e.id) && excludeIds.indexOf(e.id) === -1);
+      .filter(e => e.schema.isA(property.getRange()) && !this.props.values.includes(e.id) && excludeIds.indexOf(e.id) === -1)
+      .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
   }
 
   render() {
     const items = this.getItemsList()
     const selectedEntity = this.ensureInstance()[0];
-    const buttonText = selectedEntity ? selectedEntity.getCaption() : 'Select from list?';
+    const buttonText = selectedEntity ? selectedEntity.getCaption() : 'Select an entity';
 
     return <FormGroup>
       <EntitySelect
@@ -82,6 +88,7 @@ export class EntityEdit extends React.PureComponent<IEntityTypeProps> {
           minimal: true,
           targetProps: {style: {width: '100%'}}
         }}
+
         itemPredicate={this.itemPredicate}
         itemRenderer={this.itemRenderer}
         onItemSelect={this.onSelect}
@@ -91,7 +98,9 @@ export class EntityEdit extends React.PureComponent<IEntityTypeProps> {
           text={buttonText}
           fill
           alignText={Alignment.LEFT}
-          rightIcon="double-caret-vertical" />
+          rightIcon="double-caret-vertical"
+          elementRef={(ref) => this.inputRef = ref }
+        />
       </EntitySelect>
     </FormGroup>
   }

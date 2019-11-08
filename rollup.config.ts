@@ -35,7 +35,10 @@ export default {
     // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
     commonjs({
       namedExports: {
-        "react-draggable": ['DraggableCore', 'DraggableEvent']
+        "react-draggable": ['DraggableCore', 'DraggableEvent'],
+        'prop-types': [
+          'bool',
+        ],
       }
     }),
     // Resolve source maps to the original source

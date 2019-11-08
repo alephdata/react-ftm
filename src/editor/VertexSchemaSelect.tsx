@@ -6,17 +6,24 @@ import { SchemaIcon } from '../types';
 
 interface ISelectSchemaProps {
   model: Model,
-  schema: Schema,
+  placeholder?:string,
+  schema?: Schema,
   onSelect: (schema: Schema) => void
+  optionsFilter?: (schema: Schema) => boolean
 }
 
 const SchemaSelect = Select.ofType<Schema>();
 
 export class VertexSchemaSelect extends React.PureComponent<ISelectSchemaProps> {
   getSchemata(): Schema[] {
-    const { model } = this.props
-    const schemata = Object.keys(model.schemata).map((name) => model.schemata[name]) as Schema[]
-    const filtered = schemata.filter((schema) => schema.isCreateable && !schema.isEdge)
+    const { model, optionsFilter } = this.props
+    const schemata = model.getSchemata()
+    const filtered = schemata.filter((schema) => {
+      if (!optionsFilter || optionsFilter(schema)) {
+        return schema.isCreateable && !schema.isEdge;
+      }
+      return false;
+    })
     return filtered.sort((a, b) => a.label.localeCompare(b.label))
   }
 
@@ -38,19 +45,13 @@ export class VertexSchemaSelect extends React.PureComponent<ISelectSchemaProps> 
 
     return (
       <SchemaSelect
-        popoverProps={{position: Position.BOTTOM_LEFT, minimal: true}}
+        popoverProps={{boundary:"viewport", position: Position.BOTTOM_LEFT, minimal: true}}
         filterable={false}
         items={this.getSchemata()}
         itemRenderer={this.renderSchema}
         onItemSelect={this.props.onSelect}
       >
-        <Button
-          large
-          text={schema.label}
-          alignText={Alignment.LEFT}
-          icon={SchemaIcon.get(schema)}
-          rightIcon='double-caret-vertical'
-        />
+        {this.props.children}
       </SchemaSelect>
     );
   }

@@ -38,6 +38,7 @@ export class GraphLayout {
     this.addVertex = this.addVertex.bind(this)
     this.addEdge = this.addEdge.bind(this)
     this.addEntity = this.addEntity.bind(this);
+    this.removeEntity = this.removeEntity.bind(this);
     this.isGroupingSelected = this.isGroupingSelected.bind(this);
   }
 
@@ -110,6 +111,11 @@ export class GraphLayout {
 
   addEntity(entity: Entity) {
     this.entities.set(entity.id, entity)
+    this.layout()
+  }
+
+  removeEntity(entity: Entity) {
+    this.entities.delete(entity.id)
     this.layout()
   }
 
