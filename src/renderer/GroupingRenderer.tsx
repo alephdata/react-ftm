@@ -6,7 +6,7 @@ import { getRefMatrix, applyMatrix } from './utils';
 import { modes } from '../interactionModes'
 
 interface IGroupingRendererProps {
-  grouping: Grouping
+  grouping?: Grouping
   config: GraphConfig
   vertices: Vertex[]
   selected: boolean
@@ -76,9 +76,10 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   render() {
-    const { config, grouping, selected } = this.props
+    const { config, grouping, selected, vertices } = this.props
     const { hovered } = this.state
 
+    if (!vertices || vertices.length <= 1) { return null; }
     const {x, y, width, height} = this.getBoundingRect();
     const padding = config.VERTEX_RADIUS*config.gridUnit + 12;
 
@@ -90,7 +91,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
       fontFamily: "sans-serif",
       fontWeight: "bold"
     }
-    const displayColor = selected || hovered ? grouping.color : config.UNSELECTED_COLOR
+    const displayColor = grouping && (selected || hovered) ? grouping.color : config.UNSELECTED_COLOR
 
     return (
       <DraggableCore
@@ -113,15 +114,17 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
             fill={displayColor}
             fillOpacity={selected || hovered ? ".1" : ".2"}
           />
-          <text
-            x={x + width/2}
-            y={y + height + padding + 10}
-            fill={displayColor}
-            textAnchor="middle"
-            style={textStyle}
-          >
-            {grouping.label}
-          </text>
+          {grouping && (
+            <text
+              x={x + width/2}
+              y={y + height + padding + 10}
+              fill={displayColor}
+              textAnchor="middle"
+              style={textStyle}
+            >
+              {grouping.label}
+            </text>
+          )}
         </g>
       </DraggableCore>
     );
