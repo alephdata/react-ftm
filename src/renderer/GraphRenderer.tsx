@@ -164,7 +164,6 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
             viewport={viewport}
             sourcePoint={this.getEdgeCreateSourcePoint()}/>
         }
-        {this.renderSelectionBox()}
         {this.renderGroupings()}
         {this.renderEdges()}
         {this.renderVertices()}
