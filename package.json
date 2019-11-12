@@ -57,10 +57,10 @@
   },
   "devDependencies": {
     "@alephdata/followthemoney": "^1.22.0",
-    "@blueprintjs/core": "^3.19.1",
-    "@blueprintjs/datetime": "^3.14.0",
-    "@blueprintjs/select": "^3.11.1",
-    "@blueprintjs/table": "^3.8.1",
+    "@blueprintjs/core": "^3.20.0",
+    "@blueprintjs/datetime": "^3.15.0",
+    "@blueprintjs/select": "^3.11.2",
+    "@blueprintjs/table": "^3.8.2",
     "@types/bezier-js": "0.0.8",
     "@types/classnames": "^2.2.9",
     "@types/d3": "^5.7.2",
@@ -96,6 +96,10 @@
     "typescript": "^3.7.2"
   },
   "peerDependencies": {
+    "@blueprintjs/core": "^3.20.0",
+    "@blueprintjs/datetime": "^3.15.0",
+    "@blueprintjs/select": "^3.11.2",
+    "@blueprintjs/table": "^3.8.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
