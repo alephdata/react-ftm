@@ -153,11 +153,11 @@ export class GraphLayout {
   }
 
   selectVerticesByFilter(predicate: VertexPredicate) {
-    this.selection = this.getVertices().filter(predicate).map((v) => v.id)
+    this.selection = this.getVertices().filter((vertex) => !vertex.isHidden()).filter(predicate).map((v) => v.id)
   }
 
   selectArea(area: Rectangle) {
-    const selected = this.getVertices().filter((vertex) => area.contains(vertex.position))
+    const selected = this.getVertices().filter((vertex) => !vertex.isHidden() && area.contains(vertex.position))
     this.selection = selected.map((vertex) => vertex.id)
   }
 
