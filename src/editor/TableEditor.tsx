@@ -218,7 +218,7 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
             cellRenderer={(i) => {
               const entity = entities[i];
               return (
-                <Cell onKeyDown={(e) => console.log('asdasdasda')}>
+                <Cell>
                   {entity && (
                     <Popover
                       minimal
