@@ -244,7 +244,7 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
           <Column
             id="add-field"
             cellRenderer={() => (
-              <Cell className="TableEditor__ghostCell" />
+              <Cell className="TableEditor__ghostCell" interactive />
             )}
             columnHeaderCellRenderer={() => (
               <ColumnHeaderCell>

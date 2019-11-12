@@ -16,6 +16,10 @@ body {
   height: 100vh;
 }
 
-.vertex--icon{
+.vertex--icon {
   pointer-events: none;
+}
+
+.bp3-tab:focus, .bp3-button:focus {
+  outline: none;
 }

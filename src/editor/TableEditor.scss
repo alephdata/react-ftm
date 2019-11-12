@@ -27,6 +27,7 @@ $border-color: rgba(16, 22, 26, 0.15);
     .bp3-table-container {
       box-shadow: none;
       height: inherit;
+      outline: none !important;
     }
 
     .bp3-popover-target {
@@ -59,14 +60,12 @@ $border-color: rgba(16, 22, 26, 0.15);
 
   &__schemaAdd {
     margin-top: $table-editor-padding;
-    padding-top: $table-editor-padding;
-    border-top: 1px solid $border-color;
   }
 
   &__ghostCell.bp3-table-cell {
     background-color: white;
     box-shadow: none;
-    pointer-events: none;    
+    pointer-events: none;
   }
 
   .bp3-table-cell {
