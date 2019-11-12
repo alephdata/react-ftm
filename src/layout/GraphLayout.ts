@@ -1,4 +1,4 @@
-import { Entity, Model, IEntityDatum } from '@alephdata/followthemoney'
+import { defaultModel, Entity, Model, IEntityDatum } from '@alephdata/followthemoney'
 import { forceSimulation, forceLink, forceCollide } from 'd3-force';
 import { DraggableEvent } from 'react-draggable';
 import { Vertex } from './Vertex'
@@ -31,12 +31,12 @@ export class GraphLayout {
   selection = new Array<string>()
   private hasDraggedSelection = false
 
-  constructor(config: GraphConfig, model: Model) {
+  constructor(config: GraphConfig) {
     this.config = config
-    this.model = model
+    this.model = new Model(defaultModel);
 
-    this.addVertex = this.addVertex.bind(this)
-    this.addEdge = this.addEdge.bind(this)
+    this.addVertex = this.addVertex.bind(this);
+    this.addEdge = this.addEdge.bind(this);
     this.addEntity = this.addEntity.bind(this);
     this.removeEntity = this.removeEntity.bind(this);
     this.isGroupingSelected = this.isGroupingSelected.bind(this);
@@ -153,11 +153,11 @@ export class GraphLayout {
   }
 
   selectVerticesByFilter(predicate: VertexPredicate) {
-    this.selection = this.getVertices().filter(predicate).map((v) => v.id)
+    this.selection = this.getVertices().filter((vertex) => !vertex.isHidden()).filter(predicate).map((v) => v.id)
   }
 
   selectArea(area: Rectangle) {
-    const selected = this.getVertices().filter((vertex) => area.contains(vertex.position))
+    const selected = this.getVertices().filter((vertex) => !vertex.isHidden() && area.contains(vertex.position))
     this.selection = selected.map((vertex) => vertex.id)
   }
 
@@ -376,7 +376,7 @@ export class GraphLayout {
   }
 
   update(withData:IGraphLayoutData):GraphLayout{
-    return GraphLayout.fromJSON(this.config, this.model, withData)
+    return GraphLayout.fromJSON(this.config, withData)
   }
 
   toJSON(): IGraphLayoutData {
@@ -389,11 +389,11 @@ export class GraphLayout {
     }
   }
 
-  static fromJSON(config: GraphConfig, model: Model, data: any): GraphLayout {
+  static fromJSON(config: GraphConfig, data: any): GraphLayout {
     const layoutData = data as IGraphLayoutData
-    const layout = new GraphLayout(config, model)
+    const layout = new GraphLayout(config)
     layoutData.entities.forEach((edata) => {
-      layout.entities.set(edata.id, model.getEntity(edata))
+      layout.entities.set(edata.id, layout.model.getEntity(edata))
     })
     layoutData.vertices.forEach((vdata) => {
       const vertex = Vertex.fromJSON(layout, vdata)

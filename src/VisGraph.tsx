@@ -9,12 +9,10 @@ import { Toolbar } from './Toolbar';
 import { Sidebar } from './Sidebar';
 import { History } from './History';
 import { EdgeCreateDialog, GroupingCreateDialog, VertexCreateDialog, TableEditor } from "./editor";
-import { Model, defaultModel } from '@alephdata/followthemoney'
 import { modes } from './interactionModes'
 
 interface IVisGraphProps {
   config: GraphConfig,
-  model: Model,
   layout: GraphLayout,
   viewport: Viewport,
   updateLayout: (layout:GraphLayout, historyModified?: boolean) => void,
@@ -40,7 +38,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
   constructor(props: any) {
     super(props)
-    const { config, model, layout, viewport } = props
+    const { config, layout, viewport } = props
 
     this.history = new History();
     this.svgRef = React.createRef()
@@ -91,10 +89,10 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   navigateHistory(factor:number) {
-    const { config, model } = this.props;
+    const { config } = this.props;
 
     const nextLayoutData = this.history.go(factor);
-    this.updateLayout(GraphLayout.fromJSON(config, model, nextLayoutData))
+    this.updateLayout(GraphLayout.fromJSON(config, nextLayoutData))
   }
 
   addVertexToPosition(initialPos?: Point) {
