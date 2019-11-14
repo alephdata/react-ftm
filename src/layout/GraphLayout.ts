@@ -133,7 +133,7 @@ export class GraphLayout {
 
   getGroupingRect(grouping: Grouping): Rectangle {
     const points = grouping.getVertices().map((v) => v.position)
-    return Rectangle.fromPoints(...points)
+    return Rectangle.fromPoints(...points).pad(this.config.gridUnit)
   }
 
   getVertexByEntity(entity: Entity): Vertex | undefined {

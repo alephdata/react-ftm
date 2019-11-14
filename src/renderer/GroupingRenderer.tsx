@@ -81,7 +81,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
 
     if (!vertices || vertices.length <= 1) { return null; }
     const {x, y, width, height} = this.getBoundingRect();
-    const padding = config.VERTEX_RADIUS*config.gridUnit + 12;
+    const padding = config.VERTEX_RADIUS*config.gridUnit + config.gridUnit;
 
     const groupStyles: React.CSSProperties = {
       cursor: selected ? 'grab' : 'pointer',
