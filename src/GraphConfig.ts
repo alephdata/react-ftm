@@ -3,7 +3,7 @@ import { Point } from './layout/Point';
 
 export class GraphConfig {
   public gridUnit: number = 10
-  public DEFAULT_VERTEX_COLOR: string = Colors.BLUE2
+  public DEFAULT_VERTEX_COLOR: string = Colors.BLUE1
   public EDGE_COLOR: string = Colors.GRAY2
   public UNSELECTED_COLOR: string = Colors.GRAY5
   public VERTEX_RADIUS: number = 1
