@@ -107,7 +107,8 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
         handle='.edge-handle'
         onStart={this.onDragStart}
         onDrag={this.onDragMove}
-        onStop={this.onDragEnd} >
+        onStop={this.onDragEnd}
+        enableUserSelectHack={false} >
         <g
           transform={translate}
           onClick={onClick}

@@ -142,7 +142,8 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
         handle='.handle'
         onStart={this.onPanStart}
         onDrag={this.onPanMove}
-        onStop={this.onPanEnd} >
+        onStop={this.onPanEnd}
+        enableUserSelectHack={false} >
         <g className='vertex' transform={translate} ref={this.gRef} style={groupStyles}>
           <circle
             className="handle"

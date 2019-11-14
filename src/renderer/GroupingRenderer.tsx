@@ -98,7 +98,8 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
         handle='.grouping-handle'
         onStart={this.onDragStart}
         onDrag={this.onDragMove}
-        onStop={this.onDragEnd} >
+        onStop={this.onDragEnd}
+        enableUserSelectHack={false} >
         <g
           className="grouping-handle"
           style={groupStyles}

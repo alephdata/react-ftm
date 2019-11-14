@@ -259,7 +259,8 @@ export class Canvas extends React.Component <ICanvasProps> {
           handle="#canvas-handle"
           onStart={this.onDragStart}
           onDrag={this.onDragMove}
-          onStop={this.onDragEnd}>
+          onStop={this.onDragEnd}
+          enableUserSelectHack={false} >
           <g id="zoom">
             <rect id="canvas-handle"
                   x="-5000"
