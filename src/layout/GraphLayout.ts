@@ -328,6 +328,7 @@ export class GraphLayout {
       const area = this.getGroupingRect(grouping);
       if (area.contains(vertex.position)) {
         this.groupings.set(grouping.id, grouping.addVertex(vertex))
+        this.selectElement(grouping.getVertices());
       }
     })
   }
