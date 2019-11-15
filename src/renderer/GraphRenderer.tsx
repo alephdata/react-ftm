@@ -61,20 +61,20 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     const { interactionMode, layout } = this.props;
     const selectedVertices = layout.getSelectedVertices();
 
-    if (selectedVertices.length > 1) {
-      return (
-        <GroupingRenderer
-          key="selection"
-          config={layout.config}
-          vertices={selectedVertices}
-          selected
-          selectGrouping={this.selectElement}
-          dragSelection={this.dragSelection}
-          dropSelection={this.dropSelection}
-          interactionMode={interactionMode}
-        />
-      )
-    }
+    // if (selectedVertices.length > 1) {
+    //   return (
+    //     <GroupingRenderer
+    //       key="selection"
+    //       config={layout.config}
+    //       vertices={selectedVertices}
+    //       selected
+    //       selectGrouping={this.selectElement}
+    //       dragSelection={this.dragSelection}
+    //       dropSelection={this.dropSelection}
+    //       interactionMode={interactionMode}
+    //     />
+    //   )
+    // }
   }
 
   renderGroupings() {

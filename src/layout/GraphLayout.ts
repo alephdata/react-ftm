@@ -131,11 +131,6 @@ export class GraphLayout {
     return Array.from(this.groupings.values())
   }
 
-  getGroupingRect(grouping: Grouping): Rectangle {
-    const points = grouping.getVertices().map((v) => v.position)
-    return Rectangle.fromPoints(...points).pad(this.config.gridUnit)
-  }
-
   getVertexByEntity(entity: Entity): Vertex | undefined {
     return this.getVertices()
       .filter((v) => v.isEntity)
@@ -325,8 +320,8 @@ export class GraphLayout {
 
   addVertexToGroupings(vertex: Vertex) {
     this.getGroupings().forEach(grouping => {
-      const area = this.getGroupingRect(grouping);
-      if (area.contains(vertex.position)) {
+      const area = grouping.getBoundingRect();
+      if (area.contains(this.config.gridToPixel(vertex.position))) {
         this.groupings.set(grouping.id, grouping.addVertex(vertex))
         this.selectElement(grouping.getVertices());
       }

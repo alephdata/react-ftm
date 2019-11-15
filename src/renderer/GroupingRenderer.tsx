@@ -6,7 +6,7 @@ import { getRefMatrix, applyMatrix } from './utils';
 import { modes } from '../interactionModes'
 
 interface IGroupingRendererProps {
-  grouping?: Grouping
+  grouping: Grouping
   config: GraphConfig
   vertices: Vertex[]
   selected: boolean
@@ -68,19 +68,12 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
     this.setState({hovered: false})
   }
 
-  getBoundingRect() {
-    const { config, vertices } = this.props
-
-    const points = vertices.map((v) => config.gridToPixel(v.position))
-    return Rectangle.fromPoints(...points).pad(config.gridUnit*2)
-  }
-
   render() {
     const { config, grouping, selected, vertices } = this.props
     const { hovered } = this.state
 
     if (!vertices || vertices.length <= 1) { return null; }
-    const {x, y, width, height} = this.getBoundingRect();
+    const {x, y, width, height} = grouping.getBoundingRect();
 
     const groupStyles: React.CSSProperties = {
       cursor: selected ? 'grab' : 'pointer',

@@ -62,6 +62,12 @@ export class Grouping {
     return this.layout.getRelatedEntities(...this.getVertices())
   }
 
+  getBoundingRect(): Rectangle {
+    const { config } = this.layout
+    const points = this.getVertices().map((v) => config.gridToPixel(v.position))
+    return Rectangle.fromPoints(...points).pad(config.gridUnit*2)
+  }
+
   clone(): Grouping {
     return Grouping.fromJSON(this.layout, this.toJSON())
   }
