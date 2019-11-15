@@ -72,7 +72,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
     const { config, vertices } = this.props
 
     const points = vertices.map((v) => config.gridToPixel(v.position))
-    return Rectangle.fromPoints(...points)
+    return Rectangle.fromPoints(...points).pad(config.gridUnit*2)
   }
 
   render() {
@@ -81,7 +81,6 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
 
     if (!vertices || vertices.length <= 1) { return null; }
     const {x, y, width, height} = this.getBoundingRect();
-    const padding = config.VERTEX_RADIUS*config.gridUnit + config.gridUnit;
 
     const groupStyles: React.CSSProperties = {
       cursor: selected ? 'grab' : 'pointer',
@@ -107,18 +106,18 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
           onMouseOut={this.onMouseOut}
           ref={this.gRef} >
           <rect
-            x={x - padding}
-            y={y - padding}
+            x={x}
+            y={y}
             rx="5"
-            width={width + padding*2}
-            height={height + padding*2}
+            width={width}
+            height={height}
             fill={displayColor}
             fillOpacity={selected || hovered ? ".1" : ".2"}
           />
           {grouping && (
             <text
               x={x + width/2}
-              y={y + height + padding + 10}
+              y={y + height + 10}
               fill={displayColor}
               textAnchor="middle"
               style={textStyle}
