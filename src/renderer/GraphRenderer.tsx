@@ -57,26 +57,6 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     this.props.updateLayout(layout)
   }
 
-  renderSelectionBox() {
-    const { interactionMode, layout } = this.props;
-    const selectedVertices = layout.getSelectedVertices();
-
-    // if (selectedVertices.length > 1) {
-    //   return (
-    //     <GroupingRenderer
-    //       key="selection"
-    //       config={layout.config}
-    //       vertices={selectedVertices}
-    //       selected
-    //       selectGrouping={this.selectElement}
-    //       dragSelection={this.dragSelection}
-    //       dropSelection={this.dropSelection}
-    //       interactionMode={interactionMode}
-    //     />
-    //   )
-    // }
-  }
-
   renderGroupings() {
     const { interactionMode, layout } = this.props;
     const groupings = layout.getGroupings();
@@ -148,6 +128,8 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
 
   render(){
     const { svgRef, layout, viewport, animateTransition, actions, interactionMode } = this.props;
+
+    console.log(interactionMode);
 
     return (
       <Canvas svgRef={svgRef}

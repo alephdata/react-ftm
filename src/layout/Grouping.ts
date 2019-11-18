@@ -7,7 +7,7 @@ import { Point } from './Point';
 
 interface IGroupingData {
   id: string
-  label: string
+  label?: string
   color: string
   vertices: Array<string>
 }
@@ -15,7 +15,7 @@ interface IGroupingData {
 export class Grouping {
   private readonly layout: GraphLayout
   public readonly id: string
-  public readonly label: string
+  public readonly label: string | undefined
   public color: string
   public readonly vertices: Set<string>
 
@@ -90,6 +90,14 @@ export class Grouping {
       id: `${vertices.map(v => v.id)}`,
       label: label,
       color: color || layout.config.DEFAULT_VERTEX_COLOR,
+      vertices: vertices.map(v => v.id)
+    })
+  }
+
+  static fromSelection(layout: GraphLayout, vertices: Vertex[]): Grouping {
+    return new Grouping(layout, {
+      id: 'selectedArea',
+      color: layout.config.UNSELECTED_COLOR,
       vertices: vertices.map(v => v.id)
     })
   }

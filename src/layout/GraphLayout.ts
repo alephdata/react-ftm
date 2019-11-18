@@ -29,6 +29,7 @@ export class GraphLayout {
   entities = new Map<string, Entity>()
   groupings = new Map<string, Grouping>()
   selection = new Array<string>()
+  // private selectionType =
   private hasDraggedSelection = false
 
   constructor(config: GraphConfig) {
@@ -154,6 +155,12 @@ export class GraphLayout {
   selectArea(area: Rectangle) {
     const selected = this.getVertices().filter((vertex) => !vertex.isHidden() && area.contains(vertex.position))
     this.selection = selected.map((vertex) => vertex.id)
+
+    const grouping = Grouping.fromSelection(this, selected);
+
+    if (grouping) {
+      this.addGrouping(grouping);
+    }
   }
 
   getSelectedVertices(): Vertex[] {
@@ -170,7 +177,7 @@ export class GraphLayout {
 
   getSelectedGroupings(): Grouping[] {
     return this.getGroupings()
-      .filter(this.isGroupingSelected)
+      .filter(grouping => grouping.id !== 'selectedArea' && this.isGroupingSelected(grouping))
   }
 
   getRelatedEntities(...elements: Array<GraphElement>): Array<Entity> {
@@ -205,7 +212,9 @@ export class GraphLayout {
   }
 
   clearSelection() {
+    console.log('calling clear selection');
     this.selection = [];
+    this.groupings.delete('selectedArea');
   }
 
   isElementSelected(element: GraphElement | Array<GraphElement>) {

@@ -75,13 +75,18 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
     if (!vertices || vertices.length <= 1) { return null; }
     const {x, y, width, height} = grouping.getBoundingRect();
 
-    const groupStyles: React.CSSProperties = {
+    const groupStyle: React.CSSProperties = {
       cursor: selected ? 'grab' : 'pointer',
     }
     const textStyle: React.CSSProperties = {
       fontSize: "5px",
       fontFamily: "sans-serif",
       fontWeight: "bold"
+    }
+    const selectionGroupStyle: React.CSSProperties = {
+      stroke: config.UNSELECTED_COLOR,
+      strokeWidth: "0.5px",
+      strokeDasharray: "2"
     }
     const displayColor = grouping && (selected || hovered) ? grouping.color : config.UNSELECTED_COLOR
 
@@ -94,7 +99,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
         enableUserSelectHack={false} >
         <g
           className="grouping-handle"
-          style={groupStyles}
+          style={groupStyle}
           onMouseOver={this.onMouseOver}
           onMouseOut={this.onMouseOut}
           ref={this.gRef} >
@@ -106,6 +111,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
             height={height}
             fill={displayColor}
             fillOpacity={selected || hovered ? ".1" : ".2"}
+            style={grouping.id === 'selectedArea' ? selectionGroupStyle : undefined}
           />
           {grouping && (
             <text
