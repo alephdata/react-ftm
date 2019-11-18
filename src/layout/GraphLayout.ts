@@ -212,7 +212,6 @@ export class GraphLayout {
   }
 
   clearSelection() {
-    console.log('calling clear selection');
     this.selection = [];
     this.groupings.delete('selectedArea');
   }
@@ -221,7 +220,6 @@ export class GraphLayout {
     if (Array.isArray(element)) {
       return element.every(elem => this.selection.includes(elem.id));
     } else {
-      const selectedGroupings = this.getSelectedGroupings();
       return this.selection.indexOf(element.id) !== -1;
     }
   }
@@ -275,11 +273,31 @@ export class GraphLayout {
     this.edges.set(edge.id, edge.setLabelPosition(labelPosition))
   }
 
+  removeSubgroups() {
+    const selectedGroupings = this.getSelectedGroupings();
+    const allGroupings = this.getGroupings()
+
+    selectedGroupings.forEach(selected => {
+      const selectedVertList = Array.from(selected.vertices);
+      let isSubgroup = false;
+      allGroupings.forEach(grouping => {
+        if (selected.id !== grouping.id) {
+          isSubgroup = selectedVertList.every(id => grouping.vertices.has(id));
+          if (isSubgroup) {
+            this.groupings.delete(selected.id)
+            return;
+          }
+        }
+      })
+    })
+  }
+
   dropSelection() {
     const vertices = this.getSelectedVertices();
     vertices.forEach((vertex) => {
       this.vertices.set(vertex.id, vertex.snapPosition(vertex.position))
       this.addVertexToGroupings(vertex)
+      this.removeSubgroups()
     });
 
     if (this.hasDraggedSelection) {
@@ -329,9 +347,11 @@ export class GraphLayout {
 
   addVertexToGroupings(vertex: Vertex) {
     this.getGroupings().forEach(grouping => {
+      if (grouping.id === 'selectedArea') { return }
       const area = grouping.getBoundingRect();
       if (area.contains(this.config.gridToPixel(vertex.position))) {
         this.groupings.set(grouping.id, grouping.addVertex(vertex))
+        this.clearSelection();
         this.selectElement(grouping.getVertices());
       }
     })

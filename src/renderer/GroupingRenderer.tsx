@@ -14,6 +14,7 @@ interface IGroupingRendererProps {
   dragSelection: (offset: Point) => any
   dropSelection: () => any
   interactionMode: string
+  actions: any
 }
 
 interface IGroupingRendererState {
@@ -37,18 +38,23 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   private onDragMove(e: DraggableEvent, data: DraggableData) {
-    const { config } = this.props
+    const { actions, config } = this.props
     const matrix = getRefMatrix(this.gRef)
     const current = applyMatrix(matrix, data.x, data.y)
     const last = applyMatrix(matrix, data.lastX, data.lastY)
     const offset = config.pixelToGrid(current.subtract(last))
+    actions.setInteractionMode(modes.ITEM_DRAG)
     if (offset.x || offset.y) {
       this.props.dragSelection(offset)
     }
   }
 
   onDragEnd(e: DraggableEvent, data: DraggableData) {
-    this.props.dropSelection()
+    const { actions, dropSelection, interactionMode } = this.props;
+    dropSelection()
+    if (interactionMode === modes.ITEM_DRAG) {
+      actions.setInteractionMode(modes.SELECT)
+    }
   }
 
   onDragStart(e: DraggableEvent, data: DraggableData) {
@@ -69,7 +75,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   render() {
-    const { config, grouping, selected, vertices } = this.props
+    const { config, grouping, interactionMode, selected, vertices } = this.props
     const { hovered } = this.state
 
     if (!vertices || vertices.length <= 1) { return null; }
@@ -83,10 +89,11 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
       fontFamily: "sans-serif",
       fontWeight: "bold"
     }
-    const selectionGroupStyle: React.CSSProperties = {
+    const selectedAreaStyle: React.CSSProperties = {
       stroke: config.UNSELECTED_COLOR,
       strokeWidth: "0.5px",
-      strokeDasharray: "2"
+      strokeDasharray: "2",
+      pointerEvents: interactionMode === modes.ITEM_DRAG ? "none" : "auto"
     }
     const displayColor = grouping && (selected || hovered) ? grouping.color : config.UNSELECTED_COLOR
 
@@ -111,7 +118,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
             height={height}
             fill={displayColor}
             fillOpacity={selected || hovered ? ".1" : ".2"}
-            style={grouping.id === 'selectedArea' ? selectionGroupStyle : undefined}
+            style={grouping.id === 'selectedArea' ? selectedAreaStyle : undefined}
           />
           {grouping && (
             <text

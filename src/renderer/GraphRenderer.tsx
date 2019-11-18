@@ -58,7 +58,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   renderGroupings() {
-    const { interactionMode, layout } = this.props;
+    const { actions, interactionMode, layout } = this.props;
     const groupings = layout.getGroupings();
     return groupings.map((grouping: Grouping) => {
       const vertices = grouping.getVertices()
@@ -74,6 +74,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
           dragSelection={this.dragSelection}
           dropSelection={this.dropSelection}
           interactionMode={interactionMode}
+          actions={actions}
         />
       )
     })
@@ -128,8 +129,6 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
 
   render(){
     const { svgRef, layout, viewport, animateTransition, actions, interactionMode } = this.props;
-
-    console.log(interactionMode);
 
     return (
       <Canvas svgRef={svgRef}

@@ -155,6 +155,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     if (interactionMode === modes.EDGE_DRAW) {
       actions.setInteractionMode()
     }
+
     this.props.clearSelection()
     const matrix = getRefMatrix(this.props.svgRef)
     this.dragInitial = applyMatrix(matrix, data.x, data.y)
