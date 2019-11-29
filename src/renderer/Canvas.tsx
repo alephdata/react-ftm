@@ -18,7 +18,8 @@ interface ICanvasProps {
   clearSelection: () => any,
   updateViewport: (viewport: Viewport, transitionSettings?: any) => any,
   animateTransition: boolean,
-  actions: any
+  actions: any,
+  writeable: boolean,
 }
 
 export class Canvas extends React.Component <ICanvasProps> {
@@ -42,11 +43,12 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   componentDidMount() {
+    const { svgRef, writeable } = this.props;
     this.onResize()
-    const svg = this.props.svgRef.current;
+    const svg = svgRef.current;
     if (svg !== null) {
       svg.addEventListener('wheel', this.onMouseZoom)
-      svg.addEventListener('dblclick', this.onDoubleClick)
+      if (writeable) { svg.addEventListener('dblclick', this.onDoubleClick); }
       svg.addEventListener('keydown', this.onKeyDown)
       svg.addEventListener('keyup', this.onKeyUp)
 
@@ -55,10 +57,12 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   componentWillUnmount() {
-    const svg = this.props.svgRef.current;
+    const { svgRef, writeable } = this.props;
+
+    const svg = svgRef.current;
     if (svg !== null) {
       svg.removeEventListener('wheel', this.onMouseZoom)
-      svg.removeEventListener('dblclick', this.onDoubleClick)
+      if (writeable) { svg.removeEventListener('dblclick', this.onDoubleClick); }
       window.removeEventListener('resize', this.onResize)
       svg.removeEventListener('keydown', this.onKeyDown)
       svg.removeEventListener('keyup', this.onKeyUp)
@@ -187,7 +191,6 @@ export class Canvas extends React.Component <ICanvasProps> {
     const matrix = getRefMatrix(this.props.svgRef)
     const target = applyMatrix(matrix, event.clientX, event.clientY)
     const gridTarget = viewport.config.pixelToGrid(target)
-
 
     this.props.actions.addVertexToPosition(gridTarget)
   }

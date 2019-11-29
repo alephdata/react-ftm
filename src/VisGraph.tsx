@@ -18,6 +18,7 @@ interface IVisGraphProps {
   updateLayout: (layout:GraphLayout, historyModified?: boolean) => void,
   updateViewport: (viewport:Viewport) => void
   exportSvg: (data: any) => void
+  writeable: boolean
 }
 
 interface IVisGraphState {
@@ -28,11 +29,7 @@ interface IVisGraphState {
 }
 
 export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
-  state: IVisGraphState = {
-    animateTransition: false,
-    interactionMode: modes.SELECT,
-    tableView: false,
-  }
+  state: IVisGraphState;
   history: History;
   svgRef: React.RefObject<SVGSVGElement>
 
@@ -46,6 +43,12 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     if (layout) {
       this.history.push(layout);
     }
+
+    this.state = {
+      animateTransition: false,
+      interactionMode: props.writeable ? modes.SELECT : modes.PAN,
+      tableView: false,
+    };
 
     this.addVertexToPosition = this.addVertexToPosition.bind(this)
     this.exportSvg = this.exportSvg.bind(this);
@@ -152,10 +155,17 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   render() {
-    const { config, layout, viewport } = this.props;
+    const { config, layout, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, tableView } = this.state;
     const vertices = layout.getSelectedVertices()
-    const [sourceVertex, targetVertex] = vertices
+    const [sourceVertex, targetVertex] = vertices;
+
+    const layoutContext = {
+      layout: layout,
+      updateLayout: this.updateLayout,
+      viewport: viewport,
+      updateViewport: this.updateViewport,
+    };
 
     const actions = {
       addVertexToPosition: this.addVertexToPosition,
@@ -168,14 +178,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       ungroupSelection: this.ungroupSelection,
     };
 
-    const layoutContext = {
-      layout: layout,
-      updateLayout: this.updateLayout,
-      viewport: viewport,
-      updateViewport: this.updateViewport,
-    };
-
-    const showSidebar = layout.vertices && layout.vertices.size > 0
+    const showSidebar = writeable && layout.vertices && layout.vertices.size > 0;
 
     return (
       <GraphContext.Provider value={layoutContext}>
@@ -185,6 +188,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               actions={actions}
               history={this.history}
               interactionMode={this.state.interactionMode}
+              showEditingButtons={writeable}
               {...layoutContext}
             />
           </div>
@@ -204,6 +208,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                 animateTransition={animateTransition}
                 actions={actions}
                 interactionMode={interactionMode}
+                writeable={writeable}
                 {...layoutContext}
               />
               <Drawer
@@ -211,12 +216,12 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                 icon="th"
                 isOpen={tableView}
                 canOutsideClickClose
-                title="Table editor"
+                title="Table viewer"
                 onClose={this.toggleTableView}
                 style={{ height: '60%' }}
               >
                 <div className={Classes.DRAWER_BODY}>
-                  <TableEditor layout={layout} updateLayout={this.updateLayout} />
+                  <TableEditor layout={layout} updateLayout={this.updateLayout} writeable={writeable} />
                 </div>
               </Drawer>
             </div>
@@ -236,24 +241,26 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
             }
           </div>
         </div>
+        {writeable && (
+          <>
+            <VertexCreateDialog
+              isOpen={interactionMode === modes.VERTEX_CREATE}
+              toggleDialog={this.setInteractionMode}
+              vertexInitialPos={this.state.vertexCreateInitialPos} />
 
-        <VertexCreateDialog
-          isOpen={interactionMode === modes.VERTEX_CREATE}
-          toggleDialog={this.setInteractionMode}
-          vertexInitialPos={this.state.vertexCreateInitialPos} />
+            <GroupingCreateDialog
+              isOpen={interactionMode === modes.GROUPING_CREATE}
+              toggleDialog={this.setInteractionMode} />
 
-        <GroupingCreateDialog
-          isOpen={interactionMode === modes.GROUPING_CREATE}
-          toggleDialog={this.setInteractionMode} />
-
-        <EdgeCreateDialog
-          source={sourceVertex}
-          target={targetVertex}
-          isOpen={interactionMode === modes.EDGE_CREATE}
-          toggleDialog={this.setInteractionMode}
-          {...layoutContext}
-        />
-
+            <EdgeCreateDialog
+              source={sourceVertex}
+              target={targetVertex}
+              isOpen={interactionMode === modes.EDGE_CREATE}
+              toggleDialog={this.setInteractionMode}
+              {...layoutContext}
+            />
+          </>
+        )}
       </GraphContext.Provider>
     );
   }

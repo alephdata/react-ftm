@@ -15,6 +15,7 @@ interface IGroupingRendererProps {
   dropSelection: () => any
   interactionMode: string
   actions: any
+  writeable: boolean
 }
 
 interface IGroupingRendererState {
@@ -75,14 +76,14 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   render() {
-    const { config, grouping, interactionMode, selected, vertices } = this.props
+    const { config, grouping, interactionMode, selected, vertices, writeable } = this.props
     const { hovered } = this.state
 
     if (!vertices || vertices.length <= 1) { return null; }
     const {x, y, width, height} = grouping.getBoundingRect();
 
     const groupStyle: React.CSSProperties = {
-      cursor: selected ? 'grab' : 'pointer',
+      cursor: selected && writeable ? 'grab' : 'pointer',
     }
     const textStyle: React.CSSProperties = {
       fontSize: "5px",
@@ -100,9 +101,9 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
     return (
       <DraggableCore
         handle='.grouping-handle'
-        onStart={this.onDragStart}
-        onDrag={this.onDragMove}
-        onStop={this.onDragEnd}
+        onStart={writeable ? this.onDragStart : undefined}
+        onDrag={writeable ? this.onDragMove : undefined}
+        onStop={writeable ? this.onDragEnd : undefined}
         enableUserSelectHack={false} >
         <g
           className="grouping-handle"

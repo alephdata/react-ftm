@@ -16,7 +16,8 @@ interface IEdgeLabelRendererProps {
   dropSelection: () => any,
   outlineColor?: string,
   textColor?: string,
-  svgRef: React.RefObject<SVGSVGElement>
+  svgRef: React.RefObject<SVGSVGElement>,
+  writeable: boolean,
 }
 
 interface IEdgeLabelRendererState {
@@ -79,7 +80,7 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
   }
 
   render() {
-    const { labelText, center, onClick, outlineColor, textColor, config } = this.props;
+    const { labelText, center, onClick, outlineColor, textColor, config, writeable } = this.props;
     const margin = 1.5;
     const extents = this.state.textExtents;
     const { x, y } = config.gridToPixel(center);
@@ -105,9 +106,9 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
     return (
       <DraggableCore
         handle='.edge-handle'
-        onStart={this.onDragStart}
-        onDrag={this.onDragMove}
-        onStop={this.onDragEnd}
+        onStart={writeable ? this.onDragStart : undefined}
+        onDrag={writeable ? this.onDragMove : undefined}
+        onStop={writeable ? this.onDragEnd : undefined}
         enableUserSelectHack={false} >
         <g
           transform={translate}

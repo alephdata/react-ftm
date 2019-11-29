@@ -19,6 +19,7 @@ interface IVertexRendererProps {
   dropSelection: () => any
   interactionMode: string
   actions: any
+  writeable: boolean
 }
 
 interface IVertexRendererState {
@@ -32,9 +33,9 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     super(props)
 
     this.state = { hovered: false }
-    this.onPanStart = this.onPanStart.bind(this)
-    this.onPanMove = this.onPanMove.bind(this)
-    this.onPanEnd = this.onPanEnd.bind(this)
+    this.onDragStart = this.onDragStart.bind(this)
+    this.onDragMove = this.onDragMove.bind(this)
+    this.onDragEnd = this.onDragEnd.bind(this)
     this.onClick = this.onClick.bind(this)
     this.onDoubleClick = this.onDoubleClick.bind(this)
     this.onMouseOver = this.onMouseOver.bind(this)
@@ -43,20 +44,22 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   componentDidMount() {
+    const { writeable } = this.props;
     const g = this.gRef.current;
-    if (g !== null) {
+    if (writeable && g !== null) {
       g.addEventListener('dblclick', this.onDoubleClick)
     }
   }
 
   componentWillUnmount() {
+    const { writeable } = this.props;
     const g = this.gRef.current;
-    if (g !== null) {
+    if (writeable && g !== null) {
       g.removeEventListener('dblclick', this.onDoubleClick)
     }
   }
 
-  private onPanMove(e: DraggableEvent, data: DraggableData) {
+  private onDragMove(e: DraggableEvent, data: DraggableData) {
     const { config } = this.props
     const matrix = getRefMatrix(this.gRef)
     const current = applyMatrix(matrix, data.x, data.y)
@@ -69,7 +72,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     }
   }
 
-  onPanEnd(e: DraggableEvent, data: DraggableData) {
+  onDragEnd(e: DraggableEvent, data: DraggableData) {
     const { interactionMode, actions, dropSelection } = this.props;
     if (interactionMode === modes.ITEM_DRAG) {
       actions.setInteractionMode(modes.SELECT)
@@ -77,7 +80,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     dropSelection()
   }
 
-  onPanStart(e: DraggableEvent, data: DraggableData) {
+  onDragStart(e: DraggableEvent, data: DraggableData) {
     this.onClick(e)
   }
 
@@ -123,7 +126,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   render() {
-    const { vertex, config, selected, interactionMode } = this.props
+    const { vertex, config, selected, interactionMode, writeable } = this.props
     const { x, y } = config.gridToPixel(vertex.position)
     const isEntity = vertex.isEntity()
     const vertexRadius = isEntity ? config.gridUnit * config.VERTEX_RADIUS : config.gridUnit * config.VERTEX_RADIUS / 2
@@ -140,9 +143,9 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     return (
       <DraggableCore
         handle='.handle'
-        onStart={this.onPanStart}
-        onDrag={this.onPanMove}
-        onStop={this.onPanEnd}
+        onStart={writeable ? this.onDragStart : undefined}
+        onDrag={writeable ? this.onDragMove : undefined}
+        onStop={writeable ? this.onDragEnd : undefined}
         enableUserSelectHack={false} >
         <g className='vertex' transform={translate} ref={this.gRef} style={groupStyles}>
           <circle

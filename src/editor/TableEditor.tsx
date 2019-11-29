@@ -15,6 +15,7 @@ const propSort = (a:Property, b:Property) => (a.label > b.label ? 1 : -1);
 interface ITableEditorProps {
   layout: GraphLayout,
   updateLayout: GraphUpdateHandler,
+  writeable: boolean,
 }
 
 interface ITableEditorState {
@@ -51,7 +52,7 @@ export class TableEditor extends React.Component<ITableEditorProps, ITableEditor
   }
 
   render() {
-    const { layout, updateLayout } = this.props;
+    const { layout, updateLayout, writeable } = this.props;
     const { activeTabId, schemata } = this.state;
 
     return (
@@ -72,22 +73,25 @@ export class TableEditor extends React.Component<ITableEditorProps, ITableEditor
                     schema={schema}
                     layout={layout}
                     updateLayout={updateLayout}
+                    writeable={writeable}
                   />
                 )}
               />
           ))}
-          <div className="TableEditor__schemaAdd">
-            <VertexSchemaSelect
-              model={layout.model}
-              onSelect={schema => this.addSchema(schema)}
-              optionsFilter={(schema => !schemata.includes(schema))}
-            >
-              <Button
-                text="Add an entity type"
-                icon="plus"
-              />
-            </VertexSchemaSelect>
-          </div>
+          {writeable && (
+            <div className="TableEditor__schemaAdd">
+              <VertexSchemaSelect
+                model={layout.model}
+                onSelect={schema => this.addSchema(schema)}
+                optionsFilter={(schema => !schemata.includes(schema))}
+              >
+                <Button
+                  text="Add an entity type"
+                  icon="plus"
+                />
+              </VertexSchemaSelect>
+            </div>
+          )}
         </Tabs>
       </div>
     )
@@ -99,6 +103,7 @@ interface ITableForSchemaProps {
   schema: Schema
   layout: GraphLayout,
   updateLayout: GraphUpdateHandler,
+  writeable: boolean
 }
 
 interface ITableForSchemaState {
@@ -117,11 +122,12 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
   }
 
   getEntities() {
-    const { layout, schema } = this.props;
+    const { layout, schema, writeable } = this.props;
 
-    return layout.getEntities()
-      .filter(e => e.schema === schema)
-      .concat(layout.model.createEntity(schema));
+    const entities = layout.getEntities()
+      .filter(e => e.schema === schema);
+
+    return writeable ? entities.concat(layout.model.createEntity(schema)) : entities;
   }
 
   getVisibleProperties() {
@@ -161,7 +167,7 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
     updateLayout(layout, { modifyHistory:true });
   }
 
-  render() {
+  renderWriteable() {
     const { layout, schema, updateLayout } = this.props;
     const { visibleProps } = this.state;
 
@@ -174,7 +180,6 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
 
     const columnWidths = new Array(visibleProps.length + 2);
     columnWidths[0] = 25;
-
 
     return (
       <div className="TableEditor__contents">
@@ -259,6 +264,51 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
 
         </Table>
       </div>
-    )
+    );
+  }
+
+  renderReadonly() {
+    const { visibleProps } = this.state;
+
+    const entities = this.getEntities();
+    const numRows = entities.length;
+
+    return (
+      <div className="TableEditor__contents">
+      {/*
+        // @ts-ignore */}
+        <Table
+          numRows={numRows}
+          enableGhostCells={false}
+          selectionModes={SelectionModes.ROWS_AND_CELLS}
+          enableMultipleSelection={true}
+          defaultRowHeight={24}
+        >
+          {visibleProps.map(property => <Column
+            key={property.qname}
+            id={property.qname}
+            name={property.label}
+            cellRenderer={(i) => {
+              const entity = entities[i];
+              return (
+                <Cell>
+                  <PropertyValues values={entity.getProperty(property)} prop={property} />
+                </Cell>
+              );
+            }}
+          />)}
+        </Table>
+      </div>
+    );
+  }
+
+  render() {
+    const { writeable } = this.props;
+
+    if (writeable) {
+      return this.renderWriteable();
+    } else {
+      return this.renderReadonly();
+    }
   }
 }

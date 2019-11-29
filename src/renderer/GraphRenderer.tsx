@@ -15,6 +15,7 @@ interface IGraphRendererProps extends IGraphContext {
   animateTransition: boolean,
   actions: any,
   interactionMode: string
+  writeable: boolean
 }
 
 export class GraphRenderer extends React.Component<IGraphRendererProps> {
@@ -58,7 +59,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   renderGroupings() {
-    const { actions, interactionMode, layout } = this.props;
+    const { actions, interactionMode, layout, writeable } = this.props;
     const groupings = layout.getGroupings();
     return groupings.map((grouping: Grouping) => {
       const vertices = grouping.getVertices()
@@ -75,13 +76,14 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
           dropSelection={this.dropSelection}
           interactionMode={interactionMode}
           actions={actions}
+          writeable={writeable}
         />
       )
     })
   }
 
   renderEdges() {
-    const { layout, svgRef } = this.props;
+    const { layout, svgRef, writeable } = this.props;
 
     return layout.getEdges().filter((edge) => !edge.isHidden()).map((edge) => {
       const vertex1 = layout.vertices.get(edge.sourceId);
@@ -97,12 +99,13 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
           selectEdge={this.selectElement}
           dragSelection={this.dragSelection}
           dropSelection={this.dropSelection}
+          writeable={writeable}
         />
     })
   }
 
   renderVertices() {
-    const { layout, actions, interactionMode } = this.props;
+    const { layout, actions, interactionMode, writeable } = this.props;
     const vertices = layout.getVertices().filter((vertex) => !vertex.isHidden())
 
     return vertices.map((vertex: Vertex) =>
@@ -116,6 +119,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
         dropSelection={this.dropSelection}
         interactionMode={interactionMode}
         actions={actions}
+        writeable={writeable}
       />
     )
   }
@@ -128,17 +132,20 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   render(){
-    const { svgRef, layout, viewport, animateTransition, actions, interactionMode } = this.props;
+    const { svgRef, layout, viewport, animateTransition, actions, interactionMode, writeable } = this.props;
 
     return (
-      <Canvas svgRef={svgRef}
-              viewport={viewport}
-              selectArea={this.selectArea}
-              interactionMode={interactionMode}
-              clearSelection={this.clearSelection}
-              updateViewport={this.props.updateViewport}
-              animateTransition={animateTransition}
-              actions={actions}>
+      <Canvas
+        svgRef={svgRef}
+        viewport={viewport}
+        selectArea={this.selectArea}
+        interactionMode={interactionMode}
+        clearSelection={this.clearSelection}
+        updateViewport={this.props.updateViewport}
+        animateTransition={animateTransition}
+        actions={actions}
+        writeable={writeable}
+      >
         {interactionMode === modes.EDGE_DRAW &&
           <EdgeDrawer
             svgRef={svgRef}

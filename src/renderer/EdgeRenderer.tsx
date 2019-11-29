@@ -16,6 +16,7 @@ interface IEdgeRendererProps {
   selectEdge: (edge: Edge, additional?: boolean) => any,
   dragSelection: (offset: Point, initialPosition?: Point) => any,
   dropSelection: () => any
+  writeable: boolean
 }
 
 const linkCurveOffset = 30;
@@ -59,7 +60,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
 
 
   render() {
-    const { edge, vertex1, vertex2, config, highlight, dragSelection, dropSelection, svgRef } = this.props;
+    const { edge, vertex1, vertex2, config, highlight, dragSelection, dropSelection, svgRef, writeable } = this.props;
     if (!vertex1 || !vertex2 || vertex1.hidden || vertex2.hidden) {
       return null;
     }
@@ -105,7 +106,9 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
           dragSelection={dragSelection}
           dropSelection={dropSelection}
           outlineColor={config.EDGE_COLOR}
-          textColor={config.EDGE_COLOR}/>
+          textColor={config.EDGE_COLOR}
+          writeable={writeable}
+        />
       )}
     </React.Fragment>
   }

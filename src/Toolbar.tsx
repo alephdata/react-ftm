@@ -23,7 +23,8 @@ import './Toolbar.scss';
 interface IToolbarProps extends IGraphContext {
   actions: any,
   history: History,
-  interactionMode: string
+  interactionMode: string,
+  showEditingButtons: boolean,
 }
 
 interface IToolbarState {
@@ -69,7 +70,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
   }
 
   render() {
-    const { layout, viewport, updateLayout, updateViewport, actions, history, interactionMode } = this.props
+    const { layout, viewport, updateLayout, updateViewport, actions, history, interactionMode, showEditingButtons } = this.props
     const vertices = this.props.layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
@@ -87,78 +88,82 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
       </div>
       <div className="Toolbar__middle">
         <ButtonGroup>
-            <Tooltip content="Undo">
-              <AnchorButton icon="undo" onClick={() => actions.navigateHistory(History.BACK)} disabled={!history.canGoTo(History.BACK)} />
-            </Tooltip>
-            <Tooltip content="Redo">
-              <AnchorButton icon="redo" onClick={() => actions.navigateHistory(History.FORWARD)} disabled={!history.canGoTo(History.FORWARD)}/>
-            </Tooltip>
-            <Divider/>
-            <Tooltip content="Add entities">
-              <Button icon="new-object" onClick={() => this.onSetInteractionMode(modes.VERTEX_CREATE)}/>
-            </Tooltip>
-            <Tooltip content="Add links">
-              <AnchorButton icon="new-link" onClick={() => this.onSetInteractionMode(modes.EDGE_CREATE)} disabled={!canAddEdge} />
-            </Tooltip>
-            <Tooltip content="Delete selection">
-              <AnchorButton icon="graph-remove" onClick={actions.removeSelection} disabled={!hasSelection} />
-            </Tooltip>
-            <Divider/>
-            <Tooltip content="Group selected">
-              <AnchorButton icon="group-objects" onClick={() => this.onSetInteractionMode(modes.GROUPING_CREATE)} disabled={!canGroupSelection} />
-            </Tooltip>
-            <Tooltip content="Ungroup selected">
-              <AnchorButton icon="ungroup-objects" onClick={actions.ungroupSelection} disabled={!canUngroupSelection} />
-            </Tooltip>
-            <Divider/>
-            {interactionMode === modes.PAN &&
-              <Tooltip content="Toggle select mode">
-                <Button icon="select" onClick={() => this.onSetInteractionMode(modes.SELECT)}/>
+          {showEditingButtons && (
+            <>
+              <Tooltip content="Undo">
+                <AnchorButton icon="undo" onClick={() => actions.navigateHistory(History.BACK)} disabled={!history.canGoTo(History.BACK)} />
               </Tooltip>
-            }
-            {interactionMode !== modes.PAN &&
-              <Tooltip content="Toggle pan mode">
-                <Button icon="hand" onClick={() => this.onSetInteractionMode(modes.PAN)}/>
+              <Tooltip content="Redo">
+                <AnchorButton icon="redo" onClick={() => actions.navigateHistory(History.FORWARD)} disabled={!history.canGoTo(History.FORWARD)}/>
               </Tooltip>
-            }
-            <Divider/>
-            <Tooltip content="Align horizontal">
-              <AnchorButton icon="drag-handle-horizontal" disabled={disableLayoutButtons} onClick={() => {
-                updateLayout(alignHorizontal(layout), {modifyHistory:true})
-              }} />
-            </Tooltip>
-            <Tooltip content="Align vertical">
-              <AnchorButton icon="drag-handle-vertical" disabled={disableLayoutButtons} onClick={() => {
-                updateLayout(alignVertical(layout), {modifyHistory:true})
-              }} />
-            </Tooltip>
-            <Tooltip content="Arrange as circle">
-              <AnchorButton icon="layout-circle" disabled={disableLayoutButtons} onClick={() => {
-                updateLayout(alignCircle(layout), {modifyHistory:true})
-              }} />
-            </Tooltip>
-            <Tooltip content="Arrange as hierarchy">
-              <AnchorButton icon="layout-hierarchy" disabled={disableLayoutButtons} onClick={() => {
-                updateLayout(arrangeTree(layout), {modifyHistory:true})
-              }} />
-            </Tooltip>
-            <Divider/>
-            <Tooltip content="View as table">
-              <AnchorButton icon="th" onClick={actions.toggleTableView} />
-            </Tooltip>
-            <Divider/>
-            <Tooltip content="Export as SVG">
-              <AnchorButton icon="export" onClick={actions.exportSvg} />
-            </Tooltip>
-          </ButtonGroup>
+              <Divider/>
+              <Tooltip content="Add entities">
+                <Button icon="new-object" onClick={() => this.onSetInteractionMode(modes.VERTEX_CREATE)}/>
+              </Tooltip>
+              <Tooltip content="Add links">
+                <AnchorButton icon="new-link" onClick={() => this.onSetInteractionMode(modes.EDGE_CREATE)} disabled={!canAddEdge} />
+              </Tooltip>
+              <Tooltip content="Delete selection">
+                <AnchorButton icon="graph-remove" onClick={actions.removeSelection} disabled={!hasSelection} />
+              </Tooltip>
+              <Divider/>
+              <Tooltip content="Group selected">
+                <AnchorButton icon="group-objects" onClick={() => this.onSetInteractionMode(modes.GROUPING_CREATE)} disabled={!canGroupSelection} />
+              </Tooltip>
+              <Tooltip content="Ungroup selected">
+                <AnchorButton icon="ungroup-objects" onClick={actions.ungroupSelection} disabled={!canUngroupSelection} />
+              </Tooltip>
+              <Divider/>
+              {interactionMode === modes.PAN &&
+                <Tooltip content="Toggle select mode">
+                  <Button icon="select" onClick={() => this.onSetInteractionMode(modes.SELECT)}/>
+                </Tooltip>
+              }
+              {interactionMode !== modes.PAN &&
+                <Tooltip content="Toggle pan mode">
+                  <Button icon="hand" onClick={() => this.onSetInteractionMode(modes.PAN)}/>
+                </Tooltip>
+              }
+              <Divider/>
+              <Tooltip content="Align horizontal">
+                <AnchorButton icon="drag-handle-horizontal" disabled={disableLayoutButtons} onClick={() => {
+                  updateLayout(alignHorizontal(layout), {modifyHistory:true})
+                }} />
+              </Tooltip>
+              <Tooltip content="Align vertical">
+                <AnchorButton icon="drag-handle-vertical" disabled={disableLayoutButtons} onClick={() => {
+                  updateLayout(alignVertical(layout), {modifyHistory:true})
+                }} />
+              </Tooltip>
+              <Tooltip content="Arrange as circle">
+                <AnchorButton icon="layout-circle" disabled={disableLayoutButtons} onClick={() => {
+                  updateLayout(alignCircle(layout), {modifyHistory:true})
+                }} />
+              </Tooltip>
+              <Tooltip content="Arrange as hierarchy">
+                <AnchorButton icon="layout-hierarchy" disabled={disableLayoutButtons} onClick={() => {
+                  updateLayout(arrangeTree(layout), {modifyHistory:true})
+                }} />
+              </Tooltip>
+              <Divider/>
+            </>
+          )}
+          <Tooltip content="View as table">
+            <AnchorButton icon="th" onClick={actions.toggleTableView} />
+          </Tooltip>
+          <Divider/>
+          <Tooltip content="Export as SVG">
+            <AnchorButton icon="export" onClick={actions.exportSvg} />
+          </Tooltip>
+        </ButtonGroup>
+      </div>
+      {showSearch &&
+        <div className="Toolbar__right">
+          <form style={{minWidth:'20vw'}} onSubmit={this.onSubmitSearch}>
+            <InputGroup leftIcon="search" onChange={this.onChangeSearch} value={this.state.searchText} />
+          </form>
         </div>
-        {showSearch &&
-          <div className="Toolbar__right">
-            <form style={{minWidth:'20vw'}} onSubmit={this.onSubmitSearch}>
-              <InputGroup leftIcon="search" onChange={this.onChangeSearch} value={this.state.searchText} />
-            </form>
-          </div>
-        }
+      }
     </div>
   }
 }
