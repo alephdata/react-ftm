@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Button, ButtonGroup, Classes, Drawer, Position, Tooltip } from '@blueprintjs/core';
 import { GraphConfig } from './GraphConfig';
+import { GraphLogo } from './GraphLogo';
 import { GraphRenderer } from './renderer/GraphRenderer'
 import { GraphLayout, Rectangle, Point } from './layout';
 import { Viewport } from './Viewport';
@@ -19,6 +20,7 @@ interface IVisGraphProps {
   updateViewport: (viewport:Viewport) => void
   exportSvg: (data: any) => void
   writeable: boolean
+  logo?: GraphLogo
 }
 
 interface IVisGraphState {
@@ -155,7 +157,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   render() {
-    const { config, layout, viewport, writeable } = this.props;
+    const { config, layout, logo, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, tableView } = this.state;
     const vertices = layout.getSelectedVertices()
     const [sourceVertex, targetVertex] = vertices;
@@ -189,6 +191,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               history={this.history}
               interactionMode={this.state.interactionMode}
               showEditingButtons={writeable}
+              logo={logo}
               {...layoutContext}
             />
           </div>

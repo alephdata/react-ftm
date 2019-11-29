@@ -1,5 +1,4 @@
 import * as React from 'react'
-import logo from './static/logo.png';
 import { modes } from './interactionModes'
 
 import {
@@ -13,7 +12,9 @@ import {
   InputGroup,
   Intent,
 } from "@blueprintjs/core"
-import { IGraphContext} from './GraphContext'
+import { IGraphContext } from './GraphContext';
+import { GraphLogo } from './GraphLogo';
+
 import { filterVerticesByText } from './filters';
 import { GraphLayout, Rectangle, alignCircle, alignHorizontal, alignVertical, arrangeTree } from "./layout";
 import { History } from './History';
@@ -25,6 +26,7 @@ interface IToolbarProps extends IGraphContext {
   history: History,
   interactionMode: string,
   showEditingButtons: boolean,
+  logo?: GraphLogo,
 }
 
 interface IToolbarState {
@@ -70,7 +72,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
   }
 
   render() {
-    const { layout, viewport, updateLayout, updateViewport, actions, history, interactionMode, showEditingButtons } = this.props
+    const { layout, viewport, updateLayout, updateViewport, actions, history, interactionMode, showEditingButtons, logo } = this.props
     const vertices = this.props.layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
@@ -80,12 +82,14 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     const showSearch = layout.vertices && layout.vertices.size > 0
 
     return <div className="Toolbar">
-      <div className="Toolbar__left">
-        <div className="Toolbar__logo">
-          <img className="Toolbar__logo__image" src={logo} alt="OCCRP Data"></img>
-          <h5 className="Toolbar__logo__text">VIS Desktop</h5>
+      {logo && (
+        <div className="Toolbar__left">
+          <div className="Toolbar__logo">
+            {logo.image && <img className="Toolbar__logo__image" src={logo.image} alt="OCCRP Data"></img>}
+            {logo.text && <h5 className="Toolbar__logo__text">{logo.text}</h5>}
+          </div>
         </div>
-      </div>
+      )}
       <div className="Toolbar__middle">
         <ButtonGroup>
           {showEditingButtons && (
