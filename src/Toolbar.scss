@@ -19,6 +19,7 @@ $width-right: $sidebar-width;
 
   &__middle {
     flex: 2 1;
+    overflow-x: hidden;
   }
 
   &__right {

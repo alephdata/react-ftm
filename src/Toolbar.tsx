@@ -2,15 +2,19 @@ import * as React from 'react'
 import { modes } from './interactionModes'
 
 import {
-  Button,
   AnchorButton,
+  Boundary,
+  Button,
   ButtonGroup,
-  Divider,
-  Tooltip,
-  Colors,
   Classes,
+  Colors,
+  Divider,
   InputGroup,
   Intent,
+  Menu,
+  OverflowList,
+  Popover,
+  Tooltip,
 } from "@blueprintjs/core"
 import { IGraphContext } from './GraphContext';
 import { GraphLogo } from './GraphLogo';
@@ -36,6 +40,8 @@ export class Toolbar extends React.Component<IToolbarProps> {
     this.onSetInteractionMode = this.onSetInteractionMode.bind(this)
     this.onChangeSearch = this.onChangeSearch.bind(this)
     this.onSubmitSearch = this.onSubmitSearch.bind(this)
+    this.overflowListRenderer = this.overflowListRenderer.bind(this)
+
   }
 
   onSetInteractionMode(newMode: string) {
@@ -63,6 +69,50 @@ export class Toolbar extends React.Component<IToolbarProps> {
     event.stopPropagation()
   }
 
+  visibleItemRenderer(buttonGroup:any, i:any) {
+    return (
+      <ButtonGroup key={i}>
+        {i !== 0 && <Divider />}
+        {buttonGroup.map(({ disabled, helpText, icon, onClick }: any) => (
+          <Tooltip content={helpText} key={icon}>
+            <AnchorButton icon={icon} onClick={onClick} disabled={disabled} />
+          </Tooltip>
+        ))}
+      </ButtonGroup>
+    );
+  }
+
+  overflowItemRenderer(buttonGroup:any, i:any) {
+    return (
+      <>
+        {i !== 0 && <Menu.Divider />}
+        {buttonGroup.map(({ disabled, helpText, icon, onClick }: any) => (
+          <Menu.Item
+            icon={icon}
+            key={icon}
+            onClick={onClick}
+            text={helpText}
+            disabled={disabled}
+          />
+        ))}
+      </>
+    );
+  }
+
+  overflowListRenderer(overflowItems: any) {
+    const menuContent = overflowItems.map((item:any, i:any) => this.overflowItemRenderer(item, i));
+    return (
+      <Popover
+        content={<Menu>{menuContent}</Menu>}
+        position="bottom"
+        minimal
+        popoverClassName="bp3-dark"
+      >
+        <Button icon="double-chevron-right" text="More..." />
+      </Popover>
+    );
+  }
+
   render() {
     const { layout, viewport, updateLayout, updateViewport, actions, history, interactionMode, showEditingButtons, logo } = this.props
     const vertices = this.props.layout.getSelectedVertices()
@@ -72,6 +122,112 @@ export class Toolbar extends React.Component<IToolbarProps> {
     const canUngroupSelection = layout.getSelectedGroupings().length >= 1
     const disableLayoutButtons = layout.selection && layout.selection.length <= 1;
     const showSearch = layout.vertices && layout.vertices.size > 0
+
+    const editingButtons = [
+      [
+        {
+          helpText: "Undo",
+          icon: "undo",
+          onClick: () => actions.navigateHistory(History.BACK),
+          disabled: !history.canGoTo(History.BACK),
+        },
+        {
+          helpText: "Redo",
+          icon: "redo",
+          onClick: () => actions.navigateHistory(History.FORWARD),
+          disabled: !history.canGoTo(History.FORWARD),
+        }
+      ],
+      [
+        {
+          helpText: "Add entities",
+          icon: "new-object",
+          onClick: () => this.onSetInteractionMode(modes.VERTEX_CREATE),
+        },
+        {
+          helpText: "Add links",
+          icon: "new-link",
+          onClick: () => this.onSetInteractionMode(modes.EDGE_CREATE),
+          disabled: !canAddEdge,
+        },
+        {
+          helpText: "Delete selection",
+          icon: "graph-remove",
+          onClick: () => actions.removeSelection,
+          disabled: !hasSelection,
+        }
+      ],
+      [
+        {
+          helpText: "Group selected",
+          icon: "group-objects",
+          onClick: () => this.onSetInteractionMode(modes.GROUPING_CREATE),
+          disabled: !canGroupSelection,
+        },
+        {
+          helpText: "Ungroup selected",
+          icon: "ungroup-objects",
+          onClick: () => actions.ungroupSelection,
+          disabled: !canUngroupSelection,
+        }
+      ],
+      [
+        interactionMode === modes.PAN
+        ? {
+          helpText: "Toggle select mode",
+          icon: "select",
+          onClick: () => this.onSetInteractionMode(modes.SELECT),
+        }
+        : {
+          helpText: "Toggle pan mode",
+          icon: "hand",
+          onClick: () => this.onSetInteractionMode(modes.PAN),
+        }
+      ],
+      [
+        {
+          helpText: "Align horizontal",
+          icon: "drag-handle-horizontal",
+          disabled: disableLayoutButtons,
+          onClick: () => updateLayout(alignHorizontal(layout), {modifyHistory:true}),
+        },
+        {
+          helpText: "Align vertical",
+          icon: "drag-handle-vertical",
+          disabled: disableLayoutButtons,
+          onClick: () => updateLayout(alignVertical(layout), {modifyHistory:true}),
+        },
+        {
+          helpText: "Arrange as circle",
+          icon: "layout-circle",
+          disabled: disableLayoutButtons,
+          onClick: () => updateLayout(alignCircle(layout), {modifyHistory:true}),
+        },
+        {
+          helpText: "Arrange as hierarchy",
+          icon: "layout-hierarchy",
+          disabled: disableLayoutButtons,
+          onClick: () => updateLayout(arrangeTree(layout), {modifyHistory:true}),
+        }
+      ]
+    ];
+
+    const otherButtons = [
+      [
+        {
+          helpText: "View as table",
+          icon: "th",
+          onClick: () => actions.toggleTableView,
+        }
+      ],
+      [
+        {
+          helpText: "Export as SVG",
+          icon: "export",
+          onClick: () => actions.exportSvg,
+        }
+      ]
+    ];
 
     return <div className="Toolbar">
       {logo && (
@@ -83,75 +239,12 @@ export class Toolbar extends React.Component<IToolbarProps> {
         </div>
       )}
       <div className="Toolbar__middle">
-        <ButtonGroup>
-          {showEditingButtons && (
-            <>
-              <Tooltip content="Undo">
-                <AnchorButton icon="undo" onClick={() => actions.navigateHistory(History.BACK)} disabled={!history.canGoTo(History.BACK)} />
-              </Tooltip>
-              <Tooltip content="Redo">
-                <AnchorButton icon="redo" onClick={() => actions.navigateHistory(History.FORWARD)} disabled={!history.canGoTo(History.FORWARD)}/>
-              </Tooltip>
-              <Divider/>
-              <Tooltip content="Add entities">
-                <Button icon="new-object" onClick={() => this.onSetInteractionMode(modes.VERTEX_CREATE)}/>
-              </Tooltip>
-              <Tooltip content="Add links">
-                <AnchorButton icon="new-link" onClick={() => this.onSetInteractionMode(modes.EDGE_CREATE)} disabled={!canAddEdge} />
-              </Tooltip>
-              <Tooltip content="Delete selection">
-                <AnchorButton icon="graph-remove" onClick={actions.removeSelection} disabled={!hasSelection} />
-              </Tooltip>
-              <Divider/>
-              <Tooltip content="Group selected">
-                <AnchorButton icon="group-objects" onClick={() => this.onSetInteractionMode(modes.GROUPING_CREATE)} disabled={!canGroupSelection} />
-              </Tooltip>
-              <Tooltip content="Ungroup selected">
-                <AnchorButton icon="ungroup-objects" onClick={actions.ungroupSelection} disabled={!canUngroupSelection} />
-              </Tooltip>
-              <Divider/>
-              {interactionMode === modes.PAN &&
-                <Tooltip content="Toggle select mode">
-                  <Button icon="select" onClick={() => this.onSetInteractionMode(modes.SELECT)}/>
-                </Tooltip>
-              }
-              {interactionMode !== modes.PAN &&
-                <Tooltip content="Toggle pan mode">
-                  <Button icon="hand" onClick={() => this.onSetInteractionMode(modes.PAN)}/>
-                </Tooltip>
-              }
-              <Divider/>
-              <Tooltip content="Align horizontal">
-                <AnchorButton icon="drag-handle-horizontal" disabled={disableLayoutButtons} onClick={() => {
-                  updateLayout(alignHorizontal(layout), {modifyHistory:true})
-                }} />
-              </Tooltip>
-              <Tooltip content="Align vertical">
-                <AnchorButton icon="drag-handle-vertical" disabled={disableLayoutButtons} onClick={() => {
-                  updateLayout(alignVertical(layout), {modifyHistory:true})
-                }} />
-              </Tooltip>
-              <Tooltip content="Arrange as circle">
-                <AnchorButton icon="layout-circle" disabled={disableLayoutButtons} onClick={() => {
-                  updateLayout(alignCircle(layout), {modifyHistory:true})
-                }} />
-              </Tooltip>
-              <Tooltip content="Arrange as hierarchy">
-                <AnchorButton icon="layout-hierarchy" disabled={disableLayoutButtons} onClick={() => {
-                  updateLayout(arrangeTree(layout), {modifyHistory:true})
-                }} />
-              </Tooltip>
-              <Divider/>
-            </>
-          )}
-          <Tooltip content="View as table">
-            <AnchorButton icon="th" onClick={actions.toggleTableView} />
-          </Tooltip>
-          <Divider/>
-          <Tooltip content="Export as SVG">
-            <AnchorButton icon="export" onClick={actions.exportSvg} />
-          </Tooltip>
-        </ButtonGroup>
+        <OverflowList
+          items={showEditingButtons ? [...editingButtons, ...otherButtons] : otherButtons}
+          collapseFrom={Boundary.END}
+          visibleItemRenderer={this.visibleItemRenderer}
+          overflowRenderer={this.overflowListRenderer}
+        />
       </div>
       {showSearch &&
         <div className="Toolbar__right">

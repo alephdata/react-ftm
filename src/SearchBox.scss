@@ -9,6 +9,11 @@
     display: none;
     @include medium {
       display: table-cell;
+      margin-right: -10px;
+    }
+
+    .bp3-icon {
+      margin: auto !important;
     }
   }
 
