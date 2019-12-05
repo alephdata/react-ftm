@@ -1,0 +1,27 @@
+@import "src/variables.scss";
+
+.SearchBox {
+  @include medium {
+    display: table;
+  }
+
+  &__mobile-toggle {
+    display: none;
+    @include medium {
+      display: table-cell;
+    }
+  }
+
+  &__input {
+    overflow-x: hidden;
+    transition: max-width 500ms ease-in-out;
+    @include medium {
+      display: table-cell;
+      max-width: 0;
+    }
+
+    &.expanded {
+      max-width: 1000px;
+    }
+  }
+}

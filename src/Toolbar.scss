@@ -25,6 +25,11 @@ $width-right: $sidebar-width;
     width: $width-right;
     max-width: $width-right;
     padding: 5px $sidebar-gutter;
+
+    @include medium {
+      width: auto;
+      max-width: none;
+    }
   }
 
   &__logo {

@@ -1,0 +1,54 @@
+import * as React from 'react'
+import { Button, InputGroup } from "@blueprintjs/core"
+import c from 'classnames';
+
+import './SearchBox.scss';
+
+
+interface ISearchBoxProps {
+  onChangeSearch: (searchText:string) => void
+  onSubmitSearch: (event: React.FormEvent) => void
+}
+
+interface ISearchBoxState {
+  searchText: string
+  mobileExpanded: boolean
+}
+
+export class SearchBox extends React.Component<ISearchBoxProps, ISearchBoxState> {
+  state: ISearchBoxState = {
+    searchText: '',
+    mobileExpanded: false,
+  }
+
+  constructor(props: Readonly<ISearchBoxProps>) {
+    super(props);
+    this.onChangeSearch = this.onChangeSearch.bind(this)
+    this.toggleMobileExpanded = this.toggleMobileExpanded.bind(this)
+  }
+
+  onChangeSearch(event: React.FormEvent<HTMLInputElement>) {
+    const searchText = event.currentTarget.value.trim();
+    this.setState({searchText});
+    this.props.onChangeSearch(searchText);
+  }
+
+  toggleMobileExpanded() {
+    this.setState(({mobileExpanded}) => ({ mobileExpanded: !mobileExpanded}));
+  }
+
+  render() {
+    const { onSubmitSearch } = this.props;
+    const { mobileExpanded, searchText } = this.state;
+    return (
+      <div className="SearchBox">
+        <div className={c('SearchBox__input', { expanded: mobileExpanded })}>
+          <form onSubmit={onSubmitSearch}>
+            <InputGroup leftIcon="search" onChange={this.onChangeSearch} value={searchText} />
+          </form>
+        </div>
+        <Button icon={mobileExpanded ? "cross" : "search"} className="SearchBox__mobile-toggle" onClick={this.toggleMobileExpanded} />
+      </div>
+    );
+  }
+}

@@ -14,6 +14,7 @@ import {
 } from "@blueprintjs/core"
 import { IGraphContext } from './GraphContext';
 import { GraphLogo } from './GraphLogo';
+import { SearchBox } from './SearchBox';
 
 import { filterVerticesByText } from './filters';
 import { GraphLayout, Rectangle, alignCircle, alignHorizontal, alignVertical, arrangeTree } from "./layout";
@@ -29,15 +30,7 @@ interface IToolbarProps extends IGraphContext {
   logo?: GraphLogo,
 }
 
-interface IToolbarState {
-  searchText: string
-}
-
-export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
-  state: IToolbarState = {
-    searchText: '',
-  }
-
+export class Toolbar extends React.Component<IToolbarProps> {
   constructor(props: Readonly<IToolbarProps>) {
     super(props);
     this.onSetInteractionMode = this.onSetInteractionMode.bind(this)
@@ -51,11 +44,10 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     updateLayout(layout)
   }
 
-  onChangeSearch(event: React.FormEvent<HTMLInputElement>) {
+  onChangeSearch(searchText: string) {
     const {layout, updateLayout} = this.props
-    const searchText = event.currentTarget.value
-    this.setState({searchText})
-    if (searchText.trim().length > 0) {
+
+    if (searchText.length > 0) {
       const predicate = filterVerticesByText(searchText)
       layout.selectVerticesByFilter(predicate)
     } else {
@@ -163,9 +155,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
       </div>
       {showSearch &&
         <div className="Toolbar__right">
-          <form onSubmit={this.onSubmitSearch}>
-            <InputGroup leftIcon="search" onChange={this.onChangeSearch} value={this.state.searchText} />
-          </form>
+          <SearchBox onChangeSearch={this.onChangeSearch} onSubmitSearch={this.onSubmitSearch} />
         </div>
       }
     </div>
