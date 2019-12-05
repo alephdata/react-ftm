@@ -1,7 +1,7 @@
 @import "src/variables.scss";
 
 .Sidebar {
-  padding: 15px;
+  padding: $sidebar-gutter;
   background-color: $black-80;
   min-height: 100%;
   box-shadow: $editor-box-shadow;

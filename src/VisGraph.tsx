@@ -12,6 +12,8 @@ import { History } from './History';
 import { EdgeCreateDialog, GroupingCreateDialog, VertexCreateDialog, TableEditor } from "./editor";
 import { modes } from './interactionModes'
 
+import './VisGraph.scss';
+
 interface IVisGraphProps {
   config: GraphConfig,
   layout: GraphLayout,
@@ -184,8 +186,8 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
     return (
       <GraphContext.Provider value={layoutContext}>
-        <div style={{flex: 1, display: 'flex', flexFlow: 'column', height: '100%'}} >
-          <div style={{flexGrow: 0, flexShrink: 1, flexBasis: 'auto'}}>
+        <div className="VisGraph">
+          <div className="VisGraph__toolbar">
             <Toolbar
               actions={actions}
               history={this.history}
@@ -195,9 +197,9 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               {...layoutContext}
             />
           </div>
-          <div style={{flex: 1, display: 'flex', flexFlow: 'row', flexGrow: 1, flexShrink: 1, flexBasis: '100%', overflow: 'hidden'}}>
-            <div style={{flexGrow: 4, flexShrink: 1, flexBasis: 'auto', position: 'relative', overflow:'hidden'}}>
-              <div style={{position: 'absolute', bottom: '5px', left: '10px'}}>
+          <div className="VisGraph__content">
+            <div className="VisGraph__content__inner-container">
+              <div className="VisGraph__button-group">
                 <ButtonGroup vertical>
                   <Tooltip content="Fit view to selection">
                     <Button icon="zoom-to-fit" onClick={this.fitToSelection}/>
@@ -229,16 +231,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               </Drawer>
             </div>
             {showSidebar &&
-              <div style={{
-                flexGrow: 1,
-                flexShrink: 1,
-                maxHeight: '100%',
-                boxSizing: 'border-box',
-                overflowY: 'scroll',
-                flexBasis: '15vw',
-                minWidth: '200px',
-                maxWidth: '260px'
-              }}>
+              <div className="VisGraph__sidebar">
                 <Sidebar {...layoutContext} />
               </div>
             }

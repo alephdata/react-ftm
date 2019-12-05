@@ -1,31 +1,30 @@
 @import "src/variables.scss";
 
-$width-left: 160px;
-$width-right: 150px;
+$width-right: $sidebar-width;
 
 .Toolbar {
   background-color: $editor-background-color;
-  display: table;
   width: 100%;
+  display: flex;
   // box-shadow: $editor-box-shadow;
 
   &__left, &__middle, &__right {
-    display: table-cell;
     vertical-align: middle;
     padding: 5px 10px;
   }
 
   &__left {
-    width: $width-left;
     border-right: 1px solid white;
   }
 
   &__middle {
-    width: calc(100% - #{$width-left + $width-right});
+    flex: 2 1;
   }
 
   &__right {
     width: $width-right;
+    max-width: $width-right;
+    padding: 5px $sidebar-gutter;
   }
 
   &__logo {
@@ -42,6 +41,11 @@ $width-right: 150px;
       margin: 0;
       vertical-align: middle;
       padding-left: 7px;
+      white-space: nowrap;
+
+      @include medium {
+        display: none;
+      }
     }
   }
 

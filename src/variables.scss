@@ -17,14 +17,36 @@ $editor-box-shadow: 0 2px 5px $gray4;
 
 $standard-border-radius: 5px;
 
-$sidebar-gutter: 10px;
+$sidebar-width: 270px;
+$sidebar-gutter: 20px;
 
 $text-color-main: white;
 $text-color-secondary: $light-gray1;
 $disabled-color: $black-60;
 
-
 .bp3-input {
   background: white !important;
   color: $black-80 !important;
+}
+
+$small: 500px;
+$medium: 850px;
+$large: 110px;
+
+@mixin small {
+  @media screen and (max-width: $small) {
+    @content;
+  }
+}
+
+@mixin medium {
+  @media screen and (max-width: $medium) {
+    @content;
+  }
+}
+
+@mixin large {
+  @media screen and (max-width: $large) {
+    @content;
+  }
 }

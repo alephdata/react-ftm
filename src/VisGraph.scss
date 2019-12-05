@@ -1,0 +1,45 @@
+@import "src/variables.scss";
+
+.VisGraph {
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+
+  &__toolbar {
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-basis: auto;
+  }
+
+  &__content {
+    flex: 1;
+    display: flex;
+    flex-flow: row;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 100%;
+    overflow: hidden;
+
+    &__inner-container {
+      flex-grow: 4;
+      flex-shrink: 1;
+      flex-basis: auto;
+      position: relative;
+      overflow: hidden;
+    }
+  }
+
+  &__sidebar {
+    max-height: 100%;
+    box-sizing: border-box;
+    overflow-y: scroll;
+    width: $sidebar-width;
+  }
+
+  &__button-group {
+    position: absolute;
+    bottom: 5px;
+    left: 10px
+  }
+}
