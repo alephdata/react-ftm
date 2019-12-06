@@ -153,7 +153,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
         {
           helpText: "Delete selection",
           icon: "graph-remove",
-          onClick: () => actions.removeSelection,
+          onClick: () => actions.removeSelection(),
           disabled: !hasSelection,
         }
       ],
@@ -217,14 +217,14 @@ export class Toolbar extends React.Component<IToolbarProps> {
         {
           helpText: "View as table",
           icon: "th",
-          onClick: () => actions.toggleTableView,
+          onClick: () => actions.toggleTableView(),
         }
       ],
       [
         {
           helpText: "Export as SVG",
           icon: "export",
-          onClick: () => actions.exportSvg,
+          onClick: () => actions.exportSvg(),
         }
       ]
     ];
