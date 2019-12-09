@@ -5,7 +5,9 @@ $width-right: $sidebar-width;
 .Toolbar {
   width: 100%;
   display: flex;
-  box-shadow: inset 0 0 0 1px rgba(16, 22, 26, 0.2), 0 0 1px rgba(16, 22, 26, 0), 0 1px 1px rgba(16, 22, 26, 0.4);
+  box-shadow: inset 0 0 0 1px rgba(16, 22, 26, 0.2),
+    0 0 1px rgba(16, 22, 26, 0),
+    0 1px 1px rgba(16, 22, 26, 0.4);
 
   &__left, &__middle, &__right {
     vertical-align: middle;
@@ -56,12 +58,12 @@ $width-right: $sidebar-width;
 
   &__overflow-list {
     .bp3-menu {
-      background-color: $black-70;
+      background-color: $black-70 !important;
     }
   }
   &__button-tip {
     .bp3-popover-content {
-      background-color: $black-70;
+      background-color: $black-70 !important;
     }
     .bp3-popover-arrow path {
       fill: $black-70;

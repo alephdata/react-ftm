@@ -73,7 +73,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
       <ButtonGroup key={i}>
         {i !== 0 && <Divider />}
         {buttonGroup.map(({ disabled, helpText, icon, onClick }: any) => (
-          <Tooltip content={helpText} key={icon} popoverClassName="Toolbar__button-tip" boundary="viewport">
+          <Tooltip content={helpText} key={icon} position="bottom" popoverClassName="Toolbar__button-tip" boundary="viewport">
             <AnchorButton icon={icon} onClick={onClick} disabled={disabled} />
           </Tooltip>
         ))}

@@ -5,7 +5,7 @@
     display: table;
   }
 
-  &__mobile-toggle {
+  &__mobile-toggle.bp3-button {
     display: none;
     @include medium {
       display: table-cell;
