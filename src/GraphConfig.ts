@@ -7,8 +7,7 @@ export class GraphConfig {
   public EDGE_COLOR: string = Colors.GRAY2
   public UNSELECTED_COLOR: string = Colors.GRAY5
   public VERTEX_RADIUS: number = 1
-  public contentPadding: string = '10px'
-  public BORDER_COLOR: string = Colors.LIGHT_GRAY1
+  public TOOLBAR_COLOR: string = Colors.DARK_GRAY1
 
   gridToPixel(point: Point): Point {
     return new Point(

@@ -41,7 +41,6 @@ export class Toolbar extends React.Component<IToolbarProps> {
     this.onChangeSearch = this.onChangeSearch.bind(this)
     this.onSubmitSearch = this.onSubmitSearch.bind(this)
     this.overflowListRenderer = this.overflowListRenderer.bind(this)
-
   }
 
   onSetInteractionMode(newMode: string) {
@@ -74,7 +73,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
       <ButtonGroup key={i}>
         {i !== 0 && <Divider />}
         {buttonGroup.map(({ disabled, helpText, icon, onClick }: any) => (
-          <Tooltip content={helpText} key={icon}>
+          <Tooltip content={helpText} key={icon} popoverClassName="Toolbar__button-tip" boundary="viewport">
             <AnchorButton icon={icon} onClick={onClick} disabled={disabled} />
           </Tooltip>
         ))}
@@ -106,7 +105,8 @@ export class Toolbar extends React.Component<IToolbarProps> {
         content={<Menu>{menuContent}</Menu>}
         position="bottom"
         minimal
-        popoverClassName="bp3-dark"
+        popoverClassName="bp3-dark Toolbar__overflow-list"
+        boundary="viewport"
       >
         <Button icon="double-chevron-right" text="More..." />
       </Popover>
@@ -229,7 +229,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
       ]
     ];
 
-    return <div className="Toolbar">
+    return <div className="Toolbar" style={{ backgroundColor: layout.config.TOOLBAR_COLOR }}>
       {logo && (
         <div className="Toolbar__left">
           <div className="Toolbar__logo">
