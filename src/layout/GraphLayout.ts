@@ -294,6 +294,7 @@ export class GraphLayout {
 
   dropSelection() {
     const vertices = this.getSelectedVertices();
+
     vertices.forEach((vertex) => {
       this.vertices.set(vertex.id, vertex.snapPosition(vertex.position))
       this.addVertexToGroupings(vertex)
@@ -351,8 +352,6 @@ export class GraphLayout {
       const area = grouping.getBoundingRect();
       if (area.contains(this.config.gridToPixel(vertex.position))) {
         this.groupings.set(grouping.id, grouping.addVertex(vertex))
-        this.clearSelection();
-        this.selectElement(grouping.getVertices());
       }
     })
   }
