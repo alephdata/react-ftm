@@ -229,7 +229,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
       ]
     ];
 
-    return <div className="Toolbar" style={{ backgroundColor: layout.config.TOOLBAR_COLOR }}>
+    return <div className="Toolbar" style={{ backgroundColor: layout.config.toolbarColor }}>
       {logo && (
         <div className="Toolbar__left">
           <div className="Toolbar__logo">
