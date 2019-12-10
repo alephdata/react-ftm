@@ -12,6 +12,7 @@ import { Sidebar } from './Sidebar';
 import { History } from './History';
 import { EdgeCreateDialog, GroupingCreateDialog, VertexCreateDialog, TableEditor } from "./editor";
 import { modes } from './interactionModes'
+import { filterVerticesByText } from './filters';
 
 import './VisGraph.scss';
 
@@ -60,6 +61,8 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.fitToSelection = this.fitToSelection.bind(this)
     this.navigateHistory = this.navigateHistory.bind(this);
     this.onZoom = this.onZoom.bind(this);
+    this.onChangeSearch = this.onChangeSearch.bind(this);
+    this.onSubmitSearch = this.onSubmitSearch.bind(this);
     this.removeSelection = this.removeSelection.bind(this)
     this.setInteractionMode = this.setInteractionMode.bind(this)
     this.toggleTableView = this.toggleTableView.bind(this)
@@ -74,6 +77,22 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       const newZoomLevel = viewport.zoomLevel * factor
       this.updateViewport(viewport.setZoom(newZoomLevel), {animate:true})
     }
+  }
+
+  onChangeSearch(searchText: string) {
+    const { layout } = this.props
+
+    if (searchText.length > 0) {
+      const predicate = filterVerticesByText(searchText)
+      layout.selectVerticesByFilter(predicate)
+    } else {
+      layout.clearSelection()
+    }
+    this.updateLayout(layout, {modifyHistory:true})
+  }
+
+  onSubmitSearch(event: React.FormEvent) {
+    this.fitToSelection();
   }
 
   updateLayout(layout: GraphLayout, {modifyHistory = false} = {}) {
@@ -127,7 +146,6 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.updateViewport(viewport.fitToRect(rect), {animate:true})
   }
 
-
   removeSelection() {
     const { layout } = this.props
     layout.removeSelection()
@@ -175,12 +193,13 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     const actions = {
       addVertexToPosition: this.addVertexToPosition,
       exportSvg: this.exportSvg,
-      fitToSelection: this.fitToSelection,
       navigateHistory: this.navigateHistory,
       removeSelection: this.removeSelection,
       setInteractionMode: this.setInteractionMode,
       toggleTableView: this.toggleTableView,
       ungroupSelection: this.ungroupSelection,
+      onChangeSearch: this.onChangeSearch,
+      onSubmitSearch: this.onSubmitSearch,
     };
 
     const showSidebar = writeable && layout.vertices && layout.vertices.size > 0;

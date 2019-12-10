@@ -38,8 +38,6 @@ export class Toolbar extends React.Component<IToolbarProps> {
   constructor(props: Readonly<IToolbarProps>) {
     super(props);
     this.onSetInteractionMode = this.onSetInteractionMode.bind(this)
-    this.onChangeSearch = this.onChangeSearch.bind(this)
-    this.onSubmitSearch = this.onSubmitSearch.bind(this)
     this.visibleItemRenderer = this.visibleItemRenderer.bind(this)
     this.overflowListRenderer = this.overflowListRenderer.bind(this)
   }
@@ -48,25 +46,6 @@ export class Toolbar extends React.Component<IToolbarProps> {
     const {layout, updateLayout, actions} = this.props
     actions.setInteractionMode(newMode)
     updateLayout(layout)
-  }
-
-  onChangeSearch(searchText: string) {
-    const {layout, updateLayout} = this.props
-
-    if (searchText.length > 0) {
-      const predicate = filterVerticesByText(searchText)
-      layout.selectVerticesByFilter(predicate)
-    } else {
-      layout.clearSelection()
-    }
-    updateLayout(layout, {modifyHistory:true})
-  }
-
-  onSubmitSearch(event: React.FormEvent) {
-    const {actions} = this.props
-    actions.fitToSelection()
-    event.preventDefault()
-    event.stopPropagation()
   }
 
   visibleItemRenderer(buttonGroup:any, i:any) {
@@ -258,7 +237,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
       </div>
       {showSearch &&
         <div className="Toolbar__search-container">
-          <SearchBox onChangeSearch={this.onChangeSearch} onSubmitSearch={this.onSubmitSearch} />
+          <SearchBox onChangeSearch={actions.onChangeSearch} onSubmitSearch={actions.onSubmitSearch} />
         </div>
       }
     </div>
