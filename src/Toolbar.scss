@@ -3,27 +3,49 @@
 $width-right: $sidebar-width;
 
 .Toolbar {
-  width: 100%;
   display: flex;
   box-shadow: inset 0 0 0 1px rgba(16, 22, 26, 0.2),
     0 0 1px rgba(16, 22, 26, 0),
     0 1px 1px rgba(16, 22, 26, 0.4);
 
-  &__left, &__middle, &__right {
-    vertical-align: middle;
-    padding: 5px 10px;
+  .toolbar-top & {
+    width: 100%;
+    flex-direction: row;
   }
 
-  &__left {
-    border-right: 1px solid white;
+  .toolbar-left & {
+    height: 100%;
+    width: 70px;
+    flex-direction: column;
   }
 
-  &__middle {
+  &__logo-container, &__main, &__search-container {
+    .toolbar-top & {
+      vertical-align: middle;
+      padding: 5px 10px;
+    }
+
+    .toolbar-left & {
+      padding: 5px;
+    }
+  }
+
+  &__logo-container {
+    .toolbar-top & {
+      border-right: 1px solid white;
+    }
+
+    .toolbar-left & {
+      border-bottom: 1px solid white;
+    }
+  }
+
+  &__main {
     flex: 2 1;
     overflow-x: hidden;
   }
 
-  &__right {
+  &__search-container {
     width: $width-right;
     max-width: $width-right;
     padding: 5px $sidebar-gutter;
@@ -32,15 +54,25 @@ $width-right: $sidebar-width;
       width: auto;
       max-width: none;
     }
+
+    .toolbar-left & {
+      display: none;
+    }
   }
 
   &__logo {
     display: table;
+
+    .toolbar-left & {
+      margin: 5px auto;
+    }
+
     &__image, &__text {
       display: table-cell;
     }
     &__image {
       height: 30px;
+
     }
     &__text {
       font-size: 16px;
@@ -53,14 +85,33 @@ $width-right: $sidebar-width;
       @include medium {
         display: none;
       }
+
+      .toolbar-left & {
+        display: none;
+      }
     }
   }
 
-  &__overflow-list {
+  &__button-group-container {
+    .toolbar-top & {
+      flex-direction: row;
+    }
+
+    .toolbar-left & {
+      flex-direction: column;
+    }
+
     .bp3-menu {
       background-color: $black-70 !important;
     }
   }
+
+  &__button-group {
+    .toolbar-left & {
+      flex-wrap: wrap;
+    }
+  }
+
   &__button-tip {
     .bp3-popover-content {
       background-color: $black-70 !important;

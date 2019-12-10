@@ -3,8 +3,15 @@
 .VisGraph {
   flex: 1;
   display: flex;
-  flex-flow: column;
   height: 100%;
+
+  &.toolbar-top {
+    flex-flow: column;
+  }
+
+  &.toolbar-left {
+    flex-flow: row;
+  }
 
   &__toolbar {
     flex-grow: 0;
@@ -41,6 +48,13 @@
   &__button-group {
     position: absolute;
     bottom: 5px;
-    left: 10px
+
+    .toolbar-top & {
+      left: 5px;
+    }
+
+    .toolbar-left & {
+      right: 5px;
+    }
   }
 }

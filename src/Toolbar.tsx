@@ -40,6 +40,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
     this.onSetInteractionMode = this.onSetInteractionMode.bind(this)
     this.onChangeSearch = this.onChangeSearch.bind(this)
     this.onSubmitSearch = this.onSubmitSearch.bind(this)
+    this.visibleItemRenderer = this.visibleItemRenderer.bind(this)
     this.overflowListRenderer = this.overflowListRenderer.bind(this)
   }
 
@@ -69,15 +70,21 @@ export class Toolbar extends React.Component<IToolbarProps> {
   }
 
   visibleItemRenderer(buttonGroup:any, i:any) {
+    const { config } = this.props.layout;
     return (
-      <ButtonGroup key={i}>
+      <>
         {i !== 0 && <Divider />}
-        {buttonGroup.map(({ disabled, helpText, icon, onClick }: any) => (
-          <Tooltip content={helpText} key={icon} position="bottom" popoverClassName="Toolbar__button-tip" boundary="viewport">
-            <AnchorButton icon={icon} onClick={onClick} disabled={disabled} />
-          </Tooltip>
-        ))}
-      </ButtonGroup>
+        <ButtonGroup
+          key={i}
+          className="Toolbar__button-group"
+        >
+          {buttonGroup.map(({ disabled, helpText, icon, onClick }: any) => (
+            <Tooltip content={helpText} key={icon} position="bottom" popoverClassName="Toolbar__button-tip" boundary="viewport">
+              <AnchorButton icon={icon} onClick={onClick} disabled={disabled} />
+            </Tooltip>
+          ))}
+        </ButtonGroup>
+      </>
     );
   }
 
@@ -172,15 +179,16 @@ export class Toolbar extends React.Component<IToolbarProps> {
         }
       ],
       [
-        interactionMode === modes.PAN
-        ? {
+        {
           helpText: "Toggle select mode",
           icon: "select",
+          disabled: interactionMode !== modes.PAN,
           onClick: () => this.onSetInteractionMode(modes.SELECT),
-        }
-        : {
+        },
+        {
           helpText: "Toggle pan mode",
           icon: "hand",
+          disabled: interactionMode === modes.PAN,
           onClick: () => this.onSetInteractionMode(modes.PAN),
         }
       ],
@@ -231,23 +239,25 @@ export class Toolbar extends React.Component<IToolbarProps> {
 
     return <div className="Toolbar" style={{ backgroundColor: layout.config.toolbarColor }}>
       {logo && (
-        <div className="Toolbar__left">
+        <div className="Toolbar__logo-container">
           <div className="Toolbar__logo">
             {logo.image && <img className="Toolbar__logo__image" src={logo.image} alt="OCCRP Data"></img>}
             {logo.text && <h5 className="Toolbar__logo__text">{logo.text}</h5>}
           </div>
         </div>
       )}
-      <div className="Toolbar__middle">
+      <div className="Toolbar__main">
         <OverflowList
           items={showEditingButtons ? [...editingButtons, ...otherButtons] : otherButtons}
           collapseFrom={Boundary.END}
           visibleItemRenderer={this.visibleItemRenderer}
           overflowRenderer={this.overflowListRenderer}
+          className="Toolbar__button-group-container"
+          observeParents
         />
       </div>
       {showSearch &&
-        <div className="Toolbar__right">
+        <div className="Toolbar__search-container">
           <SearchBox onChangeSearch={this.onChangeSearch} onSubmitSearch={this.onSubmitSearch} />
         </div>
       }

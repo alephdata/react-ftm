@@ -1,4 +1,5 @@
 import * as React from 'react'
+import c from 'classnames';
 import { Button, ButtonGroup, Classes, Drawer, Position, Tooltip } from '@blueprintjs/core';
 import { GraphConfig } from './GraphConfig';
 import { GraphLogo } from './GraphLogo';
@@ -186,7 +187,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
     return (
       <GraphContext.Provider value={layoutContext}>
-        <div className="VisGraph">
+        <div className={c('VisGraph', `toolbar-${config.toolbarPosition}`)}>
           <div className="VisGraph__toolbar">
             <Toolbar
               actions={actions}
