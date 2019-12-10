@@ -25,6 +25,7 @@ interface IVisGraphProps {
   exportSvg: (data: any) => void
   writeable: boolean
   logo?: GraphLogo
+  externalFilterText?: string
 }
 
 interface IVisGraphState {
@@ -71,6 +72,22 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.updateViewport = this.updateViewport.bind(this);
   }
 
+  componentDidMount() {
+    const { externalFilterText } = this.props;
+
+    if (externalFilterText) {
+      this.onChangeSearch(externalFilterText);
+    }
+  }
+
+  componentDidUpdate(prevProps: IVisGraphProps) {
+    const { externalFilterText } = this.props;
+
+    if (externalFilterText !== undefined && prevProps.externalFilterText !== externalFilterText) {
+      this.onChangeSearch(externalFilterText);
+    }
+  }
+
   onZoom(factor: number) {
     const { viewport } = this.props;
     if (viewport) {
@@ -83,16 +100,18 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     const { layout } = this.props
 
     if (searchText.length > 0) {
-      const predicate = filterVerticesByText(searchText)
-      layout.selectVerticesByFilter(predicate)
+      const predicate = filterVerticesByText(searchText);
+      layout.selectVerticesByFilter(predicate);
     } else {
-      layout.clearSelection()
+      layout.clearSelection();
     }
     this.updateLayout(layout, {modifyHistory:true})
   }
 
   onSubmitSearch(event: React.FormEvent) {
     this.fitToSelection();
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   updateLayout(layout: GraphLayout, {modifyHistory = false} = {}) {
