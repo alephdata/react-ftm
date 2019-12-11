@@ -94,7 +94,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
         popoverClassName="bp3-dark Toolbar__overflow-list"
         boundary="viewport"
       >
-        <Button icon="double-chevron-right" text="More..." />
+        <Button icon="double-chevron-right" />
       </Popover>
     );
   }
