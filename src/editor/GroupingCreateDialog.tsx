@@ -47,6 +47,7 @@ export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogP
 
     if (grouping) {
       layout.addGrouping(grouping);
+      layout.clearSelection();
       this.setState({label: ''})
       this.props.toggleDialog()
     }
