@@ -153,7 +153,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
         {
           helpText: "Ungroup selected",
           icon: "ungroup-objects",
-          onClick: () => actions.ungroupSelection,
+          onClick: () => actions.ungroupSelection(),
           disabled: !canUngroupSelection,
         }
       ],

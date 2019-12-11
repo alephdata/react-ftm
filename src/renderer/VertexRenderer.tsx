@@ -155,7 +155,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
             stroke={isEntity ? 'none' : vertexColor}
             onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}
             />
-          <VertexLabelRenderer center={labelPosition} label={vertex.label} onClick={this.onClick} color={vertexColor}/>
+          <VertexLabelRenderer center={labelPosition} label={vertex.label} type={vertex.type} onClick={this.onClick} color={vertexColor}/>
           <IconRenderer vertex={vertex}/>
         </g>
       </DraggableCore>

@@ -1,4 +1,7 @@
 import * as React from 'react'
+import {
+  DateComponent, Numeric, URL,
+} from '../types';
 import { Point } from '../layout/Point'
 
 interface IVertexLabelRendererProps {
@@ -6,11 +9,28 @@ interface IVertexLabelRendererProps {
   center: Point,
   onClick?: (e: any) => void,
   color?: string
+  type: string
 }
 
 export class VertexLabelRenderer extends React.PureComponent<IVertexLabelRendererProps> {
+  formatLabel() {
+    const { label, type } = this.props;
+
+    if (type === 'url') {
+      return <URL value={label} />;
+    }
+    if (type === 'date') {
+      return <DateComponent value={label} />;
+    }
+    if (type === 'number') {
+      return <Numeric num={Number(label)} />;
+    }
+
+    return label;
+  }
+
   render() {
-    const { label, center, onClick, color } = this.props;
+    const { center, onClick, color } = this.props;
     const style = {
       fontSize: "5px",
       fontFamily: "sans-serif",
@@ -26,7 +46,7 @@ export class VertexLabelRenderer extends React.PureComponent<IVertexLabelRendere
             pointerEvents="none"
             fill={color || 'black'}
             onClick={onClick}>
-        {label}
+        {this.formatLabel()}
       </text>
     );
   }
