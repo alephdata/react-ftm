@@ -7,5 +7,3 @@ export * from './Property';
 export * from './Schema';
 export * from './Count';
 export * from './URL';
-
-import './Icon';
