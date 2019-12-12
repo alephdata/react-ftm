@@ -70,7 +70,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
           config={layout.config}
           grouping={grouping}
           vertices={vertices}
-          selected={layout.isGroupingSelected(grouping) || layout.selection.length === 0}
+          selected={layout.isGroupingSelected(grouping) || layout.isGroupingMemberSelected(grouping) || layout.selection.length === 0}
           selectGrouping={this.selectElement}
           dragSelection={this.dragSelection}
           dropSelection={this.dropSelection}

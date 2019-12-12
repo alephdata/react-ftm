@@ -232,6 +232,14 @@ export class GraphLayout {
       .every(v => selectedVertices.includes(v));
   }
 
+  isGroupingMemberSelected(grouping: Grouping) {
+    const selectedVertices = this.selection
+      .filter((vertexId) => this.vertices.has(vertexId))
+
+    return grouping.getVertexIds()
+      .some(v => selectedVertices.includes(v));
+  }
+
   isEdgeHighlighted(edge: Edge): boolean {
     return this.isElementSelected(edge) || this.isEdgeSelectionAdjacent(edge)
   }
