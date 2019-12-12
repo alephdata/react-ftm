@@ -1,9 +1,12 @@
 @import "src/variables.scss";
+@import "src/themes.scss";
 
 .GroupingViewer {
   height: 100%;
   padding: 0;
-  color: white;
+  @include themify() {
+    color: themed('textColor');
+  }
 
   &__title {
     text-align: center;
@@ -12,25 +15,33 @@
     svg {
       fill: white;
     }
-    
+
     &__text {
       margin: 10px 0 0 !important;
-      color: white !important;
+      @include themify() {
+        color: themed('textColor');
+      }
     }
   }
 
 
   .bp3-divider {
     margin: 15px 0;
-    border-color: white;
+    @include themify() {
+      border-color: themed('textColor');
+    }
   }
 
   .bp3-button {
     color: white !important;
-    border: 1px solid white;
+    border: 1px solid;
     background: transparent !important;
     box-shadow: none !important;
     transition: all .1s ease-in;
+    @include themify() {
+      color: themed('textColor') !important;
+      border-color: themed('textColor');
+    }
 
     &:hover {
       background: $white !important;

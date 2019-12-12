@@ -43,18 +43,19 @@
     box-sizing: border-box;
     overflow-y: scroll;
     width: $sidebar-width;
+    box-shadow: $editor-box-shadow;
   }
 
   &__button-group {
     position: absolute;
-    bottom: 5px;
+    bottom: 10px;
 
     .toolbar-top & {
-      left: 5px;
+      left: 10px;
     }
 
     .toolbar-left & {
-      right: 5px;
+      right: 10px;
     }
   }
 }

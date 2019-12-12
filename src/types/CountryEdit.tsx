@@ -105,6 +105,7 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
           selectedItems={selectedOptions}
           openOnKeyDown
           resetOnSelect
+          fill
         />
       </ControlGroup>
     </FormGroup>

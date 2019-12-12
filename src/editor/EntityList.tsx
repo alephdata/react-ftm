@@ -38,7 +38,7 @@ export class EntityList extends React.PureComponent<IEntityListProps>{
             className="EntityList__item__right"
             onClick={() => onEntityRemoved(entity)}
           >
-            <Icon icon="cross" />
+            <Icon icon="cross" iconSize={14} />
           </div>
         )}
       </li>

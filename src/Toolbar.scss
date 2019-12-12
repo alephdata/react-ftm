@@ -1,12 +1,11 @@
 @import "src/variables.scss";
+@import "src/themes.scss";
 
 $width-right: $sidebar-width;
 
 .Toolbar {
   display: flex;
-  box-shadow: inset 0 0 0 1px rgba(16, 22, 26, 0.2),
-    0 0 1px rgba(16, 22, 26, 0),
-    0 1px 1px rgba(16, 22, 26, 0.4);
+  box-shadow: $editor-box-shadow;
 
   .toolbar-top & {
     width: 100%;
@@ -17,6 +16,10 @@ $width-right: $sidebar-width;
     height: 100%;
     width: 70px;
     flex-direction: column;
+  }
+
+  @include themify() {
+    background-color: themed('toolbarColor');
   }
 
   &__logo-container, &__main, &__search-container {
@@ -31,12 +34,16 @@ $width-right: $sidebar-width;
   }
 
   &__logo-container {
+    @include themify() {
+      border-color: themed('textColor') !important;
+    }
+
     .toolbar-top & {
-      border-right: 1px solid white;
+      border-right: 1px solid;
     }
 
     .toolbar-left & {
-      border-bottom: 1px solid white;
+      border-bottom: 1px solid;
     }
   }
 
@@ -76,11 +83,14 @@ $width-right: $sidebar-width;
     }
     &__text {
       font-size: 16px;
-      color: white;
       margin: 0;
       vertical-align: middle;
       padding-left: 7px;
       white-space: nowrap;
+
+      @include themify() {
+        color: themed('textColor');
+      }
 
       @include medium {
         display: none;
@@ -102,7 +112,9 @@ $width-right: $sidebar-width;
     }
 
     .bp3-menu {
-      background-color: $black-70 !important;
+      @include themify() {
+        background-color: themed('tooltipColor') !important;
+      }
     }
   }
 
@@ -114,10 +126,14 @@ $width-right: $sidebar-width;
 
   &__button-tip {
     .bp3-popover-content {
-      background-color: $black-70 !important;
+      @include themify() {
+        background-color: themed('tooltipColor') !important;
+      }
     }
     .bp3-popover-arrow path {
-      fill: $black-70;
+      @include themify() {
+        fill: themed('tooltipColor') !important;
+      }
     }
   }
 
@@ -127,18 +143,24 @@ $width-right: $sidebar-width;
 
     .bp3-icon {
       svg {
-        fill: white !important;
+        @include themify() {
+          fill: themed('textColor') !important;
+        }
       }
     }
     &.bp3-disabled {
       svg {
-        fill: $disabled-color !important;
+        @include themify() {
+          fill: themed('disabledColor') !important;
+        }
       }
     }
   }
 
   .bp3-divider {
-    border-color: $disabled-color;
+    @include themify() {
+      border-color: themed('disabledColor') !important;
+    }
   }
 
 

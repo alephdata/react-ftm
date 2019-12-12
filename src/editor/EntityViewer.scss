@@ -1,20 +1,27 @@
 @import "src/variables.scss";
+@import "src/themes.scss";
 
 .EntityViewer {
   height: 100%;
   padding: 0;
-  color: white;
+  @include themify() {
+    color: themed('textColor');
+  }
 
   &__title {
     text-align: center;
     padding: 25px 15px;
 
     svg {
-      fill: white;
+      @include themify() {
+       fill: themed('textColor');
+      }
     }
     &__text {
       margin: 10px 0 0 !important;
-      color: white !important;
+      @include themify() {
+        color: themed('textColor') !important;
+      }
     }
   }
 
@@ -23,12 +30,28 @@
 
   &__property-list-item {
     padding: 10px !important;
-    background-color: $black-70;
     border-radius: $standard-border-radius;
     cursor: pointer;
+    border: 1px solid;
+    transition: all .2s ease-in-out;
 
-    &:hover, &.active {
-      background-color: $black-60;
+    @include themify() {
+      background-color: themed('sidebarMenuColor');
+      border-color: themed('sidebarMenuColor');
+    }
+
+    &:hover {
+      @include themify() {
+        background-color: themed('sidebarMenuHoverColor');
+        border-color: themed('sidebarMenuHoverColor');
+      }
+    }
+
+    &.active {
+      @include themify() {
+        border: themed('sidebarMenuBorder');
+        background-color: themed('sidebarMenuItemActiveColor');
+      }
     }
 
     &.active {
@@ -42,20 +65,27 @@
     &__label {
       font-size: 11px;
       font-weight: bold;
-      color: white;
       text-transform: uppercase;
       margin-bottom: 5px;
+
+      @include themify() {
+        color: themed('textColor');
+      }
     }
 
     &__value {
       margin: 3px 0 !important;
       font-size: 14px;
-      color: white !important;
-      fill: white !important;
+      @include themify() {
+        color: themed('textColor') !important;
+        fill: themed('textColor') !important;
+      }
 
       a {
-        color: white !important;
         text-decoration: underline;
+        @include themify() {
+          color: themed('textColor') !important;
+        }
 
         &:hover {
           color: $black-20 !important;
@@ -66,18 +96,29 @@
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
-        border-bottom: 1px solid white !important;
+        border-bottom: 1px solid !important;
         border-radius: 0 !important;
         padding: 0 !important;
 
+        @include themify() {
+          border-color: themed('textColor') !important;
+        }
       }
 
       .bp3-input-ghost {
-        color: white !important;
+        @include themify() {
+          color: themed('textColor') !important;
+        }
+      }
+
+      .bp3-form-group {
+        margin-bottom: 0 !important;
       }
 
       .bp3-tag {
-        background: white !important;
+        @include themify() {
+          background: themed('tagColor') !important;
+        }
         color: $black-80 !important;
       }
 
@@ -86,12 +127,24 @@
       }
 
       .date-input input {
-        color: white !important;
+        @include themify() {
+          color: themed('textColor') !important;
+        }
       }
 
       .TextEdit__singleInput {
         & > .bp3-input, & > .bp3-input-action {
-          color: white !important;
+          @include themify() {
+            color: themed('textColor') !important;
+          }
+        }
+      }
+
+      .TextEdit__toggleMulti.bp3-button {
+        .bp3-icon {
+          @include themify() {
+            color: themed('textColor');
+          }
         }
       }
     }
@@ -99,27 +152,8 @@
 
   .bp3-divider {
     margin: 15px 0;
-    border-color: white;
-  }
-
-  .bp3-button {
-    color: white !important;
-    border: 1px solid white;
-    background: transparent !important;
-    box-shadow: none !important;
-    transition: all .1s ease-in;
-
-    &:hover {
-      background: $white !important;
-      color: $black-90 !important;
-
-      .bp3-icon {
-        color: $black-90;
-      }
-    }
-
-    .bp3-icon {
-      color: white;
+    @include themify() {
+      border-color: themed('textColor') !important;
     }
   }
 

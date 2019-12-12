@@ -225,7 +225,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
     return (
       <GraphContext.Provider value={layoutContext}>
-        <div className={c('VisGraph', `toolbar-${config.toolbarPosition}`)}>
+        <div className={c('VisGraph', `toolbar-${config.toolbarPosition}`, `theme-${config.editorTheme}`)}>
           <div className="VisGraph__toolbar">
             <Toolbar
               actions={actions}

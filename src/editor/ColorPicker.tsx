@@ -1,4 +1,5 @@
 import * as React from 'react'
+import c from 'classnames';
 import { Colors } from '@blueprintjs/core';
 import { Vertex } from '../layout'
 
@@ -26,13 +27,14 @@ export class ColorPicker extends React.PureComponent<IColorPickerProps> {
     const { currSelected, onSelect, swatchShape } = this.props
     const style = {
       backgroundColor: color,
-      border: currSelected === color ? '3px solid white' : '1px solid white'
+      borderColor: color,
     }
     return (
       <div key={color} className='ColorPicker__item' onClick={() => onSelect(color)}>
         <div
-          className={`ColorPicker__item__swatch ${swatchShape}`}
+          className={c('ColorPicker__item__swatch', swatchShape, { active: currSelected === color })}
           style={style}>
+          <div className="ColorPicker__item__swatch__inner" style={style} />
         </div>
       </div>
     )

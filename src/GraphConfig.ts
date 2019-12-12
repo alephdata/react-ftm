@@ -3,7 +3,7 @@ import { Point } from './layout/Point';
 
 export interface IGraphConfig {
   gridUnit?: number,
-  toolbarColor?: string,
+  editorTheme?: string,
   toolbarPosition?: string,
 }
 
@@ -13,12 +13,12 @@ export class GraphConfig {
   public UNSELECTED_COLOR: string = Colors.GRAY5
   public VERTEX_RADIUS: number = 1
   public gridUnit: number
-  public toolbarColor: string
+  public editorTheme: string
   public toolbarPosition: string
 
   constructor(props?: IGraphConfig) {
     this.gridUnit = props && props.gridUnit || 10
-    this.toolbarColor = props && props.toolbarColor || Colors.DARK_GRAY1
+    this.editorTheme = props && props.editorTheme || "dark"
     this.toolbarPosition = props && props.toolbarPosition || "top"
   }
 

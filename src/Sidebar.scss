@@ -1,9 +1,11 @@
 @import "src/variables.scss";
+@import "src/themes.scss";
 
 .Sidebar {
   padding: $sidebar-gutter;
-  background-color: $black-80;
   min-height: 100%;
-  box-shadow: $editor-box-shadow;
-  color: white;
+  @include themify() {
+    background-color: themed('sidebarColor');
+    color: themed('textColor');
+  }
 }

@@ -10,10 +10,16 @@ $black-30 : #afb9c1;
 $black-20 : #ccd6de;
 $black-10 : #eaf4fc;
 
+$white: #fff;
+$white-3: #FDFEFE;
+$white-5: #fafbfc;
+$white-10: #F5F8FA;
+
 $editor-background-color: $black-90;
 // $editor-border-color: $light-gray1;
 $editor-border-radius: 5px;
-$editor-box-shadow: 0 2px 5px $gray4;
+$editor-box-shadow: 0 0 0 1px rgba(16,22,26,.1),
+  0 2px 6px rgba(16,22,26,.2);
 
 $standard-border-radius: 5px;
 
