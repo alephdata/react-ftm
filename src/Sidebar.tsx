@@ -23,7 +23,7 @@ export class Sidebar extends React.Component<IGraphContext> {
 
   appendToLayout(entity: Entity) {
     const { layout } = this.props
-    layout.addEntity(entity);
+    layout.updateEntity(entity);
     this.props.updateLayout(layout, {modifyHistory:true})
   }
 

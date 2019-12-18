@@ -10,6 +10,7 @@ export * from './editor'
 export * from './renderer'
 export * from './types'
 
+export * from './EntityManager'
 export * from './filters'
 export * from './GraphConfig'
 export * from './GraphContext'

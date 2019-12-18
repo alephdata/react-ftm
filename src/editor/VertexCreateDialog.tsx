@@ -39,7 +39,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
 
   getSchema(): Schema {
     const { layout } = this.context as IGraphContext
-    return this.state.schema || layout.model.getSchema('Person')
+    return this.state.schema || layout.entityManager.model.getSchema('Person')
   }
 
   onSchemaSelect(schema: Schema) {
@@ -53,10 +53,16 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
     const { layout, updateLayout, viewport, updateViewport } = this.context as IGraphContext
     e.preventDefault()
     if (this.checkValid()) {
-      const entity = layout.model.createEntity(schema)
-      entity.setCaption(label)
-      layout.addEntity(entity)
+      let entity;
+      const captionProperty = schema?.caption[0];
+      if (captionProperty) {
+        entity = layout.addEntity({ schema, properties: { [captionProperty]: label } });
+      } else {
+        entity = layout.addEntity({ schema });
+      }
+      console.log('entity created', entity);
       const vertex = layout.getVertexByEntity(entity)
+      console.log('vertex created', vertex);
       if (vertex) {
         vertexInitialPos && layout.vertices.set(vertex.id, vertex.setPosition(vertexInitialPos))
         layout.selectElement(vertex)
@@ -90,7 +96,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
           <div className="bp3-dialog-body">
             <ControlGroup fill>
               <VertexSchemaSelect
-                model={layout.model}
+                model={layout.entityManager.model}
                 schema={schema}
                 onSelect={this.onSchemaSelect}
               >

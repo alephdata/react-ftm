@@ -1,4 +1,4 @@
-import { defaultModel, Entity, Model, IEntityDatum } from '@alephdata/followthemoney'
+import { Entity, IEntityDatum } from '@alephdata/followthemoney'
 import { forceSimulation, forceLink, forceCollide } from 'd3-force';
 import { DraggableEvent } from 'react-draggable';
 import { Vertex } from './Vertex'
@@ -6,6 +6,7 @@ import { Edge } from './Edge'
 import { Grouping } from './Grouping'
 import { Point } from './Point';
 import { Rectangle } from './Rectangle';
+import { EntityManager } from '../EntityManager';
 import { GraphConfig } from '../GraphConfig';
 import { groupBy } from '../utils';
 
@@ -23,18 +24,17 @@ export type GraphElement = Vertex | Edge
 
 export class GraphLayout {
   public readonly config: GraphConfig
-  public readonly model: Model
+  public readonly entityManager: EntityManager
   vertices = new Map<string, Vertex>()
   edges = new Map<string, Edge>()
   entities = new Map<string, Entity>()
   groupings = new Map<string, Grouping>()
   selection = new Array<string>()
-  // private selectionType =
   private hasDraggedSelection = false
 
-  constructor(config: GraphConfig) {
-    this.config = config
-    this.model = new Model(defaultModel);
+  constructor(config: GraphConfig, entityManager: EntityManager) {
+    this.config = config;
+    this.entityManager = entityManager;
 
     this.addVertex = this.addVertex.bind(this);
     this.addEdge = this.addEdge.bind(this);
@@ -72,9 +72,11 @@ export class GraphLayout {
   }
 
   private generate(): void {
+    console.log('in generate');
     this.edges.forEach(edge => edge.garbage = true);
     this.vertices.forEach(vertex => vertex.garbage = true);
     this.entities.forEach((entity) => {
+      console.log('ENTITY IS', entity);
       if (entity.schema.edge) {
         const sourceProperty = entity.schema.getProperty(entity.schema.edge.source)
         const targetProperty = entity.schema.getProperty(entity.schema.edge.target)
@@ -90,6 +92,7 @@ export class GraphLayout {
         })
       } else {
         const mainVertex = Vertex.fromEntity(this, entity);
+        console.log('mainVertex', mainVertex, entity);
         this.addVertex(mainVertex)
 
         // TODO: make "typesConfig" part of the layout.
@@ -99,8 +102,11 @@ export class GraphLayout {
 
         properties.forEach((prop) => {
           entity.getProperty(prop).forEach((value) => {
+            console.log('ADDING VALUE VERTICES', prop, value);
             const propertyVertex = Vertex.fromValue(this, prop, value);
             this.addVertex(propertyVertex)
+
+            console.log('propertyVertex', propertyVertex);
             this.addEdge(Edge.fromValue(this, prop, mainVertex, propertyVertex))
           })
         })
@@ -110,13 +116,31 @@ export class GraphLayout {
     this.vertices.forEach(vertex => vertex.garbage && this.vertices.delete(vertex.id));
   }
 
-  addEntity(entity: Entity) {
+  addEntity(entityData: any) {
+    // call create entity function, then do this:
+    console.log('creating', entityData);
+    const entity = this.entityManager.createEntity(entityData);
     this.entities.set(entity.id, entity)
+    console.log('calling this.layout');
     this.layout()
+
+    return entity;
   }
 
-  removeEntity(entity: Entity) {
-    this.entities.delete(entity.id)
+  updateEntity(entity: Entity) {
+    console.log('updating', entity);
+    this.entityManager.updateEntity(entity);
+    // this.entities.set(entity.id, entity)
+    this.layout()
+
+    return entity;
+  }
+
+  removeEntity(entityId: string, propagate?: boolean) {
+    if (propagate) {
+      this.entityManager.deleteEntity(entityId);
+    }
+    this.entities.delete(entityId)
     this.layout()
   }
 
@@ -318,10 +342,10 @@ export class GraphLayout {
   removeSelection() {
     this.getSelectedVertices().forEach((vertex) => {
       if (vertex.entityId) {
-        this.entities.delete(vertex.entityId)
+        this.removeEntity(vertex.entityId);
         this.edges.forEach((edge) => {
-          if (edge.isEntity() && edge.isLinkedToVertex(vertex)) {
-            this.entities.delete(edge.entityId as string)
+          if (edge.isEntity() && edge.isLinkedToVertex(vertex) && edge.entityId) {
+            this.removeEntity(edge.entityId);
           }
         })
       } else {
@@ -338,7 +362,7 @@ export class GraphLayout {
       const entity = edge.getEntity()
       if (entity) {
         if (edge.isEntity()) {
-          this.entities.delete(entity.id)
+          this.removeEntity(entity.id);
         } else {
           // TODO: Remove value
         }
@@ -408,7 +432,7 @@ export class GraphLayout {
   }
 
   update(withData:IGraphLayoutData):GraphLayout{
-    return GraphLayout.fromJSON(this.config, withData)
+    return GraphLayout.fromJSON(this.config, this.entityManager, withData)
   }
 
   toJSON(): IGraphLayoutData {
@@ -421,11 +445,11 @@ export class GraphLayout {
     }
   }
 
-  static fromJSON(config: GraphConfig, data: any): GraphLayout {
+  static fromJSON(config: GraphConfig, entityManager: EntityManager, data: any): GraphLayout {
     const layoutData = data as IGraphLayoutData
-    const layout = new GraphLayout(config)
+    const layout = new GraphLayout(config, entityManager)
     layoutData.entities.forEach((edata) => {
-      layout.entities.set(edata.id, layout.model.getEntity(edata))
+      layout.entities.set(edata.id, entityManager.model.getEntity(edata))
     })
     layoutData.vertices.forEach((vdata) => {
       const vertex = Vertex.fromJSON(layout, vdata)

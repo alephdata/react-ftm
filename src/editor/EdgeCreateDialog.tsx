@@ -45,7 +45,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   componentDidMount() {
     const { layout, source, target } = this.props
     this.setState({ source, target })
-    this.types = EdgeType.getAll(layout.model)
+    this.types = EdgeType.getAll(layout.entityManager.model)
   }
 
   componentDidUpdate(prevProps: IEdgeCreateDialogProps) {
@@ -85,19 +85,23 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     if (source && target && type && this.isValid()) {
       const sourceEntity = source.getEntity()
       const targetEntity = target.getEntity()
+      console.log('sourceEntity is', sourceEntity);
       if (type.property && sourceEntity) {
         const value = targetEntity || target.label
         sourceEntity.setProperty(type.property, value)
-        layout.addEntity(sourceEntity)
+        layout.updateEntity(sourceEntity);
         const edge = Edge.fromValue(layout, type.property, source, target)
         layout.selectElement(edge)
         updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
       }
       if (type.schema && type.schema.edge && sourceEntity && targetEntity) {
-        const entity = layout.model.createEntity(type.schema)
-        entity.setProperty(type.schema.edge.source, sourceEntity)
-        entity.setProperty(type.schema.edge.target, targetEntity)
-        layout.addEntity(entity)
+        const entity = layout.addEntity({
+          schema: type.schema,
+          properties: {
+            [type.schema.edge.source]: sourceEntity,
+            [type.schema.edge.target]: targetEntity,
+          }
+        });
         const edge = Edge.fromEntity(layout, entity, source, target)
         layout.selectElement(edge)
         updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})

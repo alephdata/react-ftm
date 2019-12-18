@@ -1,8 +1,8 @@
 import * as React from 'react'
 import c from 'classnames';
 import { Button, ButtonGroup, Classes, Drawer, Position, Tooltip } from '@blueprintjs/core';
+import { EntityManager } from './EntityManager';
 import { GraphConfig } from './GraphConfig';
-import { GraphLogo } from './GraphLogo';
 import { GraphRenderer } from './renderer/GraphRenderer'
 import { GraphLayout, Rectangle, Point } from './layout';
 import { Viewport } from './Viewport';
@@ -18,13 +18,12 @@ import './VisGraph.scss';
 
 interface IVisGraphProps {
   config: GraphConfig,
+  entityManager: EntityManager
   layout: GraphLayout,
   viewport: Viewport,
   updateLayout: (layout:GraphLayout, historyModified?: boolean) => void,
   updateViewport: (viewport:Viewport) => void
   exportSvg: (data: any) => void
-  writeable: boolean
-  logo?: GraphLogo
   externalFilterText?: string
 }
 
@@ -53,7 +52,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
     this.state = {
       animateTransition: false,
-      interactionMode: props.writeable ? modes.SELECT : modes.PAN,
+      interactionMode: config.writeable ? modes.SELECT : modes.PAN,
       tableView: false,
     };
 
@@ -135,10 +134,10 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   navigateHistory(factor:number) {
-    const { config } = this.props;
+    const { config, entityManager } = this.props;
 
     const nextLayoutData = this.history.go(factor);
-    this.updateLayout(GraphLayout.fromJSON(config, nextLayoutData))
+    this.updateLayout(GraphLayout.fromJSON(config, entityManager, nextLayoutData))
   }
 
   addVertexToPosition(initialPos?: Point) {
@@ -197,7 +196,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   render() {
-    const { config, layout, logo, viewport, writeable } = this.props;
+    const { config, layout, viewport } = this.props;
     const { animateTransition, interactionMode, tableView } = this.state;
     const vertices = layout.getSelectedVertices()
     const [sourceVertex, targetVertex] = vertices;
@@ -221,7 +220,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       onSubmitSearch: this.onSubmitSearch,
     };
 
-    const showSidebar = writeable && layout.vertices && layout.vertices.size > 0;
+    const showSidebar = config.writeable && layout.vertices && layout.vertices.size > 0;
 
     return (
       <GraphContext.Provider value={layoutContext}>
@@ -231,8 +230,8 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               actions={actions}
               history={this.history}
               interactionMode={this.state.interactionMode}
-              showEditingButtons={writeable}
-              logo={logo}
+              showEditingButtons={config.writeable}
+              logo={config.logo}
               {...layoutContext}
             />
           </div>
@@ -252,7 +251,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                 animateTransition={animateTransition}
                 actions={actions}
                 interactionMode={interactionMode}
-                writeable={writeable}
+                writeable={config.writeable}
                 {...layoutContext}
               />
               <Drawer
@@ -265,7 +264,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                 style={{ height: '60%' }}
               >
                 <div className={Classes.DRAWER_BODY}>
-                  <TableEditor layout={layout} updateLayout={this.updateLayout} writeable={writeable} />
+                  <TableEditor layout={layout} updateLayout={this.updateLayout} writeable={config.writeable} />
                 </div>
               </Drawer>
             </div>
@@ -276,7 +275,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
             }
           </div>
         </div>
-        {writeable && (
+        {config.writeable && (
           <>
             <VertexCreateDialog
               isOpen={interactionMode === modes.VERTEX_CREATE}

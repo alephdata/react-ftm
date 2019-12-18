@@ -1,10 +1,13 @@
 import { Colors } from '@blueprintjs/core';
 import { Point } from './layout/Point';
+import { GraphLogo } from './GraphLogo';
 
 export interface IGraphConfig {
   gridUnit?: number,
   editorTheme?: string,
   toolbarPosition?: string,
+  logo?: GraphLogo
+  writeable?: boolean
 }
 
 export class GraphConfig {
@@ -15,11 +18,16 @@ export class GraphConfig {
   public gridUnit: number
   public editorTheme: string
   public toolbarPosition: string
+  public logo: GraphLogo | undefined
+  public writeable: boolean
+
 
   constructor(props?: IGraphConfig) {
-    this.gridUnit = props && props.gridUnit || 10
-    this.editorTheme = props && props.editorTheme || "dark"
-    this.toolbarPosition = props && props.toolbarPosition || "top"
+    this.gridUnit = props?.gridUnit || 10
+    this.editorTheme = props?.editorTheme || "dark"
+    this.toolbarPosition = props?.toolbarPosition || "top"
+    this.logo = props?.logo
+    this.writeable = props?.writeable || true
   }
 
   gridToPixel(point: Point): Point {

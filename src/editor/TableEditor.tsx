@@ -81,7 +81,7 @@ export class TableEditor extends React.Component<ITableEditorProps, ITableEditor
           {writeable && (
             <div className="TableEditor__schemaAdd">
               <VertexSchemaSelect
-                model={layout.model}
+                model={layout.entityManager.model}
                 onSelect={schema => this.addSchema(schema)}
                 optionsFilter={(schema => !schemata.includes(schema))}
               >
@@ -127,7 +127,7 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
     const entities = layout.getEntities()
       .filter(e => e.schema === schema);
 
-    return writeable ? entities.concat(layout.model.createEntity(schema)) : entities;
+    return writeable ? entities.concat(layout.entityManager.model.createEntity(schema)) : entities;
   }
 
   getVisibleProperties() {
@@ -142,16 +142,14 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
 
   onAddRow = () => {
     const { layout, schema, updateLayout } = this.props;
-    const nextEntity = layout.model.createEntity(schema);
-
-    layout.addEntity(nextEntity);
+    const nextEntity = layout.addEntity({ schema });
     updateLayout(layout, { modifyHistory:true });
   }
 
   onDeleteRow = (entity: Entity) => {
     const { layout, schema, updateLayout } = this.props;
 
-    layout.removeEntity(entity);
+    layout.removeEntity(entity.id);
     updateLayout(layout, { modifyHistory:true });
   }
 
@@ -163,7 +161,7 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
 
   onEntityChanged = (nextEntity: Entity) => {
     const { layout, updateLayout } = this.props;
-    layout.addEntity(nextEntity);
+    layout.updateEntity(nextEntity);
     updateLayout(layout, { modifyHistory:true });
   }
 
