@@ -72,11 +72,9 @@ export class GraphLayout {
   }
 
   private generate(): void {
-    console.log('in generate');
     this.edges.forEach(edge => edge.garbage = true);
     this.vertices.forEach(vertex => vertex.garbage = true);
     this.entities.forEach((entity) => {
-      console.log('ENTITY IS', entity);
       if (entity.schema.edge) {
         const sourceProperty = entity.schema.getProperty(entity.schema.edge.source)
         const targetProperty = entity.schema.getProperty(entity.schema.edge.target)
@@ -92,7 +90,6 @@ export class GraphLayout {
         })
       } else {
         const mainVertex = Vertex.fromEntity(this, entity);
-        console.log('mainVertex', mainVertex, entity);
         this.addVertex(mainVertex)
 
         // TODO: make "typesConfig" part of the layout.
@@ -102,11 +99,9 @@ export class GraphLayout {
 
         properties.forEach((prop) => {
           entity.getProperty(prop).forEach((value) => {
-            console.log('ADDING VALUE VERTICES', prop, value);
             const propertyVertex = Vertex.fromValue(this, prop, value);
             this.addVertex(propertyVertex)
 
-            console.log('propertyVertex', propertyVertex);
             this.addEdge(Edge.fromValue(this, prop, mainVertex, propertyVertex))
           })
         })
@@ -117,18 +112,14 @@ export class GraphLayout {
   }
 
   addEntity(entityData: any) {
-    // call create entity function, then do this:
-    console.log('creating', entityData);
     const entity = this.entityManager.createEntity(entityData);
     this.entities.set(entity.id, entity)
-    console.log('calling this.layout');
     this.layout()
 
     return entity;
   }
 
   updateEntity(entity: Entity) {
-    console.log('updating', entity);
     this.entityManager.updateEntity(entity);
     // this.entities.set(entity.id, entity)
     this.layout()
@@ -340,12 +331,16 @@ export class GraphLayout {
   }
 
   removeSelection() {
+    const removedEntities: Array<Entity | undefined> = [];
+
     this.getSelectedVertices().forEach((vertex) => {
       if (vertex.entityId) {
-        this.removeEntity(vertex.entityId);
+        removedEntities.push(vertex.getEntity());
+        this.removeEntity(vertex.entityId, true);
         this.edges.forEach((edge) => {
           if (edge.isEntity() && edge.isLinkedToVertex(vertex) && edge.entityId) {
-            this.removeEntity(edge.entityId);
+            removedEntities.push(edge.getEntity());
+            this.removeEntity(edge.entityId, true);
           }
         })
       } else {
@@ -362,7 +357,8 @@ export class GraphLayout {
       const entity = edge.getEntity()
       if (entity) {
         if (edge.isEntity()) {
-          this.removeEntity(entity.id);
+          removedEntities.push(edge.getEntity());
+          this.removeEntity(entity.id, true);
         } else {
           // TODO: Remove value
         }
@@ -370,6 +366,8 @@ export class GraphLayout {
     })
 
     this.generate()
+
+    return removedEntities;
   }
 
   ungroupSelection() {

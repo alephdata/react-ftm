@@ -17,6 +17,7 @@ export class EntityManager {
   }
 
   createEntity(entityData: any) {
+    console.log('ENTITY MANAGER: create')
     if (this.overload?.createEntity) {
       return this.overload.createEntity(entityData);
     } else {
@@ -30,6 +31,8 @@ export class EntityManager {
   }
 
   updateEntity(entity: Entity) {
+    console.log('ENTITY MANAGER: update')
+
     if (this.overload?.updateEntity) {
       return this.overload.updateEntity(entity);
     } else {
@@ -38,8 +41,19 @@ export class EntityManager {
   }
 
   deleteEntity(entityId: string) {
+    console.log('ENTITY MANAGER: delete')
+
     if (this.overload?.deleteEntity) {
       this.overload.deleteEntity(entityId);
     }
+  }
+
+  // entity changes in the reverse direction require undoing create/delete operations
+  applyEntityChanges(entityChanges: any, factor: number) {
+    const { created, updated, deleted } = entityChanges;
+
+    created && created.forEach((entity: Entity) => factor > 0 ? this.createEntity(entity) : this.deleteEntity(entity.id));
+    updated && updated.forEach((entity: Entity) => this.updateEntity(entity));
+    deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntity(entity.id) : this.createEntity(entity));
   }
 }

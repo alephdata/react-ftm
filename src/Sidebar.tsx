@@ -24,7 +24,7 @@ export class Sidebar extends React.Component<IGraphContext> {
   appendToLayout(entity: Entity) {
     const { layout } = this.props
     layout.updateEntity(entity);
-    this.props.updateLayout(layout, {modifyHistory:true})
+    this.props.updateLayout(layout, { modifyHistory:true, entityChanges: { updated: [entity] } })
   }
 
   removeGroupingEntity(grouping: Grouping, entity: Entity) {

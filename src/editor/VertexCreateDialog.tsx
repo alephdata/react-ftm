@@ -60,13 +60,11 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
       } else {
         entity = layout.addEntity({ schema });
       }
-      console.log('entity created', entity);
       const vertex = layout.getVertexByEntity(entity)
-      console.log('vertex created', vertex);
       if (vertex) {
         vertexInitialPos && layout.vertices.set(vertex.id, vertex.setPosition(vertexInitialPos))
         layout.selectElement(vertex)
-        updateLayout(layout, {modifyHistory:true})
+        updateLayout(layout, {modifyHistory: true, entityChanges: { created: [entity] }})
         updateViewport(viewport.setCenter(vertexInitialPos || vertex.position), {animate:true})
         this.setState({label: ''})
         this.props.toggleDialog()

@@ -142,15 +142,15 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
 
   onAddRow = () => {
     const { layout, schema, updateLayout } = this.props;
-    const nextEntity = layout.addEntity({ schema });
-    updateLayout(layout, { modifyHistory:true });
+    const entity = layout.addEntity({ schema });
+    updateLayout(layout, { modifyHistory: true, entityChanges: { created: [entity] } });
   }
 
   onDeleteRow = (entity: Entity) => {
     const { layout, schema, updateLayout } = this.props;
 
-    layout.removeEntity(entity.id);
-    updateLayout(layout, { modifyHistory:true });
+    layout.removeEntity(entity.id, true);
+    updateLayout(layout, { modifyHistory: true, entityChanges: { deleted: [entity] } });
   }
 
   onAddColumn(newColumn: Property) {
@@ -162,7 +162,7 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
   onEntityChanged = (nextEntity: Entity) => {
     const { layout, updateLayout } = this.props;
     layout.updateEntity(nextEntity);
-    updateLayout(layout, { modifyHistory:true });
+    updateLayout(layout, { modifyHistory: true, entityChanges: { updated: [nextEntity] } });
   }
 
   renderWriteable() {

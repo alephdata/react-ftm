@@ -81,6 +81,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   onSubmit(e: React.ChangeEvent<HTMLFormElement>) {
     const { layout, viewport, updateLayout, updateViewport, toggleDialog } = this.props
     const { source, target, type } = this.state
+    const entityChanges: any = {} ;
     e.preventDefault()
     if (source && target && type && this.isValid()) {
       const sourceEntity = source.getEntity()
@@ -90,6 +91,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         const value = targetEntity || target.label
         sourceEntity.setProperty(type.property, value)
         layout.updateEntity(sourceEntity);
+        entityChanges.updated = [sourceEntity]
         const edge = Edge.fromValue(layout, type.property, source, target)
         layout.selectElement(edge)
         updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
@@ -105,8 +107,9 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         const edge = Edge.fromEntity(layout, entity, source, target)
         layout.selectElement(edge)
         updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
+        entityChanges.created = [entity];
       }
-      updateLayout(layout, {modifyHistory:true})
+      updateLayout(layout, { modifyHistory:true, entityChanges })
       toggleDialog()
     }
   }

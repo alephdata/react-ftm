@@ -47,7 +47,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.svgRef = React.createRef()
 
     if (layout) {
-      this.history.push(layout);
+      this.history.push({layout:layout.toJSON()});
     }
 
     this.state = {
@@ -113,16 +113,16 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     event.stopPropagation();
   }
 
-  updateLayout(layout: GraphLayout, {modifyHistory = false} = {}) {
+  updateLayout(layout: GraphLayout, options?: any) {
     const { updateLayout } = this.props;
 
-    if (modifyHistory) {
-      this.history.push(layout.toJSON())
+    if (options?.modifyHistory) {
+      this.history.push({layout:layout.toJSON(), entityChanges: options.entityChanges});
     }
 
     this.setState({animateTransition: false });
 
-    updateLayout(layout, modifyHistory);
+    updateLayout(layout, options?.modifyHistory);
   }
 
   updateViewport(viewport: Viewport, { animate = false } = {}) {
@@ -136,8 +136,13 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   navigateHistory(factor:number) {
     const { config, entityManager } = this.props;
 
-    const nextLayoutData = this.history.go(factor);
-    this.updateLayout(GraphLayout.fromJSON(config, entityManager, nextLayoutData))
+    const { layout, entityChanges } = this.history.go(factor);
+
+    if (entityChanges) {
+      entityManager.applyEntityChanges(entityChanges, factor);
+    }
+
+    this.updateLayout(GraphLayout.fromJSON(config, entityManager, layout))
   }
 
   addVertexToPosition(initialPos?: Point) {
@@ -166,8 +171,8 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
   removeSelection() {
     const { layout } = this.props
-    layout.removeSelection()
-    this.updateLayout(layout, {modifyHistory:true})
+    const removedEntities = layout.removeSelection()
+    this.updateLayout(layout, {modifyHistory:true, entityChanges: { deleted: removedEntities }})
   }
 
   ungroupSelection() {
