@@ -16,11 +16,10 @@ export class EntityManager {
     this.overload = props;
   }
 
-  async createEntity(entityData: any): Entity {
+  createEntity(entityData: any) {
     console.log('ENTITY MANAGER: create')
     if (this.overload?.createEntity) {
-      const entity = await this.overload.createEntity(entityData);
-      return entity;
+      return this.overload.createEntity(entityData)
     } else {
       const { schema, properties } = entityData;
       const entity = this.model.createEntity(schema);
@@ -34,18 +33,17 @@ export class EntityManager {
     }
   }
 
-  async updateEntity(entity: Entity): Entity {
+  updateEntity(entity: Entity) {
     console.log('ENTITY MANAGER: update')
 
     if (this.overload?.updateEntity) {
-      const updatedEntity = await this.overload.updateEntity(entity);
-      return updatedEntity;
+      return this.overload.updateEntity(entity);
     } else {
       return entity;
     }
   }
 
-  async deleteEntity(entityId: string): boolean {
+  async deleteEntity(entityId: string) {
     console.log('ENTITY MANAGER: delete')
 
     if (this.overload?.deleteEntity) {

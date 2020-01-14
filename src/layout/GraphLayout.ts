@@ -111,25 +111,25 @@ export class GraphLayout {
     this.vertices.forEach(vertex => vertex.garbage && this.vertices.delete(vertex.id));
   }
 
-  addEntity(entityData: any) {
-    const entity = this.entityManager.createEntity(entityData);
+  async addEntity(entityData: any) {
+    const entity = await this.entityManager.createEntity(entityData);
     this.entities.set(entity.id, entity)
     this.layout()
 
     return entity;
   }
 
-  updateEntity(entity: Entity) {
-    this.entityManager.updateEntity(entity);
-    // this.entities.set(entity.id, entity)
+  async updateEntity(entity: Entity) {
+    const entity = await this.entityManager.updateEntity(entity);
+    this.entities.set(entity.id, entity)
     this.layout()
 
     return entity;
   }
 
-  removeEntity(entityId: string, propagate?: boolean) {
+  async removeEntity(entityId: string, propagate?: boolean) {
     if (propagate) {
-      this.entityManager.deleteEntity(entityId);
+      await this.entityManager.deleteEntity(entityId);
     }
     this.entities.delete(entityId)
     this.layout()
