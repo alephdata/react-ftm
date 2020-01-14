@@ -46,7 +46,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
     this.setState({ schema })
   }
 
-  onSubmit(e: React.ChangeEvent<HTMLFormElement>) {
+  async onSubmit(e: React.ChangeEvent<HTMLFormElement>) {
     const { vertexInitialPos } = this.props
     const { label } = this.state
     const schema = this.getSchema()
@@ -56,9 +56,9 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
       let entity;
       const captionProperty = schema?.caption[0];
       if (captionProperty) {
-        entity = layout.addEntity({ schema, properties: { [captionProperty]: label } });
+        entity = await layout.addEntity({ schema, properties: { [captionProperty]: label } });
       } else {
-        entity = layout.addEntity({ schema });
+        entity = await layout.addEntity({ schema });
       }
       const vertex = layout.getVertexByEntity(entity)
       if (vertex) {

@@ -119,6 +119,8 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
     }
 
     this.onAddColumn = this.onAddColumn.bind(this);
+    this.onAddRow = this.onAddRow.bind(this);
+    this.onDeleteRow = this.onDeleteRow.bind(this);
   }
 
   getEntities() {
@@ -140,13 +142,13 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
     return Array.from(new Set([...featuredProps, ...filledProps]));
   }
 
-  onAddRow = () => {
+  async onAddRow() {
     const { layout, schema, updateLayout } = this.props;
-    const entity = layout.addEntity({ schema });
+    const entity = await layout.addEntity({ schema });
     updateLayout(layout, { modifyHistory: true, entityChanges: { created: [entity] } });
   }
 
-  onDeleteRow = (entity: Entity) => {
+  onDeleteRow(entity: Entity) {
     const { layout, schema, updateLayout } = this.props;
 
     layout.removeEntity(entity.id, true);

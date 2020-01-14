@@ -119,17 +119,17 @@ export class GraphLayout {
     return entity;
   }
 
-  async updateEntity(entity: Entity) {
-    const entity = await this.entityManager.updateEntity(entity);
+  updateEntity(entity: Entity) {
+    this.entityManager.updateEntity(entity);
     this.entities.set(entity.id, entity)
     this.layout()
 
     return entity;
   }
 
-  async removeEntity(entityId: string, propagate?: boolean) {
+  removeEntity(entityId: string, propagate?: boolean) {
     if (propagate) {
-      await this.entityManager.deleteEntity(entityId);
+      this.entityManager.deleteEntity(entityId);
     }
     this.entities.delete(entityId)
     this.layout()
