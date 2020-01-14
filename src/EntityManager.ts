@@ -23,9 +23,12 @@ export class EntityManager {
     } else {
       const { schema, properties } = entityData;
       const entity = this.model.createEntity(schema);
-      Object.entries(properties).forEach(([prop, value]: [string, any]) => (
-        entity.setProperty(prop, value)
-      ));
+      if (properties) {
+        Object.entries(properties).forEach(([prop, value]: [string, any]) => (
+          entity.setProperty(prop, value)
+        ));
+      }
+
       return entity;
     }
   }
