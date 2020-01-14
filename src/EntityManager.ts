@@ -2,8 +2,8 @@ import { defaultModel, Entity, Model, IEntityDatum } from '@alephdata/followthem
 
 
 export interface IEntityManagerOverload {
-  createEntity?: (entityData: IEntityDatum) => Entity,
-  updateEntity?: (entity: Entity) => Entity,
+  createEntity?: (entityData: IEntityDatum) => IEntityDatum,
+  updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
 }
 
@@ -16,10 +16,11 @@ export class EntityManager {
     this.overload = props;
   }
 
-  createEntity(entityData: any) {
+  async createEntity(entityData: any) {
     console.log('ENTITY MANAGER: create')
     if (this.overload?.createEntity) {
-      return this.overload.createEntity(entityData)
+      const entityWithId: IEntityDatum = await this.overload.createEntity(entityData);
+      return new Entity(this.model, entityWithId);
     } else {
       const { schema, properties } = entityData;
       const entity = this.model.createEntity(schema);
@@ -37,20 +38,15 @@ export class EntityManager {
     console.log('ENTITY MANAGER: update')
 
     if (this.overload?.updateEntity) {
-      return this.overload.updateEntity(entity);
-    } else {
-      return entity;
+      this.overload.updateEntity(entity);
     }
   }
 
-  async deleteEntity(entityId: string) {
+  deleteEntity(entityId: string) {
     console.log('ENTITY MANAGER: delete')
 
     if (this.overload?.deleteEntity) {
-      const status = await this.overload.deleteEntity(entityId);
-      return status;
-    } else {
-      return true;
+      this.overload.deleteEntity(entityId);
     }
   }
 
