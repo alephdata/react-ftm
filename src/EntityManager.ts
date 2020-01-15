@@ -50,6 +50,7 @@ export class EntityManager {
     }
   }
 
+  // FIXME: no guarantee that entity will be created/deleted with the same ID 
   // entity changes in the reverse direction require undoing create/delete operations
   applyEntityChanges(entityChanges: any, factor: number) {
     const { created, updated, deleted } = entityChanges;
