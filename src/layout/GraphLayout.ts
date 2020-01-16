@@ -386,6 +386,12 @@ export class GraphLayout {
     })
   }
 
+  getVisibleVertexRect() {
+    const vertices = this.getVertices();
+    const points = vertices.filter((v) => !v.isHidden()).map((v) => v.position)
+    return Rectangle.fromPoints(...points);
+  }
+
   layout() {
     this.generate()
     this.layoutPositions()
