@@ -78,7 +78,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     return source && target && type && type.match(source, target)
   }
 
-  onSubmit(e: React.ChangeEvent<HTMLFormElement>) {
+  async onSubmit(e: React.ChangeEvent<HTMLFormElement>) {
     const { layout, viewport, updateLayout, updateViewport, toggleDialog } = this.props
     const { source, target, type } = this.state
     const entityChanges: any = {} ;
@@ -97,7 +97,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
       }
       if (type.schema && type.schema.edge && sourceEntity && targetEntity) {
-        const entity = layout.addEntity({
+        const entity = await layout.addEntity({
           schema: type.schema,
           properties: {
             [type.schema.edge.source]: sourceEntity,

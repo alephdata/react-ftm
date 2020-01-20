@@ -111,8 +111,8 @@ export class GraphLayout {
     this.vertices.forEach(vertex => vertex.garbage && this.vertices.delete(vertex.id));
   }
 
-  addEntity(entityData: any) {
-    const entity = this.entityManager.createEntity(entityData);
+  async addEntity(entityData: any) {
+    const entity = await this.entityManager.createEntity(entityData);
     this.entities.set(entity.id, entity)
     this.layout()
 
@@ -121,7 +121,7 @@ export class GraphLayout {
 
   updateEntity(entity: Entity) {
     this.entityManager.updateEntity(entity);
-    // this.entities.set(entity.id, entity)
+    this.entities.set(entity.id, entity)
     this.layout()
 
     return entity;

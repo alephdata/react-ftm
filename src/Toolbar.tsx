@@ -51,10 +51,9 @@ export class Toolbar extends React.Component<IToolbarProps> {
   visibleItemRenderer(buttonGroup:any, i:any) {
     const { config } = this.props.layout;
     return (
-      <>
+      <React.Fragment key={i}>
         {i !== 0 && <Divider />}
         <ButtonGroup
-          key={i}
           className="Toolbar__button-group"
         >
           {buttonGroup.map(({ disabled, helpText, icon, onClick }: any) => (
@@ -63,13 +62,13 @@ export class Toolbar extends React.Component<IToolbarProps> {
             </Tooltip>
           ))}
         </ButtonGroup>
-      </>
+      </React.Fragment>
     );
   }
 
   overflowItemRenderer(buttonGroup:any, i:any) {
     return (
-      <>
+      <React.Fragment key={i}>
         {i !== 0 && <Menu.Divider />}
         {buttonGroup.map(({ disabled, helpText, icon, onClick }: any) => (
           <Menu.Item
@@ -80,7 +79,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
             disabled={disabled}
           />
         ))}
-      </>
+      </React.Fragment>
     );
   }
 
