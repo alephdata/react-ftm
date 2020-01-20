@@ -39,11 +39,11 @@ $swatch-width: 20px;
       }
 
       &:hover {
-        .ColorPicker__item__swatch__inner {
-          width: 3px;
-          height: 3px;
-          border-color: white !important;
-        }
+        opacity: .7;
+      }
+
+      &.active {
+        pointer-events: none;
       }
 
       &__inner {
