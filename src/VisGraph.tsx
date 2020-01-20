@@ -122,7 +122,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
     this.setState({animateTransition: false });
 
-    updateLayout(layout, options?.modifyHistory);
+    updateLayout(layout, options?.modifyHistory || options?.forceSaveUpdate);
   }
 
   updateViewport(viewport: Viewport, { animate = false } = {}) {
@@ -142,7 +142,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       entityManager.applyEntityChanges(entityChanges, factor);
     }
 
-    this.updateLayout(GraphLayout.fromJSON(config, entityManager, layout))
+    this.updateLayout(GraphLayout.fromJSON(config, entityManager, layout), { forceSaveUpdate: true })
   }
 
   addVertexToPosition(initialPos?: Point) {
