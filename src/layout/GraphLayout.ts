@@ -11,11 +11,11 @@ import { GraphConfig } from '../GraphConfig';
 import { groupBy } from '../utils';
 
 export interface IGraphLayoutData {
-  entities: Array<IEntityDatum>
-  vertices: Array<any>
-  edges: Array<any>
-  groupings: Array<any>
-  selection: Array<string>
+  entities?: Array<IEntityDatum>
+  vertices?: Array<any>
+  edges?: Array<any>
+  groupings?: Array<any>
+  selection?: Array<string>
 }
 
 export type VertexPredicate = (vertex: Vertex) => boolean
@@ -452,27 +452,46 @@ export class GraphLayout {
   static fromJSON(config: GraphConfig, entityManager: EntityManager, data: any): GraphLayout {
     const layoutData = data as IGraphLayoutData
     const layout = new GraphLayout(config, entityManager)
-    layoutData.entities.forEach((edata) => {
-      layout.entities.set(edata.id, entityManager.model.getEntity(edata))
-    })
-    layoutData.vertices.forEach((vdata) => {
-      const vertex = Vertex.fromJSON(layout, vdata)
-      layout.vertices.set(vertex.id, vertex)
-    })
-    layoutData.edges.forEach((edata) => {
-      const edge = Edge.fromJSON(layout, edata)
-      layout.edges.set(edge.id, edge)
-    })
+
+    if (layoutData.entities) {
+      layoutData.entities.forEach((edata) => {
+        layout.entities.set(edata.id, entityManager.model.getEntity(edata))
+      })
+    } else {
+      // layout.entities = new Map()
+    }
+
+    if (layoutData.vertices) {
+      layoutData.vertices.forEach((vdata) => {
+        const vertex = Vertex.fromJSON(layout, vdata)
+        layout.vertices.set(vertex.id, vertex)
+      })
+    } else {
+      // layout.vertices = new Map()
+    }
+
+    if (layoutData.edges) {
+      layoutData.edges.forEach((edata) => {
+        const edge = Edge.fromJSON(layout, edata)
+        layout.edges.set(edge.id, edge)
+      })
+    } else {
+      // layout.edges = new Map()
+    }
+
     layout.generate()
+
     if (layoutData.groupings) {
       layoutData.groupings.forEach((gdata) => {
         const grouping = Grouping.fromJSON(layout, gdata)
         layout.groupings.set(grouping.id, grouping)
       })
     } else {
-      layout.groupings = new Map()
+      // layout.groupings = new Map()
     }
-    layout.selection = layoutData.selection
+
+    layout.selection = layoutData.selection || []
+
     return layout
   }
 }
