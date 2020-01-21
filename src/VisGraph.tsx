@@ -104,7 +104,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     } else {
       layout.clearSelection();
     }
-    this.updateLayout(layout, {modifyHistory:true})
+    this.updateLayout(layout, { modifyHistory: false })
   }
 
   onSubmitSearch(event: React.FormEvent) {
