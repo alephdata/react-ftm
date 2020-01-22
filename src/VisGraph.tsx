@@ -31,6 +31,7 @@ interface IVisGraphProps {
 interface IVisGraphState {
   animateTransition: boolean
   interactionMode: string
+  searchText: string
   tableView: boolean
   vertexCreateInitialPos?: Point
 }
@@ -42,7 +43,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
   constructor(props: any) {
     super(props)
-    const { config, layout, viewport, writeable } = props
+    const { config, externalFilterText, layout, viewport, writeable } = props
 
     this.history = new History();
     this.svgRef = React.createRef()
@@ -55,6 +56,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       animateTransition: false,
       interactionMode: writeable ? modes.SELECT : modes.PAN,
       tableView: false,
+      searchText: externalFilterText || '',
     };
 
     this.addVertexToPosition = this.addVertexToPosition.bind(this)
@@ -105,6 +107,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     } else {
       layout.clearSelection();
     }
+    this.setState({ searchText });
     this.updateLayout(layout, { modifyHistory: false })
   }
 
@@ -121,7 +124,12 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       this.history.push({layout:layout.toJSON(), entityChanges: options.entityChanges});
     }
 
-    this.setState({animateTransition: false });
+    console.log('clearing search', options?.clearSearch);
+
+    this.setState(({ searchText }) => ({
+      animateTransition: false,
+      searchText: options?.clearSearch ? '' : searchText
+    }));
 
     updateLayout(layout, options?.modifyHistory || options?.forceSaveUpdate);
   }
@@ -203,7 +211,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
   render() {
     const { config, layout, viewport, writeable } = this.props;
-    const { animateTransition, interactionMode, tableView } = this.state;
+    const { animateTransition, interactionMode, searchText, tableView } = this.state;
     const vertices = layout.getSelectedVertices()
     const [sourceVertex, targetVertex] = vertices;
 
@@ -227,6 +235,8 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     };
 
     const showSidebar = writeable && layout.vertices && layout.vertices.size > 0;
+
+    console.log(layout.selection);
 
     return (
       <GraphContext.Provider value={layoutContext}>
@@ -276,7 +286,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
             </div>
             {showSidebar &&
               <div className="VisGraph__sidebar">
-                <Sidebar {...layoutContext} />
+                <Sidebar {...layoutContext} searchText={searchText} />
               </div>
             }
           </div>

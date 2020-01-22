@@ -9,10 +9,13 @@ import {Grouping, Vertex} from './layout'
 
 import './Sidebar.scss';
 
+interface ISidebarProps extends IGraphContext {
+  searchText: string
+}
 
-export class Sidebar extends React.Component<IGraphContext> {
+export class Sidebar extends React.Component<ISidebarProps> {
 
-  constructor(props: Readonly<IGraphContext>) {
+  constructor(props: Readonly<ISidebarProps>) {
     super(props);
     this.appendToLayout  = this.appendToLayout.bind(this);
     this.onEntitySelected = this.onEntitySelected.bind(this);
@@ -59,15 +62,17 @@ export class Sidebar extends React.Component<IGraphContext> {
     const vertexToSelect = layout.getVertexByEntity(entity);
     if(vertexToSelect) {
       layout.selectElement(vertexToSelect)
-      this.props.updateLayout(layout)
+      this.props.updateLayout(layout, { clearSearch: true })
     }
   }
 
   render() {
-    const { layout } = this.props
+    const { layout, searchText } = this.props
     const selection = layout.getSelectedEntities()
     const selectedGroupings = layout.getSelectedGroupings()
-    let contents;
+    let contents, searchResultsText;
+
+    console.log('searchtext is', searchText);
 
     if (selection.length === 1) {
       const entity = selection[0]
@@ -81,7 +86,8 @@ export class Sidebar extends React.Component<IGraphContext> {
         vertexRef={vertexRef}
         onVertexColorSelected={this.setVertexColor}
       />
-    } else if (selectedGroupings.length === 1) {
+      searchResultsText = 'Found 1 entity';
+    } else if (!searchText && selectedGroupings.length === 1) {
       const grouping = selectedGroupings[0]
       contents = <GroupingViewer
         grouping={grouping}
@@ -92,14 +98,21 @@ export class Sidebar extends React.Component<IGraphContext> {
       />
     } else if (selection.length) {
       contents = <EntityList entities={selection} onEntitySelected={this.onEntitySelected} />
+      searchResultsText = `Found ${selection.length} entities`;
     } else {
       const vertices = layout.getVertices().filter((v) => !v.isHidden())
       const entities = vertices.map((v) => v.getEntity()).filter((e) => !!e)
       contents = <EntityList entities={entities as Entity[]} onEntitySelected={this.onEntitySelected}/>
+      searchResultsText = 'No entities found';
     }
 
     return (
       <div className="Sidebar">
+        {searchText && (
+          <div className="Sidebar__search-text">
+            {searchResultsText}
+          </div>
+        )}
         {contents}
       </div>
     )

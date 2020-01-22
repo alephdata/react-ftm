@@ -49,7 +49,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   selectElement(element: GraphElement | Array<GraphElement>, additional: boolean = false) {
     const { layout } = this.props;
     layout.selectElement(element, additional)
-    this.props.updateLayout(layout)
+    this.props.updateLayout(layout, { clearSearch: true })
   }
 
   selectArea(area: Rectangle) {
