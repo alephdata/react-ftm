@@ -39,7 +39,9 @@ $swatch-width: 20px;
       }
 
       &:hover {
-        opacity: .7;
+        @include themify() {
+          opacity: themed('colorPickerHoverOpacity');
+        }
       }
 
       &.active {

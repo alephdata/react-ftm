@@ -4,6 +4,7 @@ $themes: (
   light: (
     backgroundColor: $white-3,
     colorPickerActiveBorderWidth: 1px,
+    colorPickerHoverOpacity: .7,
     disabledColor: $black-30,
     sidebarColor: $white-3,
     sidebarMenuBorder: 1px solid $black-70,
@@ -25,6 +26,7 @@ $themes: (
   dark: (
     backgroundColor: #fff,
     colorPickerActiveBorderWidth: 3px,
+    colorPickerHoverOpacity: 1,
     disabledColor: $black-60,
     sidebarColor: $black-80,
     sidebarMenuBorder: 1px solid transparent,
