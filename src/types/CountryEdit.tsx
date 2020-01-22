@@ -18,14 +18,34 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
     this.onRemove = this.onRemove.bind(this)
   }
 
-  componentDidMount() {
-    this.inputRef && this.inputRef.focus();
-  }
+  // componentDidMount() {
+  //   this.inputRef && this.inputRef.focus();
+  //   document.addEventListener('mousedown', this.handleClickOutside);
+  // }
+  //
+  // componentWillUnmount() {
+  //   document.removeEventListener('mousedown', this.handleClickOutside);
+  // }
+  //
+  // handleClickOutside(event: MouseEvent) {
+  //   const { onSubmit, values } = this.props;
+  //   // const { currMultiInputValue } = this.state;
+  //
+  //   const target = event.target as Element;
+  //   if (target && this.containerRef && !this.containerRef.contains(target)) {
+  //     console.log('clicked outside, submitting', target.className);
+  //     // if (currMultiInputValue) {
+  //     //   onSubmit([...values, ...[currMultiInputValue]]);
+  //     // } else {
+  //     onSubmit(values);
+  //     // }
+  //   }
+  // }
 
   onChange([countryId, label]: [string, string]) {
-    const { values, property, onPropertyChanged } = this.props;
-    // TODO: @pudo maybe we need to implement Entity.removeProperty in FTM?
-    onPropertyChanged([...values, ...[countryId]] as any, property)
+    const { values } = this.props;
+    console.log('in country on change', values, countryId);
+    this.props.onSubmit([...values, ...[countryId]]);
   }
 
   getAvailableOptions() {
@@ -51,7 +71,7 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
 
   // blueprint function returns the tag label instead of the tag id
   onRemove(valToRemove: Value) {
-    const { property, values, onPropertyChanged } = this.props;
+    const { property, values } = this.props;
 
     const fullCountriesMap = property.type.values
     const toRemove = Array.from(fullCountriesMap.entries())
@@ -59,7 +79,7 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
 
     if (toRemove) {
       const nextPropVals = [...values].filter(key => key !== toRemove[0]);
-      onPropertyChanged(nextPropVals as unknown as Values, property)
+      this.props.onChange(nextPropVals as unknown as Values, property)
     }
   }
 

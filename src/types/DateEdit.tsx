@@ -14,9 +14,9 @@ export class DateEdit extends React.Component<ITypeProps> {
 
   onChange = (value: Date) => {
     if (value instanceof Date) {
-      this.props.onPropertyChanged([value.toString()] as unknown as Values, this.props.property)
+      this.props.onChange([value.toString()] as unknown as Values, this.props.property)
     } else {
-      this.props.onPropertyChanged(['-'] as unknown as Values, this.props.property)
+      this.props.onChange(['-'] as unknown as Values, this.props.property)
     }
   };
 
@@ -30,7 +30,7 @@ export class DateEdit extends React.Component<ITypeProps> {
     return <FormGroup>
       <DateInput
         {...this.jsDateFormatter}
-        className="date-input"
+        className="date-input prevent-click-propagation"
         inputProps={{ inputRef: (ref) => this.inputRef = ref }}
         minDate={new Date(1900, 1, 1)}
         onChange={this.onChange}

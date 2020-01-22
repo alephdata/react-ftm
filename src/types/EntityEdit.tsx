@@ -33,6 +33,8 @@ export class EntityEdit extends React.Component<IEntityTypeProps> {
     const label = caption ? entity.schema.label : undefined ;
     return (
       <MenuItem
+        className="prevent-click-propagation"
+        textClassName="prevent-click-propagation"
         active={modifiers.active}
         disabled={modifiers.disabled}
         label={label}
@@ -53,7 +55,7 @@ export class EntityEdit extends React.Component<IEntityTypeProps> {
 
   onSelect = (item:Entity) => {
     const nextValues = [item.id];
-    this.props.onPropertyChanged(nextValues, this.props.property)
+    this.props.onChange(nextValues, this.props.property)
   }
 
   getItemsList() {
