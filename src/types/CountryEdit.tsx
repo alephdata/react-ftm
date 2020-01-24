@@ -23,9 +23,10 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
   //   document.addEventListener('mousedown', this.handleClickOutside);
   // }
   //
-  // componentWillUnmount() {
-  //   document.removeEventListener('mousedown', this.handleClickOutside);
-  // }
+  componentWillUnmount() {
+    // console.log('unmounting!', this.props.values);
+    // document.removeEventListener('mousedown', this.handleClickOutside);
+  }
   //
   // handleClickOutside(event: MouseEvent) {
   //   const { onSubmit, values } = this.props;
@@ -79,7 +80,7 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
 
     if (toRemove) {
       const nextPropVals = [...values].filter(key => key !== toRemove[0]);
-      this.props.onChange(nextPropVals as unknown as Values, property)
+      this.props.onSubmit(nextPropVals as unknown as Values)
     }
   }
 

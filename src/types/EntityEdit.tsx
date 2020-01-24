@@ -55,7 +55,7 @@ export class EntityEdit extends React.Component<IEntityTypeProps> {
 
   onSelect = (item:Entity) => {
     const nextValues = [item.id];
-    this.props.onChange(nextValues, this.props.property)
+    this.props.onSubmit(nextValues)
   }
 
   getItemsList() {

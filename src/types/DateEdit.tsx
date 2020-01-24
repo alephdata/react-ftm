@@ -12,11 +12,13 @@ export class DateEdit extends React.Component<ITypeProps> {
     this.inputRef && this.inputRef.focus();
   }
 
-  onChange = (value: Date) => {
-    if (value instanceof Date) {
-      this.props.onChange([value.toString()] as unknown as Values, this.props.property)
-    } else {
-      this.props.onChange(['-'] as unknown as Values, this.props.property)
+  onChange = (value: Date, isUserChange: boolean) => {
+    if (isUserChange) {
+      if (value instanceof Date) {
+        this.props.onSubmit([value.toString()] as unknown as Values)
+      } else {
+        this.props.onSubmit([] as unknown as Values)
+      }
     }
   };
 

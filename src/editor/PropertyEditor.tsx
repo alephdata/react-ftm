@@ -29,7 +29,7 @@ export class PropertyEditor extends React.Component<IPropertyEditorProps, IPrope
   }
 
   onChange = (values: Values) => {
-    console.log('onchange', values);
+    console.log('propeditor onchange', values);
     this.setState({ values });
   }
 
@@ -42,7 +42,6 @@ export class PropertyEditor extends React.Component<IPropertyEditorProps, IPrope
 
     this.props.entity.properties.set(this.props.property, overrideStateValues || this.state.values);
     this.props.onSubmit(this.props.entity)
-
   }
 
   render() {
