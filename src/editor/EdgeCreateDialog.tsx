@@ -100,8 +100,8 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         const entity = await layout.addEntity({
           schema: type.schema,
           properties: {
-            [type.schema.edge.source]: sourceEntity,
-            [type.schema.edge.target]: targetEntity,
+            [type.schema.edge.source]: sourceEntity.id,
+            [type.schema.edge.target]: targetEntity.id,
           }
         });
         const edge = Edge.fromEntity(layout, entity, source, target)

@@ -24,6 +24,7 @@ interface IVisGraphProps {
   updateLayout: (layout:GraphLayout, historyModified?: boolean) => void,
   updateViewport: (viewport:Viewport) => void
   exportSvg: (data: any) => void
+  writeable: boolean
   externalFilterText?: string
 }
 
@@ -41,7 +42,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
   constructor(props: any) {
     super(props)
-    const { config, layout, viewport } = props
+    const { config, layout, viewport, writeable } = props
 
     this.history = new History();
     this.svgRef = React.createRef()
@@ -52,7 +53,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
     this.state = {
       animateTransition: false,
-      interactionMode: config.writeable ? modes.SELECT : modes.PAN,
+      interactionMode: writeable ? modes.SELECT : modes.PAN,
       tableView: false,
     };
 
@@ -201,7 +202,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   render() {
-    const { config, layout, viewport } = this.props;
+    const { config, layout, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, tableView } = this.state;
     const vertices = layout.getSelectedVertices()
     const [sourceVertex, targetVertex] = vertices;
@@ -225,7 +226,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       onSubmitSearch: this.onSubmitSearch,
     };
 
-    const showSidebar = config.writeable && layout.vertices && layout.vertices.size > 0;
+    const showSidebar = writeable && layout.vertices && layout.vertices.size > 0;
 
     return (
       <GraphContext.Provider value={layoutContext}>
@@ -235,7 +236,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               actions={actions}
               history={this.history}
               interactionMode={this.state.interactionMode}
-              showEditingButtons={config.writeable}
+              showEditingButtons={writeable}
               logo={config.logo}
               {...layoutContext}
             />
@@ -256,7 +257,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                 animateTransition={animateTransition}
                 actions={actions}
                 interactionMode={interactionMode}
-                writeable={config.writeable}
+                writeable={writeable}
                 {...layoutContext}
               />
               <Drawer
@@ -269,7 +270,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                 style={{ height: '60%' }}
               >
                 <div className={Classes.DRAWER_BODY}>
-                  <TableEditor layout={layout} updateLayout={this.updateLayout} writeable={config.writeable} />
+                  <TableEditor layout={layout} updateLayout={this.updateLayout} writeable={writeable} />
                 </div>
               </Drawer>
             </div>
@@ -280,7 +281,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
             }
           </div>
         </div>
-        {config.writeable && (
+        {writeable && (
           <>
             <VertexCreateDialog
               isOpen={interactionMode === modes.VERTEX_CREATE}
