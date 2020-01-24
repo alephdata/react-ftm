@@ -65,7 +65,6 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   onEditPropertyClick(e:React.MouseEvent, property:Property){
-    console.log('in on edit prop click');
     e.preventDefault()
     e.stopPropagation()
     this.setState({
@@ -76,7 +75,6 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   onSubmit(entity: Entity) {
     this.props.onEntityChanged(entity);
 
-    console.log('in viewer submit, closing');
     this.setState({
       currEditing: null
     })
@@ -86,8 +84,6 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     const { entity } = this.props;
     const { currEditing } = this.state;
     const isEditable = property?.name === currEditing?.name;
-
-    console.log('rendering property', isEditable, property?.name, currEditing?.name);
 
     return <React.Fragment key={property.name}>
       <li
@@ -125,7 +121,6 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     const { visibleProps } = this.state;
     const availableProperties = this.schemaProperties.filter(p => visibleProps.indexOf(p) < 0);
 
-    console.log('in render', this.state.currEditing);
     return (
       <div className='EntityViewer'>
         <div className='EntityViewer__title'>

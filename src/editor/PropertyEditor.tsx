@@ -29,7 +29,6 @@ export class PropertyEditor extends React.Component<IPropertyEditorProps, IPrope
   }
 
   onChange = (values: Values) => {
-    console.log('propeditor onchange', values);
     this.setState({ values });
   }
 
@@ -39,9 +38,20 @@ export class PropertyEditor extends React.Component<IPropertyEditorProps, IPrope
     if (overrideStateValues) {
       this.setState({ values: overrideStateValues });
     }
+    if (!this.checkErrors()) {
+      this.props.entity.properties.set(this.props.property, overrideStateValues || this.state.values);
+      this.props.onSubmit(this.props.entity)
+    }
+  }
 
-    this.props.entity.properties.set(this.props.property, overrideStateValues || this.state.values);
-    this.props.onSubmit(this.props.entity)
+  checkErrors() {
+    const { property } = this.props;
+    const { values } = this.state;
+
+    console.log(property);
+    if (property.required) {
+      return values && values.length && values[0] ? null : "This property is required";
+    }
   }
 
   render() {
@@ -68,9 +78,14 @@ export class PropertyEditor extends React.Component<IPropertyEditorProps, IPrope
       content = <TextEdit {...commonProps} />;
     }
 
+    const foundError = this.checkErrors();
+
     return (
       <form onSubmit={e => { e.preventDefault(); this.onSubmit(); }}>
         {content}
+        {foundError && (
+          <div className="EntityViewer__property-list-item__error">{foundError}</div>
+        )}
       </form>
     )
   }
