@@ -162,7 +162,6 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
   }
 
   onEntityChanged = (nextEntity: Entity) => {
-    console.log('in table editor on change');
     const { layout, updateLayout } = this.props;
     layout.updateEntity(nextEntity);
     updateLayout(layout, { modifyHistory: true, entityChanges: { updated: [nextEntity] } });

@@ -52,7 +52,6 @@ export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
 
     const target = event.target as Element;
     if (target && this.containerRef && !this.containerRef.contains(target)) {
-      console.log('in text edit, clicked outside, submitting', target.className);
       if (currMultiInputValue) {
         onSubmit([...values, ...[currMultiInputValue]]);
       } else {
@@ -63,7 +62,6 @@ export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
 
   onChange = (values: Array<string | React.ReactNode>) => {
     // remove duplicates
-    console.log('in text edit, change!', values);
     this.props.onChange(Array.from(new Set(values)) as unknown as Values)
     if (values.length <= 1) {
       this.setState({ forceMultiEdit: false });

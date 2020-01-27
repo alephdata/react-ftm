@@ -18,34 +18,8 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
     this.onRemove = this.onRemove.bind(this)
   }
 
-  // componentDidMount() {
-  //   this.inputRef && this.inputRef.focus();
-  //   document.addEventListener('mousedown', this.handleClickOutside);
-  // }
-  //
-  componentWillUnmount() {
-    // console.log('unmounting!', this.props.values);
-    // document.removeEventListener('mousedown', this.handleClickOutside);
-  }
-  //
-  // handleClickOutside(event: MouseEvent) {
-  //   const { onSubmit, values } = this.props;
-  //   // const { currMultiInputValue } = this.state;
-  //
-  //   const target = event.target as Element;
-  //   if (target && this.containerRef && !this.containerRef.contains(target)) {
-  //     console.log('clicked outside, submitting', target.className);
-  //     // if (currMultiInputValue) {
-  //     //   onSubmit([...values, ...[currMultiInputValue]]);
-  //     // } else {
-  //     onSubmit(values);
-  //     // }
-  //   }
-  // }
-
   onChange([countryId, label]: [string, string]) {
     const { values } = this.props;
-    console.log('in country on change', values, countryId);
     this.props.onSubmit([...values, ...[countryId]]);
   }
 
