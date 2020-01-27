@@ -33,7 +33,7 @@ export class DateEdit extends React.Component<ITypeProps> {
     return <FormGroup>
       <DateInput
         {...this.jsDateFormatter}
-        className="date-input prevent-click-propagation"
+        className="date-input"
         inputProps={{ inputRef: (ref) => this.inputRef = ref }}
         minDate={new Date(1900, 1, 1)}
         onChange={this.onChange}

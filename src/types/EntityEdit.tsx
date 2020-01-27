@@ -33,8 +33,6 @@ export class EntityEdit extends React.Component<IEntityTypeProps> {
     const label = caption ? entity.schema.label : undefined ;
     return (
       <MenuItem
-        className="prevent-click-propagation"
-        textClassName="prevent-click-propagation"
         active={modifiers.active}
         disabled={modifiers.disabled}
         label={label}
