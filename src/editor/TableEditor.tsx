@@ -162,6 +162,7 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
   }
 
   onEntityChanged = (nextEntity: Entity) => {
+    console.log('in table editor on change');
     const { layout, updateLayout } = this.props;
     layout.updateEntity(nextEntity);
     updateLayout(layout, { modifyHistory: true, entityChanges: { updated: [nextEntity] } });
@@ -238,7 +239,7 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
                       }}
                     >
                       <PropertyValues values={entity.getProperty(property)} prop={property} />
-                      <PropertyEditor entity={entity} property={property} onEntityChanged={this.onEntityChanged} />
+                      <PropertyEditor entity={entity} property={property} onSubmit={this.onEntityChanged} />
                     </Popover>
                   )}
                 </Cell>

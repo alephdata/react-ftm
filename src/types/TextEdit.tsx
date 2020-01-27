@@ -52,7 +52,7 @@ export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
 
     const target = event.target as Element;
     if (target && this.containerRef && !this.containerRef.contains(target)) {
-      console.log('clicked outside, submitting', target.className);
+      console.log('in text edit, clicked outside, submitting', target.className);
       if (currMultiInputValue) {
         onSubmit([...values, ...[currMultiInputValue]]);
       } else {

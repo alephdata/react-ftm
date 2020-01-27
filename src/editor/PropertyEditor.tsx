@@ -29,11 +29,12 @@ export class PropertyEditor extends React.Component<IPropertyEditorProps, IPrope
   }
 
   onChange = (values: Values) => {
+    console.log('PropertyEditor, on change')
     this.setState({ values });
   }
 
   onSubmit = (overrideStateValues?: Values) => {
-    console.log('submit!', overrideStateValues || this.state.values);
+    console.log('PropertyEditor, on submit')
 
     if (overrideStateValues) {
       this.setState({ values: overrideStateValues });
@@ -48,7 +49,6 @@ export class PropertyEditor extends React.Component<IPropertyEditorProps, IPrope
     const { property } = this.props;
     const { values } = this.state;
 
-    console.log(property);
     if (property.required) {
       return values && values.length && values[0] ? null : "This property is required";
     }
