@@ -340,7 +340,8 @@ export class GraphLayout {
         this.edges.forEach((edge) => {
           if (edge.isEntity() && edge.isLinkedToVertex(vertex) && edge.entityId) {
             removedEntities.push(edge.getEntity());
-            this.removeEntity(edge.entityId, true);
+            // don't propagate removal of associated edge entities
+            this.removeEntity(edge.entityId, false);
           }
         })
       } else {
