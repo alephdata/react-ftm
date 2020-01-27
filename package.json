@@ -106,6 +106,7 @@
   "dependencies": {
     "d3-force": "^2.0.1",
     "dagre": "^0.8.4",
+    "moment": "^2.24.0",
     "numeral": "^2.0.6",
     "react-draggable": "^3.3.0",
     "save-dev": "0.0.1-security",
