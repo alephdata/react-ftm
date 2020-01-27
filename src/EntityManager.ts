@@ -3,7 +3,7 @@ import { defaultModel, Entity, Model, IEntityDatum } from '@alephdata/followthem
 
 export interface IEntityManagerOverload {
   createEntity?: (entityData: IEntityDatum) => IEntityDatum,
-  undeleteEntity?: (entityId: string) => void,
+  undeleteEntity?: (entity: Entity) => void,
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
 }
@@ -36,11 +36,11 @@ export class EntityManager {
   }
 
   // not called externally, only used when undoing/redoing entity changes from history
-  undeleteEntity(entityId: string) {
+  undeleteEntity(entity: Entity) {
     console.log('ENTITY MANAGER: undelete')
 
     if (this.overload?.undeleteEntity) {
-      this.overload.undeleteEntity(entityId);
+      this.overload.undeleteEntity(entity);
     }
   }
 
@@ -65,8 +65,8 @@ export class EntityManager {
   applyEntityChanges(entityChanges: any, factor: number) {
     const { created, updated, deleted } = entityChanges;
 
-    created && created.forEach((entity: Entity) => factor > 0 ? this.undeleteEntity(entity.id) : this.deleteEntity(entity.id));
+    created && created.forEach((entity: Entity) => factor > 0 ? this.undeleteEntity(entity) : this.deleteEntity(entity.id));
     updated && updated.forEach((entity: Entity) => this.updateEntity(entity));
-    deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntity(entity.id) : this.undeleteEntity(entity.id));
+    deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntity(entity.id) : this.undeleteEntity(entity));
   }
 }
