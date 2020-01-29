@@ -115,15 +115,14 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   updateLayout(layout: GraphLayout, options?: any) {
-    const { updateLayout } = this.props;
-
     if (options?.modifyHistory) {
       this.history.push({layout:layout.toJSON(), entityChanges: options.entityChanges});
     }
 
     this.setState({animateTransition: false });
 
-    updateLayout(layout, options?.modifyHistory || options?.forceSaveUpdate);
+    this.props.updateLayout(layout, (options?.modifyHistory || options?.forceSave));
+
   }
 
   updateViewport(viewport: Viewport, { animate = false } = {}) {
@@ -143,7 +142,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       entityManager.applyEntityChanges(entityChanges, factor);
     }
 
-    this.updateLayout(GraphLayout.fromJSON(config, entityManager, layout), { forceSaveUpdate: true })
+    this.updateLayout(GraphLayout.fromJSON(config, entityManager, layout), { forceSave: true })
   }
 
   addVertexToPosition(initialPos?: Point) {
@@ -226,7 +225,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       onSubmitSearch: this.onSubmitSearch,
     };
 
-    const showSidebar = writeable && layout.vertices && layout.vertices.size > 0;
+    const showSidebar = layout.vertices && layout.vertices.size > 0;
 
     return (
       <GraphContext.Provider value={layoutContext}>
@@ -276,7 +275,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
             </div>
             {showSidebar &&
               <div className="VisGraph__sidebar">
-                <Sidebar {...layoutContext} />
+                <Sidebar {...layoutContext} writeable={writeable} />
               </div>
             }
           </div>

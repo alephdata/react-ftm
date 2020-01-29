@@ -17,6 +17,7 @@ interface IEntityViewerProps {
   vertexRef?: Vertex,
   onEntityChanged: (entity: Entity) => void
   onVertexColorSelected: (vertex: Vertex, color: string) => void
+  writeable: boolean
 }
 
 interface IEntityViewerState {
@@ -117,12 +118,12 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   render() {
-    const { entity, vertexRef } = this.props;
+    const { entity, vertexRef, writeable } = this.props;
     const { visibleProps } = this.state;
     const availableProperties = this.schemaProperties.filter(p => visibleProps.indexOf(p) < 0);
 
     return (
-      <div className='EntityViewer'>
+      <div className={c('EntityViewer', { writeable: writeable })}>
         <div className='EntityViewer__title'>
           <SchemaIcon size={60} schema={entity.schema} />
           <h2 className='EntityViewer__title__text'>{entity.getCaption()}</h2>
@@ -136,7 +137,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
         <UL className={c('EntityViewer__property-list', Classes.LIST_UNSTYLED)}>
           {visibleProps.map(this.renderProperty)}
         </UL>
-        {!!availableProperties.length && (<>
+        {writeable && !!availableProperties.length && (<>
           <Divider/>
           <SelectProperty
             properties={availableProperties}

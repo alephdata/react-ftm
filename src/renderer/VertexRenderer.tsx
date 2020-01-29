@@ -143,7 +143,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     return (
       <DraggableCore
         handle='.handle'
-        onStart={writeable ? this.onDragStart : undefined}
+        onStart={this.onDragStart}
         onDrag={writeable ? this.onDragMove : undefined}
         onStop={writeable ? this.onDragEnd : undefined}
         enableUserSelectHack={false} >

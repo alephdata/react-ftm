@@ -8,6 +8,10 @@
     color: themed('textColor');
   }
 
+  &:not(.writeable) {
+    pointer-events: none;
+  }
+
   &__title {
     text-align: center;
     padding: 25px 15px;

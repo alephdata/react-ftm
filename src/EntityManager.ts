@@ -35,7 +35,6 @@ export class EntityManager {
     }
   }
 
-  // not called externally, only used when undoing/redoing entity changes from history
   undeleteEntity(entity: Entity) {
     console.log('ENTITY MANAGER: undelete')
 

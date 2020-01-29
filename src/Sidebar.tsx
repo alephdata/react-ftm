@@ -3,16 +3,19 @@ import {Entity} from '@alephdata/followthemoney';
 import {IGraphContext} from './GraphContext'
 import {GroupingViewer} from "./editor/GroupingViewer";
 import {EntityViewer} from "./editor/EntityViewer";
-
 import {EntityList} from "./editor/EntityList";
 import {Grouping, Vertex} from './layout'
+import c from 'classnames';
 
 import './Sidebar.scss';
 
+interface ISidebarProps extends IGraphContext {
+  writeable: boolean,
+}
 
-export class Sidebar extends React.Component<IGraphContext> {
+export class Sidebar extends React.Component<ISidebarProps> {
 
-  constructor(props: Readonly<IGraphContext>) {
+  constructor(props: Readonly<ISidebarProps>) {
     super(props);
     this.appendToLayout  = this.appendToLayout.bind(this);
     this.onEntitySelected = this.onEntitySelected.bind(this);
@@ -64,7 +67,7 @@ export class Sidebar extends React.Component<IGraphContext> {
   }
 
   render() {
-    const { layout } = this.props
+    const { layout, writeable } = this.props
     const selection = layout.getSelectedEntities()
     const selectedGroupings = layout.getSelectedGroupings()
     let contents;
@@ -80,6 +83,7 @@ export class Sidebar extends React.Component<IGraphContext> {
         onEntityChanged={this.appendToLayout}
         vertexRef={vertexRef}
         onVertexColorSelected={this.setVertexColor}
+        writeable={writeable}
       />
     } else if (selectedGroupings.length === 1) {
       const grouping = selectedGroupings[0]
@@ -89,6 +93,7 @@ export class Sidebar extends React.Component<IGraphContext> {
         onEntitySelected={this.onEntitySelected}
         onEntityRemoved={this.removeGroupingEntity}
         onColorSelected={this.setGroupingColor}
+        writeable={writeable}
       />
     } else if (selection.length) {
       contents = <EntityList entities={selection} onEntitySelected={this.onEntitySelected} />
@@ -99,7 +104,7 @@ export class Sidebar extends React.Component<IGraphContext> {
     }
 
     return (
-      <div className="Sidebar">
+      <div className='Sidebar'>
         {contents}
       </div>
     )

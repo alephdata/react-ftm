@@ -17,11 +17,12 @@ interface IGroupingViewerProps {
   onEntitySelected: (entity:Entity) => void
   onEntityRemoved: (grouping: Grouping, entity:Entity) => void
   onColorSelected: (grouping: Grouping, color: string) => void
+  writeable: boolean
 }
 
 export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
   render() {
-    const { grouping, onEntitySelected, onEntityRemoved, onColorSelected } = this.props;
+    const { grouping, onEntitySelected, onEntityRemoved, onColorSelected, writeable } = this.props;
     return (
       <div
         className='GroupingViewer'
@@ -38,7 +39,7 @@ export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
         <EntityList
           entities={grouping.getEntities()}
           onEntitySelected={onEntitySelected}
-          onEntityRemoved={(entity) => onEntityRemoved(grouping, entity)}
+          onEntityRemoved={writeable ? (entity => onEntityRemoved(grouping, entity)) : undefined}
         />
       </div>
     )

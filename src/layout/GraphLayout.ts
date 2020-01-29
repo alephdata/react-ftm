@@ -332,9 +332,11 @@ export class GraphLayout {
 
   removeSelection() {
     const removedEntities: Array<Entity | undefined> = [];
+    const groupings = this.getGroupings();
 
     this.getSelectedVertices().forEach((vertex) => {
       if (vertex.entityId) {
+        console.log('removing', vertex);
         removedEntities.push(vertex.getEntity());
         this.removeEntity(vertex.entityId, true);
         this.edges.forEach((edge) => {
@@ -347,7 +349,7 @@ export class GraphLayout {
       } else {
         vertex.hidden = true
       }
-      this.getGroupings().forEach(grouping => {
+      groupings.forEach(grouping => {
         grouping.removeVertex(vertex)
         if (grouping.vertices.size < 2) {
           this.groupings.delete(grouping.id)

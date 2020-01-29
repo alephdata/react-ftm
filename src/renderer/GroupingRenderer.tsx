@@ -101,7 +101,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
     return (
       <DraggableCore
         handle='.grouping-handle'
-        onStart={writeable ? this.onDragStart : undefined}
+        onStart={this.onDragStart}
         onDrag={writeable ? this.onDragMove : undefined}
         onStop={writeable ? this.onDragEnd : undefined}
         enableUserSelectHack={false} >
