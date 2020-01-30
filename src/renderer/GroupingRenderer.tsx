@@ -9,6 +9,7 @@ interface IGroupingRendererProps {
   grouping: Grouping
   config: GraphConfig
   vertices: Vertex[]
+  highlighted: boolean
   selected: boolean
   selectGrouping: (element: Array<GraphElement>, additional?: boolean) => any
   dragSelection: (offset: Point) => any
@@ -76,7 +77,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   render() {
-    const { config, grouping, interactionMode, selected, vertices, writeable } = this.props
+    const { config, grouping, interactionMode, selected, highlighted, vertices, writeable } = this.props
     const { hovered } = this.state
 
     if (!vertices || vertices.length <= 1) { return null; }
@@ -96,7 +97,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
       strokeDasharray: "2",
       pointerEvents: interactionMode === modes.ITEM_DRAG ? "none" : "auto"
     }
-    const displayColor = grouping && (selected || hovered) ? grouping.color : config.UNSELECTED_COLOR
+    const displayColor = grouping && (highlighted || hovered) ? grouping.color : config.UNSELECTED_COLOR
 
     return (
       <DraggableCore
@@ -118,7 +119,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
             width={width}
             height={height}
             fill={displayColor}
-            fillOpacity={selected || hovered ? ".1" : ".2"}
+            fillOpacity={highlighted || hovered ? ".1" : ".2"}
             style={grouping.id === 'selectedArea' ? selectedAreaStyle : undefined}
           />
           {grouping && (
