@@ -119,17 +119,17 @@ export class GraphLayout {
     return entity;
   }
 
-  updateEntity(entity: Entity) {
-    this.entityManager.updateEntity(entity);
+  async updateEntity(entity: Entity) {
+    await this.entityManager.updateEntity(entity);
     this.entities.set(entity.id, entity)
     this.layout()
 
     return entity;
   }
 
-  removeEntity(entityId: string, propagate?: boolean) {
+  async removeEntity(entityId: string, propagate?: boolean) {
     if (propagate) {
-      this.entityManager.deleteEntity(entityId);
+      await this.entityManager.deleteEntity(entityId);
     }
     this.entities.delete(entityId)
     this.layout()
@@ -332,24 +332,21 @@ export class GraphLayout {
 
   removeSelection() {
     const removedEntities: Array<Entity | undefined> = [];
-    const groupings = this.getGroupings();
 
     this.getSelectedVertices().forEach((vertex) => {
       if (vertex.entityId) {
-        console.log('removing', vertex);
         removedEntities.push(vertex.getEntity());
         this.removeEntity(vertex.entityId, true);
         this.edges.forEach((edge) => {
           if (edge.isEntity() && edge.isLinkedToVertex(vertex) && edge.entityId) {
             removedEntities.push(edge.getEntity());
-            // don't propagate removal of associated edge entities
-            this.removeEntity(edge.entityId, false);
+            this.removeEntity(edge.entityId, true);
           }
         })
       } else {
         vertex.hidden = true
       }
-      groupings.forEach(grouping => {
+      this.getGroupings().forEach(grouping => {
         grouping.removeVertex(vertex)
         if (grouping.vertices.size < 2) {
           this.groupings.delete(grouping.id)
@@ -458,7 +455,9 @@ export class GraphLayout {
 
     if (layoutData.entities) {
       layoutData.entities.forEach((edata) => {
+        console.log('edata', edata);
         layout.entities.set(edata.id, entityManager.model.getEntity(edata))
+
       })
     } else {
       // layout.entities = new Map()

@@ -35,27 +35,27 @@ export class EntityManager {
     }
   }
 
-  undeleteEntity(entity: Entity) {
+  async undeleteEntity(entity: Entity) {
     console.log('ENTITY MANAGER: undelete')
 
     if (this.overload?.undeleteEntity) {
-      this.overload.undeleteEntity(entity);
+      await this.overload.undeleteEntity(entity);
     }
   }
 
-  updateEntity(entity: Entity) {
+  async updateEntity(entity: Entity) {
     console.log('ENTITY MANAGER: update')
 
     if (this.overload?.updateEntity) {
-      this.overload.updateEntity(entity);
+      await this.overload.updateEntity(entity);
     }
   }
 
-  deleteEntity(entityId: string) {
+  async deleteEntity(entityId: string) {
     console.log('ENTITY MANAGER: delete')
 
     if (this.overload?.deleteEntity) {
-      this.overload.deleteEntity(entityId);
+      await this.overload.deleteEntity(entityId);
     }
   }
 
