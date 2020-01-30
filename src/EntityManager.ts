@@ -18,7 +18,6 @@ export class EntityManager {
   }
 
   async createEntity(entityData: any) {
-    console.log('ENTITY MANAGER: create')
     if (this.overload?.createEntity) {
       const entityWithId: IEntityDatum = await this.overload.createEntity(entityData);
       return new Entity(this.model, entityWithId);
@@ -36,31 +35,23 @@ export class EntityManager {
   }
 
   async undeleteEntity(entity: Entity) {
-    console.log('ENTITY MANAGER: undelete')
-
     if (this.overload?.undeleteEntity) {
       await this.overload.undeleteEntity(entity);
     }
   }
 
   async updateEntity(entity: Entity) {
-    console.log('ENTITY MANAGER: update')
-
     if (this.overload?.updateEntity) {
       await this.overload.updateEntity(entity);
     }
   }
 
   async deleteEntity(entityId: string) {
-    console.log('ENTITY MANAGER: delete')
-
     if (this.overload?.deleteEntity) {
       await this.overload.deleteEntity(entityId);
     }
   }
 
-  // FIXME: no guarantee that entity will be created/deleted with the same ID
-  // entity changes in the reverse direction require undoing create/delete operations
   applyEntityChanges(entityChanges: any, factor: number) {
     const { created, updated, deleted } = entityChanges;
 

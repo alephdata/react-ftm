@@ -116,7 +116,6 @@ export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
               addOnBlur
               addOnPaste
               fill
-              onAdd={() => console.log('adding')}
               onChange={this.onChange}
               values={this.props.values}
               inputValue={currMultiInputValue}
