@@ -134,6 +134,8 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   render(){
     const { svgRef, layout, viewport, animateTransition, actions, interactionMode, writeable } = this.props;
 
+    console.log(layout);
+    
     return (
       <Canvas
         svgRef={svgRef}

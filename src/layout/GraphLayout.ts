@@ -120,19 +120,19 @@ export class GraphLayout {
   }
 
   async updateEntity(entity: Entity) {
-    await this.entityManager.updateEntity(entity);
     this.entities.set(entity.id, entity)
     this.layout()
+
+    await this.entityManager.updateEntity(entity);
 
     return entity;
   }
 
   async removeEntity(entityId: string, propagate?: boolean) {
+    this.entities.delete(entityId)
     if (propagate) {
       await this.entityManager.deleteEntity(entityId);
     }
-    this.entities.delete(entityId)
-    this.layout()
   }
 
   getEntities(): Entity[] {
@@ -365,7 +365,7 @@ export class GraphLayout {
       }
     })
 
-    this.generate()
+    this.layout()
 
     return removedEntities;
   }
@@ -455,9 +455,7 @@ export class GraphLayout {
 
     if (layoutData.entities) {
       layoutData.entities.forEach((edata) => {
-        console.log('edata', edata);
         layout.entities.set(edata.id, entityManager.model.getEntity(edata))
-
       })
     } else {
       // layout.entities = new Map()

@@ -105,7 +105,6 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         });
         const edge = Edge.fromEntity(layout, entity, source, target)
         layout.selectElement(edge)
-        updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
         entityChanges.created = [entity];
       }
       updateLayout(layout, { modifyHistory:true, entityChanges })

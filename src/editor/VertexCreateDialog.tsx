@@ -65,7 +65,8 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
         vertexInitialPos && layout.vertices.set(vertex.id, vertex.setPosition(vertexInitialPos))
         layout.selectElement(vertex)
         updateLayout(layout, {modifyHistory: true, entityChanges: { created: [entity] }})
-        updateViewport(viewport.setCenter(vertexInitialPos || vertex.position), {animate:true})
+        // zoom viewport to new vertex only if created without initial position
+        !vertexInitialPos && updateViewport(viewport.setCenter(vertexInitialPos || vertex.position), {animate:true})
         this.setState({label: ''})
         this.props.toggleDialog()
       }
