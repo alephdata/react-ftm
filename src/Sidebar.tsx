@@ -104,7 +104,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
     }
 
     return (
-      <div className='Sidebar'>
+      <div className="Sidebar">
         {contents}
       </div>
     )
