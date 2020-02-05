@@ -73,8 +73,6 @@ export class Sidebar extends React.Component<ISidebarProps> {
     const selectedGroupings = layout.getSelectedGroupings()
     let contents, searchResultsText;
 
-    console.log('searchtext is', searchText);
-
     if (selection.length === 1) {
       const entity = selection[0]
       let vertexRef

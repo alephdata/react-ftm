@@ -21,7 +21,7 @@ interface IVisGraphProps {
   entityManager: EntityManager
   layout: GraphLayout,
   viewport: Viewport,
-  updateLayout: (layout:GraphLayout, historyModified?: boolean) => void,
+  updateLayout: (layout:GraphLayout, options?: any) => void,
   updateViewport: (viewport:Viewport) => void
   exportSvg: (data: any) => void
   writeable: boolean
@@ -129,8 +129,10 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       searchText: options?.clearSearch ? '' : searchText
     }));
 
-    this.props.updateLayout(layout, options?.modifyHistory || options?.forceSaveUpdate);
-    // updateLayout(layout, { saveUpdate: options?.modifyHistory || options?.forceSaveUpdate, clearSearch: options?.clearSearch });
+    this.props.updateLayout(layout, {
+      propagate: options?.modifyHistory || options?.forceSaveUpdate,
+      clearSearch: options?.clearSearch,
+    });
   }
 
   updateViewport(viewport: Viewport, { animate = false } = {}) {
