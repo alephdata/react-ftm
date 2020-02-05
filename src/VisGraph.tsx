@@ -108,7 +108,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       layout.clearSelection();
     }
     this.setState({ searchText });
-    this.updateLayout(layout, { modifyHistory: false })
+    this.updateLayout(layout, null, { modifyHistory: false })
   }
 
   onSubmitSearch(event: React.FormEvent) {
@@ -117,14 +117,14 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     event.stopPropagation();
   }
 
-  updateLayout(layout: GraphLayout, options?: any) {
+  updateLayout(layout: GraphLayout, entityChanges?: any, options?: any) {
     const { updateLayout } = this.props;
 
     if (options?.modifyHistory) {
-      this.history.push({layout:layout.toJSON(), entityChanges: options.entityChanges});
+      this.history.push({layout:layout.toJSON(), entityChanges: entityChanges});
     }
 
-    console.log('clearing search', options?.clearSearch);
+    console.log('should clear search', options, options?.clearSearch);
 
     this.setState(({ searchText }) => ({
       animateTransition: false,
@@ -132,6 +132,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     }));
 
     updateLayout(layout, options?.modifyHistory || options?.forceSaveUpdate);
+    // updateLayout(layout, { saveUpdate: options?.modifyHistory || options?.forceSaveUpdate, clearSearch: options?.clearSearch });
   }
 
   updateViewport(viewport: Viewport, { animate = false } = {}) {
@@ -151,7 +152,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       entityManager.applyEntityChanges(entityChanges, factor);
     }
 
-    this.updateLayout(GraphLayout.fromJSON(config, entityManager, layout), { forceSaveUpdate: true })
+    this.updateLayout(GraphLayout.fromJSON(config, entityManager, layout), null, { forceSaveUpdate: true })
   }
 
   addVertexToPosition(initialPos?: Point) {
@@ -181,13 +182,13 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   removeSelection() {
     const { layout } = this.props
     const removedEntities = layout.removeSelection()
-    this.updateLayout(layout, {modifyHistory:true, entityChanges: { deleted: removedEntities }})
+    this.updateLayout(layout, { deleted: removedEntities }, { modifyHistory:true })
   }
 
   ungroupSelection() {
     const { layout } = this.props
     layout.ungroupSelection()
-    this.updateLayout(layout, {modifyHistory:true})
+    this.updateLayout(layout, null, { modifyHistory:true })
   }
 
   exportSvg() {
@@ -236,8 +237,6 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
     const showSidebar = writeable && layout.vertices && layout.vertices.size > 0;
 
-    console.log(layout.selection);
-
     return (
       <GraphContext.Provider value={layoutContext}>
         <div className={c('VisGraph', `toolbar-${config.toolbarPosition}`, `theme-${config.editorTheme}`)}>
@@ -248,6 +247,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               interactionMode={this.state.interactionMode}
               showEditingButtons={writeable}
               logo={config.logo}
+              searchText={searchText}
               {...layoutContext}
             />
           </div>

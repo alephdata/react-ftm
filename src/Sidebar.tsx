@@ -27,7 +27,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
   appendToLayout(entity: Entity) {
     const { layout } = this.props
     layout.updateEntity(entity);
-    this.props.updateLayout(layout, { modifyHistory:true, entityChanges: { updated: [entity] } })
+    this.props.updateLayout(layout, { updated: [entity] }, { modifyHistory:true });
   }
 
   removeGroupingEntity(grouping: Grouping, entity: Entity) {
@@ -37,7 +37,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
 
     if (vertex) {
       layout.groupings.set(grouping.id, grouping.removeVertex(vertex))
-      this.props.updateLayout(layout, {modifyHistory:true})
+      this.props.updateLayout(layout, null, { modifyHistory:true })
     }
   }
 
@@ -45,7 +45,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
     const { layout, updateLayout } = this.props
     if (vertex) {
       layout.vertices.set(vertex.id, vertex.setColor(color))
-      updateLayout(layout, {modifyHistory:true})
+      updateLayout(layout, null, { modifyHistory: true })
     }
   }
 
@@ -53,7 +53,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
     const { layout, updateLayout } = this.props
     if (grouping) {
       layout.groupings.set(grouping.id, grouping.setColor(color))
-      updateLayout(layout, {modifyHistory:true})
+      updateLayout(layout, null, { modifyHistory:true });
     }
   }
 
@@ -62,7 +62,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
     const vertexToSelect = layout.getVertexByEntity(entity);
     if(vertexToSelect) {
       layout.selectElement(vertexToSelect)
-      this.props.updateLayout(layout, { clearSearch: true })
+      this.props.updateLayout(layout, null, { clearSearch: true });
     }
   }
 
@@ -86,7 +86,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
         vertexRef={vertexRef}
         onVertexColorSelected={this.setVertexColor}
       />
-      searchResultsText = 'Found 1 entity';
+      searchResultsText = 'Found 1 result';
     } else if (!searchText && selectedGroupings.length === 1) {
       const grouping = selectedGroupings[0]
       contents = <GroupingViewer
@@ -98,12 +98,12 @@ export class Sidebar extends React.Component<ISidebarProps> {
       />
     } else if (selection.length) {
       contents = <EntityList entities={selection} onEntitySelected={this.onEntitySelected} />
-      searchResultsText = `Found ${selection.length} entities`;
+      searchResultsText = `Found ${selection.length} results`;
     } else {
       const vertices = layout.getVertices().filter((v) => !v.isHidden())
       const entities = vertices.map((v) => v.getEntity()).filter((e) => !!e)
       contents = <EntityList entities={entities as Entity[]} onEntitySelected={this.onEntitySelected}/>
-      searchResultsText = 'No entities found';
+      searchResultsText = 'No results found';
     }
 
     return (

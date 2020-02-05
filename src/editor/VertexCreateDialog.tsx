@@ -64,7 +64,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
       if (vertex) {
         vertexInitialPos && layout.vertices.set(vertex.id, vertex.setPosition(vertexInitialPos))
         layout.selectElement(vertex)
-        updateLayout(layout, {modifyHistory: true, clearSearch: true, entityChanges: { created: [entity] }})
+        updateLayout(layout, { created: [entity] }, { modifyHistory: true, clearSearch: true });
         updateViewport(viewport.setCenter(vertexInitialPos || vertex.position), {animate:true})
         this.setState({label: ''})
         this.props.toggleDialog()

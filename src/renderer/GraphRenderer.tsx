@@ -37,7 +37,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   dropSelection() {
     const { layout } = this.props;
     const shouldUpdateHistory = layout.dropSelection()
-    this.props.updateLayout(layout, {modifyHistory:shouldUpdateHistory})
+    this.props.updateLayout(layout, null, { modifyHistory:shouldUpdateHistory })
   }
 
   clearSelection() {
@@ -49,13 +49,14 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   selectElement(element: GraphElement | Array<GraphElement>, additional: boolean = false) {
     const { layout } = this.props;
     layout.selectElement(element, additional)
-    this.props.updateLayout(layout, { clearSearch: true })
+    console.log('selecting element!');
+    this.props.updateLayout(layout, null, { clearSearch: true });
   }
 
   selectArea(area: Rectangle) {
     const { layout } = this.props;
     layout.selectArea(area)
-    this.props.updateLayout(layout)
+    this.props.updateLayout(layout, null, { clearSearch: true })
   }
 
   renderGroupings() {

@@ -109,7 +109,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
         entityChanges.created = [entity];
       }
-      updateLayout(layout, { modifyHistory:true, clearSearch: true, entityChanges })
+      updateLayout(layout, entityChanges, { modifyHistory: true, clearSearch: true });
       toggleDialog()
     }
   }

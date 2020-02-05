@@ -31,6 +31,7 @@ interface IToolbarProps extends IGraphContext {
   history: History,
   interactionMode: string,
   showEditingButtons: boolean,
+  searchText: string,
   logo?: GraphLogo,
 }
 
@@ -99,7 +100,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
   }
 
   render() {
-    const { layout, viewport, updateLayout, updateViewport, actions, history, interactionMode, showEditingButtons, logo } = this.props
+    const { layout, viewport, updateLayout, updateViewport, actions, history, interactionMode, showEditingButtons, logo, searchText } = this.props
     const vertices = this.props.layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
@@ -175,25 +176,25 @@ export class Toolbar extends React.Component<IToolbarProps> {
           helpText: "Align horizontal",
           icon: "drag-handle-horizontal",
           disabled: disableLayoutButtons,
-          onClick: () => updateLayout(alignHorizontal(layout), {modifyHistory:true}),
+          onClick: () => updateLayout(alignHorizontal(layout), null, { modifyHistory:true }),
         },
         {
           helpText: "Align vertical",
           icon: "drag-handle-vertical",
           disabled: disableLayoutButtons,
-          onClick: () => updateLayout(alignVertical(layout), {modifyHistory:true}),
+          onClick: () => updateLayout(alignVertical(layout), null, { modifyHistory:true }),
         },
         {
           helpText: "Arrange as circle",
           icon: "layout-circle",
           disabled: disableLayoutButtons,
-          onClick: () => updateLayout(alignCircle(layout), {modifyHistory:true}),
+          onClick: () => updateLayout(alignCircle(layout), null, { modifyHistory:true }),
         },
         {
           helpText: "Arrange as hierarchy",
           icon: "layout-hierarchy",
           disabled: disableLayoutButtons,
-          onClick: () => updateLayout(arrangeTree(layout), {modifyHistory:true}),
+          onClick: () => updateLayout(arrangeTree(layout), null, { modifyHistory:true }),
         }
       ]
     ];
@@ -236,7 +237,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
       </div>
       {showSearch &&
         <div className="Toolbar__search-container">
-          <SearchBox onChangeSearch={actions.onChangeSearch} onSubmitSearch={actions.onSubmitSearch} />
+          <SearchBox onChangeSearch={actions.onChangeSearch} onSubmitSearch={actions.onSubmitSearch} searchText={searchText} />
         </div>
       }
     </div>
