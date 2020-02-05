@@ -122,8 +122,6 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       this.history.push({layout:layout.toJSON(), entityChanges: entityChanges});
     }
 
-    console.log('should clear search', options, options?.clearSearch);
-
     this.setState(({ searchText }) => ({
       animateTransition: false,
       searchText: options?.clearSearch ? '' : searchText

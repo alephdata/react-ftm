@@ -3,7 +3,7 @@ import { defaultModel, Entity, Model, IEntityDatum } from '@alephdata/followthem
 
 export interface IEntityManagerOverload {
   createEntity?: (entityData: IEntityDatum) => IEntityDatum,
-  undeleteEntity?: (entity: Entity) => void,
+  undeleteEntity?: (entityId: string) => void,
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
 }
@@ -34,29 +34,32 @@ export class EntityManager {
     }
   }
 
-  async undeleteEntity(entity: Entity) {
+  // not called externally, only used when undoing/redoing entity changes from history
+  undeleteEntity(entityId: string) {
     if (this.overload?.undeleteEntity) {
-      await this.overload.undeleteEntity(entity);
+      this.overload.undeleteEntity(entityId);
     }
   }
 
-  async updateEntity(entity: Entity) {
+  updateEntity(entity: Entity) {
     if (this.overload?.updateEntity) {
-      await this.overload.updateEntity(entity);
+      this.overload.updateEntity(entity);
     }
   }
 
-  async deleteEntity(entityId: string) {
+  deleteEntity(entityId: string) {
     if (this.overload?.deleteEntity) {
-      await this.overload.deleteEntity(entityId);
+      this.overload.deleteEntity(entityId);
     }
   }
 
+  // FIXME: no guarantee that entity will be created/deleted with the same ID
+  // entity changes in the reverse direction require undoing create/delete operations
   applyEntityChanges(entityChanges: any, factor: number) {
     const { created, updated, deleted } = entityChanges;
 
-    created && created.forEach((entity: Entity) => factor > 0 ? this.undeleteEntity(entity) : this.deleteEntity(entity.id));
+    created && created.forEach((entity: Entity) => factor > 0 ? this.undeleteEntity(entity.id) : this.deleteEntity(entity.id));
     updated && updated.forEach((entity: Entity) => this.updateEntity(entity));
-    deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntity(entity.id) : this.undeleteEntity(entity));
+    deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntity(entity.id) : this.undeleteEntity(entity.id));
   }
 }
