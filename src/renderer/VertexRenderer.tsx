@@ -14,6 +14,7 @@ interface IVertexRendererProps {
   vertex: Vertex
   config: GraphConfig
   selected: boolean
+  highlighted: boolean
   selectVertex: (vertex: Vertex, additional?: boolean) => any
   dragSelection: (offset: Point) => any
   dropSelection: () => any
@@ -115,10 +116,10 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   getColor() {
-    const { vertex, config, selected } = this.props
+    const { vertex, config, highlighted } = this.props
     const { hovered } = this.state
 
-    if (selected || hovered) {
+    if (highlighted || hovered) {
       return vertex.color || config.DEFAULT_VERTEX_COLOR
     } else {
       return config.UNSELECTED_COLOR
@@ -126,7 +127,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   render() {
-    const { vertex, config, selected, interactionMode, writeable } = this.props
+    const { vertex, config, selected, highlighted, interactionMode, writeable } = this.props
     const { x, y } = config.gridToPixel(vertex.position)
     const isEntity = vertex.isEntity()
     const vertexRadius = isEntity ? config.gridUnit * config.VERTEX_RADIUS : config.gridUnit * config.VERTEX_RADIUS / 2
@@ -135,7 +136,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
 
     const vertexColor = this.getColor()
     const groupStyles: React.CSSProperties = {
-      cursor: 'pointer',
+      cursor: selected && writeable ? 'grab' : 'pointer',
       // sets pointer events to none while dragging in order to detect mouseover on other elements
       pointerEvents: interactionMode === modes.ITEM_DRAG ? 'none' : 'auto'
     }
@@ -143,7 +144,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     return (
       <DraggableCore
         handle='.handle'
-        onStart={writeable ? this.onDragStart : undefined}
+        onStart={this.onDragStart}
         onDrag={writeable ? this.onDragMove : undefined}
         onStop={writeable ? this.onDragEnd : undefined}
         enableUserSelectHack={false} >

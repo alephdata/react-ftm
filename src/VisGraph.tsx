@@ -118,8 +118,6 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   updateLayout(layout: GraphLayout, entityChanges?: any, options?: any) {
-    const { updateLayout } = this.props;
-
     if (options?.modifyHistory) {
       this.history.push({layout:layout.toJSON(), entityChanges: entityChanges});
     }
@@ -131,7 +129,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       searchText: options?.clearSearch ? '' : searchText
     }));
 
-    updateLayout(layout, options?.modifyHistory || options?.forceSaveUpdate);
+    this.props.updateLayout(layout, options?.modifyHistory || options?.forceSaveUpdate);
     // updateLayout(layout, { saveUpdate: options?.modifyHistory || options?.forceSaveUpdate, clearSearch: options?.clearSearch });
   }
 
@@ -235,7 +233,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       onSubmitSearch: this.onSubmitSearch,
     };
 
-    const showSidebar = writeable && layout.vertices && layout.vertices.size > 0;
+    const showSidebar = layout.vertices && layout.vertices.size > 0;
 
     return (
       <GraphContext.Provider value={layoutContext}>
@@ -286,7 +284,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
             </div>
             {showSidebar &&
               <div className="VisGraph__sidebar">
-                <Sidebar {...layoutContext} searchText={searchText} />
+                <Sidebar {...layoutContext} writeable={writeable} searchText={searchText} />
               </div>
             }
           </div>

@@ -3,14 +3,15 @@ import {Entity} from '@alephdata/followthemoney';
 import {IGraphContext} from './GraphContext'
 import {GroupingViewer} from "./editor/GroupingViewer";
 import {EntityViewer} from "./editor/EntityViewer";
-
 import {EntityList} from "./editor/EntityList";
 import {Grouping, Vertex} from './layout'
+import c from 'classnames';
 
 import './Sidebar.scss';
 
 interface ISidebarProps extends IGraphContext {
-  searchText: string
+  searchText: string,
+  writeable: boolean,
 }
 
 export class Sidebar extends React.Component<ISidebarProps> {
@@ -67,7 +68,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
   }
 
   render() {
-    const { layout, searchText } = this.props
+    const { layout, writeable, searchText } = this.props
     const selection = layout.getSelectedEntities()
     const selectedGroupings = layout.getSelectedGroupings()
     let contents, searchResultsText;
@@ -85,6 +86,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
         onEntityChanged={this.appendToLayout}
         vertexRef={vertexRef}
         onVertexColorSelected={this.setVertexColor}
+        writeable={writeable}
       />
       searchResultsText = 'Found 1 result';
     } else if (!searchText && selectedGroupings.length === 1) {
@@ -95,6 +97,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
         onEntitySelected={this.onEntitySelected}
         onEntityRemoved={this.removeGroupingEntity}
         onColorSelected={this.setGroupingColor}
+        writeable={writeable}
       />
     } else if (selection.length) {
       contents = <EntityList entities={selection} onEntitySelected={this.onEntitySelected} />

@@ -238,7 +238,7 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
                       }}
                     >
                       <PropertyValues values={entity.getProperty(property)} prop={property} />
-                      <PropertyEditor entity={entity} property={property} onEntityChanged={this.onEntityChanged} />
+                      <PropertyEditor entity={entity} property={property} onSubmit={this.onEntityChanged} />
                     </Popover>
                   )}
                 </Cell>

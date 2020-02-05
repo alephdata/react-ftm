@@ -71,7 +71,8 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
           config={layout.config}
           grouping={grouping}
           vertices={vertices}
-          selected={layout.isGroupingSelected(grouping) || layout.isGroupingMemberSelected(grouping) || layout.selection.length === 0}
+          highlighted={layout.isGroupingSelected(grouping) || layout.isGroupingMemberSelected(grouping) || layout.selection.length === 0}
+          selected={layout.isGroupingSelected(grouping)}
           selectGrouping={this.selectElement}
           dragSelection={this.dragSelection}
           dropSelection={this.dropSelection}
@@ -113,7 +114,8 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
       <VertexRenderer
         key={vertex.id}
         config={layout.config}
-        selected={layout.isElementSelected(vertex) || layout.selection.length === 0}
+        highlighted={layout.isElementSelected(vertex) || layout.selection.length === 0}
+        selected={layout.isElementSelected(vertex)}
         vertex={vertex}
         selectVertex={this.selectElement}
         dragSelection={this.dragSelection}

@@ -18,14 +18,9 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
     this.onRemove = this.onRemove.bind(this)
   }
 
-  componentDidMount() {
-    this.inputRef && this.inputRef.focus();
-  }
-
   onChange([countryId, label]: [string, string]) {
-    const { values, property, onPropertyChanged } = this.props;
-    // TODO: @pudo maybe we need to implement Entity.removeProperty in FTM?
-    onPropertyChanged([...values, ...[countryId]] as any, property)
+    const { values } = this.props;
+    this.props.onSubmit([...values, ...[countryId]]);
   }
 
   getAvailableOptions() {
@@ -51,7 +46,7 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
 
   // blueprint function returns the tag label instead of the tag id
   onRemove(valToRemove: Value) {
-    const { property, values, onPropertyChanged } = this.props;
+    const { property, values } = this.props;
 
     const fullCountriesMap = property.type.values
     const toRemove = Array.from(fullCountriesMap.entries())
@@ -59,7 +54,7 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
 
     if (toRemove) {
       const nextPropVals = [...values].filter(key => key !== toRemove[0]);
-      onPropertyChanged(nextPropVals as unknown as Values, property)
+      this.props.onSubmit(nextPropVals as unknown as Values)
     }
   }
 

@@ -91,7 +91,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
         content={<Menu>{menuContent}</Menu>}
         position="bottom"
         minimal
-        popoverClassName="bp3-dark Toolbar__overflow-list"
+        popoverClassName="Toolbar__overflow-list"
         boundary="viewport"
       >
         <Button icon="double-chevron-right" />
@@ -157,6 +157,9 @@ export class Toolbar extends React.Component<IToolbarProps> {
           disabled: !canUngroupSelection,
         }
       ],
+    ];
+
+    const otherButtons = [
       [
         {
           helpText: "Toggle select mode",
@@ -196,10 +199,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
           disabled: disableLayoutButtons,
           onClick: () => updateLayout(arrangeTree(layout), null, { modifyHistory:true }),
         }
-      ]
-    ];
-
-    const otherButtons = [
+      ],
       [
         {
           helpText: "View as table",

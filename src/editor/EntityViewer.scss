@@ -8,6 +8,10 @@
     color: themed('textColor');
   }
 
+  &:not(.writeable) {
+    pointer-events: none;
+  }
+
   &__title {
     text-align: center;
     padding: 25px 15px;
@@ -60,6 +64,13 @@
 
     &:not(:last-child) {
       margin-bottom: 10px !important;
+    }
+
+    &__error {
+      font-style: italic;
+      font-size: 12px;
+      color: $red1;
+      padding-top: 7px;
     }
 
     &__label {

@@ -3,7 +3,7 @@ import { defaultModel, Entity, Model, IEntityDatum } from '@alephdata/followthem
 
 export interface IEntityManagerOverload {
   createEntity?: (entityData: IEntityDatum) => IEntityDatum,
-  undeleteEntity?: (entityId: string) => void,
+  undeleteEntity?: (entity: Entity) => void,
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
 }
@@ -18,7 +18,6 @@ export class EntityManager {
   }
 
   async createEntity(entityData: any) {
-    console.log('ENTITY MANAGER: create')
     if (this.overload?.createEntity) {
       const entityWithId: IEntityDatum = await this.overload.createEntity(entityData);
       return new Entity(this.model, entityWithId);
@@ -35,38 +34,29 @@ export class EntityManager {
     }
   }
 
-  // not called externally, only used when undoing/redoing entity changes from history
-  undeleteEntity(entityId: string) {
-    console.log('ENTITY MANAGER: undelete')
-
+  async undeleteEntity(entity: Entity) {
     if (this.overload?.undeleteEntity) {
-      this.overload.undeleteEntity(entityId);
+      await this.overload.undeleteEntity(entity);
     }
   }
 
-  updateEntity(entity: Entity) {
-    console.log('ENTITY MANAGER: update')
-
+  async updateEntity(entity: Entity) {
     if (this.overload?.updateEntity) {
-      this.overload.updateEntity(entity);
+      await this.overload.updateEntity(entity);
     }
   }
 
-  deleteEntity(entityId: string) {
-    console.log('ENTITY MANAGER: delete')
-
+  async deleteEntity(entityId: string) {
     if (this.overload?.deleteEntity) {
-      this.overload.deleteEntity(entityId);
+      await this.overload.deleteEntity(entityId);
     }
   }
 
-  // FIXME: no guarantee that entity will be created/deleted with the same ID
-  // entity changes in the reverse direction require undoing create/delete operations
   applyEntityChanges(entityChanges: any, factor: number) {
     const { created, updated, deleted } = entityChanges;
 
-    created && created.forEach((entity: Entity) => factor > 0 ? this.undeleteEntity(entity.id) : this.deleteEntity(entity.id));
+    created && created.forEach((entity: Entity) => factor > 0 ? this.undeleteEntity(entity) : this.deleteEntity(entity.id));
     updated && updated.forEach((entity: Entity) => this.updateEntity(entity));
-    deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntity(entity.id) : this.undeleteEntity(entity.id));
+    deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntity(entity.id) : this.undeleteEntity(entity));
   }
 }

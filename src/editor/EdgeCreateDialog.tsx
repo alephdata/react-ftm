@@ -86,7 +86,6 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     if (source && target && type && this.isValid()) {
       const sourceEntity = source.getEntity()
       const targetEntity = target.getEntity()
-      console.log('sourceEntity is', sourceEntity);
       if (type.property && sourceEntity) {
         const value = targetEntity || target.label
         sourceEntity.setProperty(type.property, value)
@@ -106,7 +105,6 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         });
         const edge = Edge.fromEntity(layout, entity, source, target)
         layout.selectElement(edge)
-        updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
         entityChanges.created = [entity];
       }
       updateLayout(layout, entityChanges, { modifyHistory: true, clearSearch: true });
