@@ -71,6 +71,14 @@ export class Edge {
     }
   }
 
+  isDirected(): boolean {
+    if (this.isEntity()) {
+      const entity = this.getEntity();
+      return entity?.schema?.edge?.directed || false;
+    }
+    return false;
+  }
+
   getRect(): Rectangle {
     const source = this.getSource()
     const target = this.getTarget()
