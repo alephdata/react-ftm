@@ -16,6 +16,7 @@ interface ITableEditorProps {
   layout: GraphLayout,
   updateLayout: GraphUpdateHandler,
   writeable: boolean,
+  actions: any,
 }
 
 interface ITableEditorState {
@@ -37,7 +38,6 @@ export class TableEditor extends React.Component<ITableEditorProps, ITableEditor
 
     this.state = { schemata, activeTabId };
 
-    this.addSchema = this.addSchema.bind(this);
     this.setActiveTab = this.setActiveTab.bind(this);
   }
 
@@ -52,7 +52,7 @@ export class TableEditor extends React.Component<ITableEditorProps, ITableEditor
   }
 
   render() {
-    const { layout, updateLayout, writeable } = this.props;
+    const { actions, layout, updateLayout, writeable } = this.props;
     const { activeTabId, schemata } = this.state;
 
     return (
@@ -74,6 +74,7 @@ export class TableEditor extends React.Component<ITableEditorProps, ITableEditor
                     layout={layout}
                     updateLayout={updateLayout}
                     writeable={writeable}
+                    actions={actions}
                   />
                 )}
               />
@@ -104,6 +105,7 @@ interface ITableForSchemaProps {
   layout: GraphLayout,
   updateLayout: GraphUpdateHandler,
   writeable: boolean
+  actions: any
 }
 
 interface ITableForSchemaState {
@@ -119,17 +121,14 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
     }
 
     this.onAddColumn = this.onAddColumn.bind(this);
-    this.onAddRow = this.onAddRow.bind(this);
     this.onDeleteRow = this.onDeleteRow.bind(this);
   }
 
   getEntities() {
     const { layout, schema, writeable } = this.props;
 
-    const entities = layout.getEntities()
+    return layout.getEntities()
       .filter(e => e.schema === schema);
-
-    return writeable ? entities.concat(layout.entityManager.model.createEntity(schema)) : entities;
   }
 
   getVisibleProperties() {
@@ -140,12 +139,6 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
     const featuredProps = schema.getFeaturedProperties();
 
     return Array.from(new Set([...featuredProps, ...filledProps]));
-  }
-
-  async onAddRow() {
-    const { layout, schema, updateLayout } = this.props;
-    const entity = await layout.addEntity({ schema });
-    updateLayout(layout, { created: [entity] }, { modifyHistory: true });
   }
 
   onDeleteRow(entity: Entity) {
@@ -168,7 +161,7 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
   }
 
   renderWriteable() {
-    const { layout, schema, updateLayout } = this.props;
+    const { actions, layout, schema, updateLayout } = this.props;
     const { visibleProps } = this.state;
 
     const entities = this.getEntities();
@@ -199,16 +192,15 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
               <ColumnHeaderCell />
             )}
             cellRenderer={(i) => {
-              const isLastCell = i === (numRows - 1);
               return (
                 <Cell className="narrow">
                   <>
-                    <Tooltip content={isLastCell ? "Add an entity" : "Delete this entity"}>
+                    <Tooltip content="Delete this entity">
                       <Button
                         small
                         minimal
-                        icon={isLastCell ? "new-object" : "graph-remove"}
-                        onClick={isLastCell ? () => this.onAddRow() : () => this.onDeleteRow(entities[i])}
+                        icon="graph-remove"
+                        onClick={() => this.onDeleteRow(entities[i])}
                       />
                     </Tooltip>
                   </>
@@ -261,8 +253,14 @@ class TableForSchema extends React.Component<ITableForSchemaProps, ITableForSche
               </ColumnHeaderCell>
             )}
           />
-
         </Table>
+        <Button
+          className="TableEditor__itemAdd"
+          text={`Add ${schema.label}`}
+          icon="new-object"
+          intent={Intent.PRIMARY}
+          onClick={() => actions.addVertex({ initialSchema: schema })}
+        />
       </div>
     );
   }
