@@ -35,7 +35,7 @@ interface IVisGraphState {
   interactionMode: string
   searchText: string
   tableView: boolean
-  vertexCreateInitialPos?: Point
+  vertexCreateOptions?: any
 }
 
 export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
@@ -61,7 +61,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       searchText: externalFilterText || '',
     };
 
-    this.addVertexToPosition = this.addVertexToPosition.bind(this)
+    this.addVertex = this.addVertex.bind(this)
     this.exportSvg = this.exportSvg.bind(this);
     this.fitToSelection = this.fitToSelection.bind(this)
     this.navigateHistory = this.navigateHistory.bind(this);
@@ -155,15 +155,15 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     this.updateLayout(GraphLayout.fromJSON(config, entityManager, layout), null, { forceSaveUpdate: true })
   }
 
-  addVertexToPosition(initialPos?: Point) {
+  addVertex(options?: any) {
     this.setState({
       interactionMode: modes.VERTEX_CREATE,
-      vertexCreateInitialPos: initialPos
+      vertexCreateOptions: options
     })
   }
 
   setInteractionMode(newMode?: string) {
-    this.setState({ interactionMode: newMode || modes.SELECT })
+    this.setState({ interactionMode: newMode || modes.SELECT, vertexCreateOptions: null })
   }
 
   toggleTableView() {
@@ -224,7 +224,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     };
 
     const actions = {
-      addVertexToPosition: this.addVertexToPosition,
+      addVertex: this.addVertex,
       exportSvg: this.exportSvg,
       navigateHistory: this.navigateHistory,
       removeSelection: this.removeSelection,
@@ -251,6 +251,27 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                 searchText={searchText}
                 {...layoutContext}
               />
+<<<<<<< HEAD
+=======
+              <Drawer
+                position={Position.BOTTOM}
+                icon="th"
+                isOpen={tableView}
+                canOutsideClickClose
+                title="Table viewer"
+                onClose={this.toggleTableView}
+                style={{ height: '60%' }}
+              >
+                <div className={Classes.DRAWER_BODY}>
+                  <TableEditor
+                    layout={layout}
+                    updateLayout={this.updateLayout}
+                    writeable={writeable}
+                    actions={actions}
+                  />
+                </div>
+              </Drawer>
+>>>>>>> develop
             </div>
             <div className="VisGraph__content">
               <div className="VisGraph__content__inner-container">
@@ -292,6 +313,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               }
             </div>
           </div>
+<<<<<<< HEAD
           {writeable && (
             <>
               <VertexCreateDialog
@@ -312,6 +334,29 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               />
             </>
           )}
+=======
+        </div>
+        {writeable && (
+          <>
+            <VertexCreateDialog
+              isOpen={interactionMode === modes.VERTEX_CREATE}
+              toggleDialog={this.setInteractionMode}
+              vertexCreateOptions={this.state.vertexCreateOptions} />
+
+            <GroupingCreateDialog
+              isOpen={interactionMode === modes.GROUPING_CREATE}
+              toggleDialog={this.setInteractionMode} />
+
+            <EdgeCreateDialog
+              source={sourceVertex}
+              target={targetVertex}
+              isOpen={interactionMode === modes.EDGE_CREATE}
+              toggleDialog={this.setInteractionMode}
+              {...layoutContext}
+            />
+          </>
+        )}
+>>>>>>> develop
       </GraphContext.Provider>
     );
   }

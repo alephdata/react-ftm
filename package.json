@@ -1,6 +1,6 @@
 {
   "name": "@alephdata/vislib",
-  "version": "1.4.9",
+  "version": "1.4.10",
   "description": "Graph network visualisation tool for aleph/followthemoney ",
   "keywords": [],
   "files": [
@@ -57,7 +57,7 @@
     ]
   },
   "devDependencies": {
-    "@alephdata/followthemoney": "^1.24.2",
+    "@alephdata/followthemoney": "^1.25.1",
     "@blueprintjs/core": "^3.20.0",
     "@blueprintjs/datetime": "^3.15.0",
     "@blueprintjs/select": "^3.11.2",

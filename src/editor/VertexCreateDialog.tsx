@@ -11,7 +11,7 @@ import "./VertexCreateDialog.scss";
 interface IVertexCreateDialogProps {
   isOpen: boolean,
   toggleDialog: () => any,
-  vertexInitialPos?: Point
+  vertexCreateOptions?: any
 }
 
 interface IVertexCreateDialogState {
@@ -33,6 +33,15 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
     this.onSubmit = this.onSubmit.bind(this);
   }
 
+  componentDidUpdate(prevProps: IVertexCreateDialogProps) {
+    const schema = this.props.vertexCreateOptions?.initialSchema;
+    if (schema && prevProps.vertexCreateOptions?.initialSchema !== schema) {
+      this.setState({
+        schema,
+      })
+    }
+  }
+
   onChangeLabel(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({ label: e.target.value })
   }
@@ -47,9 +56,10 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
   }
 
   async onSubmit(e: React.ChangeEvent<HTMLFormElement>) {
-    const { vertexInitialPos } = this.props
+    const position = this.props.vertexCreateOptions?.initialPosition;
     const { label } = this.state
     const schema = this.getSchema()
+
     const { layout, updateLayout, viewport, updateViewport } = this.context as IGraphContext
     e.preventDefault()
     if (this.checkValid()) {
@@ -62,10 +72,10 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
       }
       const vertex = layout.getVertexByEntity(entity)
       if (vertex) {
-        vertexInitialPos && layout.vertices.set(vertex.id, vertex.setPosition(vertexInitialPos))
+        position && layout.vertices.set(vertex.id, vertex.setPosition(position))
         layout.selectElement(vertex)
         updateLayout(layout, { created: [entity] }, { modifyHistory: true, clearSearch: true });
-        !vertexInitialPos && updateViewport(viewport.setCenter(vertexInitialPos || vertex.position), {animate:true})
+        !position && updateViewport(viewport.setCenter(position || vertex.position), {animate:true})
         this.setState({label: ''})
         this.props.toggleDialog()
       }
