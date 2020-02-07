@@ -105,6 +105,7 @@
     "react-dom": "^16.8.6"
   },
   "dependencies": {
+    "@formatjs/cli": "^1.1.20",
     "d3-force": "^2.0.1",
     "dagre": "^0.8.4",
     "moment": "^2.24.0",

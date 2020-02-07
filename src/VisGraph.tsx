@@ -2,6 +2,7 @@ import * as React from 'react'
 import c from 'classnames';
 import { Button, ButtonGroup, Classes, Drawer, Position, Tooltip } from '@blueprintjs/core';
 import Translator from './Translator';
+import { defineMessages } from 'react-intl';
 import { EntityManager } from './EntityManager';
 import { GraphConfig } from './GraphConfig';
 import { GraphRenderer } from './renderer/GraphRenderer'
@@ -17,13 +18,20 @@ import { filterVerticesByText } from './filters';
 
 import './VisGraph.scss';
 
+const messages = defineMessages({
+  test: {
+    id: 'testing',
+    defaultMessage: 'Testing',
+  },
+});
+
 interface IVisGraphProps {
-  config: GraphConfig
+  config: GraphConfig,
   locale?: string
   entityManager: EntityManager
-  layout: GraphLayout
-  viewport: Viewport
-  updateLayout: (layout:GraphLayout, options?: any) => void
+  layout: GraphLayout,
+  viewport: Viewport,
+  updateLayout: (layout:GraphLayout, options?: any) => void,
   updateViewport: (viewport:Viewport) => void
   exportSvg: (data: any) => void
   writeable: boolean
@@ -211,7 +219,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   render() {
-    const { config, layout, viewport, writeable, locale } = this.props;
+    const { config, layout, locale, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, tableView } = this.state;
     const vertices = layout.getSelectedVertices()
     const [sourceVertex, targetVertex] = vertices;
@@ -240,6 +248,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     return (
       <GraphContext.Provider value={layoutContext}>
         <Translator locale={locale} />
+
           <div className={c('VisGraph', `toolbar-${config.toolbarPosition}`, `theme-${config.editorTheme}`)}>
             <div className="VisGraph__toolbar">
               <Toolbar
@@ -251,27 +260,6 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                 searchText={searchText}
                 {...layoutContext}
               />
-<<<<<<< HEAD
-=======
-              <Drawer
-                position={Position.BOTTOM}
-                icon="th"
-                isOpen={tableView}
-                canOutsideClickClose
-                title="Table viewer"
-                onClose={this.toggleTableView}
-                style={{ height: '60%' }}
-              >
-                <div className={Classes.DRAWER_BODY}>
-                  <TableEditor
-                    layout={layout}
-                    updateLayout={this.updateLayout}
-                    writeable={writeable}
-                    actions={actions}
-                  />
-                </div>
-              </Drawer>
->>>>>>> develop
             </div>
             <div className="VisGraph__content">
               <div className="VisGraph__content__inner-container">
@@ -302,7 +290,12 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                   style={{ height: '60%' }}
                 >
                   <div className={Classes.DRAWER_BODY}>
-                    <TableEditor layout={layout} updateLayout={this.updateLayout} writeable={writeable} />
+                    <TableEditor
+                      layout={layout}
+                      updateLayout={this.updateLayout}
+                      writeable={writeable}
+                      actions={actions}
+                    />
                   </div>
                 </Drawer>
               </div>
@@ -313,13 +306,12 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               }
             </div>
           </div>
-<<<<<<< HEAD
           {writeable && (
             <>
               <VertexCreateDialog
                 isOpen={interactionMode === modes.VERTEX_CREATE}
                 toggleDialog={this.setInteractionMode}
-                vertexInitialPos={this.state.vertexCreateInitialPos} />
+                vertexCreateOptions={this.state.vertexCreateOptions} />
 
               <GroupingCreateDialog
                 isOpen={interactionMode === modes.GROUPING_CREATE}
@@ -334,29 +326,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               />
             </>
           )}
-=======
-        </div>
-        {writeable && (
-          <>
-            <VertexCreateDialog
-              isOpen={interactionMode === modes.VERTEX_CREATE}
-              toggleDialog={this.setInteractionMode}
-              vertexCreateOptions={this.state.vertexCreateOptions} />
-
-            <GroupingCreateDialog
-              isOpen={interactionMode === modes.GROUPING_CREATE}
-              toggleDialog={this.setInteractionMode} />
-
-            <EdgeCreateDialog
-              source={sourceVertex}
-              target={targetVertex}
-              isOpen={interactionMode === modes.EDGE_CREATE}
-              toggleDialog={this.setInteractionMode}
-              {...layoutContext}
-            />
-          </>
-        )}
->>>>>>> develop
+        </Translator>
       </GraphContext.Provider>
     );
   }
