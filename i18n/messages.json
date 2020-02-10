@@ -1,0 +1,10 @@
+[
+  {
+    "id": "tooltip.fit_to_selection",
+    "defaultMessage": "Fit view to selection"
+  },
+  {
+    "id": "table.title",
+    "defaultMessage": "Table viewer"
+  }
+]

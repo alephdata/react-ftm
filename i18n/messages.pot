@@ -1,0 +1,22 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2020-02-10T13:35:42.081Z\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"X-Generator: react-intl-po\n"
+
+
+#: i18n/messages.json
+#. [tooltip.fit_to_selection]
+#. defaultMessage is:
+#. Fit view to selection
+msgid "Fit view to selection"
+msgstr ""
+
+#: i18n/messages.json
+#. [table.title]
+#. defaultMessage is:
+#. Table viewer
+msgid "Table viewer"
+msgstr ""

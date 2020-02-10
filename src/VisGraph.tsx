@@ -2,7 +2,7 @@ import * as React from 'react'
 import c from 'classnames';
 import { Button, ButtonGroup, Classes, Drawer, Position, Tooltip } from '@blueprintjs/core';
 import Translator from './Translator';
-import { defineMessages } from 'react-intl';
+import { defineMessages, injectIntl } from 'react-intl';
 import { EntityManager } from './EntityManager';
 import { GraphConfig } from './GraphConfig';
 import { GraphRenderer } from './renderer/GraphRenderer'
@@ -19,9 +19,13 @@ import { filterVerticesByText } from './filters';
 import './VisGraph.scss';
 
 const messages = defineMessages({
-  test: {
-    id: 'testing',
-    defaultMessage: 'Testing',
+  tooltip_fit_selection: {
+    id: 'tooltip.fit_to_selection',
+    defaultMessage: 'Fit view to selection',
+  },
+  table_title: {
+    id: 'table.title',
+    defaultMessage: 'Table viewer',
   },
 });
 
@@ -38,7 +42,11 @@ interface IVisGraphProps {
   externalFilterText?: string
 }
 
-interface IVisGraphState {
+interface IVisGraphControllerProps extends IVisGraphProps {
+  intl: any
+}
+
+interface IVisGraphControllerState {
   animateTransition: boolean
   interactionMode: string
   searchText: string
@@ -46,12 +54,14 @@ interface IVisGraphState {
   vertexCreateOptions?: any
 }
 
-export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
-  state: IVisGraphState;
+
+
+class VisGraphController extends React.Component<IVisGraphControllerProps, IVisGraphControllerState> {
+  state: IVisGraphControllerState;
   history: History;
   svgRef: React.RefObject<SVGSVGElement>
 
-  constructor(props: any) {
+  constructor(props: IVisGraphControllerProps) {
     super(props)
     const { config, externalFilterText, layout, viewport, writeable } = props
 
@@ -92,7 +102,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     }
   }
 
-  componentDidUpdate(prevProps: IVisGraphProps) {
+  componentDidUpdate(prevProps: IVisGraphControllerProps) {
     const { externalFilterText } = this.props;
 
     if (externalFilterText !== undefined && prevProps.externalFilterText !== externalFilterText) {
@@ -219,7 +229,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   render() {
-    const { config, layout, locale, viewport, writeable } = this.props;
+    const { config, intl, layout, locale, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, tableView } = this.state;
     const vertices = layout.getSelectedVertices()
     const [sourceVertex, targetVertex] = vertices;
@@ -247,87 +257,92 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
 
     return (
       <GraphContext.Provider value={layoutContext}>
-        <Translator locale={locale} />
-
-          <div className={c('VisGraph', `toolbar-${config.toolbarPosition}`, `theme-${config.editorTheme}`)}>
-            <div className="VisGraph__toolbar">
-              <Toolbar
-                actions={actions}
-                history={this.history}
-                interactionMode={this.state.interactionMode}
-                showEditingButtons={writeable}
-                logo={config.logo}
-                searchText={searchText}
-                {...layoutContext}
-              />
-            </div>
-            <div className="VisGraph__content">
-              <div className="VisGraph__content__inner-container">
-                <div className="VisGraph__button-group">
-                  <ButtonGroup vertical>
-                    <Tooltip content="Fit view to selection">
-                      <Button icon="zoom-to-fit" onClick={this.fitToSelection}/>
-                    </Tooltip>
-                    <Button icon="zoom-in" onClick={() => this.onZoom(0.8)}/>
-                    <Button icon="zoom-out" onClick={() => this.onZoom(1.2)}/>
-                  </ButtonGroup>
-                </div>
-                <GraphRenderer
-                  svgRef={this.svgRef}
-                  animateTransition={animateTransition}
-                  actions={actions}
-                  interactionMode={interactionMode}
-                  writeable={writeable}
-                  {...layoutContext}
-                />
-                <Drawer
-                  position={Position.BOTTOM}
-                  icon="th"
-                  isOpen={tableView}
-                  canOutsideClickClose
-                  title="Table viewer"
-                  onClose={this.toggleTableView}
-                  style={{ height: '60%' }}
-                >
-                  <div className={Classes.DRAWER_BODY}>
-                    <TableEditor
-                      layout={layout}
-                      updateLayout={this.updateLayout}
-                      writeable={writeable}
-                      actions={actions}
-                    />
-                  </div>
-                </Drawer>
-              </div>
-              {showSidebar &&
-                <div className="VisGraph__sidebar">
-                  <Sidebar {...layoutContext} writeable={writeable} searchText={searchText} />
-                </div>
-              }
-            </div>
+        <div className={c('VisGraph', `toolbar-${config.toolbarPosition}`, `theme-${config.editorTheme}`)}>
+          <div className="VisGraph__toolbar">
+            <Toolbar
+              actions={actions}
+              history={this.history}
+              interactionMode={this.state.interactionMode}
+              showEditingButtons={writeable}
+              logo={config.logo}
+              searchText={searchText}
+              {...layoutContext}
+            />
           </div>
-          {writeable && (
-            <>
-              <VertexCreateDialog
-                isOpen={interactionMode === modes.VERTEX_CREATE}
-                toggleDialog={this.setInteractionMode}
-                vertexCreateOptions={this.state.vertexCreateOptions} />
-
-              <GroupingCreateDialog
-                isOpen={interactionMode === modes.GROUPING_CREATE}
-                toggleDialog={this.setInteractionMode} />
-
-              <EdgeCreateDialog
-                source={sourceVertex}
-                target={targetVertex}
-                isOpen={interactionMode === modes.EDGE_CREATE}
-                toggleDialog={this.setInteractionMode}
+          <div className="VisGraph__content">
+            <div className="VisGraph__content__inner-container">
+              <div className="VisGraph__button-group">
+                <ButtonGroup vertical>
+                  <Tooltip content={intl.formatMessage(messages.tooltip_fit_selection)}>
+                    <Button icon="zoom-to-fit" onClick={this.fitToSelection}/>
+                  </Tooltip>
+                  <Button icon="zoom-in" onClick={() => this.onZoom(0.8)}/>
+                  <Button icon="zoom-out" onClick={() => this.onZoom(1.2)}/>
+                </ButtonGroup>
+              </div>
+              <GraphRenderer
+                svgRef={this.svgRef}
+                animateTransition={animateTransition}
+                actions={actions}
+                interactionMode={interactionMode}
+                writeable={writeable}
                 {...layoutContext}
               />
-            </>
-          )}
-        </Translator>
+              <Drawer
+                position={Position.BOTTOM}
+                icon="th"
+                isOpen={tableView}
+                canOutsideClickClose
+                title={intl.formatMessage(messages.table_title)}
+                onClose={this.toggleTableView}
+                style={{ height: '60%' }}
+              >
+                <div className={Classes.DRAWER_BODY}>
+                  <TableEditor
+                    layout={layout}
+                    updateLayout={this.updateLayout}
+                    writeable={writeable}
+                    actions={actions}
+                  />
+                </div>
+              </Drawer>
+            </div>
+            {showSidebar &&
+              <div className="VisGraph__sidebar">
+                <Sidebar {...layoutContext} writeable={writeable} searchText={searchText} />
+              </div>
+            }
+          </div>
+        </div>
+        {writeable && (
+          <>
+            <VertexCreateDialog
+              isOpen={interactionMode === modes.VERTEX_CREATE}
+              toggleDialog={this.setInteractionMode}
+              vertexCreateOptions={this.state.vertexCreateOptions} />
+
+            <GroupingCreateDialog
+              isOpen={interactionMode === modes.GROUPING_CREATE}
+              toggleDialog={this.setInteractionMode} />
+
+            <EdgeCreateDialog
+              source={sourceVertex}
+              target={targetVertex}
+              isOpen={interactionMode === modes.EDGE_CREATE}
+              toggleDialog={this.setInteractionMode}
+              {...layoutContext}
+            />
+          </>
+        )}
       </GraphContext.Provider>
     );
   }
 }
+
+const VisGraphControllerIntl = injectIntl(VisGraphController);
+
+export const VisGraph = ({ locale, ...rest }: IVisGraphProps) => (
+  <Translator locale={locale}>
+    <VisGraphControllerIntl {...rest} />
+  </Translator>
+);

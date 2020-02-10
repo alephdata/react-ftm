@@ -19,11 +19,14 @@
     "node": ">=8.0.0"
   },
   "scripts": {
+    "translate": "npm run messages && npm run json2pot && npm run po2json",
+    "messages": "formatjs extract --out-file i18n/messages.json 'src/**/*.{ts,tsx}'",
+    "json2pot": "react-intl-po json2pot 'i18n/messages.json' -o 'i18n/messages.pot'",
+    "po2json": "react-intl-po po2json 'i18n/translations/*.po' -m 'i18n/messages.json' -o src/translations/translations.json",
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rm -f dist/vislib.*",
     "build": "rollup -c rollup.config.ts",
     "start": "rollup -c rollup.config.ts -w",
-    "translate": "formatjs extract --messages-dir translations",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",
     "test:prod": "npm run lint && npm run test -- --no-cache",
@@ -62,6 +65,7 @@
     "@blueprintjs/datetime": "^3.15.0",
     "@blueprintjs/select": "^3.11.2",
     "@blueprintjs/table": "^3.8.2",
+    "@formatjs/cli": "^1.1.20",
     "@types/bezier-js": "0.0.8",
     "@types/classnames": "^2.2.9",
     "@types/d3": "^5.7.2",
@@ -105,7 +109,6 @@
     "react-dom": "^16.8.6"
   },
   "dependencies": {
-    "@formatjs/cli": "^1.1.20",
     "d3-force": "^2.0.1",
     "dagre": "^0.8.4",
     "moment": "^2.24.0",
