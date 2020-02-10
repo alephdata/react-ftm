@@ -1,6 +1,6 @@
 import * as React from 'react'
+import { defineMessages } from 'react-intl';
 import { modes } from './interactionModes'
-
 import {
   AnchorButton,
   Boundary,
@@ -25,6 +25,69 @@ import { GraphLayout, Rectangle, alignCircle, alignHorizontal, alignVertical, ar
 import { History } from './History';
 import './Toolbar.scss';
 
+const messages = defineMessages({
+  tooltip_undo: {
+    id: 'tooltip.undo',
+    defaultMessage: 'Undo',
+  },
+  tooltip_redo: {
+    id: 'tooltip.redo',
+    defaultMessage: 'Redo',
+  },
+  tooltip_add_entities: {
+    id: 'tooltip.add_entities',
+    defaultMessage: 'Add entities',
+  },
+  tooltip_add_edges: {
+    id: 'tooltip.add_edges',
+    defaultMessage: 'Add edges',
+  },
+  tooltip_delete: {
+    id: 'tooltip.delete',
+    defaultMessage: 'Delete selection',
+  },
+  tooltip_group: {
+    id: 'tooltip.group',
+    defaultMessage: 'Group selection',
+  },
+  tooltip_ungroup: {
+    id: 'tooltip.ungroup',
+    defaultMessage: 'Ungroup selection',
+  },
+  tooltip_select_mode: {
+    id: 'tooltip.select_mode',
+    defaultMessage: 'Toggle select mode',
+  },
+  tooltip_pan_mode: {
+    id: 'tooltip.pan_mode',
+    defaultMessage: 'Toggle pan mode',
+  },
+  tooltip_layout_horizontal: {
+    id: 'tooltip.layout_horizontal',
+    defaultMessage: 'Align horizontal',
+  },
+  tooltip_layout_vertical: {
+    id: 'tooltip.layout_vertical',
+    defaultMessage: 'Align vertical',
+  },
+  tooltip_layout_circle: {
+    id: 'tooltip.layout_circle',
+    defaultMessage: 'Arrange as circle',
+  },
+  tooltip_layout_hierarchy: {
+    id: 'tooltip.layout_hierarchy',
+    defaultMessage: 'Arrange as hierarchy',
+  },
+  tooltip_table_view: {
+    id: 'tooltip.table_view',
+    defaultMessage: 'View as table',
+  },
+  tooltip_export_svg: {
+    id: 'tooltip.export_svg',
+    defaultMessage: 'Export as SVG',
+  },
+
+});
 
 interface IToolbarProps extends IGraphContext {
   actions: any,
@@ -100,7 +163,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
   }
 
   render() {
-    const { layout, viewport, updateLayout, updateViewport, actions, history, interactionMode, showEditingButtons, logo, searchText } = this.props
+    const { intl, layout, viewport, updateLayout, updateViewport, actions, history, interactionMode, showEditingButtons, logo, searchText } = this.props
     const vertices = this.props.layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
@@ -112,13 +175,13 @@ export class Toolbar extends React.Component<IToolbarProps> {
     const editingButtons = [
       [
         {
-          helpText: "Undo",
+          helpText: intl.formatMessage(messages.tooltip_undo),
           icon: "undo",
           onClick: () => actions.navigateHistory(History.BACK),
           disabled: !history.canGoTo(History.BACK),
         },
         {
-          helpText: "Redo",
+          helpText: intl.formatMessage(messages.tooltip_redo),
           icon: "redo",
           onClick: () => actions.navigateHistory(History.FORWARD),
           disabled: !history.canGoTo(History.FORWARD),
@@ -126,18 +189,18 @@ export class Toolbar extends React.Component<IToolbarProps> {
       ],
       [
         {
-          helpText: "Add entities",
+          helpText: intl.formatMessage(messages.tooltip_add_entities),
           icon: "new-object",
           onClick: () => this.onSetInteractionMode(modes.VERTEX_CREATE),
         },
         {
-          helpText: "Add links",
+          helpText: intl.formatMessage(messages.tooltip_add_edges),
           icon: "new-link",
           onClick: () => this.onSetInteractionMode(modes.EDGE_CREATE),
           disabled: !canAddEdge,
         },
         {
-          helpText: "Delete selection",
+          helpText: intl.formatMessage(messages.tooltip_delete),
           icon: "graph-remove",
           onClick: () => actions.removeSelection(),
           disabled: !hasSelection,
@@ -145,13 +208,13 @@ export class Toolbar extends React.Component<IToolbarProps> {
       ],
       [
         {
-          helpText: "Group selected",
+          helpText: intl.formatMessage(messages.tooltip_group),
           icon: "group-objects",
           onClick: () => this.onSetInteractionMode(modes.GROUPING_CREATE),
           disabled: !canGroupSelection,
         },
         {
-          helpText: "Ungroup selected",
+          helpText: intl.formatMessage(messages.tooltip_ungroup),
           icon: "ungroup-objects",
           onClick: () => actions.ungroupSelection(),
           disabled: !canUngroupSelection,
@@ -162,13 +225,13 @@ export class Toolbar extends React.Component<IToolbarProps> {
     const otherButtons = [
       [
         {
-          helpText: "Toggle select mode",
+          helpText: intl.formatMessage(messages.tooltip_select_mode),
           icon: "select",
           disabled: interactionMode !== modes.PAN,
           onClick: () => this.onSetInteractionMode(modes.SELECT),
         },
         {
-          helpText: "Toggle pan mode",
+          helpText: intl.formatMessage(messages.tooltip_pan_mode),
           icon: "hand",
           disabled: interactionMode === modes.PAN,
           onClick: () => this.onSetInteractionMode(modes.PAN),
@@ -176,25 +239,25 @@ export class Toolbar extends React.Component<IToolbarProps> {
       ],
       [
         {
-          helpText: "Align horizontal",
+          helpText: intl.formatMessage(messages.tooltip_layout_horizontal),
           icon: "drag-handle-horizontal",
           disabled: disableLayoutButtons,
           onClick: () => updateLayout(alignHorizontal(layout), null, { modifyHistory:true }),
         },
         {
-          helpText: "Align vertical",
+          helpText: intl.formatMessage(messages.tooltip_layout_vertical),
           icon: "drag-handle-vertical",
           disabled: disableLayoutButtons,
           onClick: () => updateLayout(alignVertical(layout), null, { modifyHistory:true }),
         },
         {
-          helpText: "Arrange as circle",
+          helpText: intl.formatMessage(messages.tooltip_layout_circle),
           icon: "layout-circle",
           disabled: disableLayoutButtons,
           onClick: () => updateLayout(alignCircle(layout), null, { modifyHistory:true }),
         },
         {
-          helpText: "Arrange as hierarchy",
+          helpText: intl.formatMessage(messages.tooltip_layout_hierarchy),
           icon: "layout-hierarchy",
           disabled: disableLayoutButtons,
           onClick: () => updateLayout(arrangeTree(layout), null, { modifyHistory:true }),
@@ -202,14 +265,14 @@ export class Toolbar extends React.Component<IToolbarProps> {
       ],
       [
         {
-          helpText: "View as table",
+          helpText: intl.formatMessage(messages.tooltip_table_view),
           icon: "th",
           onClick: () => actions.toggleTableView(),
         }
       ],
       [
         {
-          helpText: "Export as SVG",
+          helpText: intl.formatMessage(messages.tooltip_export_svg),
           icon: "export",
           onClick: () => actions.exportSvg(),
         }
@@ -243,3 +306,5 @@ export class Toolbar extends React.Component<IToolbarProps> {
     </div>
   }
 }
+
+export default Toolbar;

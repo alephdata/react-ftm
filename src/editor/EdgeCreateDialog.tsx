@@ -1,4 +1,6 @@
 import * as React from 'react'
+import { defineMessages } from 'react-intl';
+
 import { Dialog, MenuItem, FormGroup, Intent, Button, Alignment, Position } from '@blueprintjs/core'
 import { Select, IItemRendererProps } from '@blueprintjs/select';
 import { IGraphContext } from '../GraphContext'
@@ -6,6 +8,33 @@ import { VertexSelect } from './VertexSelect'
 import { EdgeType } from './EdgeType'
 import { Vertex,Edge } from '../layout';
 import { SchemaIcon } from '../types';
+
+const messages = defineMessages({
+  add_link: {
+    id: 'dialog.edge_create.title',
+    defaultMessage: 'Add link',
+  },
+  source: {
+    id: 'dialog.edge_create.source_label',
+    defaultMessage: 'Source',
+  },
+  target: {
+    id: 'dialog.edge_create.target_label',
+    defaultMessage: 'Target',
+  },
+  type: {
+    id: 'dialog.edge_create.type_label',
+    defaultMessage: 'Type',
+  },
+  type_select: {
+    id: 'dialog.edge_create.type_placeholder',
+    defaultMessage: 'Select type',
+  },
+  submit: {
+    id: 'dialog.edge_create.submit',
+    defaultMessage: 'Create',
+  },
+});
 
 const EdgeTypeSelect = Select.ofType<EdgeType>();
 
@@ -193,17 +222,17 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   }
 
   render() {
-    const { isOpen, toggleDialog } = this.props
+    const { intl, isOpen, toggleDialog } = this.props
     const { source, target, type } = this.state
     const types = this.getTypes()
 
     return (
-      <Dialog icon="new-link" isOpen={isOpen} title="Add link" onClose={toggleDialog} style={{width: '800px'}}>
+      <Dialog icon="new-link" isOpen={isOpen} title={intl.formatMessage(messages.add_link)} onClose={toggleDialog} style={{width: '800px'}}>
         <form onSubmit={this.onSubmit}>
           <div className="bp3-dialog-body">
             <div style={{flex: 1, display: 'flex', flexFlow: 'row'}}>
               <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
-                <FormGroup label='Source' helperText={this.getSourceLabel()}>
+                <FormGroup label={intl.formatMessage(messages.source)} helperText={this.getSourceLabel()}>
                   <VertexSelect
                     vertices={this.getVertices(source, target)}
                     vertex={source}
@@ -212,7 +241,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                 </FormGroup>
               </div>
               <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
-                <FormGroup label="Type" helperText={this.getTypeDescription()}>
+                <FormGroup label={intl.formatMessage(messages.type)} helperText={this.getTypeDescription()}>
                   <EdgeTypeSelect
                     popoverProps={{
                       position: Position.BOTTOM_LEFT,
@@ -226,7 +255,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                   >
                     <Button fill
                       disabled={!types.length}
-                      text={type ? type.label : 'Select type'}
+                      text={type ? type.label : intl.formatMessage(messages.type_select)}
                       alignText={Alignment.LEFT}
                       icon={EdgeCreateDialog.getEdgeTypeIcon(type)}
                       rightIcon='double-caret-vertical'
@@ -235,7 +264,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                 </FormGroup>
               </div>
               <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
-                <FormGroup label='Target' helperText={this.getTargetLabel()}>
+                <FormGroup label={intl.formatMessage(messages.target)} helperText={this.getTargetLabel()}>
                   <VertexSelect
                     vertices={this.getVertices(target, source)}
                     vertex={target}
@@ -259,7 +288,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
             <Button
               intent={Intent.PRIMARY}
               disabled={!this.isValid()}
-              text="Create"
+              text={intl.formatMessage(messages.submit)}
               type="submit"
             />
           </div>

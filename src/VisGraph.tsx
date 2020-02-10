@@ -2,7 +2,7 @@ import * as React from 'react'
 import c from 'classnames';
 import { Button, ButtonGroup, Classes, Drawer, Position, Tooltip } from '@blueprintjs/core';
 import Translator from './Translator';
-import { defineMessages, injectIntl } from 'react-intl';
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { EntityManager } from './EntityManager';
 import { GraphConfig } from './GraphConfig';
 import { GraphRenderer } from './renderer/GraphRenderer'
@@ -20,16 +20,12 @@ import './VisGraph.scss';
 
 const messages = defineMessages({
   tooltip_fit_selection: {
-    id: 'tooltip.fit_to_selection',
+    id: 'tooltips.fit_to_selection',
     defaultMessage: 'Fit view to selection',
-  },
-  table_title: {
-    id: 'table.title',
-    defaultMessage: 'Table viewer',
   },
 });
 
-interface IVisGraphProps {
+export interface IVisGraphProps {
   config: GraphConfig,
   locale?: string
   entityManager: EntityManager
@@ -42,11 +38,9 @@ interface IVisGraphProps {
   externalFilterText?: string
 }
 
-interface IVisGraphControllerProps extends IVisGraphProps {
-  intl: any
-}
+interface IVisGraphControllerProps extends IVisGraphProps, WrappedComponentProps {}
 
-interface IVisGraphControllerState {
+interface IVisGraphState {
   animateTransition: boolean
   interactionMode: string
   searchText: string
@@ -54,10 +48,8 @@ interface IVisGraphControllerState {
   vertexCreateOptions?: any
 }
 
-
-
-class VisGraphController extends React.Component<IVisGraphControllerProps, IVisGraphControllerState> {
-  state: IVisGraphControllerState;
+class VisGraphController extends React.Component<IVisGraphControllerProps, IVisGraphState> {
+  state: IVisGraphState;
   history: History;
   svgRef: React.RefObject<SVGSVGElement>
 
@@ -239,6 +231,7 @@ class VisGraphController extends React.Component<IVisGraphControllerProps, IVisG
       updateLayout: this.updateLayout,
       viewport: viewport,
       updateViewport: this.updateViewport,
+      intl: intl,
     };
 
     const actions = {
@@ -293,7 +286,7 @@ class VisGraphController extends React.Component<IVisGraphControllerProps, IVisG
                 icon="th"
                 isOpen={tableView}
                 canOutsideClickClose
-                title={intl.formatMessage(messages.table_title)}
+                title="Table viewer"
                 onClose={this.toggleTableView}
                 style={{ height: '60%' }}
               >
@@ -341,7 +334,7 @@ class VisGraphController extends React.Component<IVisGraphControllerProps, IVisG
 
 const VisGraphControllerIntl = injectIntl(VisGraphController);
 
-export const VisGraph = ({ locale, ...rest }: IVisGraphProps) => (
+export const VisGraph = ({ locale, ...rest}: IVisGraphProps ) => (
   <Translator locale={locale}>
     <VisGraphControllerIntl {...rest} />
   </Translator>
