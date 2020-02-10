@@ -24,7 +24,6 @@ const messages = defineMessages({
 
 const propSort = (a:Property, b:Property) => (a.label > b.label ? 1 : -1);
 
-
 interface ITableEditorTableProps extends WrappedComponentProps {
   schema: Schema
   layout: GraphLayout,

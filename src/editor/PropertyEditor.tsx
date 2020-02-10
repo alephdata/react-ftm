@@ -3,7 +3,7 @@ import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity, Property, Values } from '@alephdata/followthemoney';
 import { DateEdit } from '../types/DateEdit';
 import { TextEdit } from '../types/TextEdit';
-import { EntityEdit } from '../types/EntityEdit';
+import EntityEdit from '../types/EntityEdit';
 import { GraphContext } from '../GraphContext';
 import { CountryEdit } from "../types/CountryEdit";
 
