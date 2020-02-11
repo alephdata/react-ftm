@@ -2,7 +2,7 @@ import { defaultModel, Entity, Model, IEntityDatum } from '@alephdata/followthem
 
 
 export interface IEntityManagerOverload {
-  createEntity?: (entityData: IEntityDatum) => IEntityDatum,
+  createEntity?: (entityData: IEntityDatum) => Promise<IEntityDatum>,
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
 }
