@@ -1,9 +1,7 @@
 import React from 'react';
 import { IntlProvider } from 'react-intl';
 
-// import * as translations from './translations/translations.json';
-
-const translations = {};
+import translations from './translations/translations.json';
 
 interface ITranslatorProps {
   locale?: string
@@ -13,6 +11,8 @@ interface ITranslatorProps {
 class Translator extends React.PureComponent<ITranslatorProps> {
   render() {
     const locale = this.props.locale || "en";
+
+    console.log(locale);
 
     return (
       <IntlProvider

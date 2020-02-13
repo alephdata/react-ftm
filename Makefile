@@ -20,3 +20,4 @@ translate:
 	npm run translate
 	tx push --source
 	tx pull -a -f
+	npm run po2json
