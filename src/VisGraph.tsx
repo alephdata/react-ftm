@@ -1,6 +1,8 @@
 import * as React from 'react'
 import c from 'classnames';
 import { Button, ButtonGroup, Classes, Drawer, Position, Tooltip } from '@blueprintjs/core';
+import Translator from './Translator';
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { EntityManager } from './EntityManager';
 import { GraphConfig } from './GraphConfig';
 import { GraphRenderer } from './renderer/GraphRenderer'
@@ -16,8 +18,16 @@ import { filterVerticesByText } from './filters';
 
 import './VisGraph.scss';
 
-interface IVisGraphProps {
+const messages = defineMessages({
+  tooltip_fit_selection: {
+    id: 'tooltips.fit_to_selection',
+    defaultMessage: 'Fit view to selection',
+  },
+});
+
+export interface IVisGraphProps {
   config: GraphConfig,
+  locale?: string
   entityManager: EntityManager
   layout: GraphLayout,
   viewport: Viewport,
@@ -28,6 +38,8 @@ interface IVisGraphProps {
   externalFilterText?: string
 }
 
+interface IVisGraphControllerProps extends IVisGraphProps, WrappedComponentProps {}
+
 interface IVisGraphState {
   animateTransition: boolean
   interactionMode: string
@@ -36,12 +48,12 @@ interface IVisGraphState {
   vertexCreateOptions?: any
 }
 
-export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
+class VisGraphController extends React.Component<IVisGraphControllerProps, IVisGraphState> {
   state: IVisGraphState;
   history: History;
   svgRef: React.RefObject<SVGSVGElement>
 
-  constructor(props: any) {
+  constructor(props: IVisGraphControllerProps) {
     super(props)
     const { config, externalFilterText, layout, viewport, writeable } = props
 
@@ -82,7 +94,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     }
   }
 
-  componentDidUpdate(prevProps: IVisGraphProps) {
+  componentDidUpdate(prevProps: IVisGraphControllerProps) {
     const { externalFilterText } = this.props;
 
     if (externalFilterText !== undefined && prevProps.externalFilterText !== externalFilterText) {
@@ -209,7 +221,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   render() {
-    const { config, layout, viewport, writeable } = this.props;
+    const { config, intl, layout, locale, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, tableView } = this.state;
     const vertices = layout.getSelectedVertices()
     const [sourceVertex, targetVertex] = vertices;
@@ -219,6 +231,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       updateLayout: this.updateLayout,
       viewport: viewport,
       updateViewport: this.updateViewport,
+      intl: intl,
     };
 
     const actions = {
@@ -253,7 +266,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
             <div className="VisGraph__content__inner-container">
               <div className="VisGraph__button-group">
                 <ButtonGroup vertical>
-                  <Tooltip content="Fit view to selection">
+                  <Tooltip content={intl.formatMessage(messages.tooltip_fit_selection)}>
                     <Button icon="zoom-to-fit" onClick={this.fitToSelection}/>
                   </Tooltip>
                   <Button icon="zoom-in" onClick={() => this.onZoom(0.8)}/>
@@ -318,3 +331,11 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     );
   }
 }
+
+const VisGraphControllerIntl = injectIntl(VisGraphController);
+
+export const VisGraph = ({ locale, ...rest}: IVisGraphProps ) => (
+  <Translator locale={locale}>
+    <VisGraphControllerIntl {...rest} />
+  </Translator>
+);

@@ -4,7 +4,6 @@ import c from 'classnames';
 
 import './SearchBox.scss';
 
-
 interface ISearchBoxProps {
   onChangeSearch: (searchText:string) => void
   onSubmitSearch: (event: React.FormEvent) => void

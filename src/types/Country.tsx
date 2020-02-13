@@ -1,23 +1,32 @@
 import React from 'react';
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import {wordList} from "../utils";
 
+const messages = defineMessages({
+  unknown: {
+    id: 'editor.country.unknown',
+    defaultMessage: 'Unknown',
+  },
+});
 
-interface ICountryNameProps {
+interface ICountryNameProps extends WrappedComponentProps {
   code:string
   countries:Map<string, string>
   short?:boolean
 }
 
-export class CountryName extends React.PureComponent<ICountryNameProps> {
+class CountryNameBase extends React.PureComponent<ICountryNameProps> {
   render() {
-    const { code, countries, short = false } = this.props;
-    const codeLabel = code ? code.toUpperCase() : "Unknown";
+    const { code, countries, intl, short = false } = this.props;
+    const codeLabel = code ? code.toUpperCase() : intl.formatMessage(messages.unknown);
     const label = short ? codeLabel : (countries.get(code) || codeLabel);
 
     if (!code) return null;
     return label;
   }
 }
+
+export const CountryName = injectIntl(CountryNameBase);
 
 
 interface ICountriesListProps {

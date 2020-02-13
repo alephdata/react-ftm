@@ -1,15 +1,31 @@
 import * as React from 'react'
-import {Entity} from '@alephdata/followthemoney';
-import {IGraphContext} from './GraphContext'
-import {GroupingViewer} from "./editor/GroupingViewer";
-import {EntityViewer} from "./editor/EntityViewer";
-import {EntityList} from "./editor/EntityList";
-import {Grouping, Vertex} from './layout'
+import { defineMessages } from 'react-intl';
+import { Entity } from '@alephdata/followthemoney';
+import { IGraphContext } from './GraphContext'
+import { GroupingViewer } from "./editor/GroupingViewer";
+import { EntityViewer } from "./editor/EntityViewer";
+import { EntityList } from "./editor/EntityList";
+import { Grouping, Vertex } from './layout'
 import c from 'classnames';
 
 import './Sidebar.scss';
 
-interface ISidebarProps extends IGraphContext {
+const messages = defineMessages({
+  search_found_one: {
+    id: 'search.results_text.one',
+    defaultMessage: 'Found 1 result',
+  },
+  search_found_multiple: {
+    id: 'search.results_text.multiple',
+    defaultMessage: 'Found {count} results',
+  },
+  search_found_none: {
+    id: 'search.results_text.none',
+    defaultMessage: 'No results found',
+  },
+});
+
+export interface ISidebarProps extends IGraphContext {
   searchText: string,
   writeable: boolean,
 }
@@ -68,7 +84,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
   }
 
   render() {
-    const { layout, writeable, searchText } = this.props
+    const { intl, layout, writeable, searchText } = this.props
     const selection = layout.getSelectedEntities()
     const selectedGroupings = layout.getSelectedGroupings()
     let contents, searchResultsText;
@@ -86,7 +102,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
         onVertexColorSelected={this.setVertexColor}
         writeable={writeable}
       />
-      searchResultsText = 'Found 1 result';
+      searchResultsText = intl.formatMessage(messages.search_found_one);
     } else if (!searchText && selectedGroupings.length === 1) {
       const grouping = selectedGroupings[0]
       contents = <GroupingViewer
@@ -99,12 +115,12 @@ export class Sidebar extends React.Component<ISidebarProps> {
       />
     } else if (selection.length) {
       contents = <EntityList entities={selection} onEntitySelected={this.onEntitySelected} />
-      searchResultsText = `Found ${selection.length} results`;
+      searchResultsText = intl.formatMessage(messages.search_found_multiple, { count: selection.length });
     } else {
       const vertices = layout.getVertices().filter((v) => !v.isHidden())
       const entities = vertices.map((v) => v.getEntity()).filter((e) => !!e)
       contents = <EntityList entities={entities as Entity[]} onEntitySelected={this.onEntitySelected}/>
-      searchResultsText = 'No results found';
+      searchResultsText = intl.formatMessage(messages.search_found_none);
     }
 
     return (

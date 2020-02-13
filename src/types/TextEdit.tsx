@@ -1,23 +1,32 @@
 import * as React from 'react'
-import {Values} from "@alephdata/followthemoney";
-import {Button, ControlGroup, FormGroup, InputGroup, TagInput, Tooltip} from "@blueprintjs/core";
-import {ITypeProps} from "./common";
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
+import { Values } from "@alephdata/followthemoney";
+import { Button, ControlGroup, FormGroup, InputGroup, TagInput, Tooltip } from "@blueprintjs/core";
+import { ITypeProps } from "./common";
 
 import "./TextEdit.scss";
 
+const messages = defineMessages({
+  add_additional: {
+    id: 'editor.text.additional',
+    defaultMessage: 'Add additional values',
+  },
+});
+
+interface ITextEditProps extends ITypeProps, WrappedComponentProps {}
 
 interface ITextEditState {
   forceMultiEdit: boolean,
   currMultiInputValue: string,
 }
 
-export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
+class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
   static group = new Set(['text', 'string'])
   private containerRef: any | null = null;
   private multiInputRef: HTMLInputElement | null = null;
   private singleInputRef: HTMLInputElement | null = null;
 
-  constructor(props: ITypeProps) {
+  constructor(props: ITextEditProps) {
     super(props);
 
     this.state = {
@@ -35,7 +44,7 @@ export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
     document.addEventListener('mousedown', this.handleClickOutside);
   }
 
-  componentDidUpdate(prevProps: ITypeProps, prevState: ITextEditState) {
+  componentDidUpdate(prevProps: ITextEditProps, prevState: ITextEditState) {
     // ensure multi input is focused
     if (this.state.forceMultiEdit && !prevState.forceMultiEdit) {
       this.multiInputRef && this.multiInputRef.focus();
@@ -73,7 +82,7 @@ export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
   }
 
   render() {
-    const { property, values } = this.props;
+    const { intl, property, values } = this.props;
     const { currMultiInputValue, forceMultiEdit } = this.state;
     const numVals = values.length;
     // don't show multi button if there is no existing input
@@ -95,7 +104,7 @@ export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
                 return this.onChange(value ? [value] : [])
               }}
               rightElement={showMultiToggleButton ? (
-                <Tooltip content="Add additional values">
+                <Tooltip content={intl.formatMessage(messages.add_additional)}>
                   <Button
                     className="TextEdit__toggleMulti"
                     minimal
@@ -129,3 +138,5 @@ export class TextEdit extends React.PureComponent<ITypeProps, ITextEditState> {
     );
   }
 }
+
+export const TextEdit = injectIntl(TextEditBase);

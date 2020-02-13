@@ -1,23 +1,31 @@
 import React from 'react';
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import {wordList} from "../utils";
 
+const messages = defineMessages({
+  unknown: {
+    id: 'editor.language.unknown',
+    defaultMessage: 'Unknown',
+  },
+});
 
-
-interface ILanguageNameProps {
+interface ILanguageNameProps extends WrappedComponentProps {
   code:string
   languages: Map<string, string>
 }
 
-export class LanguageName extends React.PureComponent<ILanguageNameProps> {
+export class LanguageNameBase extends React.PureComponent<ILanguageNameProps> {
   render() {
-    const { code, languages } = this.props;
-    const codeLabel = code ? code.toUpperCase() : 'Unknown';
+    const { code, intl, languages } = this.props;
+    const codeLabel = code ? code.toUpperCase() : intl.formatMessage(messages.unknown);
     const label = languages.get(code) || codeLabel;
 
     if (!code) return null;
     return label;
   }
 }
+
+export const LanguageName = injectIntl(LanguageNameBase);
 
 
 interface ILanguageListProps {
@@ -35,5 +43,3 @@ export class LanguageList extends React.Component<ILanguageListProps> {
     return wordList(names, ', ');
   }
 }
-
-
