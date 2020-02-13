@@ -1,7 +1,7 @@
 import { defaultModel, Entity, Model, IEntityDatum } from '@alephdata/followthemoney'
 
-
-export interface IEntityManagerOverload {
+export interface IEntityManagerProps {
+  model?: Model,
   createEntity?: (entityData: IEntityDatum) => IEntityDatum,
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
@@ -9,11 +9,11 @@ export interface IEntityManagerOverload {
 
 export class EntityManager {
   public readonly model: Model
-  private overload: IEntityManagerOverload | undefined
+  private overload: any
 
-  constructor(props?: IEntityManagerOverload) {
-    this.model = new Model(defaultModel);
-    this.overload = props;
+  constructor({ model, ...rest }: IEntityManagerProps) {
+    this.model = model || new Model(defaultModel);
+    this.overload = rest;
   }
 
   async createEntity(entityData: any) {
