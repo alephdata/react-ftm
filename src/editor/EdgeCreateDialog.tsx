@@ -227,7 +227,14 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     const types = this.getTypes()
 
     return (
-      <Dialog icon="new-link" isOpen={isOpen} title={intl.formatMessage(messages.add_link)} onClose={toggleDialog} style={{width: '800px'}}>
+      <Dialog
+        icon="new-link"
+        isOpen={isOpen}
+        title={intl.formatMessage(messages.add_link)}
+        onClose={toggleDialog}
+        style={{width: '800px'}}
+        portalClassName="dialog-portal-container"
+      >
         <form onSubmit={this.onSubmit}>
           <div className="bp3-dialog-body">
             <div style={{flex: 1, display: 'flex', flexFlow: 'row'}}>

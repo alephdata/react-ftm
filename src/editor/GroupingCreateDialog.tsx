@@ -70,7 +70,13 @@ export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogP
     const { intl, layout } = this.context as IGraphContext
     const { isOpen, toggleDialog } = this.props
     return (
-      <Dialog icon="group-objects" isOpen={isOpen} title={intl.formatMessage(messages.title)} onClose={toggleDialog}>
+      <Dialog
+        icon="group-objects"
+        isOpen={isOpen}
+        title={intl.formatMessage(messages.title)}
+        onClose={toggleDialog}
+        portalClassName="dialog-portal-container"
+      >
         <form onSubmit={this.onSubmit}>
           <div className="bp3-dialog-body">
             <ControlGroup fill>

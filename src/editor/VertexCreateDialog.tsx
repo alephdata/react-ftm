@@ -116,7 +116,14 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     const vertexSelectText = schema ? schema.label : intl.formatMessage(messages.type_placeholder);
     const vertexSelectIcon = schema ? SchemaIcon.get(schema) : 'select'
     return (
-      <Dialog icon="new-object" isOpen={isOpen} title={intl.formatMessage(messages.title)} onClose={toggleDialog} className="VertexCreateDialog">
+      <Dialog
+        icon="new-object"
+        isOpen={isOpen}
+        title={intl.formatMessage(messages.title)}
+        onClose={toggleDialog}
+        className="VertexCreateDialog"
+        portalClassName="dialog-portal-container"
+      >
         <form onSubmit={this.onSubmit}>
           <div className="bp3-dialog-body">
             <ControlGroup fill>
