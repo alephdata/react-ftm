@@ -12,8 +12,6 @@ class Translator extends React.PureComponent<ITranslatorProps> {
   render() {
     const locale = this.props.locale || "en";
 
-    console.log(locale);
-
     return (
       <IntlProvider
         locale={locale}

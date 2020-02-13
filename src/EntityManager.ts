@@ -1,8 +1,9 @@
 import { defaultModel, Entity, Model, IEntityDatum } from '@alephdata/followthemoney'
 
-export interface IEntityManagerProps {
+
+export interface IEntityManagerOverload {
   model?: Model,
-  createEntity?: (entityData: IEntityDatum) => IEntityDatum,
+  createEntity?: (entityData: IEntityDatum) => Promise<IEntityDatum>,
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
 }
@@ -45,7 +46,6 @@ export class EntityManager {
     }
   }
 
-  // FIXME: no guarantee that entity will be created/deleted with the same ID
   // entity changes in the reverse direction require undoing create/delete operations
   applyEntityChanges(entityChanges: any, factor: number) {
     const { created, updated, deleted } = entityChanges;
