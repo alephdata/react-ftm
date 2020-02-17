@@ -1,6 +1,8 @@
 import * as React from 'react'
 import c from 'classnames';
 import { Button, ButtonGroup, Classes, Drawer, Position, Tooltip } from '@blueprintjs/core';
+import Translator from './Translator';
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { EntityManager } from './EntityManager';
 import { GraphConfig } from './GraphConfig';
 import { GraphRenderer } from './renderer/GraphRenderer'
@@ -16,33 +18,44 @@ import { filterVerticesByText } from './filters';
 
 import './VisGraph.scss';
 
-interface IVisGraphProps {
+const messages = defineMessages({
+  tooltip_fit_selection: {
+    id: 'tooltips.fit_to_selection',
+    defaultMessage: 'Fit view to selection',
+  },
+});
+
+export interface IVisGraphProps {
   config: GraphConfig,
+  locale?: string
   entityManager: EntityManager
   layout: GraphLayout,
   viewport: Viewport,
-  updateLayout: (layout:GraphLayout, historyModified?: boolean) => void,
+  updateLayout: (layout:GraphLayout, options?: any) => void,
   updateViewport: (viewport:Viewport) => void
   exportSvg: (data: any) => void
   writeable: boolean
   externalFilterText?: string
 }
 
+interface IVisGraphControllerProps extends IVisGraphProps, WrappedComponentProps {}
+
 interface IVisGraphState {
   animateTransition: boolean
   interactionMode: string
+  searchText: string
   tableView: boolean
-  vertexCreateInitialPos?: Point
+  vertexCreateOptions?: any
 }
 
-export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
+class VisGraphController extends React.Component<IVisGraphControllerProps, IVisGraphState> {
   state: IVisGraphState;
   history: History;
   svgRef: React.RefObject<SVGSVGElement>
 
-  constructor(props: any) {
+  constructor(props: IVisGraphControllerProps) {
     super(props)
-    const { config, layout, viewport, writeable } = props
+    const { config, externalFilterText, layout, viewport, writeable } = props
 
     this.history = new History();
     this.svgRef = React.createRef()
@@ -55,9 +68,10 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       animateTransition: false,
       interactionMode: writeable ? modes.SELECT : modes.PAN,
       tableView: false,
+      searchText: externalFilterText || '',
     };
 
-    this.addVertexToPosition = this.addVertexToPosition.bind(this)
+    this.addVertex = this.addVertex.bind(this)
     this.exportSvg = this.exportSvg.bind(this);
     this.fitToSelection = this.fitToSelection.bind(this)
     this.navigateHistory = this.navigateHistory.bind(this);
@@ -80,7 +94,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     }
   }
 
-  componentDidUpdate(prevProps: IVisGraphProps) {
+  componentDidUpdate(prevProps: IVisGraphControllerProps) {
     const { externalFilterText } = this.props;
 
     if (externalFilterText !== undefined && prevProps.externalFilterText !== externalFilterText) {
@@ -105,7 +119,8 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     } else {
       layout.clearSelection();
     }
-    this.updateLayout(layout, { modifyHistory: false })
+    this.setState({ searchText });
+    this.updateLayout(layout, null, { modifyHistory: false })
   }
 
   onSubmitSearch(event: React.FormEvent) {
@@ -114,15 +129,20 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     event.stopPropagation();
   }
 
-  updateLayout(layout: GraphLayout, options?: any) {
+  updateLayout(layout: GraphLayout, entityChanges?: any, options?: any) {
     if (options?.modifyHistory) {
-      this.history.push({layout:layout.toJSON(), entityChanges: options.entityChanges});
+      this.history.push({layout:layout.toJSON(), entityChanges: entityChanges});
     }
 
-    this.setState({animateTransition: false });
+    this.setState(({ searchText }) => ({
+      animateTransition: false,
+      searchText: options?.clearSearch ? '' : searchText
+    }));
 
-    this.props.updateLayout(layout, (options?.modifyHistory || options?.forceSave));
-
+    this.props.updateLayout(layout, {
+      propagate: options?.modifyHistory || options?.forceSaveUpdate,
+      clearSearch: options?.clearSearch,
+    });
   }
 
   updateViewport(viewport: Viewport, { animate = false } = {}) {
@@ -142,18 +162,18 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       entityManager.applyEntityChanges(entityChanges, factor);
     }
 
-    this.updateLayout(GraphLayout.fromJSON(config, entityManager, layout), { forceSave: true })
+    this.updateLayout(GraphLayout.fromJSON(config, entityManager, layout), null, { forceSaveUpdate: true })
   }
 
-  addVertexToPosition(initialPos?: Point) {
+  addVertex(options?: any) {
     this.setState({
       interactionMode: modes.VERTEX_CREATE,
-      vertexCreateInitialPos: initialPos
+      vertexCreateOptions: options
     })
   }
 
   setInteractionMode(newMode?: string) {
-    this.setState({ interactionMode: newMode || modes.SELECT })
+    this.setState({ interactionMode: newMode || modes.SELECT, vertexCreateOptions: null })
   }
 
   toggleTableView() {
@@ -172,13 +192,13 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   removeSelection() {
     const { layout } = this.props
     const removedEntities = layout.removeSelection()
-    this.updateLayout(layout, {modifyHistory:true, entityChanges: { deleted: removedEntities }})
+    this.updateLayout(layout, { deleted: removedEntities }, { modifyHistory:true })
   }
 
   ungroupSelection() {
     const { layout } = this.props
     layout.ungroupSelection()
-    this.updateLayout(layout, {modifyHistory:true})
+    this.updateLayout(layout, null, { modifyHistory:true })
   }
 
   exportSvg() {
@@ -201,8 +221,8 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   render() {
-    const { config, layout, viewport, writeable } = this.props;
-    const { animateTransition, interactionMode, tableView } = this.state;
+    const { config, intl, layout, locale, viewport, writeable } = this.props;
+    const { animateTransition, interactionMode, searchText, tableView } = this.state;
     const vertices = layout.getSelectedVertices()
     const [sourceVertex, targetVertex] = vertices;
 
@@ -211,10 +231,11 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
       updateLayout: this.updateLayout,
       viewport: viewport,
       updateViewport: this.updateViewport,
+      intl: intl,
     };
 
     const actions = {
-      addVertexToPosition: this.addVertexToPosition,
+      addVertex: this.addVertex,
       exportSvg: this.exportSvg,
       navigateHistory: this.navigateHistory,
       removeSelection: this.removeSelection,
@@ -237,6 +258,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
               interactionMode={this.state.interactionMode}
               showEditingButtons={writeable}
               logo={config.logo}
+              searchText={searchText}
               {...layoutContext}
             />
           </div>
@@ -244,7 +266,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
             <div className="VisGraph__content__inner-container">
               <div className="VisGraph__button-group">
                 <ButtonGroup vertical>
-                  <Tooltip content="Fit view to selection">
+                  <Tooltip content={intl.formatMessage(messages.tooltip_fit_selection)}>
                     <Button icon="zoom-to-fit" onClick={this.fitToSelection}/>
                   </Tooltip>
                   <Button icon="zoom-in" onClick={() => this.onZoom(0.8)}/>
@@ -269,13 +291,18 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
                 style={{ height: '60%' }}
               >
                 <div className={Classes.DRAWER_BODY}>
-                  <TableEditor layout={layout} updateLayout={this.updateLayout} writeable={writeable} />
+                  <TableEditor
+                    layout={layout}
+                    updateLayout={this.updateLayout}
+                    writeable={writeable}
+                    actions={actions}
+                  />
                 </div>
               </Drawer>
             </div>
             {showSidebar &&
               <div className="VisGraph__sidebar">
-                <Sidebar {...layoutContext} writeable={writeable} />
+                <Sidebar {...layoutContext} writeable={writeable} searchText={searchText} />
               </div>
             }
           </div>
@@ -285,7 +312,7 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
             <VertexCreateDialog
               isOpen={interactionMode === modes.VERTEX_CREATE}
               toggleDialog={this.setInteractionMode}
-              vertexInitialPos={this.state.vertexCreateInitialPos} />
+              vertexCreateOptions={this.state.vertexCreateOptions} />
 
             <GroupingCreateDialog
               isOpen={interactionMode === modes.GROUPING_CREATE}
@@ -304,3 +331,11 @@ export class VisGraph extends React.Component<IVisGraphProps, IVisGraphState> {
     );
   }
 }
+
+const VisGraphControllerIntl = injectIntl(VisGraphController);
+
+export const VisGraph = ({ locale, ...rest}: IVisGraphProps ) => (
+  <Translator locale={locale}>
+    <VisGraphControllerIntl {...rest} />
+  </Translator>
+);

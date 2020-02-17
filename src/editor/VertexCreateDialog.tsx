@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Alignment, Button, ControlGroup, Dialog, InputGroup, Intent } from '@blueprintjs/core'
 import { Schema } from '@alephdata/followthemoney'
 import { GraphContext, IGraphContext } from '../GraphContext'
@@ -8,10 +9,26 @@ import { Point } from '../layout'
 
 import "./VertexCreateDialog.scss";
 
-interface IVertexCreateDialogProps {
+const messages = defineMessages({
+  title: {
+    id: 'dialog.vertex_create.title',
+    defaultMessage: 'Add entity',
+  },
+  name_placeholder: {
+    id: 'dialog.vertex_create.name_placeholder',
+    defaultMessage: '{schema} name',
+  },
+  type_placeholder: {
+    id: 'dialog.vertex_create.type_placeholder',
+    defaultMessage: 'Pick a type',
+  },
+});
+
+
+interface IVertexCreateDialogProps extends WrappedComponentProps {
   isOpen: boolean,
   toggleDialog: () => any,
-  vertexInitialPos?: Point
+  vertexCreateOptions?: any
 }
 
 interface IVertexCreateDialogState {
@@ -19,7 +36,7 @@ interface IVertexCreateDialogState {
   schema?: Schema
 }
 
-export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps, IVertexCreateDialogState> {
+export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogProps, IVertexCreateDialogState> {
   static contextType = GraphContext;
   context!: React.ContextType<typeof GraphContext>;
   state: IVertexCreateDialogState = {
@@ -31,6 +48,15 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
     this.onChangeLabel = this.onChangeLabel.bind(this);
     this.onSchemaSelect = this.onSchemaSelect.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  componentDidUpdate(prevProps: IVertexCreateDialogProps) {
+    const schema = this.props.vertexCreateOptions?.initialSchema;
+    if (schema && prevProps.vertexCreateOptions?.initialSchema !== schema) {
+      this.setState({
+        schema,
+      })
+    }
   }
 
   onChangeLabel(e: React.ChangeEvent<HTMLInputElement>) {
@@ -47,9 +73,10 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
   }
 
   async onSubmit(e: React.ChangeEvent<HTMLFormElement>) {
-    const { vertexInitialPos } = this.props
+    const position = this.props.vertexCreateOptions?.initialPosition;
     const { label } = this.state
     const schema = this.getSchema()
+
     const { layout, updateLayout, viewport, updateViewport } = this.context as IGraphContext
     e.preventDefault()
     if (this.checkValid()) {
@@ -62,11 +89,10 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
       }
       const vertex = layout.getVertexByEntity(entity)
       if (vertex) {
-        vertexInitialPos && layout.vertices.set(vertex.id, vertex.setPosition(vertexInitialPos))
+        position && layout.vertices.set(vertex.id, vertex.setPosition(position))
         layout.selectElement(vertex)
-        updateLayout(layout, {modifyHistory: true, entityChanges: { created: [entity] }})
-        // zoom viewport to new vertex only if created without initial position
-        !vertexInitialPos && updateViewport(viewport.setCenter(vertexInitialPos || vertex.position), {animate:true})
+        updateLayout(layout, { created: [entity] }, { modifyHistory: true, clearSearch: true });
+        !position && updateViewport(viewport.setCenter(position || vertex.position), {animate:true})
         this.setState({label: ''})
         this.props.toggleDialog()
       }
@@ -82,15 +108,22 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
   }
 
   render() {
-    const { layout } = this.context as IGraphContext
+    const { intl, layout } = this.context as IGraphContext
     const { isOpen, toggleDialog } = this.props
     const schema = this.getSchema()
-    const placeholder = `${schema.label} name`
+    const placeholder = intl.formatMessage(messages.name_placeholder, { schema: schema.label });
     const isValid = this.checkValid()
-    const vertexSelectText = schema ? schema.label : 'pick a type';
+    const vertexSelectText = schema ? schema.label : intl.formatMessage(messages.type_placeholder);
     const vertexSelectIcon = schema ? SchemaIcon.get(schema) : 'select'
     return (
-      <Dialog icon="new-object" isOpen={isOpen} title="Add entity" onClose={toggleDialog} className="VertexCreateDialog">
+      <Dialog
+        icon="new-object"
+        isOpen={isOpen}
+        title={intl.formatMessage(messages.title)}
+        onClose={toggleDialog}
+        className="VertexCreateDialog"
+        portalClassName="dialog-portal-container"
+      >
         <form onSubmit={this.onSubmit}>
           <div className="bp3-dialog-body">
             <ControlGroup fill>
@@ -123,3 +156,5 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
     );
   }
 }
+
+export const VertexCreateDialog = injectIntl(VertexCreateDialogBase);
