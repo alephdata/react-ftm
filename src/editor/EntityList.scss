@@ -32,20 +32,34 @@
     border-radius: 0 !important;
     width: 100%;
     position: relative;
-    // border-bottom: 1px solid;
+    // border-bottom: .5px solid;
     @include themify() {
       fill: themed('textColor') !important;
       color: themed('textColor') !important;
-      border-color: themed('textColor');
+      // border-color: themed('sidebarMenuHoverColor');
     }
 
-    &:last-child {
-      border: none;
+    &:after {
+      content : "";
+      position: absolute;
+      left    : 5px;
+      bottom  : -1px;
+      height  : 1px;
+      width   : calc(100% - 10px);
+      border-bottom: 1px solid;
+      @include themify() {
+        border-color: themed('sidebarMenuHoverColor');
+      }
+    }
+    // hide border on hover
+    &:hover:after {
+      width: 100%;
+      left: 0;
     }
 
     &__left, &__right {
       display: flex;
-      align-items: center;
+      align-items: center !important;
 
       &:hover {
         @include themify() {

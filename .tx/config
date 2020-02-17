@@ -1,0 +1,9 @@
+[main]
+host = https://www.transifex.com
+
+[vislib.messages-pot]
+file_filter = i18n/translations/<lang>.po
+minimum_perc = 0
+source_file = i18n/messages.pot
+source_lang = en_US
+type = PO

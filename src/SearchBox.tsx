@@ -4,20 +4,18 @@ import c from 'classnames';
 
 import './SearchBox.scss';
 
-
 interface ISearchBoxProps {
   onChangeSearch: (searchText:string) => void
   onSubmitSearch: (event: React.FormEvent) => void
+  searchText: string
 }
 
 interface ISearchBoxState {
-  searchText: string
   mobileExpanded: boolean
 }
 
 export class SearchBox extends React.Component<ISearchBoxProps, ISearchBoxState> {
   state: ISearchBoxState = {
-    searchText: '',
     mobileExpanded: false,
   }
 
@@ -29,7 +27,6 @@ export class SearchBox extends React.Component<ISearchBoxProps, ISearchBoxState>
 
   onChangeSearch(event: React.FormEvent<HTMLInputElement>) {
     const searchText = event.currentTarget.value.trim();
-    this.setState({searchText});
     this.props.onChangeSearch(searchText);
   }
 
@@ -38,8 +35,8 @@ export class SearchBox extends React.Component<ISearchBoxProps, ISearchBoxState>
   }
 
   render() {
-    const { onSubmitSearch } = this.props;
-    const { mobileExpanded, searchText } = this.state;
+    const { onSubmitSearch, searchText } = this.props;
+    const { mobileExpanded } = this.state;
     return (
       <div className="SearchBox">
         <div className={c('SearchBox__input', { expanded: mobileExpanded })}>

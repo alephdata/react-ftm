@@ -37,7 +37,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   dropSelection() {
     const { layout } = this.props;
     const shouldUpdateHistory = layout.dropSelection()
-    this.props.updateLayout(layout, {modifyHistory:shouldUpdateHistory})
+    this.props.updateLayout(layout, null, { modifyHistory:shouldUpdateHistory })
   }
 
   clearSelection() {
@@ -49,13 +49,13 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   selectElement(element: GraphElement | Array<GraphElement>, additional: boolean = false) {
     const { layout } = this.props;
     layout.selectElement(element, additional)
-    this.props.updateLayout(layout)
+    this.props.updateLayout(layout, null, { clearSearch: true });
   }
 
   selectArea(area: Rectangle) {
     const { layout } = this.props;
     layout.selectArea(area)
-    this.props.updateLayout(layout)
+    this.props.updateLayout(layout, null, { clearSearch: true })
   }
 
   renderGroupings() {
@@ -70,7 +70,8 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
           config={layout.config}
           grouping={grouping}
           vertices={vertices}
-          selected={layout.isGroupingSelected(grouping) || layout.isGroupingMemberSelected(grouping) || layout.selection.length === 0}
+          highlighted={layout.isGroupingSelected(grouping) || layout.isGroupingMemberSelected(grouping) || layout.selection.length === 0}
+          selected={layout.isGroupingSelected(grouping)}
           selectGrouping={this.selectElement}
           dragSelection={this.dragSelection}
           dropSelection={this.dropSelection}
@@ -112,7 +113,8 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
       <VertexRenderer
         key={vertex.id}
         config={layout.config}
-        selected={layout.isElementSelected(vertex) || layout.selection.length === 0}
+        highlighted={layout.isElementSelected(vertex) || layout.selection.length === 0}
+        selected={layout.isElementSelected(vertex)}
         vertex={vertex}
         selectVertex={this.selectElement}
         dragSelection={this.dragSelection}

@@ -4,5 +4,6 @@ export interface ITypeProps {
   values: Values
   property: Property
   entity: Entity
-  onPropertyChanged: (values: Values, property: Property) => void
+  onChange: (values: Values) => void
+  onSubmit: (values: Values) => void
 }

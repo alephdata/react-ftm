@@ -1,9 +1,21 @@
 import * as React from 'react'
+import { defineMessages } from 'react-intl';
 import { Dialog, Intent, ControlGroup, InputGroup, Colors } from '@blueprintjs/core'
 import { GraphContext, IGraphContext } from '../GraphContext'
 import { ColorPicker } from './ColorPicker'
 
 import { Point, Grouping } from '../layout'
+
+const messages = defineMessages({
+  title: {
+    id: 'dialog.grouping_create.title',
+    defaultMessage: 'Group items',
+  },
+  placeholder: {
+    id: 'dialog.grouping_create.placeholder',
+    defaultMessage: 'Select a label for the grouping',
+  },
+});
 
 interface IGroupingCreateDialogProps {
   isOpen: boolean,
@@ -48,16 +60,23 @@ export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogP
     if (grouping) {
       layout.addGrouping(grouping);
       layout.clearSelection();
+      updateLayout(layout, null, { modifyHistory:true });
       this.setState({label: ''})
       this.props.toggleDialog()
     }
   }
 
   render() {
-    const { layout } = this.context as IGraphContext
+    const { intl, layout } = this.context as IGraphContext
     const { isOpen, toggleDialog } = this.props
     return (
-      <Dialog icon="group-objects" isOpen={isOpen} title="Group items" onClose={toggleDialog}>
+      <Dialog
+        icon="group-objects"
+        isOpen={isOpen}
+        title={intl.formatMessage(messages.title)}
+        onClose={toggleDialog}
+        portalClassName="dialog-portal-container"
+      >
         <form onSubmit={this.onSubmit}>
           <div className="bp3-dialog-body">
             <ControlGroup fill>
@@ -67,7 +86,7 @@ export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogP
                 className="bp3-fill"
                 value={this.state.label}
                 onChange={this.onChangeLabel}
-                placeholder="Select a label for the grouping"
+                placeholder={intl.formatMessage(messages.placeholder)}
               />
             </ControlGroup>
           </div>

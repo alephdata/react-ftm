@@ -1,19 +1,27 @@
 import * as React from 'react'
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
+import hoistNonReactStatics from 'hoist-non-react-statics';
 import {Entity} from "@alephdata/followthemoney";
 import {FormGroup, MenuItem, Button, Position, Alignment} from "@blueprintjs/core";
 import {ItemPredicate, ItemRenderer, Select} from "@blueprintjs/select";
 import {ITypeProps} from "./common";
 import {highlightText, matchText} from "../utils";
 
-interface IEntityTypeProps extends ITypeProps {
+const messages = defineMessages({
+  placeholder: {
+    id: 'editor.entity.placeholder',
+    defaultMessage: 'Select an entity',
+  },
+});
+
+interface IEntityTypeProps extends ITypeProps, WrappedComponentProps {
   entities: Map<string, Entity>
 }
 
 const EntitySelect = Select.ofType<Entity>();
 
-
-export class EntityEdit extends React.Component<IEntityTypeProps> {
-  static group = new Set(['entity'])
+class EntityEditBase extends React.Component<IEntityTypeProps> {
+  static group = new Set(['entity']);
   private inputRef: HTMLElement | null = null;
 
   componentDidMount() {
@@ -53,7 +61,7 @@ export class EntityEdit extends React.Component<IEntityTypeProps> {
 
   onSelect = (item:Entity) => {
     const nextValues = [item.id];
-    this.props.onPropertyChanged(nextValues, this.props.property)
+    this.props.onSubmit(nextValues)
   }
 
   getItemsList() {
@@ -76,9 +84,10 @@ export class EntityEdit extends React.Component<IEntityTypeProps> {
   }
 
   render() {
+    const { intl } = this.props;
     const items = this.getItemsList()
     const selectedEntity = this.ensureInstance()[0];
-    const buttonText = selectedEntity ? selectedEntity.getCaption() : 'Select an entity';
+    const buttonText = selectedEntity ? selectedEntity.getCaption() : intl.formatMessage(messages.placeholder);
 
     return <FormGroup>
       <EntitySelect
@@ -105,3 +114,9 @@ export class EntityEdit extends React.Component<IEntityTypeProps> {
     </FormGroup>
   }
 }
+
+const EntityEdit = injectIntl(EntityEditBase) as any;
+// InjectIntl doesn't hoist component statics: https://github.com/formatjs/react-intl/issues/196
+hoistNonReactStatics(EntityEdit, EntityEditBase);
+
+export default EntityEdit;

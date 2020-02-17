@@ -1,4 +1,6 @@
 import * as React from 'react'
+import { defineMessages } from 'react-intl';
+
 import { Dialog, MenuItem, FormGroup, Intent, Button, Alignment, Position } from '@blueprintjs/core'
 import { Select, IItemRendererProps } from '@blueprintjs/select';
 import { IGraphContext } from '../GraphContext'
@@ -6,6 +8,33 @@ import { VertexSelect } from './VertexSelect'
 import { EdgeType } from './EdgeType'
 import { Vertex,Edge } from '../layout';
 import { SchemaIcon } from '../types';
+
+const messages = defineMessages({
+  add_link: {
+    id: 'dialog.edge_create.title',
+    defaultMessage: 'Add link',
+  },
+  source: {
+    id: 'dialog.edge_create.source_label',
+    defaultMessage: 'Source',
+  },
+  target: {
+    id: 'dialog.edge_create.target_label',
+    defaultMessage: 'Target',
+  },
+  type: {
+    id: 'dialog.edge_create.type_label',
+    defaultMessage: 'Type',
+  },
+  type_select: {
+    id: 'dialog.edge_create.type_placeholder',
+    defaultMessage: 'Select type',
+  },
+  submit: {
+    id: 'dialog.edge_create.submit',
+    defaultMessage: 'Create',
+  },
+});
 
 const EdgeTypeSelect = Select.ofType<EdgeType>();
 
@@ -86,7 +115,6 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     if (source && target && type && this.isValid()) {
       const sourceEntity = source.getEntity()
       const targetEntity = target.getEntity()
-      console.log('sourceEntity is', sourceEntity);
       if (type.property && sourceEntity) {
         const value = targetEntity || target.label
         sourceEntity.setProperty(type.property, value)
@@ -100,16 +128,15 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         const entity = await layout.addEntity({
           schema: type.schema,
           properties: {
-            [type.schema.edge.source]: sourceEntity,
-            [type.schema.edge.target]: targetEntity,
+            [type.schema.edge.source]: sourceEntity.id,
+            [type.schema.edge.target]: targetEntity.id,
           }
         });
         const edge = Edge.fromEntity(layout, entity, source, target)
         layout.selectElement(edge)
-        updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
         entityChanges.created = [entity];
       }
-      updateLayout(layout, { modifyHistory:true, entityChanges })
+      updateLayout(layout, entityChanges, { modifyHistory: true, clearSearch: true });
       toggleDialog()
     }
   }
@@ -195,17 +222,24 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   }
 
   render() {
-    const { isOpen, toggleDialog } = this.props
+    const { intl, isOpen, toggleDialog } = this.props
     const { source, target, type } = this.state
     const types = this.getTypes()
 
     return (
-      <Dialog icon="new-link" isOpen={isOpen} title="Add link" onClose={toggleDialog} style={{width: '800px'}}>
+      <Dialog
+        icon="new-link"
+        isOpen={isOpen}
+        title={intl.formatMessage(messages.add_link)}
+        onClose={toggleDialog}
+        style={{width: '800px'}}
+        portalClassName="dialog-portal-container"
+      >
         <form onSubmit={this.onSubmit}>
           <div className="bp3-dialog-body">
             <div style={{flex: 1, display: 'flex', flexFlow: 'row'}}>
               <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
-                <FormGroup label='Source' helperText={this.getSourceLabel()}>
+                <FormGroup label={intl.formatMessage(messages.source)} helperText={this.getSourceLabel()}>
                   <VertexSelect
                     vertices={this.getVertices(source, target)}
                     vertex={source}
@@ -214,7 +248,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                 </FormGroup>
               </div>
               <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
-                <FormGroup label="Type" helperText={this.getTypeDescription()}>
+                <FormGroup label={intl.formatMessage(messages.type)} helperText={this.getTypeDescription()}>
                   <EdgeTypeSelect
                     popoverProps={{
                       position: Position.BOTTOM_LEFT,
@@ -228,7 +262,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                   >
                     <Button fill
                       disabled={!types.length}
-                      text={type ? type.label : 'Select type'}
+                      text={type ? type.label : intl.formatMessage(messages.type_select)}
                       alignText={Alignment.LEFT}
                       icon={EdgeCreateDialog.getEdgeTypeIcon(type)}
                       rightIcon='double-caret-vertical'
@@ -237,7 +271,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                 </FormGroup>
               </div>
               <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
-                <FormGroup label='Target' helperText={this.getTargetLabel()}>
+                <FormGroup label={intl.formatMessage(messages.target)} helperText={this.getTargetLabel()}>
                   <VertexSelect
                     vertices={this.getVertices(target, source)}
                     vertex={target}
@@ -261,7 +295,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
             <Button
               intent={Intent.PRIMARY}
               disabled={!this.isValid()}
-              text="Create"
+              text={intl.formatMessage(messages.submit)}
               type="submit"
             />
           </div>

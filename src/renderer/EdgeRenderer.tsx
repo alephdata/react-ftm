@@ -65,6 +65,8 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
       return null;
     }
     const isEntity = edge.isEntity()
+    const isDirected = edge.isDirected()
+
     const vertex1Position = config.gridToPixel(vertex1.position)
     const vertex2Position = config.gridToPixel(vertex2.position)
     const {path, center} = this.generatePath(vertex1Position, vertex2Position)
@@ -93,7 +95,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
           d={path}
           strokeDasharray={isEntity ? '0' : '1'}
           style={lineStyles}
-          markerEnd={isEntity ? arrowRef : ''}
+          markerEnd={isDirected ? arrowRef : ''}
         />
       </g>
       { highlight && (

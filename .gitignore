@@ -12,3 +12,9 @@ compiled
 .rpt2_cache
 docs
 stats.html
+
+# Translations
+i18n/messages.json
+i18n/messages.pot
+*.mo
+*.pot

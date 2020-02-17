@@ -17,6 +17,7 @@ interface IEntityViewerProps {
   vertexRef?: Vertex,
   onEntityChanged: (entity: Entity) => void
   onVertexColorSelected: (vertex: Vertex, color: string) => void
+  writeable: boolean
 }
 
 interface IEntityViewerState {
@@ -39,6 +40,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
 
     this.onNewPropertySelected = this.onNewPropertySelected.bind(this);
     this.renderProperty = this.renderProperty.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   getVisibleProperties(props = this.props) {
@@ -71,7 +73,9 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     })
   }
 
-  leaveEditMode() {
+  onSubmit(entity: Entity) {
+    this.props.onEntityChanged(entity);
+
     this.setState({
       currEditing: null
     })
@@ -80,12 +84,12 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   renderProperty(property:Property){
     const { entity } = this.props;
     const { currEditing } = this.state;
-    const isEditable = property === currEditing;
+    const isEditable = property?.name === currEditing?.name;
 
     return <React.Fragment key={property.name}>
       <li
         className={c('EntityViewer__property-list-item', {'active': isEditable})}
-        onClick={(e) => this.onEditPropertyClick(e, property)}
+        onClick={(e) => !isEditable && this.onEditPropertyClick(e, property)}
       >
         <div className='EntityViewer__property-list-item__label'>
           <span>
@@ -95,14 +99,12 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
         <div className='EntityViewer__property-list-item__value'>
           {isEditable && (
             <div>
-              <form onSubmit={e => { e.preventDefault(); this.leaveEditMode(); }}>
-                <PropertyEditor
-                  key={property.name}
-                  onEntityChanged={this.props.onEntityChanged}
-                  entity={entity}
-                  property={property}
-                />
-              </form>
+              <PropertyEditor
+                key={property.name}
+                onSubmit={this.onSubmit}
+                entity={entity}
+                property={property}
+              />
             </div>
           )}
           {!isEditable && (
@@ -116,33 +118,32 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   render() {
-    const { entity, vertexRef } = this.props;
+    const { entity, vertexRef, writeable } = this.props;
     const { visibleProps } = this.state;
     const availableProperties = this.schemaProperties.filter(p => visibleProps.indexOf(p) < 0);
-    return (
-      <div
-        className='EntityViewer'
-        onClick={() => this.leaveEditMode()} >
-          <div className='EntityViewer__title'>
-            <SchemaIcon size={60} schema={entity.schema} />
-            <h2 className='EntityViewer__title__text'>{entity.getCaption()}</h2>
-            {vertexRef &&
-              <ColorPicker
-                currSelected={vertexRef.color}
-                onSelect={(color: string) => this.props.onVertexColorSelected(vertexRef, color)} />
-            }
-          </div>
 
-          <UL className={c('EntityViewer__property-list', Classes.LIST_UNSTYLED)}>
-            {visibleProps.map(this.renderProperty)}
-          </UL>
-          {!!availableProperties.length && (<>
-            <Divider/>
-            <SelectProperty
-              properties={availableProperties}
-              onSelected={this.onNewPropertySelected}
-            />
-          </>)}
+    return (
+      <div className={c('EntityViewer', { writeable: writeable })}>
+        <div className='EntityViewer__title'>
+          <SchemaIcon size={60} schema={entity.schema} />
+          <h2 className='EntityViewer__title__text'>{entity.getCaption()}</h2>
+          {vertexRef &&
+            <ColorPicker
+              currSelected={vertexRef.color}
+              onSelect={(color: string) => this.props.onVertexColorSelected(vertexRef, color)} />
+          }
+        </div>
+
+        <UL className={c('EntityViewer__property-list', Classes.LIST_UNSTYLED)}>
+          {visibleProps.map(this.renderProperty)}
+        </UL>
+        {writeable && !!availableProperties.length && (<>
+          <Divider/>
+          <SelectProperty
+            properties={availableProperties}
+            onSelected={this.onNewPropertySelected}
+          />
+        </>)}
       </div>
     )
   }

@@ -14,8 +14,8 @@ export interface IGraphLayoutData {
   entities: Array<IEntityDatum>
   vertices: Array<any>
   edges: Array<any>
-  groupings: Array<any>
-  selection: Array<string>
+  groupings?: Array<any>
+  selection?: Array<string>
 }
 
 export type VertexPredicate = (vertex: Vertex) => boolean
@@ -120,19 +120,19 @@ export class GraphLayout {
   }
 
   updateEntity(entity: Entity) {
-    this.entityManager.updateEntity(entity);
     this.entities.set(entity.id, entity)
     this.layout()
+
+    this.entityManager.updateEntity(entity);
 
     return entity;
   }
 
   removeEntity(entityId: string, propagate?: boolean) {
+    this.entities.delete(entityId)
     if (propagate) {
       this.entityManager.deleteEntity(entityId);
     }
-    this.entities.delete(entityId)
-    this.layout()
   }
 
   getEntities(): Entity[] {
@@ -365,7 +365,7 @@ export class GraphLayout {
       }
     })
 
-    this.generate()
+    this.layout()
 
     return removedEntities;
   }
@@ -384,6 +384,12 @@ export class GraphLayout {
         this.groupings.set(grouping.id, grouping.addVertex(vertex))
       }
     })
+  }
+
+  getVisibleVertexRect() {
+    const vertices = this.getVertices();
+    const points = vertices.filter((v) => !v.isHidden()).map((v) => v.position)
+    return Rectangle.fromPoints(...points);
   }
 
   layout() {
@@ -446,18 +452,23 @@ export class GraphLayout {
   static fromJSON(config: GraphConfig, entityManager: EntityManager, data: any): GraphLayout {
     const layoutData = data as IGraphLayoutData
     const layout = new GraphLayout(config, entityManager)
+
     layoutData.entities.forEach((edata) => {
       layout.entities.set(edata.id, entityManager.model.getEntity(edata))
     })
+
     layoutData.vertices.forEach((vdata) => {
       const vertex = Vertex.fromJSON(layout, vdata)
       layout.vertices.set(vertex.id, vertex)
     })
+
     layoutData.edges.forEach((edata) => {
       const edge = Edge.fromJSON(layout, edata)
       layout.edges.set(edge.id, edge)
     })
+
     layout.generate()
+
     if (layoutData.groupings) {
       layoutData.groupings.forEach((gdata) => {
         const grouping = Grouping.fromJSON(layout, gdata)
@@ -466,7 +477,9 @@ export class GraphLayout {
     } else {
       layout.groupings = new Map()
     }
-    layout.selection = layoutData.selection
+
+    layout.selection = layoutData.selection || []
+
     return layout
   }
 }

@@ -133,7 +133,7 @@ export class Vertex {
 
   static fromValue(layout: GraphLayout, property: Property, value: Value): Vertex {
     if (property.type.name === PropertyType.ENTITY || value instanceof Entity) {
-      if ('string' ===  typeof value) {
+      if ('string' === typeof value) {
         const entity = layout.entities.get(value)
         if (!entity) {
           throw new Error("Dangling entity reference.")

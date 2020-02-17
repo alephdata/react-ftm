@@ -7,7 +7,6 @@ export interface IGraphConfig {
   editorTheme?: string,
   toolbarPosition?: string,
   logo?: GraphLogo
-  writeable?: boolean
 }
 
 export class GraphConfig {
@@ -19,15 +18,12 @@ export class GraphConfig {
   public editorTheme: string
   public toolbarPosition: string
   public logo: GraphLogo | undefined
-  public writeable: boolean
-
 
   constructor(props?: IGraphConfig) {
     this.gridUnit = props?.gridUnit || 10
     this.editorTheme = props?.editorTheme || "dark"
     this.toolbarPosition = props?.toolbarPosition || "top"
     this.logo = props?.logo
-    this.writeable = props?.writeable || true
   }
 
   gridToPixel(point: Point): Point {

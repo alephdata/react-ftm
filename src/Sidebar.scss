@@ -8,4 +8,11 @@
     background-color: themed('sidebarColor');
     color: themed('textColor');
   }
+
+  &__search-text {
+    font-style: italic;
+    border-bottom: 1px solid;
+    margin-bottom: 10px;
+    padding-bottom: $sidebar-gutter;
+  }
 }

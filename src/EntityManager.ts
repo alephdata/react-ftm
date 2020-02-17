@@ -1,25 +1,31 @@
 import { defaultModel, Entity, Model, IEntityDatum } from '@alephdata/followthemoney'
 
 
-export interface IEntityManagerOverload {
-  createEntity?: (entityData: IEntityDatum) => Entity,
-  updateEntity?: (entity: Entity) => Entity,
+export interface IEntityManagerProps {
+  model?: Model,
+  createEntity?: (entityData: IEntityDatum) => Promise<IEntityDatum>,
+  updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
 }
 
 export class EntityManager {
   public readonly model: Model
-  private overload: IEntityManagerOverload | undefined
+  private overload: any
 
-  constructor(props?: IEntityManagerOverload) {
-    this.model = new Model(defaultModel);
-    this.overload = props;
+  constructor(props?: IEntityManagerProps) {
+    if (props) {
+      const { model, ...rest } = props;
+      this.model = model || new Model(defaultModel)
+      this.overload = rest;
+    } else {
+      this.model = new Model(defaultModel);
+    }
   }
 
-  createEntity(entityData: any) {
-    console.log('ENTITY MANAGER: create')
+  async createEntity(entityData: any) {
     if (this.overload?.createEntity) {
-      return this.overload.createEntity(entityData)
+      const entityWithId: IEntityDatum = await this.overload.createEntity(entityData);
+      return new Entity(this.model, entityWithId);
     } else {
       const { schema, properties } = entityData;
       const entity = this.model.createEntity(schema);
@@ -34,23 +40,14 @@ export class EntityManager {
   }
 
   updateEntity(entity: Entity) {
-    console.log('ENTITY MANAGER: update')
-
     if (this.overload?.updateEntity) {
-      return this.overload.updateEntity(entity);
-    } else {
-      return entity;
+      this.overload.updateEntity(entity);
     }
   }
 
-  async deleteEntity(entityId: string) {
-    console.log('ENTITY MANAGER: delete')
-
+  deleteEntity(entityId: string) {
     if (this.overload?.deleteEntity) {
-      const status = await this.overload.deleteEntity(entityId);
-      return status;
-    } else {
-      return true;
+      this.overload.deleteEntity(entityId);
     }
   }
 
@@ -58,8 +55,8 @@ export class EntityManager {
   applyEntityChanges(entityChanges: any, factor: number) {
     const { created, updated, deleted } = entityChanges;
 
-    created && created.forEach((entity: Entity) => factor > 0 ? this.createEntity(entity) : this.deleteEntity(entity.id));
+    created && created.forEach((entity: Entity) => factor > 0 ? this.updateEntity(entity) : this.deleteEntity(entity.id));
     updated && updated.forEach((entity: Entity) => this.updateEntity(entity));
-    deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntity(entity.id) : this.createEntity(entity));
+    deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntity(entity.id) : this.updateEntity(entity));
   }
 }
