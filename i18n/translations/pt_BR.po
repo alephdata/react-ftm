@@ -1,7 +1,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-02-11T16:43:57.763Z\n"
+"POT-Creation-Date: 2020-02-13T16:30:12.051Z\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/aleph/teams/76591/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
