@@ -1,0 +1,300 @@
+# Translators:
+# jen occrp, 2020
+# 
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2020-02-18T10:25:10.247Z\n"
+"Last-Translator: jen occrp, 2020\n"
+"Language-Team: Russian (https://www.transifex.com/aleph/teams/76591/ru/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"X-Generator: react-intl-po\n"
+
+#. [editor.property_add]
+#. defaultMessage is:
+#. Add a property
+#: i18n/messages.json
+msgid "Add a property"
+msgstr "Добавить свойство"
+
+#. [editor.text.additional]
+#. defaultMessage is:
+#. Add additional values
+#: i18n/messages.json
+msgid "Add additional values"
+msgstr "Добавить дополнительные значения"
+
+#. [table_editor.add_schema]
+#. defaultMessage is:
+#. Add an entity type
+#: i18n/messages.json
+msgid "Add an entity type"
+msgstr "Добавить тип сущности"
+
+#. [tooltip.add_edges]
+#. defaultMessage is:
+#. Add edges
+#: i18n/messages.json
+msgid "Add edges"
+msgstr "Добавить ветвь"
+
+#. [tooltip.add_entities]
+#. defaultMessage is:
+#. Add entities
+#: i18n/messages.json
+msgid "Add entities"
+msgstr "Добавить сущности"
+
+#. [dialog.vertex_create.title]
+#. defaultMessage is:
+#. Add entity
+#: i18n/messages.json
+msgid "Add entity"
+msgstr "Добавить сущность"
+
+#. [dialog.edge_create.title]
+#. defaultMessage is:
+#. Add link
+#: i18n/messages.json
+msgid "Add link"
+msgstr "Добавить связь"
+
+#. [table_editor.add_entity]
+#. defaultMessage is:
+#. Add {schema}
+#: i18n/messages.json
+msgid "Add {schema}"
+msgstr "Добавить {schema}"
+
+#. [tooltip.layout_horizontal]
+#. defaultMessage is:
+#. Align horizontal
+#: i18n/messages.json
+msgid "Align horizontal"
+msgstr "Выровнять горизонтально"
+
+#. [tooltip.layout_vertical]
+#. defaultMessage is:
+#. Align vertical
+#: i18n/messages.json
+msgid "Align vertical"
+msgstr "Выровнять вертикально"
+
+#. [tooltip.layout_circle]
+#. defaultMessage is:
+#. Arrange as circle
+#: i18n/messages.json
+msgid "Arrange as circle"
+msgstr "Расположить в виде круга"
+
+#. [tooltip.layout_hierarchy]
+#. defaultMessage is:
+#. Arrange as hierarchy
+#: i18n/messages.json
+msgid "Arrange as hierarchy"
+msgstr "Расположить в виде иерархии"
+
+#. [dialog.edge_create.submit]
+#. defaultMessage is:
+#. Create
+#: i18n/messages.json
+msgid "Create"
+msgstr "Создать"
+
+#. [tooltip.delete]
+#. defaultMessage is:
+#. Delete selection
+#: i18n/messages.json
+msgid "Delete selection"
+msgstr "Удалить выбранное"
+
+#. [table_editor.delete_entity]
+#. defaultMessage is:
+#. Delete this entity
+#: i18n/messages.json
+msgid "Delete this entity"
+msgstr "Удалить эту сущность"
+
+#. [tooltip.export_svg]
+#. defaultMessage is:
+#. Export as SVG
+#: i18n/messages.json
+msgid "Export as SVG"
+msgstr "Экспорт в SVG"
+
+#. [tooltips.fit_to_selection]
+#. defaultMessage is:
+#. Fit view to selection
+#: i18n/messages.json
+msgid "Fit view to selection"
+msgstr "Отобразить выделенное"
+
+#. [search.results_text.one]
+#. defaultMessage is:
+#. Found 1 result
+#: i18n/messages.json
+msgid "Found 1 result"
+msgstr "Результатов поиска: 1"
+
+#. [search.results_text.multiple]
+#. defaultMessage is:
+#. Found {count} results
+#: i18n/messages.json
+msgid "Found {count} results"
+msgstr "Результатов поиска: {count}"
+
+#. [dialog.grouping_create.title]
+#. defaultMessage is:
+#. Group items
+#: i18n/messages.json
+msgid "Group items"
+msgstr "Сгруппировать"
+
+#. [tooltip.group]
+#. defaultMessage is:
+#. Group selection
+#: i18n/messages.json
+msgid "Group selection"
+msgstr "Выделить группу"
+
+#. [search.results_text.none]
+#. defaultMessage is:
+#. No results found
+#: i18n/messages.json
+msgid "No results found"
+msgstr "Ничего не найдено"
+
+#. [editor.vertex_select.disabled]
+#. defaultMessage is:
+#. No vertices
+#: i18n/messages.json
+msgid "No vertices"
+msgstr "Отсутствуют вершины"
+
+#. [dialog.vertex_create.type_placeholder]
+#. defaultMessage is:
+#. Pick a type
+#: i18n/messages.json
+msgid "Pick a type"
+msgstr "Выберите тип"
+
+#. [tooltip.redo]
+#. defaultMessage is:
+#. Redo
+#: i18n/messages.json
+msgid "Redo"
+msgstr "Повторить действие"
+
+#. [dialog.grouping_create.placeholder]
+#. defaultMessage is:
+#. Select a label for the grouping
+#: i18n/messages.json
+msgid "Select a label for the grouping"
+msgstr "Выбрать метку"
+
+#. [editor.vertex_select.placeholder]
+#. defaultMessage is:
+#. Select an entity
+#. [editor.entity.placeholder]
+#. defaultMessage is:
+#. Select an entity
+#: i18n/messages.json i18n/messages.json
+msgid "Select an entity"
+msgstr "Выбрать сущность"
+
+#. [dialog.edge_create.type_placeholder]
+#. defaultMessage is:
+#. Select type
+#: i18n/messages.json
+msgid "Select type"
+msgstr "Выбрать тип"
+
+#. [dialog.edge_create.source_label]
+#. defaultMessage is:
+#. Source
+#: i18n/messages.json
+msgid "Source"
+msgstr "Источник"
+
+#. [dialog.edge_create.target_label]
+#. defaultMessage is:
+#. Target
+#: i18n/messages.json
+msgid "Target"
+msgstr "Цель"
+
+#. [editor.property_required]
+#. defaultMessage is:
+#. This property is required
+#: i18n/messages.json
+msgid "This property is required"
+msgstr "Эта сущность обязательна"
+
+#. [tooltip.pan_mode]
+#. defaultMessage is:
+#. Toggle pan mode
+#: i18n/messages.json
+msgid "Toggle pan mode"
+msgstr "Включить режим панорамы"
+
+#. [tooltip.select_mode]
+#. defaultMessage is:
+#. Toggle select mode
+#: i18n/messages.json
+msgid "Toggle select mode"
+msgstr "Включить режим выделения"
+
+#. [dialog.edge_create.type_label]
+#. defaultMessage is:
+#. Type
+#: i18n/messages.json
+msgid "Type"
+msgstr "Тип"
+
+#. [tooltip.undo]
+#. defaultMessage is:
+#. Undo
+#: i18n/messages.json
+msgid "Undo"
+msgstr "Отменить"
+
+#. [tooltip.ungroup]
+#. defaultMessage is:
+#. Ungroup selection
+#: i18n/messages.json
+msgid "Ungroup selection"
+msgstr "Разгруппировать"
+
+#. [editor.country.unknown]
+#. defaultMessage is:
+#. Unknown
+#. [editor.language.unknown]
+#. defaultMessage is:
+#. Unknown
+#: i18n/messages.json i18n/messages.json
+msgid "Unknown"
+msgstr "Неизвестно"
+
+#. [editor.entity.unknown]
+#. defaultMessage is:
+#. Untitled
+#: i18n/messages.json
+msgid "Untitled"
+msgstr "Без имени"
+
+#. [tooltip.table_view]
+#. defaultMessage is:
+#. View as table
+#: i18n/messages.json
+msgid "View as table"
+msgstr "Отобразить в виде таблицы"
+
+#. [dialog.vertex_create.name_placeholder]
+#. defaultMessage is:
+#. {schema} name
+#: i18n/messages.json
+msgid "{schema} name"
+msgstr "название {schema}"

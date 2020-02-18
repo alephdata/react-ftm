@@ -1,12 +1,20 @@
 import * as React from 'react'
-import {Entity, Property, Values} from '@alephdata/followthemoney';
-import {DateEdit} from '../types/DateEdit';
-import {TextEdit} from '../types/TextEdit';
-import {EntityEdit} from '../types/EntityEdit';
-import {GraphContext} from '../GraphContext';
-import {CountryEdit} from "../types/CountryEdit";
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
+import { Entity, Property, Values } from '@alephdata/followthemoney';
+import { DateEdit } from '../types/DateEdit';
+import { TextEdit } from '../types/TextEdit';
+import EntityEdit from '../types/EntityEdit';
+import { GraphContext } from '../GraphContext';
+import { CountryEdit } from "../types/CountryEdit";
 
-interface IPropertyEditorProps {
+const messages = defineMessages({
+  required: {
+    id: 'editor.property_required',
+    defaultMessage: 'This property is required',
+  },
+});
+
+interface IPropertyEditorProps extends WrappedComponentProps {
   entity: Entity,
   property: Property,
   onSubmit: (nextEntity: Entity) => void
@@ -16,7 +24,7 @@ interface IPropertyEditorState {
   values: Values,
 }
 
-export class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEditorState> {
+class PropertyEditorBase extends React.Component<IPropertyEditorProps, IPropertyEditorState> {
   static contextType = GraphContext;
   context!: React.ContextType<typeof GraphContext>;
 
@@ -43,11 +51,11 @@ export class PropertyEditor extends React.Component<IPropertyEditorProps, IPrope
   }
 
   checkErrors() {
-    const { property } = this.props;
+    const { intl, property } = this.props;
     const { values } = this.state;
 
     if (property.required) {
-      return values && values.length && values[0] ? null : "This property is required";
+      return values && values.length && values[0] ? null : intl.formatMessage(messages.required);
     }
   }
 
@@ -87,3 +95,5 @@ export class PropertyEditor extends React.Component<IPropertyEditorProps, IPrope
     )
   }
 }
+
+export const PropertyEditor = injectIntl(PropertyEditorBase);

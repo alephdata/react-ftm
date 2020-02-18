@@ -1,4 +1,5 @@
 import React from 'react';
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import {Entity} from "@alephdata/followthemoney";
 import {Classes} from '@blueprintjs/core'
 /// <reference path="../moduleTypes.d.ts"/>
@@ -6,17 +7,23 @@ import truncateText from 'truncate';
 import { SchemaIcon } from './Schema';
 import './Entity.scss'
 
+const messages = defineMessages({
+  unknown: {
+    id: 'editor.entity.unknown',
+    defaultMessage: 'Untitled',
+  },
+});
 
-interface IEntityLabel  {
+interface IEntityLabel extends WrappedComponentProps {
   entity: Entity
   icon?:boolean
   truncate?:number
 }
 
-export class EntityLabel extends React.Component<IEntityLabel> {
+export class EntityLabelBase extends React.Component<IEntityLabel> {
   render() {
     const {
-      entity, icon = false, truncate,
+      entity, icon = false, intl, truncate,
     } = this.props;
 
     const title = entity.getFirst('title') || entity.getCaption();
@@ -26,9 +33,11 @@ export class EntityLabel extends React.Component<IEntityLabel> {
     return (
       <span className="EntityLabel" title={caption}>
         {icon && <SchemaIcon schema={entity.schema} />}
-        {!label && ('Untitled')}
+        {!label && intl.formatMessage(messages.unknown)}
         {label}
       </span>
     );
   }
 }
+
+export const EntityLabel = injectIntl(EntityLabelBase);

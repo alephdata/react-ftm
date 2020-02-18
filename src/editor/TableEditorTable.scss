@@ -1,0 +1,54 @@
+$table-editor-padding: 20px;
+$border-color: rgba(16, 22, 26, 0.15);
+
+.TableEditorTable {
+  .bp3-table-container {
+    box-shadow: none;
+    height: inherit;
+    outline: none !important;
+  }
+
+  .bp3-popover-target {
+    display: block;
+  }
+
+  .bp3-table-quadrant {
+    background: white;
+  }
+
+  &__popover {
+    .bp3-card {
+      padding: 5px;
+    }
+
+    .bp3-form-group {
+      margin: 0;
+    }
+
+    .bp3-input {
+      border-radius: 3px !important;
+      box-shadow: none !important;
+    }
+
+    .bp3-button {
+      box-shadow: none !important;
+    }
+  }
+
+  &__itemAdd {
+    margin-top: $table-editor-padding;
+  }
+
+  &__ghostCell.bp3-table-cell {
+    background-color: white;
+    box-shadow: none;
+    pointer-events: none;
+  }
+
+  .bp3-table-cell {
+    padding-top: 2px;
+    &.narrow {
+      padding: 0;
+    }
+  }
+}

@@ -24,7 +24,8 @@ export class History {
   go(factor: number): IHistoryObject {
     const nextPossibleState = this.state += factor;
     const currState = this.state;
-    let nextState, entityChanges;
+    let nextState;
+    let entityChanges;
 
     if (factor > 0) {
       nextState = Math.min(nextPossibleState, this.stack.length - 1)
