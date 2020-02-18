@@ -46,6 +46,10 @@
     box-shadow: $editor-box-shadow;
   }
 
+  &__table-container {
+    z-index: 1;
+  }
+
   &__button-group {
     position: absolute;
     bottom: 10px;

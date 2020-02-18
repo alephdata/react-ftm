@@ -26,7 +26,7 @@ interface IVertexSelectProps extends WrappedComponentProps {
 const TypedSelect = Select.ofType<Vertex>();
 
 export class VertexSelectBase extends React.PureComponent<IVertexSelectProps> {
-  getVertexIcon(vertex: Vertex) {
+  getVertexIcon = (vertex: Vertex) => {
     const entity = vertex.getEntity()
     return vertex.isEntity() && entity ? SchemaIcon.get(entity.schema) : undefined;
   }
@@ -35,21 +35,25 @@ export class VertexSelectBase extends React.PureComponent<IVertexSelectProps> {
     return matchText(vertex.label, query)
   };
 
-  renderVertex(vertex: Vertex, { handleClick, modifiers }: IItemRendererProps) {
+  renderVertex = (vertex: Vertex, { handleClick, modifiers }: IItemRendererProps) => {
     if (!modifiers.matchesPredicate) {
         return null;
     }
+
+    const icon = this.getVertexIcon(vertex);
+
     return <MenuItem
       active={modifiers.active}
       key={vertex.id}
-      icon={this.getVertexIcon(vertex)}
+      icon={icon}
       onClick={handleClick}
       text={vertex.label}
     />
   }
 
   render() {
-    const { intl, vertices, vertex } = this.props
+    const { intl, vertices, vertex } = this.props;
+
     return (
       <TypedSelect
         itemPredicate={this.itemPredicate}

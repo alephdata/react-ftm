@@ -289,6 +289,7 @@ class VisGraphController extends React.Component<IVisGraphControllerProps, IVisG
                 title="Table viewer"
                 onClose={this.toggleTableView}
                 style={{ height: '60%' }}
+                portalClassName="VisGraph__table-container"
               >
                 <div className={Classes.DRAWER_BODY}>
                   <TableEditor
