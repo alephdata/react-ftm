@@ -15,8 +15,8 @@ export function alignCircle(layout:GraphLayout):GraphLayout{
   vertices.forEach(function(v,i) {
     const angle = step * i;
     layout.vertices.set(v.id, v.snapPosition(new Point(
-      Math.round(center.x + radius * Math.cos(angle) - layout.config.VERTEX_RADIUS),
-      Math.round(center.y + radius * Math.sin(angle) - layout.config.VERTEX_RADIUS)
+      Math.round(center.x + radius * Math.cos(angle) - layout.config.VERTEX_BASE_RADIUS),
+      Math.round(center.y + radius * Math.sin(angle) - layout.config.VERTEX_BASE_RADIUS)
     )))
   })
   adjacentEdges.forEach((edge) => {
