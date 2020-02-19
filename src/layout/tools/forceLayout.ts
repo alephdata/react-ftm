@@ -23,7 +23,7 @@ export function forceLayout(layout:GraphLayout):GraphLayout{
 
   const simulation = forceSimulation(nodes)
     .force('links', forceLink(links))
-    .force('collide', forceCollide(layout.config.VERTEX_BASE_RADIUS).strength(2))
+    .force('collide', forceCollide(layout.config.DEFAULT_VERTEX_RADIUS).strength(2))
   simulation.stop()
   simulation.tick(500)
   nodes.forEach((node) => {

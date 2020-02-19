@@ -1,0 +1,80 @@
+@import "src/variables.scss";
+@import "src/themes.scss";
+
+$swatch-width: 20px;
+
+.ColorPicker {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  width: 100%;
+  padding: 20px 0;
+
+  &__item {
+    width: $swatch-width;
+    margin: auto;
+
+    &__swatch {
+      position: relative;
+      width: $swatch-width;
+      height: $swatch-width;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all .1s ease-in-out;
+      border: 1px solid;
+
+      &.square {
+        border-radius: 5px;
+      }
+
+      .theme-dark & {
+        border-color: white !important;
+      }
+
+      &.active, &:hover {
+        @include themify() {
+          border-width: themed('colorPickerActiveBorderWidth');
+        }
+      }
+
+      &:hover {
+        @include themify() {
+          opacity: themed('colorPickerHoverOpacity');
+        }
+      }
+
+      &.active {
+        pointer-events: none;
+      }
+
+      &__inner {
+        width: 0;
+        height: 0;
+        border-radius: 10px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transition: all .1s ease-in-out;
+        border: 2px solid;
+
+        .theme-dark & {
+          display: none;
+        }
+
+        .square & {
+          border-radius: 3px;
+        }
+
+        .active & {
+          width: 14px !important;
+          height: 14px !important;
+          border-color: white !important;
+        }
+
+
+      }
+    }
+  }
+}

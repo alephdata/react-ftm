@@ -7,6 +7,9 @@ import { PropertyName, PropertyValues} from '../types';
 import { SchemaIcon } from '../types';
 import { Vertex } from '../layout'
 import {ColorPicker} from './ColorPicker'
+import {VertexRadiusPicker} from './VertexRadiusPicker'
+import { GraphConfig } from '../GraphConfig';
+
 import c from 'classnames';
 
 
@@ -17,14 +20,15 @@ interface IEntityViewerProps {
   vertexRef?: Vertex,
   onEntityChanged: (entity: Entity) => void
   onVertexColorSelected: (vertex: Vertex, color: string) => void
+  onVertexRadiusSelected: (vertex: Vertex, radius: number) => void
   writeable: boolean
+  config: GraphConfig
 }
 
 interface IEntityViewerState {
   visibleProps: Property[],
   currEditing: Property | null
 }
-
 
 export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntityViewerState> {
   private schemaProperties: Property[];
@@ -118,7 +122,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   render() {
-    const { entity, vertexRef, writeable } = this.props;
+    const { config, entity, vertexRef, writeable } = this.props;
     const { visibleProps } = this.state;
     const availableProperties = this.schemaProperties.filter(p => visibleProps.indexOf(p) < 0);
 
@@ -128,9 +132,17 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
           <SchemaIcon size={60} schema={entity.schema} />
           <h2 className='EntityViewer__title__text'>{entity.getCaption()}</h2>
           {vertexRef &&
-            <ColorPicker
-              currSelected={vertexRef.color}
-              onSelect={(color: string) => this.props.onVertexColorSelected(vertexRef, color)} />
+            <>
+              <ColorPicker
+                currSelected={vertexRef.color}
+                onSelect={(color: string) => this.props.onVertexColorSelected(vertexRef, color)}
+              />
+              <VertexRadiusPicker
+                currSelected={vertexRef.radius}
+                onSelect={(radius: number) => this.props.onVertexRadiusSelected(vertexRef, radius)}
+                config={config}
+              />
+            </>
           }
         </div>
 

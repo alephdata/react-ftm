@@ -418,7 +418,7 @@ export class GraphLayout {
 
     const simulation = forceSimulation(nodes)
       .force('links', forceLink(links).distance(3))
-      .force('collide', forceCollide(this.config.VERTEX_BASE_RADIUS).strength(2))
+      .force('collide', forceCollide(this.config.DEFAULT_VERTEX_RADIUS).strength(2))
     simulation.stop()
     simulation.tick(500)
 
