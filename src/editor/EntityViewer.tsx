@@ -141,6 +141,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
                 currSelected={vertexRef.radius}
                 onSelect={(radius: number) => this.props.onVertexRadiusSelected(vertexRef, radius)}
                 config={config}
+                schema={entity.schema}
               />
             </>
           }

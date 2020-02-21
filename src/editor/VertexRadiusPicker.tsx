@@ -2,12 +2,18 @@ import * as React from 'react'
 import c from 'classnames';
 import { Vertex } from '../layout'
 import { GraphConfig } from '../GraphConfig';
+import { Schema } from "@alephdata/followthemoney";
+import { SchemaIcon } from '../types';
+
 
 interface IVertexRadiusPickerProps {
   currSelected?: number
   onSelect: (radius: number) => void
   config: GraphConfig
+  schema: Schema
 }
+
+import './VertexRadiusPicker.scss'
 
 
 export class VertexRadiusPicker extends React.PureComponent<IVertexRadiusPickerProps> {
@@ -18,22 +24,19 @@ export class VertexRadiusPicker extends React.PureComponent<IVertexRadiusPickerP
   }
 
   renderOption(radius: number) {
-    const { config, currSelected, onSelect } = this.props
-    const style = {
-      width: `${radius * config.gridUnit}px`,
-    }
+    const { config, currSelected, onSelect, schema } = this.props
+    const size = radius * 2 * config.gridUnit;
+
     return (
       <div key={radius} className='VertexRadiusPicker__item' onClick={() => onSelect(radius)}>
-        <div
-          className={c('VertexRadiusPicker__item__swatch', { active: currSelected === radius })}
-          style={style}
-        />
+        <SchemaIcon size={size} schema={schema} />
       </div>
     )
   }
 
   render() {
-    const { defaultRadius } = this.props;
+    const { config } = this.props;
+    const defaultRadius = config.DEFAULT_VERTEX_RADIUS;
     const radiusOptions = [defaultRadius/2, defaultRadius, defaultRadius*2];
     return (
       <div className='VertexRadiusPicker'>

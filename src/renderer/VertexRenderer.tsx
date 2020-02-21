@@ -130,7 +130,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     const { vertex, config, selected, highlighted, interactionMode, writeable } = this.props
     const { x, y } = config.gridToPixel(vertex.position)
     const isEntity = vertex.isEntity()
-    const vertexRadius = isEntity ? config.gridUnit * config.DEFAULT_VERTEX_RADIUS : config.gridUnit * config.DEFAULT_VERTEX_RADIUS / 2
+    const vertexRadius = (vertex.radius || config.DEFAULT_VERTEX_RADIUS) * config.gridUnit
     const translate = `translate(${x} ${y})`
     const labelPosition = new Point(0, vertexRadius + config.gridUnit/2)
 
@@ -157,7 +157,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
             onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}
             />
           <VertexLabelRenderer center={labelPosition} label={vertex.label} type={vertex.type} onClick={this.onClick} color={vertexColor}/>
-          <IconRenderer vertex={vertex}/>
+          <IconRenderer vertex={vertex} radius={vertexRadius}/>
         </g>
       </DraggableCore>
     );
