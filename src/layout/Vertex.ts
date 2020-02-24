@@ -80,6 +80,8 @@ export class Vertex {
   }
 
   snapPosition(fuzzy: Point): Vertex {
+    console.log('in snap', fuzzy.x, fuzzy.y);
+    console.log('result', Math.round(fuzzy.x), Math.round(fuzzy.y));
     return this.setPosition(new Point(
       Math.round(fuzzy.x),
       Math.round(fuzzy.y)

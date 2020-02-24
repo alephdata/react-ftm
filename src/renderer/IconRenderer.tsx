@@ -14,9 +14,9 @@ export class IconRenderer extends React.PureComponent<IIconRendererProps>{
     if(!entity) {
       return null
     }
-    
-    const translate = `translate(${-radius} ${-radius})`
-    const scale = 'scale(0.5)'
+    const scaleFactor = radius/20;
+    const translate = `translate(${-12} ${-12})`
+    const scale = `scale(${scaleFactor})`;
     const iconPaths = IconRegistry.getSchemaIcon(entity.schema)
     return iconPaths && (
       <g transform={scale + translate} fill={Colors.WHITE} pointerEvents="none">
@@ -25,3 +25,7 @@ export class IconRenderer extends React.PureComponent<IIconRendererProps>{
     );
   }
 }
+//
+// .5 = .3
+// 1 = .5
+// 1.5 = .8

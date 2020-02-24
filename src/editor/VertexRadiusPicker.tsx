@@ -37,7 +37,7 @@ export class VertexRadiusPicker extends React.PureComponent<IVertexRadiusPickerP
   render() {
     const { config } = this.props;
     const defaultRadius = config.DEFAULT_VERTEX_RADIUS;
-    const radiusOptions = [defaultRadius/2, defaultRadius, defaultRadius*2];
+    const radiusOptions = [defaultRadius/1.5, defaultRadius, defaultRadius*1.5];
     return (
       <div className='VertexRadiusPicker'>
         {radiusOptions.map(this.renderOption)}

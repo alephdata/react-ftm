@@ -89,7 +89,8 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
       }
       const vertex = layout.getVertexByEntity(entity)
       if (vertex) {
-        position && layout.vertices.set(vertex.id, vertex.setPosition(position))
+        console.log('VERTEX', vertex, position, vertex.snapPosition(position));
+        position && layout.vertices.set(vertex.id, vertex.snapPosition(position));
         layout.selectElement(vertex)
         updateLayout(layout, { created: [entity] }, { modifyHistory: true, clearSearch: true });
         !position && updateViewport(viewport.setCenter(position || vertex.position), {animate:true})

@@ -190,7 +190,10 @@ export class Canvas extends React.Component <ICanvasProps> {
     const { viewport } = this.props
     const matrix = getRefMatrix(this.props.svgRef)
     const target = applyMatrix(matrix, event.clientX, event.clientY)
+    console.log('target is', target)
     const gridTarget = viewport.config.pixelToGrid(target)
+    console.log('gridtarget is', gridTarget)
+
 
     this.props.actions.addVertex({ initialPosition: gridTarget })
   }
