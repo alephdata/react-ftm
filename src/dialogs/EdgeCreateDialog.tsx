@@ -237,7 +237,8 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         isOpen={isOpen}
         isProcessing={isProcessing}
         title={intl.formatMessage(messages.add_link)}
-        toggleDialog={toggleDialog}
+        onClose={toggleDialog}
+        className="large"
       >
         <form onSubmit={this.onSubmit}>
           <div className="bp3-dialog-body">

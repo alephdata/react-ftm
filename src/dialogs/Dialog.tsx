@@ -10,21 +10,19 @@ interface IDialogProps {
   isOpen: boolean,
   isProcessing: boolean,
   title: string,
-  toggleDialog: () => any,
+  onClose: () => any,
+  className?: string,
 }
 
 class Dialog extends React.Component<IDialogProps> {
   render() {
-    const { children, icon, isOpen, isProcessing, title, toggleDialog } = this.props;
+    const { children, className, isProcessing, ...rest} = this.props;
 
     return (
       <Bp3Dialog
-        icon={icon}
-        isOpen={isOpen}
-        title={title}
-        onClose={toggleDialog}
-        className="Dialog"
+        className={c('Dialog', className)}
         portalClassName="dialog-portal-container"
+        {...rest}
       >
         <div className={c('Dialog__content', isProcessing)}>
           {children}

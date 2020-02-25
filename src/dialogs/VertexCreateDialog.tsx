@@ -125,7 +125,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
         isOpen={isOpen}
         isProcessing={isProcessing}
         title={intl.formatMessage(messages.title)}
-        toggleDialog={toggleDialog}
+        onClose={toggleDialog}
       >
         <form onSubmit={this.onSubmit}>
           <div className="bp3-dialog-body">

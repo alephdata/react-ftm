@@ -81,7 +81,7 @@ export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogP
         icon="group-objects"
         isOpen={isOpen}
         title={intl.formatMessage(messages.title)}
-        toggleDialog={toggleDialog}
+        onClose={toggleDialog}
         isProcessing={isProcessing}
       >
         <form onSubmit={this.onSubmit}>

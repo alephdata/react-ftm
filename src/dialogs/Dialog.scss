@@ -4,6 +4,10 @@
     flex: none !important;
   }
 
+  &.large {
+    width: 800px;
+  }
+
   &__content {
     position: relative;
     padding-bottom: 20px;
