@@ -12,7 +12,9 @@ import { IGraphContext, GraphContext } from './GraphContext'
 import { Toolbar } from './Toolbar';
 import { Sidebar } from './Sidebar';
 import { History } from './History';
-import { EdgeCreateDialog, GroupingCreateDialog, VertexCreateDialog, TableEditor } from "./editor";
+import { EdgeCreateDialog, GroupingCreateDialog, VertexCreateDialog } from "./dialogs";
+import { TableEditor } from "./editor";
+
 import { modes } from './interactionModes'
 import { filterVerticesByText } from './filters';
 

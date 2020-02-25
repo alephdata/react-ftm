@@ -1,14 +1,13 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
-import { Alignment, Button, ControlGroup, Dialog, InputGroup, Intent, Spinner } from '@blueprintjs/core'
+import { Alignment, Button, ControlGroup, InputGroup, Intent, Spinner } from '@blueprintjs/core'
 import { Schema } from '@alephdata/followthemoney'
 import { GraphContext, IGraphContext } from '../GraphContext'
-import { VertexSchemaSelect } from './VertexSchemaSelect'
+import { VertexSchemaSelect } from '../editor'
 import { SchemaIcon } from '../types';
 import { Point } from '../layout'
+import Dialog from './Dialog'
 import c from 'classnames';
-
-import "./VertexCreateDialog.scss";
 
 const messages = defineMessages({
   title: {
@@ -124,46 +123,38 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
       <Dialog
         icon="new-object"
         isOpen={isOpen}
+        isProcessing={isProcessing}
         title={intl.formatMessage(messages.title)}
-        onClose={toggleDialog}
-        className="VertexCreateDialog"
-        portalClassName="dialog-portal-container"
+        toggleDialog={toggleDialog}
       >
-        <div className={c('VertexCreateDialog__content', isProcessing)}>
-          <form onSubmit={this.onSubmit}>
-            <div className="bp3-dialog-body">
-              <ControlGroup fill>
-                <VertexSchemaSelect
-                  model={layout.entityManager.model}
-                  schema={schema}
-                  onSelect={this.onSchemaSelect}
-                >
-                  <Button
-                    large
-                    text={vertexSelectText}
-                    alignText={Alignment.LEFT}
-                    icon={vertexSelectIcon}
-                    rightIcon='double-caret-vertical'
-                  />
-                </VertexSchemaSelect>
-                <InputGroup
-                  autoFocus
+        <form onSubmit={this.onSubmit}>
+          <div className="bp3-dialog-body">
+            <ControlGroup fill>
+              <VertexSchemaSelect
+                model={layout.entityManager.model}
+                schema={schema}
+                onSelect={this.onSchemaSelect}
+              >
+                <Button
                   large
-                  intent={isValid ? undefined : Intent.WARNING}
-                  className="bp3-fill"
-                  value={this.state.label}
-                  onChange={this.onChangeLabel}
-                  placeholder={placeholder}
+                  text={vertexSelectText}
+                  alignText={Alignment.LEFT}
+                  icon={vertexSelectIcon}
+                  rightIcon='double-caret-vertical'
                 />
-              </ControlGroup>
-            </div>
-          </form>
-          {isProcessing && (
-            <div className="VertexCreateDialog__loading-overlay">
-              <Spinner />
-            </div>
-          )}
-        </div>
+              </VertexSchemaSelect>
+              <InputGroup
+                autoFocus
+                large
+                intent={isValid ? undefined : Intent.WARNING}
+                className="bp3-fill"
+                value={this.state.label}
+                onChange={this.onChangeLabel}
+                placeholder={placeholder}
+              />
+            </ControlGroup>
+          </div>
+        </form>
       </Dialog>
     );
   }

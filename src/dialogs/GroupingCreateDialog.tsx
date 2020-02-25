@@ -1,8 +1,9 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
-import { Dialog, Intent, ControlGroup, InputGroup, Colors } from '@blueprintjs/core'
+import { Intent, ControlGroup, InputGroup, Colors } from '@blueprintjs/core'
 import { GraphContext, IGraphContext } from '../GraphContext'
-import { ColorPicker } from './ColorPicker'
+import { ColorPicker } from '../editor/ColorPicker'
+import Dialog from './Dialog';
 
 import { Point, Grouping } from '../layout'
 
@@ -25,13 +26,15 @@ interface IGroupingCreateDialogProps {
 interface IGroupingCreateDialogState {
   label: string,
   color?: string,
+  isProcessing: boolean
 }
 
 export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogProps, IGroupingCreateDialogState> {
   static contextType = GraphContext;
   context!: React.ContextType<typeof GraphContext>;
   state: IGroupingCreateDialogState = {
-    label: ''
+    label: '',
+    isProcessing: false,
   }
 
   constructor(props: any) {
@@ -53,6 +56,7 @@ export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogP
     const { label, color } = this.state
     const { layout, updateLayout, viewport, updateViewport } = this.context as IGraphContext
     e.preventDefault()
+    this.setState({ isProcessing: true });
 
     const selectedVertices = layout.getSelectedVertices().filter(vertex => !vertex.isHidden())
     const grouping = Grouping.fromVertices(layout, label, selectedVertices, color);
@@ -62,6 +66,7 @@ export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogP
       layout.clearSelection();
       updateLayout(layout, null, { modifyHistory:true });
       this.setState({label: ''})
+      this.setState({ isProcessing: false });
       this.props.toggleDialog()
     }
   }
@@ -69,13 +74,15 @@ export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogP
   render() {
     const { intl, layout } = this.context as IGraphContext
     const { isOpen, toggleDialog } = this.props
+    const { isProcessing } = this.state;
+
     return (
       <Dialog
         icon="group-objects"
         isOpen={isOpen}
         title={intl.formatMessage(messages.title)}
-        onClose={toggleDialog}
-        portalClassName="dialog-portal-container"
+        toggleDialog={toggleDialog}
+        isProcessing={isProcessing}
       >
         <form onSubmit={this.onSubmit}>
           <div className="bp3-dialog-body">
