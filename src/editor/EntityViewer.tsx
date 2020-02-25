@@ -132,7 +132,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
           <SchemaIcon size={60} schema={entity.schema} />
           <h2 className='EntityViewer__title__text'>{entity.getCaption()}</h2>
           {vertexRef &&
-            <div className='EntityViewer__settings'>
+            <div className='EntityViewer__title__settings'>
               <ColorPicker
                 currSelected={vertexRef.color}
                 onSelect={(color: string) => this.props.onVertexColorSelected(vertexRef, color)}

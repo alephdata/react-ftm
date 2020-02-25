@@ -16,5 +16,10 @@
 
   &__slider {
     margin: 0 15px;
+
+    .bp3-slider-handle {
+      border-radius: 20px !important;
+      outline: none !important;
+    }
   }
 }

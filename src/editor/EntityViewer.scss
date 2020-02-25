@@ -27,6 +27,10 @@
         color: themed('textColor') !important;
       }
     }
+
+    &__settings {
+      margin-top: 10px;
+    }
   }
 
   &__property-list {
