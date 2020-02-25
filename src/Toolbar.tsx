@@ -273,7 +273,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
       [
         {
           helpText: intl.formatMessage(messages.tooltip_export_svg),
-          icon: "export",
+          icon: "media",
           onClick: () => actions.exportSvg(),
         }
       ]
