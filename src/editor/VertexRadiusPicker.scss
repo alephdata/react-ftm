@@ -7,37 +7,14 @@
   flex-wrap: nowrap;
   justify-content: space-between;
   width: 100%;
-  padding: 20px 0;
+  padding: 10px 0;
+  align-items: center;
 
-  &__item {
-    margin: auto;
+  &__icon, &__slider {
+    flex: 1 0;
+  }
 
-    &__swatch {
-      position: relative;
-      border-radius: 15px;
-      cursor: pointer;
-      transition: all .1s ease-in-out;
-      border: 1px solid;
-
-      .theme-dark & {
-        border-color: white !important;
-      }
-
-      &.active, &:hover {
-        @include themify() {
-          border-width: themed('colorPickerActiveBorderWidth');
-        }
-      }
-
-      &:hover {
-        @include themify() {
-          opacity: themed('colorPickerHoverOpacity');
-        }
-      }
-
-      &.active {
-        pointer-events: none;
-      }
-    }
+  &__slider {
+    margin: 0 15px;
   }
 }

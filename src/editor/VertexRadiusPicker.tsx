@@ -1,5 +1,6 @@
 import * as React from 'react'
 import c from 'classnames';
+import { Slider } from '@blueprintjs/core';
 import { Vertex } from '../layout'
 import { GraphConfig } from '../GraphConfig';
 import { Schema } from "@alephdata/followthemoney";
@@ -8,7 +9,7 @@ import { SchemaIcon } from '../types';
 
 interface IVertexRadiusPickerProps {
   currSelected?: number
-  onSelect: (radius: number) => void
+  onChange: (radius: number) => void
   config: GraphConfig
   schema: Schema
 }
@@ -17,30 +18,35 @@ import './VertexRadiusPicker.scss'
 
 
 export class VertexRadiusPicker extends React.PureComponent<IVertexRadiusPickerProps> {
-  constructor(props: IVertexRadiusPickerProps) {
-    super(props);
-
-    this.renderOption = this.renderOption.bind(this);
-  }
-
-  renderOption(radius: number) {
-    const { config, currSelected, onSelect, schema } = this.props
-    const size = radius * 2 * config.gridUnit;
-
-    return (
-      <div key={radius} className='VertexRadiusPicker__item' onClick={() => onSelect(radius)}>
-        <SchemaIcon size={size} schema={schema} />
-      </div>
-    )
-  }
-
   render() {
-    const { config } = this.props;
+    const { config, onChange, radius, schema } = this.props;
     const defaultRadius = config.DEFAULT_VERTEX_RADIUS;
-    const radiusOptions = [defaultRadius/1.5, defaultRadius, defaultRadius*1.5];
+    const radiusRange = [defaultRadius*.5, defaultRadius*1.5];
     return (
       <div className='VertexRadiusPicker'>
-        {radiusOptions.map(this.renderOption)}
+        <div className='VertexRadiusPicker__icon'>
+          <SchemaIcon
+            size={10}
+            schema={schema}
+          />
+        </div>
+        <Slider
+          value={radius}
+          onChange={(value) => onChange(value)}
+          min={radiusRange[0]}
+          max={radiusRange[1]}
+          showTrackFill={false}
+          stepSize={.1}
+          labelRenderer={false}
+          className='VertexRadiusPicker__slider'
+        />
+        <div className='VertexRadiusPicker__icon'>
+          <SchemaIcon
+            size={20}
+            schema={schema}
+            className='VertexRadiusPicker__icon'
+          />
+        </div>
       </div>
     )
   }
