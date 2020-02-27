@@ -4,8 +4,9 @@ import { GraphLayout } from '../layout';
 import { GraphUpdateHandler } from '../GraphContext';
 import { VertexSchemaSelect } from '.';
 import { TableEditorTable } from './TableEditorTable';
-import { Button, Icon, Tab, TabId, Tabs } from "@blueprintjs/core";
+import { Button, Classes, Drawer, Icon, Position, Tab, TabId, Tabs } from "@blueprintjs/core";
 import { Entity, Schema } from "@alephdata/followthemoney";
+import c from 'classnames';
 
 import "./TableEditor.scss"
 
@@ -18,6 +19,7 @@ const messages = defineMessages({
 
 
 interface ITableEditorProps extends WrappedComponentProps {
+  isOpen: boolean,
   layout: GraphLayout,
   updateLayout: GraphUpdateHandler,
   writeable: boolean,
@@ -57,49 +59,60 @@ export class TableEditorBase extends React.Component<ITableEditorProps, ITableEd
   }
 
   render() {
-    const { actions, intl, layout, updateLayout, writeable } = this.props;
+    const { actions, intl, isOpen, layout, updateLayout, writeable } = this.props;
     const { activeTabId, schemata } = this.state;
 
     return (
-      <div className="TableEditor">
-        <Tabs
-          vertical
-          renderActiveTabPanelOnly
-          selectedTabId={activeTabId}
-          onChange={this.setActiveTab}
-        >
-          {schemata.map(schema => (
-              <Tab
-                id={schema.name}
-                key={schema.name}
-                title={schema.plural}
-                panel={(
-                  <TableEditorTable
-                    schema={schema}
-                    layout={layout}
-                    updateLayout={updateLayout}
-                    writeable={writeable}
-                    actions={actions}
-                  />
-                )}
-              />
-          ))}
-          {writeable && (
-            <div className="TableEditor__schemaAdd">
-              <VertexSchemaSelect
-                model={layout.entityManager.model}
-                onSelect={schema => this.addSchema(schema)}
-                optionsFilter={(schema => !schemata.includes(schema))}
-              >
-                <Button
-                  text={intl.formatMessage(messages.add)}
-                  icon="plus"
+      <Drawer
+        position={Position.BOTTOM}
+        icon="th"
+        isOpen={isOpen}
+        canOutsideClickClose
+        title="Table viewer"
+        onClose={actions.toggleTableView}
+        style={{ height: '60%' }}
+        portalClassName="VisGraph__table-container"
+      >
+        <div className={c('TableEditor', Classes.DRAWER_BODY)}>
+          <Tabs
+            vertical
+            renderActiveTabPanelOnly
+            selectedTabId={activeTabId}
+            onChange={this.setActiveTab}
+          >
+            {schemata.map(schema => (
+                <Tab
+                  id={schema.name}
+                  key={schema.name}
+                  title={schema.plural}
+                  panel={(
+                    <TableEditorTable
+                      schema={schema}
+                      layout={layout}
+                      updateLayout={updateLayout}
+                      writeable={writeable}
+                      actions={actions}
+                    />
+                  )}
                 />
-              </VertexSchemaSelect>
-            </div>
-          )}
-        </Tabs>
-      </div>
+            ))}
+            {writeable && (
+              <div className="TableEditor__schemaAdd">
+                <VertexSchemaSelect
+                  model={layout.entityManager.model}
+                  onSelect={schema => this.addSchema(schema)}
+                  optionsFilter={(schema => !schemata.includes(schema))}
+                >
+                  <Button
+                    text={intl.formatMessage(messages.add)}
+                    icon="plus"
+                  />
+                </VertexSchemaSelect>
+              </div>
+            )}
+          </Tabs>
+        </div>
+      </Drawer>
     )
   }
 }

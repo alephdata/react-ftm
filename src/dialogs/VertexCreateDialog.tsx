@@ -1,13 +1,13 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
-import { Alignment, Button, ControlGroup, Dialog, InputGroup, Intent } from '@blueprintjs/core'
+import { Alignment, Button, ControlGroup, InputGroup, Intent, Spinner } from '@blueprintjs/core'
 import { Schema } from '@alephdata/followthemoney'
 import { GraphContext, IGraphContext } from '../GraphContext'
-import { VertexSchemaSelect } from './VertexSchemaSelect'
+import { VertexSchemaSelect } from '../editor'
 import { SchemaIcon } from '../types';
 import { Point } from '../layout'
-
-import "./VertexCreateDialog.scss";
+import Dialog from './Dialog'
+import c from 'classnames';
 
 const messages = defineMessages({
   title: {
@@ -33,6 +33,7 @@ interface IVertexCreateDialogProps extends WrappedComponentProps {
 
 interface IVertexCreateDialogState {
   label: string,
+  isProcessing: boolean,
   schema?: Schema
 }
 
@@ -40,7 +41,8 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
   static contextType = GraphContext;
   context!: React.ContextType<typeof GraphContext>;
   state: IVertexCreateDialogState = {
-    label: ''
+    label: '',
+    isProcessing: false,
   }
 
   constructor(props: any) {
@@ -73,13 +75,14 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
   }
 
   async onSubmit(e: React.ChangeEvent<HTMLFormElement>) {
-    const position = this.props.vertexCreateOptions?.initialPosition;
-    const { label } = this.state
-    const schema = this.getSchema()
-
     const { layout, updateLayout, viewport, updateViewport } = this.context as IGraphContext
+    const { label } = this.state
+    const position = this.props.vertexCreateOptions?.initialPosition || viewport.center;
+    const schema = this.getSchema()
     e.preventDefault()
+
     if (this.checkValid()) {
+      this.setState({ isProcessing: true });
       let entity;
       const captionProperty = schema?.caption[0];
       if (captionProperty) {
@@ -89,11 +92,10 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
       }
       const vertex = layout.getVertexByEntity(entity)
       if (vertex) {
-        position && layout.vertices.set(vertex.id, vertex.setPosition(position))
+        layout.vertices.set(vertex.id, vertex.snapPosition(position))
         layout.selectElement(vertex)
         updateLayout(layout, { created: [entity] }, { modifyHistory: true, clearSearch: true });
-        !position && updateViewport(viewport.setCenter(position || vertex.position), {animate:true})
-        this.setState({label: ''})
+        this.setState({label: '', isProcessing: false})
         this.props.toggleDialog()
       }
     }
@@ -109,20 +111,21 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
 
   render() {
     const { intl, layout } = this.context as IGraphContext
-    const { isOpen, toggleDialog } = this.props
+    const { isOpen, toggleDialog } = this.props;
+    const { isProcessing } = this.state;
     const schema = this.getSchema()
     const placeholder = intl.formatMessage(messages.name_placeholder, { schema: schema.label });
     const isValid = this.checkValid()
     const vertexSelectText = schema ? schema.label : intl.formatMessage(messages.type_placeholder);
     const vertexSelectIcon = schema ? SchemaIcon.get(schema) : 'select'
+
     return (
       <Dialog
         icon="new-object"
         isOpen={isOpen}
+        isProcessing={isProcessing}
         title={intl.formatMessage(messages.title)}
         onClose={toggleDialog}
-        className="VertexCreateDialog"
-        portalClassName="dialog-portal-container"
       >
         <form onSubmit={this.onSubmit}>
           <div className="bp3-dialog-body">

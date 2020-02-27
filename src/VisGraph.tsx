@@ -1,6 +1,6 @@
 import * as React from 'react'
 import c from 'classnames';
-import { Button, ButtonGroup, Classes, Drawer, Position, Tooltip } from '@blueprintjs/core';
+import { Button, ButtonGroup, Classes, Position, Tooltip } from '@blueprintjs/core';
 import Translator from './Translator';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { EntityManager } from './EntityManager';
@@ -12,7 +12,9 @@ import { IGraphContext, GraphContext } from './GraphContext'
 import { Toolbar } from './Toolbar';
 import { Sidebar } from './Sidebar';
 import { History } from './History';
-import { EdgeCreateDialog, GroupingCreateDialog, VertexCreateDialog, TableEditor } from "./editor";
+import { EdgeCreateDialog, GroupingCreateDialog, VertexCreateDialog } from "./dialogs";
+import { TableEditor } from "./editor";
+
 import { modes } from './interactionModes'
 import { filterVerticesByText } from './filters';
 
@@ -281,25 +283,13 @@ class VisGraphController extends React.Component<IVisGraphControllerProps, IVisG
                 writeable={writeable}
                 {...layoutContext}
               />
-              <Drawer
-                position={Position.BOTTOM}
-                icon="th"
+              <TableEditor
                 isOpen={tableView}
-                canOutsideClickClose
-                title="Table viewer"
-                onClose={this.toggleTableView}
-                style={{ height: '60%' }}
-                portalClassName="VisGraph__table-container"
-              >
-                <div className={Classes.DRAWER_BODY}>
-                  <TableEditor
-                    layout={layout}
-                    updateLayout={this.updateLayout}
-                    writeable={writeable}
-                    actions={actions}
-                  />
-                </div>
-              </Drawer>
+                layout={layout}
+                updateLayout={this.updateLayout}
+                writeable={writeable}
+                actions={actions}
+              />
             </div>
             {showSidebar &&
               <div className="VisGraph__sidebar">
