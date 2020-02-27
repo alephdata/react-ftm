@@ -81,7 +81,7 @@
     "coveralls": "^3.0.7",
     "hoist-non-react-statics": "^3.3.2",
     "jest": "^24.9.0",
-    "jest-config": "^24.9.0",
+    "jest-config": "^25.1.0",
     "node-sass": "^4.13.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
