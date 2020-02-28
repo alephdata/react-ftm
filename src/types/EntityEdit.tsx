@@ -4,7 +4,7 @@ import hoistNonReactStatics from 'hoist-non-react-statics';
 import { Entity } from "@alephdata/followthemoney";
 import { EntityLabel } from '.';
 import { Alignment, Button, ControlGroup, FormGroup, MenuItem, Position } from "@blueprintjs/core";
-import { ItemRenderer, MultiSelect } from "@blueprintjs/select";
+import { ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
 import { ITypeProps } from "./common";
 import { highlightText, matchText } from "../utils";
 
@@ -20,6 +20,7 @@ interface IEntityTypeProps extends ITypeProps, WrappedComponentProps {
 }
 
 const EntityMultiSelect = MultiSelect.ofType<Entity>();
+const EntitySelect = Select.ofType<Entity>();
 
 class EntityEditBase extends React.Component<IEntityTypeProps> {
   static group = new Set(['entity']);
@@ -52,11 +53,6 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
     })
   }
 
-  onSelect = (entity: Entity) => {
-    const nextValues = [...this.getSelectedEntities(), ...[entity]];
-    this.props.onSubmit(nextValues)
-  }
-
   onRemove = (toRemove: any) => {
     const idToRemove = toRemove?.props?.entity?.id;
     const nextValues = this.getSelectedEntities()
@@ -85,33 +81,63 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
   }
 
   render() {
-    const { intl } = this.props;
+    const { entity, intl, onSubmit } = this.props;
     const items = this.getItemsList()
     const selectedEntities = this.getSelectedEntities();
+    const buttonText = selectedEntities && selectedEntities.length
+      ? <EntityLabel entity={selectedEntities[0]} icon />
+      : intl.formatMessage(messages.placeholder);
+
+    const allowMultiple = !entity.schema.isEdge;
 
     return <FormGroup>
       <ControlGroup vertical fill >
-        <EntityMultiSelect
-          tagRenderer={entity => <EntityLabel entity={entity} icon />}
-          onItemSelect={this.onSelect}
-          itemRenderer={this.itemRenderer}
-          items={items}
-          popoverProps={{
-            position: Position.BOTTOM_LEFT,
-            minimal: true,
-            targetProps: {style: {width: '100%'}}
-          }}
-          tagInputProps={{
-            inputRef: (ref) => this.inputRef = ref,
-            tagProps: {interactive: false, minimal: true, fill: true},
-            onRemove: this.onRemove,
-            placeholder: '',
-          }}
-          selectedItems={selectedEntities}
-          openOnKeyDown
-          resetOnSelect
-          fill
-        />
+        {!allowMultiple && (
+          <EntitySelect
+            onItemSelect={(entity: Entity) => onSubmit([entity])}
+            itemRenderer={this.itemRenderer}
+            items={items}
+            popoverProps={{
+              position: Position.BOTTOM_LEFT,
+              minimal: true,
+              targetProps: {style: {width: '100%'}}
+            }}
+            resetOnSelect
+            filterable={false}
+          >
+            <Button
+              text={buttonText}
+              alignText={Alignment.LEFT}
+              rightIcon="double-caret-vertical"
+              elementRef={(ref) => this.inputRef = ref }
+              fill
+            />
+          </EntitySelect>
+        )}
+        {allowMultiple && (
+          <EntityMultiSelect
+            tagRenderer={entity => <EntityLabel entity={entity} icon />}
+            onItemSelect={(entity: Entity) => onSubmit([...this.getSelectedEntities(), ...[entity]])}
+            itemRenderer={this.itemRenderer}
+            items={items}
+            popoverProps={{
+              position: Position.BOTTOM_LEFT,
+              minimal: true,
+              targetProps: {style: {width: '100%'}}
+            }}
+            tagInputProps={{
+              inputRef: (ref) => this.inputRef = ref,
+              tagProps: {interactive: false, minimal: true, fill: true},
+              onRemove: this.onRemove,
+              placeholder: '',
+            }}
+            selectedItems={selectedEntities}
+            openOnKeyDown
+            resetOnSelect
+            fill
+          />
+        )}
+
       </ControlGroup>
     </FormGroup>
   }
