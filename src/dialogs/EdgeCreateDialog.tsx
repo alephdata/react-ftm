@@ -172,7 +172,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
       .filter((vertex) => {
         const isInclude = include ? include.id === vertex.id : false
         const isExcept = except ? except.id === vertex.id : false
-        return isInclude || !(isExcept || vertex.isHidden())
+        return vertex.isEntity() && (isInclude || !(isExcept || vertex.isHidden()));
       })
       .sort((a, b) => a.label.localeCompare(b.label))
   }

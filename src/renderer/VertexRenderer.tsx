@@ -102,9 +102,12 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   onDoubleClick(e: MouseEvent) {
+    const { actions, vertex } = this.props;
     e.preventDefault()
     e.stopPropagation()
-    this.props.actions.setInteractionMode(modes.EDGE_DRAW)
+    if (vertex.isEntity()) {
+      actions.setInteractionMode(modes.EDGE_DRAW)
+    }
   }
 
   onMouseOver() {
