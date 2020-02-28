@@ -82,6 +82,9 @@ export class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
     ));
     if (!vals.length) {
       return (<span>—</span>);
+    // display urls separated by newline
+    } else if (prop.type.name === 'url') {
+      return vals.map(val => <span style={{ display: 'block' }}>{val}</span>);
     } else {
       return (<span>{ wordList(vals, ' · ') }</span>);
     }
