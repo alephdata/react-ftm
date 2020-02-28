@@ -159,6 +159,7 @@ export class Edge {
       label: property.label,
       sourceId: source.id,
       targetId: target.id,
+      entityId: source.entityId,
       propertyQName: property.qname
     })
   }
