@@ -63,3 +63,10 @@ export function groupBy(xs: any, key: any) {
     return rv;
   }, []);
 };
+
+export function partition(array: any[], filter: any) {
+  let pass: any[] = [];
+  let fail: any[] = [];
+  array.forEach((e, idx, arr) => (filter(e, idx, arr) ? pass : fail).push(e));
+  return [pass, fail];
+}

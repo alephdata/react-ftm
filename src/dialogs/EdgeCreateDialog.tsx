@@ -1,12 +1,14 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
 
-import { MenuItem, FormGroup, Intent, Button, Alignment, Position } from '@blueprintjs/core'
-import { Select, IItemRendererProps } from '@blueprintjs/select';
+import { Menu, MenuItem, FormGroup, Intent, Button, Alignment, Position } from '@blueprintjs/core'
+import { Select, IItemListRendererProps, IItemRendererProps } from '@blueprintjs/select';
 import { IGraphContext } from '../GraphContext'
 import { EdgeType, VertexSelect } from '../editor/'
 import { Vertex,Edge } from '../layout';
 import { SchemaIcon } from '../types';
+import { partition } from '../utils';
+
 import Dialog from './Dialog';
 
 const messages = defineMessages({
@@ -213,10 +215,22 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     }
   }
 
-  renderEdgeType(type: EdgeType, { handleClick, modifiers }: IItemRendererProps) {
-    if (!modifiers.matchesPredicate) {
-        return null;
-    }
+  renderEdgeTypeList(props: IItemListRendererProps<EdgeType>) {
+    const { items, itemsParentRef, renderItem } = props;
+    const [propertyEdgeTypes, entityEdgeTypes] = partition(
+      items,
+      (et: EdgeType) => et.isPropertyEdgeType()
+    );
+    return (
+      <Menu ulRef={itemsParentRef}>
+        {entityEdgeTypes.map(renderItem)}
+        <Menu.Divider />
+        {propertyEdgeTypes.map(renderItem)}
+      </Menu>
+    );
+  }
+
+  renderEdgeType(type: EdgeType, { handleClick, modifiers }:IItemRendererProps) {
     return <MenuItem
       active={modifiers.active}
       key={type.key}
@@ -262,6 +276,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                     }}
                     filterable={false}
                     items={types}
+                    itemListRenderer={this.renderEdgeTypeList}
                     itemRenderer={this.renderEdgeType}
                     onItemSelect={this.onChangeType}
                   >
