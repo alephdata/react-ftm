@@ -92,7 +92,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
       if (selected) {
         actions.setInteractionMode(modes.SELECT)
         return
-      } else {
+      } else if (vertex.isEntity()) {
         selectVertex(vertex, true)
         actions.setInteractionMode(modes.EDGE_CREATE)
         return
@@ -102,13 +102,20 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   onDoubleClick(e: MouseEvent) {
+    const { actions, vertex } = this.props;
     e.preventDefault()
     e.stopPropagation()
-    this.props.actions.setInteractionMode(modes.EDGE_DRAW)
+    if (vertex.isEntity()) {
+      actions.setInteractionMode(modes.EDGE_DRAW)
+    }
   }
 
   onMouseOver() {
-    this.props.interactionMode === modes.EDGE_DRAW && this.setState({hovered: true})
+    const { interactionMode, vertex } = this.props;
+
+    if (interactionMode === modes.EDGE_DRAW && vertex.isEntity()) {
+      this.setState({ hovered: true });
+    }
   }
 
   onMouseOut() {
@@ -126,6 +133,20 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     }
   }
 
+  allowPointerEvents() {
+    const { interactionMode, vertex } = this.props;
+
+    // sets pointer events to none while dragging in order to detect mouseover on other elements
+    if (interactionMode === modes.ITEM_DRAG) {
+      return false;
+    }
+    // ensures non-entity vertices can't be selected when drawing edges
+    if (interactionMode === modes.EDGE_DRAW && !vertex.isEntity()) {
+      return false;
+    }
+    return true;
+  }
+
   render() {
     const { vertex, config, selected, highlighted, interactionMode, writeable } = this.props
     const { x, y } = config.gridToPixel(vertex.position)
@@ -137,8 +158,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     const vertexColor = this.getColor()
     const groupStyles: React.CSSProperties = {
       cursor: selected && writeable ? 'grab' : 'pointer',
-      // sets pointer events to none while dragging in order to detect mouseover on other elements
-      pointerEvents: interactionMode === modes.ITEM_DRAG ? 'none' : 'auto'
+      pointerEvents: this.allowPointerEvents() ? 'auto' : 'none',
     }
 
     return (

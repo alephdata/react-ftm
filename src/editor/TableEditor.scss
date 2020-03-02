@@ -3,16 +3,12 @@ $border-color: rgba(16, 22, 26, 0.15);
 
 .TableEditor {
   padding: $table-editor-padding;
-  // height: 100%;
 
   .bp3-tabs.bp3-vertical {
-    // height: 100%;
-
     & > .bp3-tab-panel {
-      // overflow: hidden;
       border-left: 1px solid $border-color;
-      // height: 100%;
       width: 100%;
+      overflow-x: scroll;
     }
 
     & > .bp3-tab-list {

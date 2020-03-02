@@ -16,9 +16,10 @@ export class URL extends React.PureComponent<IURLProps> {
     if (!value) {
       return null;
     }
+    const href = /^https?:\/\//i.test(value) ? value : `//${value}`;
 
     return (
-      <a {...restProps} href={value} className="URL" rel="noopener noreferrer" target="_blank" title={value} onClick={this.onClick}>
+      <a {...restProps} href={href} className="URL" rel="noopener noreferrer" target="_blank" title={value} onClick={this.onClick}>
         <Icon icon="link" iconSize={14} />
         {getHost(value)}
       </a>
