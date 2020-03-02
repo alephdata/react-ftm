@@ -71,9 +71,9 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
       const {source, target} = entity.schema.edge
       const sourceProp = entity.schema.getProperty(source)
       const targetProp = entity.schema.getProperty(target)
-      const sourceEntities = entity.properties.get(sourceProp) as Entity[]
-      const targetEntities = entity.properties.get(targetProp) as Entity[]
-      excludeIds = [...sourceEntities, ...targetEntities].map(e => e.id)
+      const sourceEntity = entity.getFirst(sourceProp) as string
+      const targetEntity = entity.getFirst(targetProp) as string
+      excludeIds = [...excludeIds, ...[sourceEntity], ...[targetEntity]];
     }
     return Array.from(this.props.entities.values())
       .filter(e => e.schema.isA(property.getRange()) && !this.props.values.includes(e.id) && excludeIds.indexOf(e.id) === -1)
@@ -92,7 +92,10 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
 
     return <FormGroup>
       <ControlGroup vertical fill >
-        {!allowMultiple && (
+        {!items.length && (
+          {buttonText}
+        )}
+        {items.length && !allowMultiple && (
           <EntitySelect
             onItemSelect={(entity: Entity) => onSubmit([entity])}
             itemRenderer={this.itemRenderer}
@@ -114,7 +117,7 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
             />
           </EntitySelect>
         )}
-        {allowMultiple && (
+        {items.length && allowMultiple && (
           <EntityMultiSelect
             tagRenderer={entity => <EntityLabel entity={entity} icon />}
             onItemSelect={(entity: Entity) => onSubmit([...this.getSelectedEntities(), ...[entity]])}
