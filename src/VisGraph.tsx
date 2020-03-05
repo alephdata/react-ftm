@@ -1,7 +1,6 @@
 import * as React from 'react'
 import c from 'classnames';
 import { Button, ButtonGroup, Classes, Position, Tooltip } from '@blueprintjs/core';
-import Translator from './Translator';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { EntityManager } from './EntityManager';
 import { GraphConfig } from './GraphConfig';
@@ -27,7 +26,7 @@ const messages = defineMessages({
   },
 });
 
-export interface IVisGraphProps {
+export interface IVisGraphProps extends WrappedComponentProps {
   config: GraphConfig,
   locale?: string
   entityManager: EntityManager
@@ -40,8 +39,6 @@ export interface IVisGraphProps {
   externalFilterText?: string
 }
 
-interface IVisGraphControllerProps extends IVisGraphProps, WrappedComponentProps {}
-
 interface IVisGraphState {
   animateTransition: boolean
   interactionMode: string
@@ -50,12 +47,12 @@ interface IVisGraphState {
   vertexCreateOptions?: any
 }
 
-class VisGraphController extends React.Component<IVisGraphControllerProps, IVisGraphState> {
+class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
   state: IVisGraphState;
   history: History;
   svgRef: React.RefObject<SVGSVGElement>
 
-  constructor(props: IVisGraphControllerProps) {
+  constructor(props: IVisGraphProps) {
     super(props)
     const { config, externalFilterText, layout, viewport, writeable } = props
 
@@ -96,7 +93,7 @@ class VisGraphController extends React.Component<IVisGraphControllerProps, IVisG
     }
   }
 
-  componentDidUpdate(prevProps: IVisGraphControllerProps) {
+  componentDidUpdate(prevProps: IVisGraphProps) {
     const { externalFilterText } = this.props;
 
     if (externalFilterText !== undefined && prevProps.externalFilterText !== externalFilterText) {
@@ -323,10 +320,4 @@ class VisGraphController extends React.Component<IVisGraphControllerProps, IVisG
   }
 }
 
-const VisGraphControllerIntl = injectIntl(VisGraphController);
-
-export const VisGraph = ({ locale, ...rest}: IVisGraphProps ) => (
-  <Translator locale={locale}>
-    <VisGraphControllerIntl {...rest} />
-  </Translator>
-);
+export const VisGraph = injectIntl(VisGraphBase);
