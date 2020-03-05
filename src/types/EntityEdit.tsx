@@ -90,11 +90,12 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
 
     const allowMultiple = !entity.schema.isEdge;
 
+    if (!items.length) {
+      return buttonText;
+    }
+
     return <FormGroup>
       <ControlGroup vertical fill >
-        {!items.length && (
-          {buttonText}
-        )}
         {items.length && !allowMultiple && (
           <EntitySelect
             onItemSelect={(entity: Entity) => onSubmit([entity])}
