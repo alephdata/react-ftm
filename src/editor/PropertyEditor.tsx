@@ -4,7 +4,6 @@ import { Entity, Property, Values } from '@alephdata/followthemoney';
 import { DateEdit } from '../types/DateEdit';
 import { TextEdit } from '../types/TextEdit';
 import EntityEdit from '../types/EntityEdit';
-import { GraphContext } from '../GraphContext';
 import { CountryEdit } from "../types/CountryEdit";
 
 const messages = defineMessages({
@@ -17,6 +16,7 @@ const messages = defineMessages({
 interface IPropertyEditorProps extends WrappedComponentProps {
   entity: Entity,
   property: Property,
+  entitiesList: Map<string, Entity>,
   onSubmit: (nextEntity: Entity) => void
 }
 
@@ -25,9 +25,6 @@ interface IPropertyEditorState {
 }
 
 class PropertyEditorBase extends React.Component<IPropertyEditorProps, IPropertyEditorState> {
-  static contextType = GraphContext;
-  context!: React.ContextType<typeof GraphContext>;
-
   constructor(props:IPropertyEditorProps) {
     super(props);
 
@@ -60,8 +57,7 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
   }
 
   render() {
-    if (!this.context) return null;
-    const { entity, property } = this.props;
+    const { entitiesList, entity, property } = this.props;
     const { values } = this.state;
 
     const commonProps = {
@@ -78,7 +74,7 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
     } else if (CountryEdit.group.has(property.type.name)) {
       content = <CountryEdit {...commonProps} />;
     } else if (EntityEdit.group.has(property.type.name)) {
-      content = <EntityEdit entities={this.context.layout.entities} {...commonProps} />
+      content = <EntityEdit entities={entitiesList} {...commonProps} />
     } else {
       content = <TextEdit {...commonProps} />;
     }

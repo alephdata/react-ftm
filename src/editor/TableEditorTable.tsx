@@ -154,7 +154,7 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
                       }}
                     >
                       <PropertyValues values={entity.getProperty(property)} prop={property} />
-                      <PropertyEditor entity={entity} property={property} onSubmit={this.onEntityChanged} />
+                      <PropertyEditor entity={entity} property={property} onSubmit={this.onEntityChanged} entitiesList={layout.entities} />
                     </Popover>
                   )}
                 </Cell>
