@@ -90,13 +90,10 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
 
     const allowMultiple = !entity.schema.isEdge;
 
-    if (!items.length) {
-      return buttonText;
-    }
 
     return <FormGroup>
       <ControlGroup vertical fill >
-        {items.length && !allowMultiple && (
+        {!allowMultiple && (
           <EntitySelect
             onItemSelect={(entity: Entity) => onSubmit([entity])}
             itemRenderer={this.itemRenderer}
@@ -118,7 +115,7 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
             />
           </EntitySelect>
         )}
-        {items.length && allowMultiple && (
+        {allowMultiple && (
           <EntityMultiSelect
             tagRenderer={entity => <EntityLabel entity={entity} icon />}
             onItemSelect={(entity: Entity) => onSubmit([...this.getSelectedEntities(), ...[entity]])}
