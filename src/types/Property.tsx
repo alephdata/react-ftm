@@ -4,7 +4,7 @@ import {Values, Value, Property, Entity} from "@alephdata/followthemoney";
 import {
   EntityLabel,
   DateComponent,
-  Numeric, CountryName, LanguageName, URL
+  CountryName, LanguageName, URL
 } from '.';
 import {wordList} from "../utils";
 import {Classes} from "@blueprintjs/core";
@@ -40,9 +40,6 @@ export class PropertyValue extends React.PureComponent<IValueProps> {
     }
     if (prop.type.name === 'date') {
       return <DateComponent value={value as string} />;
-    }
-    if (prop.type.name === 'number') {
-      return <Numeric num={Number(value)} />;
     }
     return value;
   }
