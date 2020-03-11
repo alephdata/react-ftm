@@ -2,7 +2,7 @@ import React from 'react';
 import {wordList} from "../utils";
 
 
-interface ICountryNameProps extends WrappedComponentProps {
+interface ICountryNameProps {
   code:string
   countries:Map<string, string>
   short?:boolean

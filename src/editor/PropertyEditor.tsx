@@ -13,7 +13,7 @@ const messages = defineMessages({
   },
 });
 
-interface IPropertyEditorProps {
+interface IPropertyEditorProps extends WrappedComponentProps {
   entity: Entity,
   property: Property,
   entitiesList: Map<string, Entity>,
