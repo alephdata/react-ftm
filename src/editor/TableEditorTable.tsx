@@ -153,8 +153,8 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
                         inner: {enabled: true},
                       }}
                     >
-                      <PropertyValues values={entity.getProperty(property)} prop={property} />
-                      <PropertyEditor entity={entity} property={property} onSubmit={this.onEntityChanged} />
+                      <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
+                      <PropertyEditor entity={entity} property={property} onSubmit={this.onEntityChanged} entitiesList={layout.entities} />
                     </Popover>
                   )}
                 </Cell>
@@ -190,6 +190,7 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
   }
 
   renderReadonly() {
+    const { layout } = this.props;
     const { visibleProps } = this.state;
 
     const entities = this.getEntities();
@@ -214,7 +215,7 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
               const entity = entities[i];
               return (
                 <Cell>
-                  <PropertyValues values={entity.getProperty(property)} prop={property} />
+                  <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
                 </Cell>
               );
             }}

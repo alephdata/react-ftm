@@ -101,6 +101,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
         vertexRef={vertexRef}
         onVertexColorSelected={this.setVertexColor}
         writeable={writeable}
+        layout={layout}
       />
       searchResultsText = intl.formatMessage(messages.search_found_one);
     } else if (!searchText && selectedGroupings.length === 1) {

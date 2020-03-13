@@ -4,11 +4,10 @@ import {Values, Value, Property, Entity} from "@alephdata/followthemoney";
 import {
   EntityLabel,
   DateComponent,
-  Numeric, CountryName, LanguageName, URL
+  CountryName, LanguageName, URL
 } from '.';
 import {wordList} from "../utils";
 import {Classes} from "@blueprintjs/core";
-import {GraphContext} from "../GraphContext";
 
 interface IPropertyCommonProps {
   prop:Property
@@ -16,15 +15,13 @@ interface IPropertyCommonProps {
 
 interface IValueProps extends IPropertyCommonProps{
   value:Value
+  entitiesList: Map<string, Entity>
 }
 
 export class PropertyValue extends React.PureComponent<IValueProps> {
-  static contextType = GraphContext;
-  context!: React.ContextType<typeof GraphContext>;
-
   render() {
-    const { value, prop } = this.props;
-    if (!value || !this.context) {
+    const { entitiesList, value, prop } = this.props;
+    if (!value) {
       return null;
     }
 
@@ -38,14 +35,11 @@ export class PropertyValue extends React.PureComponent<IValueProps> {
       return <URL value={value as string} />;
     }
     if (prop.type.name === 'entity') {
-      const entity = 'string' === typeof value ? this.context.layout.entities.get(value) : value;
+      const entity = 'string' === typeof value ? entitiesList.get(value) : value;
       return <EntityLabel entity={entity as Entity} icon />;
     }
     if (prop.type.name === 'date') {
       return <DateComponent value={value as string} />;
-    }
-    if (prop.type.name === 'number') {
-      return <Numeric num={Number(value)} />;
     }
     return value;
   }
@@ -72,13 +66,14 @@ export class PropertyReverse extends React.PureComponent<IPropertyCommonProps> {
 
 interface IPropertyValuesProps extends IPropertyCommonProps{
   values:Values
+  entitiesList: Map<string, Entity>
 }
 
 export class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
   render() {
-    const { prop, values } = this.props;
+    const { entitiesList, prop, values } = this.props;
     const vals = values.map(value => (
-      <PropertyValue key={value.toString()} prop={prop} value={value} />
+      <PropertyValue key={value.toString()} prop={prop} value={value} entitiesList={entitiesList} />
     ));
     if (!vals.length) {
       return (<span>—</span>);

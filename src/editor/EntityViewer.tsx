@@ -5,7 +5,7 @@ import {SelectProperty} from './SelectProperty';
 import {PropertyEditor} from './PropertyEditor';
 import { PropertyName, PropertyValues} from '../types';
 import { SchemaIcon } from '../types';
-import { Vertex } from '../layout'
+import { GraphLayout, Vertex } from '../layout'
 import {ColorPicker} from './ColorPicker'
 import c from 'classnames';
 
@@ -18,6 +18,7 @@ interface IEntityViewerProps {
   onEntityChanged: (entity: Entity) => void
   onVertexColorSelected: (vertex: Vertex, color: string) => void
   writeable: boolean
+  layout: GraphLayout
 }
 
 interface IEntityViewerState {
@@ -82,7 +83,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   renderProperty(property:Property){
-    const { entity } = this.props;
+    const { entity, layout } = this.props;
     const { currEditing } = this.state;
     const isEditable = property?.name === currEditing?.name;
 
@@ -103,13 +104,14 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
                 key={property.name}
                 onSubmit={this.onSubmit}
                 entity={entity}
+                entitiesList={layout.entities}
                 property={property}
               />
             </div>
           )}
           {!isEditable && (
             <div>
-              <PropertyValues prop={property} values={entity.getProperty(property)}/>
+              <PropertyValues prop={property} values={entity.getProperty(property)} entitiesList={layout.entities} />
             </div>
           )}
         </div>
