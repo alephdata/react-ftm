@@ -5,10 +5,9 @@ import {SelectProperty} from './SelectProperty';
 import {PropertyEditor} from './PropertyEditor';
 import { PropertyName, PropertyValues} from '../types';
 import { SchemaIcon } from '../types';
-import { Vertex } from '../layout'
+import { GraphLayout, Vertex } from '../layout'
 import {ColorPicker} from './ColorPicker'
 import {VertexRadiusPicker} from './VertexRadiusPicker'
-import { GraphConfig } from '../GraphConfig';
 
 import c from 'classnames';
 
@@ -22,7 +21,7 @@ interface IEntityViewerProps {
   onVertexColorSelected: (vertex: Vertex, color: string) => void
   onVertexRadiusSelected: (vertex: Vertex, radius: number) => void
   writeable: boolean
-  config: GraphConfig
+  layout: GraphLayout
 }
 
 interface IEntityViewerState {
@@ -86,7 +85,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   renderProperty(property:Property){
-    const { entity } = this.props;
+    const { entity, layout } = this.props;
     const { currEditing } = this.state;
     const isEditable = property?.name === currEditing?.name;
 
@@ -107,13 +106,14 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
                 key={property.name}
                 onSubmit={this.onSubmit}
                 entity={entity}
+                entitiesList={layout.entities}
                 property={property}
               />
             </div>
           )}
           {!isEditable && (
             <div>
-              <PropertyValues prop={property} values={entity.getProperty(property)}/>
+              <PropertyValues prop={property} values={entity.getProperty(property)} entitiesList={layout.entities} />
             </div>
           )}
         </div>
@@ -122,7 +122,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   render() {
-    const { config, entity, vertexRef, writeable } = this.props;
+    const { layout, entity, vertexRef, writeable } = this.props;
     const { visibleProps } = this.state;
     const availableProperties = this.schemaProperties.filter(p => visibleProps.indexOf(p) < 0);
 
@@ -140,7 +140,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
               <VertexRadiusPicker
                 radius={vertexRef.radius}
                 onChange={(radius: number) => this.props.onVertexRadiusSelected(vertexRef, radius)}
-                config={config}
+                config={layout.config}
                 schema={entity.schema}
               />
             </div>

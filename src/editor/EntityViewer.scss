@@ -22,6 +22,7 @@
       }
     }
     &__text {
+      @include breakText;
       margin: 10px 0 0 !important;
       @include themify() {
         color: themed('textColor') !important;
@@ -91,6 +92,8 @@
     &__value {
       margin: 3px 0 !important;
       font-size: 14px;
+      @include breakText;
+
       @include themify() {
         color: themed('textColor') !important;
         fill: themed('textColor') !important;
@@ -113,7 +116,7 @@
         box-shadow: none !important;
         border-bottom: 1px solid !important;
         border-radius: 0 !important;
-        padding: 0 !important;
+        padding-left: 0 !important;
 
         @include themify() {
           border-color: themed('textColor') !important;

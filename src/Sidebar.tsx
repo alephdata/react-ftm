@@ -111,7 +111,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
         onVertexColorSelected={this.setVertexColor}
         onVertexRadiusSelected={this.setVertexRadius}
         writeable={writeable}
-        config={layout.config}
+        layout={layout}
       />
       searchResultsText = intl.formatMessage(messages.search_found_one);
     } else if (!searchText && selectedGroupings.length === 1) {

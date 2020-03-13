@@ -1,11 +1,12 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import hoistNonReactStatics from 'hoist-non-react-statics';
-import {Entity} from "@alephdata/followthemoney";
-import {FormGroup, MenuItem, Button, Position, Alignment} from "@blueprintjs/core";
-import {ItemPredicate, ItemRenderer, Select} from "@blueprintjs/select";
-import {ITypeProps} from "./common";
-import {highlightText, matchText} from "../utils";
+import { Entity } from "@alephdata/followthemoney";
+import { EntityLabel } from '.';
+import { Alignment, Button, ControlGroup, FormGroup, MenuItem, Position } from "@blueprintjs/core";
+import { ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
+import { ITypeProps } from "./common";
+import { highlightText, matchText } from "../utils";
 
 const messages = defineMessages({
   placeholder: {
@@ -18,6 +19,7 @@ interface IEntityTypeProps extends ITypeProps, WrappedComponentProps {
   entities: Map<string, Entity>
 }
 
+const EntityMultiSelect = MultiSelect.ofType<Entity>();
 const EntitySelect = Select.ofType<Entity>();
 
 class EntityEditBase extends React.Component<IEntityTypeProps> {
@@ -28,55 +30,50 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
     this.inputRef && this.inputRef.focus();
   }
 
-  itemPredicate: ItemPredicate<Entity> = (query: string, entity: Entity) => {
-    return matchText(entity.getCaption() || '', query)
-  };
-
   itemRenderer: ItemRenderer<Entity> = (entity, {handleClick, modifiers, query}) => {
-    if (!modifiers.matchesPredicate) {
+    if (!matchText(entity.getCaption() || '', query)) {
       return null;
     }
-    const caption = entity.getCaption();
-    const text =  caption || entity.schema.label;
-    const label = caption ? entity.schema.label : undefined ;
     return (
       <MenuItem
         active={modifiers.active}
         disabled={modifiers.disabled}
-        label={label}
         key={entity.id}
         onClick={handleClick}
-        text={highlightText(text, query)}
+        text={<EntityLabel entity={entity} icon />}
       />
     );
   }
 
-  ensureInstance(): Array<Entity>{
+  getSelectedEntities(): Array<Entity>{
     return this.props.values.map(e => {
-      if(typeof e === 'string'){
+      if (typeof e === 'string'){
         return this.props.entities.get(e) as Entity
       } else return e
     })
   }
 
-  onSelect = (item:Entity) => {
-    const nextValues = [item.id];
+  onRemove = (toRemove: any) => {
+    const idToRemove = toRemove?.props?.entity?.id;
+    const nextValues = this.getSelectedEntities()
+      .filter(e => e.id !== idToRemove);
+
     this.props.onSubmit(nextValues)
   }
 
   getItemsList() {
     const { property, entity } = this.props;
-
-    let excludeIds: string[] = []
+    const selectedIds = this.getSelectedEntities().map(e => e.id);
+    let excludeIds: string[] = [...[entity.id], ...selectedIds];
 
     // exclude source and target entities from options (to avoid self-referential edges)
     if (entity.schema.edge) {
       const {source, target} = entity.schema.edge
       const sourceProp = entity.schema.getProperty(source)
       const targetProp = entity.schema.getProperty(target)
-      const sourceEntities = entity.properties.get(sourceProp) as Entity[]
-      const targetEntities = entity.properties.get(targetProp) as Entity[]
-      excludeIds = [...sourceEntities, ...targetEntities].map(e => e.id)
+      const sourceEntity = entity.getFirst(sourceProp) as string
+      const targetEntity = entity.getFirst(targetProp) as string
+      excludeIds = [...excludeIds, ...[sourceEntity], ...[targetEntity]];
     }
     return Array.from(this.props.entities.values())
       .filter(e => e.schema.isA(property.getRange()) && !this.props.values.includes(e.id) && excludeIds.indexOf(e.id) === -1)
@@ -84,33 +81,65 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
   }
 
   render() {
-    const { intl } = this.props;
+    const { entity, intl, onSubmit } = this.props;
     const items = this.getItemsList()
-    const selectedEntity = this.ensureInstance()[0];
-    const buttonText = selectedEntity ? selectedEntity.getCaption() : intl.formatMessage(messages.placeholder);
+    const selectedEntities = this.getSelectedEntities();
+    const buttonText = selectedEntities && selectedEntities.length
+      ? <EntityLabel entity={selectedEntities[0]} icon />
+      : intl.formatMessage(messages.placeholder);
+
+    const allowMultiple = !entity.schema.isEdge;
+
 
     return <FormGroup>
-      <EntitySelect
-        resetOnSelect
-        popoverProps={{
-          position: Position.BOTTOM_LEFT,
-          minimal: true,
-          targetProps: {style: {width: '100%'}}
-        }}
+      <ControlGroup vertical fill >
+        {!allowMultiple && (
+          <EntitySelect
+            onItemSelect={(entity: Entity) => onSubmit([entity])}
+            itemRenderer={this.itemRenderer}
+            items={items}
+            popoverProps={{
+              position: Position.BOTTOM_LEFT,
+              minimal: true,
+              targetProps: {style: {width: '100%'}}
+            }}
+            resetOnSelect
+            filterable={false}
+          >
+            <Button
+              text={buttonText}
+              alignText={Alignment.LEFT}
+              rightIcon="double-caret-vertical"
+              elementRef={(ref) => this.inputRef = ref }
+              fill
+            />
+          </EntitySelect>
+        )}
+        {allowMultiple && (
+          <EntityMultiSelect
+            tagRenderer={entity => <EntityLabel entity={entity} icon />}
+            onItemSelect={(entity: Entity) => onSubmit([...this.getSelectedEntities(), ...[entity]])}
+            itemRenderer={this.itemRenderer}
+            items={items}
+            popoverProps={{
+              position: Position.BOTTOM_LEFT,
+              minimal: true,
+              targetProps: {style: {width: '100%'}}
+            }}
+            tagInputProps={{
+              inputRef: (ref) => this.inputRef = ref,
+              tagProps: {interactive: false, minimal: true, fill: true},
+              onRemove: this.onRemove,
+              placeholder: '',
+            }}
+            selectedItems={selectedEntities}
+            openOnKeyDown
+            resetOnSelect
+            fill
+          />
+        )}
 
-        itemPredicate={this.itemPredicate}
-        itemRenderer={this.itemRenderer}
-        onItemSelect={this.onSelect}
-        items={items}
-      >
-        <Button
-          text={buttonText}
-          fill
-          alignText={Alignment.LEFT}
-          rightIcon="double-caret-vertical"
-          elementRef={(ref) => this.inputRef = ref }
-        />
-      </EntitySelect>
+      </ControlGroup>
     </FormGroup>
   }
 }

@@ -57,6 +57,10 @@
       left: 0;
     }
 
+    .bp3-fill {
+      @include breakText;
+    }
+
     &__left, &__right {
       display: flex;
       align-items: center !important;

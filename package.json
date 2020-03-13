@@ -1,6 +1,6 @@
 {
   "name": "@alephdata/vislib",
-  "version": "1.5.1",
+  "version": "1.5.9",
   "description": "Graph network visualisation tool for aleph/followthemoney ",
   "keywords": [],
   "files": [
@@ -60,7 +60,7 @@
     ]
   },
   "devDependencies": {
-    "@alephdata/followthemoney": "^1.25.1",
+    "@alephdata/followthemoney": "^1.26.0",
     "@blueprintjs/core": "^3.20.0",
     "@blueprintjs/datetime": "^3.15.2",
     "@blueprintjs/select": "^3.11.2",
@@ -81,7 +81,7 @@
     "coveralls": "^3.0.7",
     "hoist-non-react-statics": "^3.3.2",
     "jest": "^24.9.0",
-    "jest-config": "^24.9.0",
+    "jest-config": "^25.1.0",
     "node-sass": "^4.13.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
@@ -113,11 +113,13 @@
   "dependencies": {
     "d3-force": "^2.0.1",
     "dagre": "^0.8.4",
+    "git": "^0.1.5",
     "moment": "^2.24.0",
     "numeral": "^2.0.6",
     "react-draggable": "^3.3.0",
     "react-intl": "^3.12.0",
     "save-dev": "0.0.1-security",
+    "status": "0.0.13",
     "truncate": "^2.1.0"
   }
 }

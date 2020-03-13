@@ -219,7 +219,7 @@ export class GraphLayout {
 
   getSelectionAdjacentEdges(): Edge[] {
     return this.getEdges()
-      .filter(edge => edge.isEntity() && this.isEdgeSelectionAdjacent(edge))
+      .filter(edge => this.isEdgeSelectionAdjacent(edge))
   }
 
   hasSelection(): boolean {
@@ -271,9 +271,7 @@ export class GraphLayout {
     })
 
     this.getSelectedEdges().forEach((edge) => {
-      if (edge.isEntity()) {
-        this.dragEdge(edge, offset, initialPosition)
-      }
+      this.dragEdge(edge, offset, initialPosition)
     })
 
     this.getSelectionAdjacentEdges().forEach((edge) => {

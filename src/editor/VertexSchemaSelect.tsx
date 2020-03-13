@@ -20,7 +20,7 @@ export class VertexSchemaSelect extends React.PureComponent<ISelectSchemaProps> 
     const schemata = model.getSchemata()
     const filtered = schemata.filter((schema) => {
       if (!optionsFilter || optionsFilter(schema)) {
-        return schema.isCreateable && !schema.isEdge;
+        return !schema.abstract && !schema.isEdge;
       }
       return false;
     })

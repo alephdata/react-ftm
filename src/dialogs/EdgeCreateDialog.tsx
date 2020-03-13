@@ -1,13 +1,15 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
 
-import { Dialog, MenuItem, FormGroup, Intent, Button, Alignment, Position } from '@blueprintjs/core'
-import { Select, IItemRendererProps } from '@blueprintjs/select';
+import { Menu, MenuItem, FormGroup, Intent, Button, Alignment, Position } from '@blueprintjs/core'
+import { Select, IItemListRendererProps, IItemRendererProps } from '@blueprintjs/select';
 import { IGraphContext } from '../GraphContext'
-import { VertexSelect } from './VertexSelect'
-import { EdgeType } from './EdgeType'
+import { EdgeType, VertexSelect } from '../editor/'
 import { Vertex,Edge } from '../layout';
 import { SchemaIcon } from '../types';
+import { partition } from '../utils';
+
+import Dialog from './Dialog';
 
 const messages = defineMessages({
   add_link: {
@@ -49,11 +51,14 @@ interface IEdgeCreateDialogState {
   source?: Vertex
   target?: Vertex
   type?: EdgeType
+  isProcessing: boolean
 }
 
 export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IEdgeCreateDialogState> {
   types: EdgeType[] = []
-  state: IEdgeCreateDialogState = {}
+  state: IEdgeCreateDialogState = {
+    isProcessing: false,
+  }
 
   constructor(props: any) {
     super(props)
@@ -113,6 +118,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     const entityChanges: any = {} ;
     e.preventDefault()
     if (source && target && type && this.isValid()) {
+      this.setState({ isProcessing: true });
       const sourceEntity = source.getEntity()
       const targetEntity = target.getEntity()
       if (type.property && sourceEntity) {
@@ -137,6 +143,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         entityChanges.created = [entity];
       }
       updateLayout(layout, entityChanges, { modifyHistory: true, clearSearch: true });
+      this.setState({ isProcessing: false });
       toggleDialog()
     }
   }
@@ -167,7 +174,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
       .filter((vertex) => {
         const isInclude = include ? include.id === vertex.id : false
         const isExcept = except ? except.id === vertex.id : false
-        return isInclude || !(isExcept || vertex.isHidden())
+        return vertex.isEntity() && (isInclude || !(isExcept || vertex.isHidden()));
       })
       .sort((a, b) => a.label.localeCompare(b.label))
   }
@@ -208,10 +215,22 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     }
   }
 
-  renderEdgeType(type: EdgeType, { handleClick, modifiers }: IItemRendererProps) {
-    if (!modifiers.matchesPredicate) {
-        return null;
-    }
+  renderEdgeTypeList(props: IItemListRendererProps<EdgeType>) {
+    const { items, itemsParentRef, renderItem } = props;
+    const [propertyEdgeTypes, entityEdgeTypes] = partition(
+      items,
+      (et: EdgeType) => et.isPropertyEdgeType()
+    );
+    return (
+      <Menu ulRef={itemsParentRef}>
+        {entityEdgeTypes.map(renderItem)}
+        <Menu.Divider />
+        {propertyEdgeTypes.map(renderItem)}
+      </Menu>
+    );
+  }
+
+  renderEdgeType(type: EdgeType, { handleClick, modifiers }:IItemRendererProps) {
     return <MenuItem
       active={modifiers.active}
       key={type.key}
@@ -223,17 +242,17 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
 
   render() {
     const { intl, isOpen, toggleDialog } = this.props
-    const { source, target, type } = this.state
+    const { isProcessing, source, target, type } = this.state
     const types = this.getTypes()
 
     return (
       <Dialog
         icon="new-link"
         isOpen={isOpen}
+        isProcessing={isProcessing}
         title={intl.formatMessage(messages.add_link)}
         onClose={toggleDialog}
-        style={{width: '800px'}}
-        portalClassName="dialog-portal-container"
+        className="large"
       >
         <form onSubmit={this.onSubmit}>
           <div className="bp3-dialog-body">
@@ -257,6 +276,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                     }}
                     filterable={false}
                     items={types}
+                    itemListRenderer={this.renderEdgeTypeList}
                     itemRenderer={this.renderEdgeType}
                     onItemSelect={this.onChangeType}
                   >
@@ -291,15 +311,15 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
             </div>
           </div>
           <div className="bp3-dialog-footer">
-          <div className="bp3-dialog-footer-actions">
-            <Button
-              intent={Intent.PRIMARY}
-              disabled={!this.isValid()}
-              text={intl.formatMessage(messages.submit)}
-              type="submit"
-            />
+            <div className="bp3-dialog-footer-actions">
+              <Button
+                intent={Intent.PRIMARY}
+                disabled={!this.isValid()}
+                text={intl.formatMessage(messages.submit)}
+                type="submit"
+              />
+            </div>
           </div>
-        </div>
         </form>
       </Dialog>
     );

@@ -21,7 +21,7 @@ export class EdgeType {
     if (!sourceEntity) {
       return false
     }
-    if (this.property && sourceEntity.hasProperty(this.property)) {
+    if (this.property && sourceEntity.schema.hasProperty(this.property)) {
       if (target.type === this.property.type.name) {
         const targetEntity = target.getEntity()
         if (!targetEntity) {
@@ -41,6 +41,10 @@ export class EdgeType {
       }
     }
     return false
+  }
+
+  isPropertyEdgeType() {
+    return this.property !== undefined;
   }
 
   static getAll(model: Model): EdgeType[] {
