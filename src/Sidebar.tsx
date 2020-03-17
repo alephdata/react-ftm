@@ -38,6 +38,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
     this.onEntitySelected = this.onEntitySelected.bind(this);
     this.removeGroupingEntity = this.removeGroupingEntity.bind(this);
     this.setVertexColor = this.setVertexColor.bind(this)
+    this.setVertexRadius = this.setVertexRadius.bind(this)
     this.setGroupingColor = this.setGroupingColor.bind(this)
   }
 
@@ -62,6 +63,14 @@ export class Sidebar extends React.Component<ISidebarProps> {
     const { layout, updateLayout } = this.props
     if (vertex) {
       layout.vertices.set(vertex.id, vertex.setColor(color))
+      updateLayout(layout, null, { modifyHistory: true })
+    }
+  }
+
+  setVertexRadius(vertex: Vertex, radius: number) {
+    const { layout, updateLayout } = this.props
+    if (vertex) {
+      layout.vertices.set(vertex.id, vertex.setRadius(radius))
       updateLayout(layout, null, { modifyHistory: true })
     }
   }
@@ -100,6 +109,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
         onEntityChanged={this.appendToLayout}
         vertexRef={vertexRef}
         onVertexColorSelected={this.setVertexColor}
+        onVertexRadiusSelected={this.setVertexRadius}
         writeable={writeable}
         layout={layout}
       />

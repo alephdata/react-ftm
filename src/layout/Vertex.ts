@@ -10,6 +10,7 @@ interface IVertexData {
   fixed: boolean
   hidden: boolean
   color: string
+  radius: number
   position?: IPointData
   entityId?: string
 }
@@ -23,6 +24,7 @@ export class Vertex {
   public fixed: boolean
   public hidden: boolean
   public color: string
+  public radius: number
   public position: Point
   public garbage: boolean = false;
 
@@ -34,6 +36,7 @@ export class Vertex {
     this.fixed = data.fixed
     this.hidden = data.hidden
     this.color = data.color
+    this.radius = data.radius
     this.position = data.position ? Point.fromJSON(data.position) : new Point()
     this.entityId = data.entityId
   }
@@ -89,11 +92,18 @@ export class Vertex {
     return vertex
   }
 
+  setRadius(radius: number): Vertex {
+    const vertex = this.clone()
+    vertex.radius = radius
+    return vertex
+  }
+
   update(other: Vertex): Vertex {
     const data = other.toJSON()
     data.hidden = this.hidden
     data.fixed = this.fixed
     data.color = this.color
+    data.radius = this.radius
     data.position = this.position.toJSON()
     return Vertex.fromJSON(this.layout, data)
   }
@@ -106,6 +116,7 @@ export class Vertex {
       fixed: this.fixed,
       hidden: this.hidden,
       color: this.color,
+      radius: this.radius,
       position: this.position.toJSON(),
       entityId: this.entityId
     }
@@ -127,6 +138,7 @@ export class Vertex {
       fixed: false,
       hidden: false,
       color: layout.config.DEFAULT_VERTEX_COLOR,
+      radius: layout.config.DEFAULT_VERTEX_RADIUS,
       entityId: entity.id
     });
   }
@@ -149,7 +161,8 @@ export class Vertex {
       label: value,
       fixed: false,
       hidden: false,
-      color: 'GRAY'
+      color: 'GRAY',
+      radius: layout.config.DEFAULT_VERTEX_RADIUS/2,
     });
   }
 

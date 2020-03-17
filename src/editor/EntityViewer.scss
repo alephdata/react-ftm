@@ -28,6 +28,10 @@
         color: themed('textColor') !important;
       }
     }
+
+    &__settings {
+      margin-top: 20px;
+    }
   }
 
   &__property-list {

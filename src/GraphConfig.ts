@@ -13,7 +13,7 @@ export class GraphConfig {
   public DEFAULT_VERTEX_COLOR: string = Colors.BLUE1
   public EDGE_COLOR: string = Colors.GRAY2
   public UNSELECTED_COLOR: string = Colors.GRAY5
-  public VERTEX_RADIUS: number = 1
+  public DEFAULT_VERTEX_RADIUS: number = 1
   public gridUnit: number
   public editorTheme: string
   public toolbarPosition: string
