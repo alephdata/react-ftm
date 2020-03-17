@@ -31,7 +31,7 @@ export class VertexRadiusPicker extends React.PureComponent<IVertexRadiusPickerP
           />
         </div>
         <Slider
-          value={radius}
+          value={radius || defaultRadius}
           onChange={(value) => onChange(value)}
           min={radiusRange[0]}
           max={radiusRange[1]}

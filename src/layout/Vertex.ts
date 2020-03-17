@@ -162,7 +162,7 @@ export class Vertex {
       fixed: false,
       hidden: false,
       color: 'GRAY',
-      radius: layout.config.DEFAULT_VERTEX_RADIUS,
+      radius: layout.config.DEFAULT_VERTEX_RADIUS/2,
     });
   }
 

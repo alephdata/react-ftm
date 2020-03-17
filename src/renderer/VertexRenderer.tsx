@@ -151,7 +151,8 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     const { vertex, config, selected, highlighted, interactionMode, writeable } = this.props
     const { x, y } = config.gridToPixel(vertex.position)
     const isEntity = vertex.isEntity()
-    const vertexRadius = (vertex.radius || config.DEFAULT_VERTEX_RADIUS) * config.gridUnit
+    const defaultRadius = isEntity ? config.DEFAULT_VERTEX_RADIUS : config.DEFAULT_VERTEX_RADIUS/2;
+    const vertexRadius = (vertex.radius || defaultRadius) * config.gridUnit
     const translate = `translate(${x} ${y})`
     const labelPosition = new Point(0, vertexRadius + config.gridUnit/2)
 
