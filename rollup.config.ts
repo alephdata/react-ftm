@@ -31,7 +31,7 @@ export default {
     // https://github.com/rollup/rollup-plugin-node-resolve#usage
     resolve({browser: true}),
     // Compile TypeScript files
-    typescript({check: false, clean: true, useTsconfigDeclarationDir: true, objectHashIgnoreUnknownHack: true}),
+    typescript({check: false, clean: true, useTsconfigDeclarationDir: true}),
     // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
     commonjs({
       sourceMap: false,
