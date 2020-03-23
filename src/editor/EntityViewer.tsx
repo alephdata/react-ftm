@@ -7,6 +7,8 @@ import { PropertyName, PropertyValues} from '../types';
 import { SchemaIcon } from '../types';
 import { GraphLayout, Vertex } from '../layout'
 import {ColorPicker} from './ColorPicker'
+import {VertexRadiusPicker} from './VertexRadiusPicker'
+
 import c from 'classnames';
 
 
@@ -17,6 +19,7 @@ interface IEntityViewerProps {
   vertexRef?: Vertex,
   onEntityChanged: (entity: Entity) => void
   onVertexColorSelected: (vertex: Vertex, color: string) => void
+  onVertexRadiusSelected: (vertex: Vertex, radius: number) => void
   writeable: boolean
   layout: GraphLayout
 }
@@ -25,7 +28,6 @@ interface IEntityViewerState {
   visibleProps: Property[],
   currEditing: Property | null
 }
-
 
 export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntityViewerState> {
   private schemaProperties: Property[];
@@ -120,7 +122,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   render() {
-    const { entity, vertexRef, writeable } = this.props;
+    const { layout, entity, vertexRef, writeable } = this.props;
     const { visibleProps } = this.state;
     const availableProperties = this.schemaProperties.filter(p => visibleProps.indexOf(p) < 0);
 
@@ -130,9 +132,18 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
           <SchemaIcon size={60} schema={entity.schema} />
           <h2 className='EntityViewer__title__text'>{entity.getCaption()}</h2>
           {vertexRef &&
-            <ColorPicker
-              currSelected={vertexRef.color}
-              onSelect={(color: string) => this.props.onVertexColorSelected(vertexRef, color)} />
+            <div className='EntityViewer__title__settings'>
+              <ColorPicker
+                currSelected={vertexRef.color}
+                onSelect={(color: string) => this.props.onVertexColorSelected(vertexRef, color)}
+              />
+              <VertexRadiusPicker
+                radius={vertexRef.radius}
+                onChange={(radius: number) => this.props.onVertexRadiusSelected(vertexRef, radius)}
+                config={layout.config}
+                schema={entity.schema}
+              />
+            </div>
           }
         </div>
 

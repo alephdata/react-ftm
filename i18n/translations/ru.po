@@ -3,7 +3,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-03-05T13:02:12.113Z\n"
+"POT-Creation-Date: 2020-03-23T13:58:37.898Z\n"
 "Last-Translator: jen occrp, 2020\n"
 "Language-Team: Russian (https://www.transifex.com/aleph/teams/76591/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -268,13 +268,10 @@ msgstr "Отменить"
 msgid "Ungroup selection"
 msgstr "Разгруппировать"
 
-#. [editor.country.unknown]
-#. defaultMessage is:
-#. Unknown
 #. [editor.language.unknown]
 #. defaultMessage is:
 #. Unknown
-#: i18n/messages.json i18n/messages.json
+#: i18n/messages.json
 msgid "Unknown"
 msgstr "Неизвестно"
 

@@ -13,8 +13,8 @@ export function arrangeTree(layout:GraphLayout):GraphLayout{
 
   const nodes = selectedVertices.map((vertex) => ({
       id: vertex.id,
-      width: layout.config.VERTEX_RADIUS*2,
-      height: layout.config.VERTEX_RADIUS*2,
+      width: layout.config.DEFAULT_VERTEX_RADIUS*2,
+      height: layout.config.DEFAULT_VERTEX_RADIUS*2,
     }));
   const center = Rectangle.fromPoints(...selectedVertices.map(v => v.position)).getCenter();
   const links = layout.getEdges().map((edge) => {

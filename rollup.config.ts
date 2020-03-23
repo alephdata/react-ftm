@@ -13,8 +13,8 @@ const external = pkg['peerDependencies'] && Object.keys(pkg['peerDependencies'])
 export default {
   input: `src/index.ts`,
   output: [
-    {file: pkg.main, name: 'vislib', format: 'umd', sourcemap: true},
-     {file: pkg.module, format: 'es', sourcemap: true},
+    {file: pkg.main, name: 'vislib', format: 'umd', sourcemap: false},
+    {file: pkg.module, format: 'es', sourcemap: false},
   ],
   external,
   watch: {
@@ -31,9 +31,10 @@ export default {
     // https://github.com/rollup/rollup-plugin-node-resolve#usage
     resolve({browser: true}),
     // Compile TypeScript files
-    typescript({useTsconfigDeclarationDir: true, objectHashIgnoreUnknownHack: true}),
+    typescript({check: false, clean: true, useTsconfigDeclarationDir: true}),
     // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
     commonjs({
+      sourceMap: false,
       namedExports: {
         "react-draggable": ['DraggableCore', 'DraggableEvent'],
         'prop-types': [
@@ -42,6 +43,6 @@ export default {
       }
     }),
     // Resolve source maps to the original source
-    sourceMaps()
+    // sourceMaps()
   ],
 }

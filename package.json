@@ -1,6 +1,6 @@
 {
   "name": "@alephdata/vislib",
-  "version": "1.5.9",
+  "version": "1.5.10",
   "description": "Graph network visualisation tool for aleph/followthemoney ",
   "keywords": [],
   "files": [
@@ -119,7 +119,6 @@
     "react-draggable": "^3.3.0",
     "react-intl": "^3.12.0",
     "save-dev": "0.0.1-security",
-    "status": "0.0.13",
     "truncate": "^2.1.0"
   }
 }
