@@ -220,7 +220,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   render() {
-    const { config, intl, layout, locale, viewport, writeable } = this.props;
+    const { config, entityManager, intl, layout, locale, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, tableView } = this.state;
     const vertices = layout.getSelectedVertices()
     const [sourceVertex, targetVertex] = vertices;
@@ -300,7 +300,9 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
             <VertexCreateDialog
               isOpen={interactionMode === modes.VERTEX_CREATE}
               toggleDialog={this.setInteractionMode}
-              vertexCreateOptions={this.state.vertexCreateOptions} />
+              vertexCreateOptions={this.state.vertexCreateOptions}
+              getEntitySuggestions={entityManager.getEntitySuggestions}
+            />
 
             <GroupingCreateDialog
               isOpen={interactionMode === modes.GROUPING_CREATE}

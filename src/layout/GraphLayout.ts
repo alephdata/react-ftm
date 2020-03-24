@@ -39,6 +39,7 @@ export class GraphLayout {
     this.addVertex = this.addVertex.bind(this);
     this.addEdge = this.addEdge.bind(this);
     this.addEntity = this.addEntity.bind(this);
+    this.createEntity = this.createEntity.bind(this);
     this.removeEntity = this.removeEntity.bind(this);
     this.isGroupingSelected = this.isGroupingSelected.bind(this);
   }
@@ -111,12 +112,15 @@ export class GraphLayout {
     this.vertices.forEach(vertex => vertex.garbage && this.vertices.delete(vertex.id));
   }
 
-  async addEntity(entityData: any) {
+  async createEntity(entityData: any) {
     const entity = await this.entityManager.createEntity(entityData);
-    this.entities.set(entity.id, entity)
-    this.layout()
-
+    this.addEntity(entity);
     return entity;
+  }
+
+  addEntity(entity: Entity) {
+    this.entities.set(entity.id, entity);
+    this.layout();
   }
 
   updateEntity(entity: Entity) {

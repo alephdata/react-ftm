@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
-import { Alignment, Button, ControlGroup, InputGroup, Intent, Spinner } from '@blueprintjs/core'
-import { Schema } from '@alephdata/followthemoney'
+import { Alignment, Button, ControlGroup, InputGroup, Intent, Menu, MenuItem, Spinner } from '@blueprintjs/core'
+import { IItemListRendererProps, Suggest } from '@blueprintjs/select';
+import { Entity, Schema } from '@alephdata/followthemoney'
 import { GraphContext, IGraphContext } from '../GraphContext'
 import { VertexSchemaSelect } from '../editor'
 import { SchemaIcon } from '../types';
@@ -29,26 +30,32 @@ interface IVertexCreateDialogProps extends WrappedComponentProps {
   isOpen: boolean,
   toggleDialog: () => any,
   vertexCreateOptions?: any
+  getEntitySuggestions: (queryText: string, schema?: Schema) => Promise<Entity[]>,
 }
 
 interface IVertexCreateDialogState {
-  label: string,
+  query: string,
   isProcessing: boolean,
+  isFetchingSuggestions: boolean,
   schema?: Schema
+  suggestions: Entity[],
 }
 
 export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogProps, IVertexCreateDialogState> {
   static contextType = GraphContext;
   context!: React.ContextType<typeof GraphContext>;
   state: IVertexCreateDialogState = {
-    label: '',
+    query: '',
+    isFetchingSuggestions: false,
     isProcessing: false,
+    suggestions: [],
   }
 
   constructor(props: any) {
     super(props);
-    this.onChangeLabel = this.onChangeLabel.bind(this);
+    this.onQueryChange = this.onQueryChange.bind(this);
     this.onSchemaSelect = this.onSchemaSelect.bind(this);
+    this.itemListRenderer = this.itemListRenderer.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
 
@@ -61,8 +68,22 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     }
   }
 
-  onChangeLabel(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ label: e.target.value })
+  async onQueryChange(query: string) {
+    const { schema } = this.state;
+    this.setState({ isFetchingSuggestions: true });
+    console.log('in on query change', query);
+    const suggestions = await this.props.getEntitySuggestions(query, schema);
+    console.log('suggestions are', suggestions);
+    this.setState({ query, suggestions, isFetchingSuggestions: false });
+  }
+
+  async onSchemaSelect(schema: Schema) {
+    const { query } = this.state;
+    this.setState({ isFetchingSuggestions: true });
+    console.log('in on schema change', schema);
+    const suggestions = await this.props.getEntitySuggestions(query, schema);
+    console.log('suggestions are', suggestions);
+    this.setState({ schema, suggestions, isFetchingSuggestions: false });
   }
 
   getSchema(): Schema {
@@ -74,45 +95,62 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     this.setState({ schema })
   }
 
-  async onSubmit(e: React.ChangeEvent<HTMLFormElement>) {
+  async onSubmit(entityData: string | Entity) {
     const { layout, updateLayout, viewport, updateViewport } = this.context as IGraphContext
-    const { label } = this.state
+    const { query } = this.state
     const position = this.props.vertexCreateOptions?.initialPosition || viewport.center;
-    const schema = this.getSchema()
-    e.preventDefault()
+    const schema = this.getSchema();
+    let entity;
 
-    if (this.checkValid()) {
-      this.setState({ isProcessing: true });
-      let entity;
+    this.setState({ isProcessing: true });
+
+    if (typeof entityData === 'string') {
       const captionProperty = schema?.caption[0];
       if (captionProperty) {
-        entity = await layout.addEntity({ schema, properties: { [captionProperty]: label } });
+        entity = await layout.createEntity({ schema, properties: { [captionProperty]: query } });
       } else {
-        entity = await layout.addEntity({ schema });
+        entity = await layout.createEntity({ schema });
       }
-      const vertex = layout.getVertexByEntity(entity)
-      if (vertex) {
-        layout.vertices.set(vertex.id, vertex.snapPosition(position))
-        layout.selectElement(vertex)
-        updateLayout(layout, { created: [entity] }, { modifyHistory: true, clearSearch: true });
-        this.setState({label: '', isProcessing: false})
-        this.props.toggleDialog()
-      }
+    } else {
+      entity = entityData;
+      layout.addEntity(entity);
+    }
+
+    const vertex = layout.getVertexByEntity(entity)
+    if (vertex) {
+      layout.vertices.set(vertex.id, vertex.snapPosition(position))
+      layout.selectElement(vertex)
+      updateLayout(layout, { created: [entity] }, { modifyHistory: true, clearSearch: true });
+      this.setState({query: '', isProcessing: false, suggestions: []})
+      this.props.toggleDialog()
     }
   }
 
   checkValid(): boolean {
-    const { label } = this.state;
-    if (label.trim().length < 1) {
-      return false;
-    }
+    // const { label } = this.state;
+    // if (label.trim().length < 1) {
+    //   return false;
+    // }
     return true;
+  }
+
+  itemListRenderer({ activeItem, filteredItems, items, itemsParentRef, query, renderItem }: IItemListRendererProps<Entity>) {
+    const { isFetchingSuggestions } = this.state;
+
+    if (isFetchingSuggestions) {
+      return <Spinner />;
+    }
+    return (
+      <Menu ulRef={itemsParentRef}>
+        {filteredItems.map(renderItem)}
+      </Menu>
+    );
   }
 
   render() {
     const { intl, layout } = this.context as IGraphContext
     const { isOpen, toggleDialog } = this.props;
-    const { isProcessing } = this.state;
+    const { isProcessing, query, suggestions } = this.state;
     const schema = this.getSchema()
     const placeholder = intl.formatMessage(messages.name_placeholder, { schema: schema.label });
     const isValid = this.checkValid()
@@ -127,7 +165,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
         title={intl.formatMessage(messages.title)}
         onClose={toggleDialog}
       >
-        <form onSubmit={this.onSubmit}>
+        <form onSubmit={() => this.onSubmit(query)}>
           <div className="bp3-dialog-body">
             <ControlGroup fill>
               <VertexSchemaSelect
@@ -143,14 +181,24 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
                   rightIcon='double-caret-vertical'
                 />
               </VertexSchemaSelect>
-              <InputGroup
-                autoFocus
-                large
-                intent={isValid ? undefined : Intent.WARNING}
-                className="bp3-fill"
-                value={this.state.label}
-                onChange={this.onChangeLabel}
-                placeholder={placeholder}
+              <Suggest
+                fill
+                inputValueRenderer={entity => entity.getCaption()}
+                items={suggestions}
+                itemListRenderer={this.itemListRenderer}
+                itemRenderer={(entity, { handleClick, modifiers }) => (
+                  <MenuItem
+                    active={modifiers.active}
+                    disabled={modifiers.disabled}
+                    key={entity.id}
+                    onClick={handleClick}
+                    text={entity.getCaption()}
+                  />
+                )}
+                inputProps={{ large: true }}
+                popoverProps={{ minimal: true }}
+                onQueryChange={this.onQueryChange}
+                onItemSelect={this.onSubmit}
               />
             </ControlGroup>
           </div>
