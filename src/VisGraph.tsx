@@ -301,7 +301,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
               isOpen={interactionMode === modes.VERTEX_CREATE}
               toggleDialog={this.setInteractionMode}
               vertexCreateOptions={this.state.vertexCreateOptions}
-              getEntitySuggestions={entityManager.getEntitySuggestions}
+              entityManager={entityManager}
             />
 
             <GroupingCreateDialog
