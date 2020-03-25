@@ -12,6 +12,7 @@ interface IVertexRadiusPickerProps {
   onChange: (radius: number) => void
   config: GraphConfig
   schema: Schema
+  radius: number
 }
 
 import './VertexRadiusPicker.scss'
@@ -44,7 +45,6 @@ export class VertexRadiusPicker extends React.PureComponent<IVertexRadiusPickerP
           <SchemaIcon
             size={20}
             schema={schema}
-            className='VertexRadiusPicker__icon'
           />
         </div>
       </div>

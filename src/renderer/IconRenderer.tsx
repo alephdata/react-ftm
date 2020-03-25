@@ -5,6 +5,7 @@ import { Vertex } from "../layout/Vertex";
 
 interface IIconRendererProps {
   vertex:Vertex
+  radius: number
 }
 
 export class IconRenderer extends React.PureComponent<IIconRendererProps>{
