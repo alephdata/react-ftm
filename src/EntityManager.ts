@@ -1,4 +1,4 @@
-import { defaultModel, Entity, Model, IEntityDatum } from '@alephdata/followthemoney'
+import { defaultModel, Entity, Model, Schema, IEntityDatum } from '@alephdata/followthemoney'
 
 
 export interface IEntityManagerProps {
@@ -6,6 +6,7 @@ export interface IEntityManagerProps {
   createEntity?: (entityData: IEntityDatum) => Promise<IEntityDatum>,
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
+  getEntitySuggestions?: (queryText: string, schema?: Schema) => Promise<Entity[]>,
 }
 
 export class EntityManager {
@@ -20,6 +21,8 @@ export class EntityManager {
     } else {
       this.model = new Model(defaultModel);
     }
+
+    this.getEntitySuggestions = this.getEntitySuggestions.bind(this);
   }
 
   async createEntity(entityData: any) {
@@ -49,6 +52,14 @@ export class EntityManager {
     if (this.overload?.deleteEntity) {
       this.overload.deleteEntity(entityId);
     }
+  }
+
+  async getEntitySuggestions(queryText: string, schema?: Schema) {
+    if (this.overload?.getEntitySuggestions) {
+      const suggestions = await this.overload.getEntitySuggestions(queryText, schema);
+      return suggestions;
+    }
+    return [];
   }
 
   // entity changes in the reverse direction require undoing create/delete operations
