@@ -66,11 +66,6 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     };
   }
 
-  componentDidMount() {
-    const { query, schema } = this.state;
-    this.fetchSuggestions({ query, schema });
-  }
-
   componentDidUpdate(prevProps: IVertexCreateDialogProps) {
     const schema = this.props.vertexCreateOptions?.initialSchema;
     if (schema && prevProps.vertexCreateOptions?.initialSchema !== schema) {
@@ -91,11 +86,17 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
   }
 
   async fetchSuggestions({ query, schema }:{ query: string, schema: Schema }) {
-    const { entityManager } = this.props;
-    this.setState({ isFetchingSuggestions: true });
-    const suggestions = await entityManager.getEntitySuggestions(query, schema);
-    this.setState({ isFetchingSuggestions: false, suggestions });
-    return suggestions;
+    const { layout } = this.context as IGraphContext
+
+    if (query.length === 0) {
+      this.setState({ suggestions: [] });
+    } else {
+      const { entityManager } = this.props;
+      this.setState({ isFetchingSuggestions: true });
+      const suggestions = await entityManager.getEntitySuggestions(query, schema);
+      const filteredSuggestions = suggestions.filter((entity: Entity) => !layout.hasEntity(entity));
+      this.setState({ isFetchingSuggestions: false, suggestions: filteredSuggestions });
+    }
   }
 
   getSchema(): Schema {
@@ -138,13 +139,17 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     const { filteredItems, itemsParentRef, renderItem } = rendererProps;
     const { isFetchingSuggestions } = this.state;
 
-    if (isFetchingSuggestions || !filteredItems.length) return;
+    if (!isFetchingSuggestions && !filteredItems.length) return;
+
+    const content = isFetchingSuggestions
+      ? <Spinner className="VertexCreateDialog__spinner" size={Spinner.SIZE_SMALL} />
+      : filteredItems.map(renderItem);
 
     return (
       <Menu ulRef={itemsParentRef}>
-        {filteredItems.map(renderItem)}
+        {content}
       </Menu>
-    )
+    );
   }
 
   render() {
@@ -193,20 +198,15 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
                 items={suggestions}
                 itemListRenderer={this.itemListRenderer as ItemListRenderer<Entity>}
                 popoverProps={{
-                  defaultIsOpen: true,
                   popoverClassName: "VertexCreateDialog__popover",
                   minimal: true,
-                  fill: true,
-                  lazy: false,
+                  position: 'bottom-left',
                 }}
                 inputProps={{
                   className: "VertexCreateDialog__input",
                   large: true,
                   round: false,
                   placeholder: placeholder,
-                  rightElement: isFetchingSuggestions
-                    ? <Spinner className="VertexCreateDialog__spinner" size={Spinner.SIZE_SMALL} />
-                    : undefined
                 }}
                 itemRenderer={(entity, { handleClick, modifiers }) => (
                   <MenuItem

@@ -6,14 +6,16 @@
     white-space: nowrap;
   }
   &__popover {
+    max-height: 300px;
+    overflow-y: scroll;
     .bp3-popover-content {
-      padding: 0;
+      padding: 0 !important;
     }
     .bp3-menu {
-      padding: 5px;
+      padding: 5px !important;
     }
   }
   &__spinner.bp3-spinner {
-    margin: 10px !important;
+    margin: 2px !important;
   }
 }

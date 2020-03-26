@@ -100,10 +100,21 @@ export class GraphLayout {
 
         properties.forEach((prop) => {
           entity.getProperty(prop).forEach((value) => {
-            const propertyVertex = Vertex.fromValue(this, prop, value);
-            this.addVertex(propertyVertex)
-
-            this.addEdge(Edge.fromValue(this, prop, mainVertex, propertyVertex))
+            let propertyVertex;
+            // if property contains an entity reference, draw edge to referred entity,
+            //  otherwise create value node
+            if (prop.type.name === 'entity') {
+              const entity = typeof value === 'string' ? this.entities.get(value) : value;
+              if (entity?.id) {
+                propertyVertex = this.getVertexByEntity(entity);
+              }
+            } else {
+              propertyVertex = Vertex.fromValue(this, prop, value);
+              this.addVertex(propertyVertex)
+            }
+            if (propertyVertex) {
+              this.addEdge(Edge.fromValue(this, prop, mainVertex, propertyVertex));
+            }
           })
         })
       }
@@ -141,6 +152,10 @@ export class GraphLayout {
 
   getEntities(): Entity[] {
     return Array.from(this.entities.values())
+  }
+
+  hasEntity(entity: Entity): boolean {
+    return this.entities.has(entity.id);
   }
 
   addGrouping(grouping: Grouping) {
