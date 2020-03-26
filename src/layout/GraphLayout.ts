@@ -103,8 +103,8 @@ export class GraphLayout {
             let propertyVertex;
             // if property contains an entity reference, draw edge to referred entity,
             //  otherwise create value node
-            if (prop.type.name == 'entity') {
-              const entity = typeof value === 'string' ? this.entities.get(value) : value as Entity;
+            if (prop.type.name === 'entity') {
+              const entity = typeof value === 'string' ? this.entities.get(value) : value;
               if (entity?.id) {
                 propertyVertex = this.getVertexByEntity(entity);
               }
