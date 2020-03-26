@@ -149,6 +149,10 @@ export class GraphLayout {
     return Array.from(this.entities.values())
   }
 
+  hasEntity(entity: Entity): boolean {
+    return this.entities.has(entity.id);
+  }
+
   addGrouping(grouping: Grouping) {
     this.groupings.set(grouping.id, grouping)
   }
