@@ -100,10 +100,16 @@ export class GraphLayout {
 
         properties.forEach((prop) => {
           entity.getProperty(prop).forEach((value) => {
-            const propertyVertex = Vertex.fromValue(this, prop, value);
-            this.addVertex(propertyVertex)
-
-            this.addEdge(Edge.fromValue(this, prop, mainVertex, propertyVertex))
+            let propertyVertex;
+            if (prop.type.name == 'entity') {
+              propertyVertex = this.getVertexByEntity(value)
+            } else {
+              propertyVertex = Vertex.fromValue(this, prop, value);
+              this.addVertex(propertyVertex)
+            }
+            if (propertyVertex) {
+              this.addEdge(Edge.fromValue(this, prop, mainVertex, propertyVertex));
+            }
           })
         })
       }
