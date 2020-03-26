@@ -1,4 +1,7 @@
 .VertexCreateDialog {
+  &__input > .bp3-input {
+    border-radius: 0 !important;
+  }
   &__schema-select {
     white-space: nowrap;
   }

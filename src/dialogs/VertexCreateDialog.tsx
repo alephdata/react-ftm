@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Alignment, Button, ControlGroup, InputGroup, Intent, Menu, MenuItem, Spinner, Divider } from '@blueprintjs/core'
-import { IItemListRendererProps, Suggest } from '@blueprintjs/select';
+import { ItemListRenderer, IItemListRendererProps, Suggest } from '@blueprintjs/select';
 import { Entity, Schema } from '@alephdata/followthemoney'
 
 import { EntityManager } from '../EntityManager';
@@ -134,11 +134,11 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     }
   }
 
-  itemListRenderer({ activeItem, filteredItems, items, itemsParentRef, query, renderItem}) {
-    console.log('rendering!!', filteredItems, filteredItems.length)
+  itemListRenderer(rendererProps: IItemListRendererProps<Entity>) {
+    const { filteredItems, itemsParentRef, renderItem } = rendererProps;
     const { isFetchingSuggestions } = this.state;
 
-    if (isFetchingSuggestions || !filteredItems.length) return null;
+    if (isFetchingSuggestions || !filteredItems.length) return;
 
     return (
       <Menu ulRef={itemsParentRef}>
@@ -165,7 +165,12 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
         onClose={toggleDialog}
         className="VertexCreateDialog"
       >
-        <form onSubmit={(e) => { e.stopPropagation(); e.preventDefault(); }>
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          // only allow submit of input on enter when no suggestions are present
+          !suggestions.length && this.onSubmit(query)
+        }}>
           <div className="bp3-dialog-body">
             <ControlGroup fill>
               <VertexSchemaSelect
@@ -186,7 +191,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
                 fill
                 inputValueRenderer={entity => entity.getCaption()}
                 items={suggestions}
-                itemListRenderer={this.itemListRenderer}
+                itemListRenderer={this.itemListRenderer as ItemListRenderer<Entity>}
                 popoverProps={{
                   defaultIsOpen: true,
                   popoverClassName: "VertexCreateDialog__popover",
@@ -195,12 +200,13 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
                   lazy: false,
                 }}
                 inputProps={{
+                  className: "VertexCreateDialog__input",
                   large: true,
                   round: false,
                   placeholder: placeholder,
                   rightElement: isFetchingSuggestions
                     ? <Spinner className="VertexCreateDialog__spinner" size={Spinner.SIZE_SMALL} />
-                    : null
+                    : undefined
                 }}
                 itemRenderer={(entity, { handleClick, modifiers }) => (
                   <MenuItem
