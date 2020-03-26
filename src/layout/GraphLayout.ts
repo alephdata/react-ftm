@@ -101,8 +101,13 @@ export class GraphLayout {
         properties.forEach((prop) => {
           entity.getProperty(prop).forEach((value) => {
             let propertyVertex;
+            // if property contains an entity reference, draw edge to referred entity,
+            //  otherwise create value node
             if (prop.type.name == 'entity') {
-              propertyVertex = this.getVertexByEntity(value)
+              const entity = typeof value === 'string' ? this.entities.get(value) : value as Entity;
+              if (entity?.id) {
+                propertyVertex = this.getVertexByEntity(entity);
+              }
             } else {
               propertyVertex = Vertex.fromValue(this, prop, value);
               this.addVertex(propertyVertex)

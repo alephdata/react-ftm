@@ -94,7 +94,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
       const { entityManager } = this.props;
       this.setState({ isFetchingSuggestions: true });
       const suggestions = await entityManager.getEntitySuggestions(query, schema);
-      const filteredSuggestions = suggestions.filter(entity => !layout.hasEntity(entity));
+      const filteredSuggestions = suggestions.filter((entity: Entity) => !layout.hasEntity(entity));
       this.setState({ isFetchingSuggestions: false, suggestions: filteredSuggestions });
     }
   }
