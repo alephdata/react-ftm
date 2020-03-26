@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
-import { Alignment, Button, ControlGroup, InputGroup, Intent, Menu, MenuItem, Spinner } from '@blueprintjs/core'
+import { Alignment, Button, ControlGroup, InputGroup, Intent, Menu, MenuItem, Spinner, Divider } from '@blueprintjs/core'
 import { IItemListRendererProps, Suggest } from '@blueprintjs/select';
 import { Entity, Schema } from '@alephdata/followthemoney'
 
@@ -11,6 +11,8 @@ import { EntityLabel, SchemaIcon } from '../types';
 import { Point } from '../layout'
 import Dialog from './Dialog'
 import c from 'classnames';
+
+import './VertexCreateDialog.scss';
 
 const messages = defineMessages({
   title: {
@@ -27,7 +29,6 @@ const messages = defineMessages({
   },
 });
 
-
 interface IVertexCreateDialogProps extends WrappedComponentProps {
   isOpen: boolean,
   toggleDialog: () => any,
@@ -39,7 +40,7 @@ interface IVertexCreateDialogState {
   query: string,
   isProcessing: boolean,
   isFetchingSuggestions: boolean,
-  schema?: Schema
+  schema: Schema
   suggestions: Entity[],
 }
 
@@ -54,6 +55,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     this.onQueryChange = this.onQueryChange.bind(this);
     this.onSchemaSelect = this.onSchemaSelect.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.itemListRenderer = this.itemListRenderer.bind(this);
 
     this.state = {
       query: '',
@@ -62,6 +64,11 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
       suggestions: [],
       schema: props.entityManager.model.getSchema('Person')
     };
+  }
+
+  componentDidMount() {
+    const { query, schema } = this.state;
+    this.fetchSuggestions({ query, schema });
   }
 
   componentDidUpdate(prevProps: IVertexCreateDialogProps) {
@@ -73,26 +80,22 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     }
   }
 
-  async onQueryChange(query: string) {
-    const { entityManager } = this.props;
-    const { schema } = this.state;
-    this.setState({ isFetchingSuggestions: true });
-    console.log('in on query change', query);
-    const suggestions = await entityManager.getEntitySuggestions(query, schema);
-    console.log('suggestions are', suggestions);
-    this.setState({ query, suggestions, isFetchingSuggestions: false });
+  onQueryChange(query: string) {
+    this.setState({ query });
+    this.fetchSuggestions({ query, schema: this.state.schema })
   }
 
-  async onSchemaSelect(schema: Schema) {
-    const { entityManager } = this.props;
+  onSchemaSelect(schema: Schema) {
+    this.setState({ schema });
+    this.fetchSuggestions({ query: this.state.query, schema })
+  }
 
-    console.log('in on schema select')
-    const { query } = this.state;
+  async fetchSuggestions({ query, schema }:{ query: string, schema: Schema }) {
+    const { entityManager } = this.props;
     this.setState({ isFetchingSuggestions: true });
-    console.log('in on schema change', schema);
     const suggestions = await entityManager.getEntitySuggestions(query, schema);
-    console.log('suggestions are', suggestions);
-    this.setState({ schema, suggestions, isFetchingSuggestions: false });
+    this.setState({ isFetchingSuggestions: false, suggestions });
+    return suggestions;
   }
 
   getSchema(): Schema {
@@ -131,12 +134,17 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     }
   }
 
-  checkValid(): boolean {
-    // const { label } = this.state;
-    // if (label.trim().length < 1) {
-    //   return false;
-    // }
-    return true;
+  itemListRenderer({ activeItem, filteredItems, items, itemsParentRef, query, renderItem}) {
+    console.log('rendering!!', filteredItems, filteredItems.length)
+    const { isFetchingSuggestions } = this.state;
+
+    if (isFetchingSuggestions || !filteredItems.length) return null;
+
+    return (
+      <Menu ulRef={itemsParentRef}>
+        {filteredItems.map(renderItem)}
+      </Menu>
+    )
   }
 
   render() {
@@ -145,11 +153,9 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     const { isFetchingSuggestions, isProcessing, query, suggestions } = this.state;
     const schema = this.getSchema()
     const placeholder = intl.formatMessage(messages.name_placeholder, { schema: schema.label });
-    const isValid = this.checkValid()
     const vertexSelectText = schema ? schema.label : intl.formatMessage(messages.type_placeholder);
     const vertexSelectIcon = schema ? SchemaIcon.get(schema) : 'select'
 
-    console.log('jJBIUBAIDJBSODFB AIDBF JADF')
     return (
       <Dialog
         icon="new-object"
@@ -157,8 +163,9 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
         isProcessing={isProcessing}
         title={intl.formatMessage(messages.title)}
         onClose={toggleDialog}
+        className="VertexCreateDialog"
       >
-        <form onSubmit={() => this.onSubmit(query)}>
+        <form onSubmit={(e) => { e.stopPropagation(); e.preventDefault(); }>
           <div className="bp3-dialog-body">
             <ControlGroup fill>
               <VertexSchemaSelect
@@ -171,15 +178,30 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
                   text={vertexSelectText}
                   alignText={Alignment.LEFT}
                   icon={vertexSelectIcon}
-                  rightIcon='double-caret-vertical'
+                  rightIcon="caret-down"
+                  className="VertexCreateDialog__schema-select"
                 />
               </VertexSchemaSelect>
               <Suggest
                 fill
                 inputValueRenderer={entity => entity.getCaption()}
                 items={suggestions}
-                noResults={null}
-                inputProps={{ large: true, round: false, placeholder: placeholder, rightElement: isFetchingSuggestions ? <Spinner size={Spinner.SIZE_SMALL} /> : null }}
+                itemListRenderer={this.itemListRenderer}
+                popoverProps={{
+                  defaultIsOpen: true,
+                  popoverClassName: "VertexCreateDialog__popover",
+                  minimal: true,
+                  fill: true,
+                  lazy: false,
+                }}
+                inputProps={{
+                  large: true,
+                  round: false,
+                  placeholder: placeholder,
+                  rightElement: isFetchingSuggestions
+                    ? <Spinner className="VertexCreateDialog__spinner" size={Spinner.SIZE_SMALL} />
+                    : null
+                }}
                 itemRenderer={(entity, { handleClick, modifiers }) => (
                   <MenuItem
                     active={modifiers.active}
@@ -187,11 +209,17 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
                     key={entity.id}
                     onClick={handleClick}
                     text={<EntityLabel entity={entity} icon />}
+                    style={modifiers.active ? { fill: 'white' } : {}}
                   />
                 )}
-                popoverProps={{ minimal: true }}
                 onQueryChange={this.onQueryChange}
                 onItemSelect={this.onSubmit}
+              />
+              <Button
+                large
+                icon="arrow-right"
+                onClick={() => this.onSubmit(query)}
+                className="VertexCreateDial"
               />
             </ControlGroup>
           </div>

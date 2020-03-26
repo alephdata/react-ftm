@@ -33,8 +33,8 @@ export class EntityLabelBase extends React.Component<IEntityLabel> {
     return (
       <span className="EntityLabel" title={caption}>
         {icon && <SchemaIcon schema={entity.schema} />}
-        {!label && intl.formatMessage(messages.unknown)}
-        {label}
+        <span>{!label && intl.formatMessage(messages.unknown)}</span>
+        <span>{label}</span>
       </span>
     );
   }
