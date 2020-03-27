@@ -202,7 +202,6 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
                   popoverClassName: "VertexCreateDialog__popover",
                   minimal: true,
                   position: 'bottom-left',
-                  modifiers: { flip: false }
                 }}
                 inputProps={{
                   className: "VertexCreateDialog__input",
