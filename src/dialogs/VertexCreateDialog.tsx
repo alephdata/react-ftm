@@ -105,6 +105,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
   }
 
   async onSubmit(entityData: string | Entity) {
+    if (!entityData) return;
     const { layout, updateLayout, viewport, updateViewport } = this.context as IGraphContext
     const { query } = this.state
     const position = this.props.vertexCreateOptions?.initialPosition || viewport.center;
@@ -137,9 +138,9 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
 
   itemListRenderer(rendererProps: IItemListRendererProps<Entity>) {
     const { filteredItems, itemsParentRef, renderItem } = rendererProps;
-    const { isFetchingSuggestions } = this.state;
+    const { isFetchingSuggestions, isProcessing } = this.state;
 
-    if (!isFetchingSuggestions && !filteredItems.length) return;
+    if ((!isFetchingSuggestions && !filteredItems.length) || isProcessing) return;
 
     const content = isFetchingSuggestions
       ? <Spinner className="VertexCreateDialog__spinner" size={Spinner.SIZE_SMALL} />
