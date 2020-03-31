@@ -108,25 +108,31 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     if (!entityData) return;
     const { layout, updateLayout, viewport, updateViewport } = this.context as IGraphContext
     const { query } = this.state
-    const position = this.props.vertexCreateOptions?.initialPosition || viewport.center;
     const schema = this.getSchema();
     let entity;
 
     this.setState({ isProcessing: true });
 
-    if (typeof entityData === 'string') {
-      const captionProperty = schema?.caption[0];
-      if (captionProperty) {
-        entity = await layout.createEntity({ schema, properties: { [captionProperty]: query } });
+    try {
+      if (typeof entityData === 'string') {
+        const captionProperty = schema?.caption[0];
+        if (captionProperty) {
+          entity = await layout.createEntity({ schema, properties: { [captionProperty]: query } });
+        } else {
+          entity = await layout.createEntity({ schema });
+        }
       } else {
-        entity = await layout.createEntity({ schema });
+        entity = entityData;
+        layout.addEntity(entity);
       }
-    } else {
-      entity = entityData;
-      layout.addEntity(entity);
+    } catch {
+      this.setState({ isProcessing: false })
+      return;
     }
 
     const vertex = layout.getVertexByEntity(entity)
+    const position = this.props.vertexCreateOptions?.initialPosition || viewport.center;
+
     if (vertex) {
       layout.vertices.set(vertex.id, vertex.snapPosition(position))
       layout.selectElement(vertex)
@@ -160,7 +166,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     const schema = this.getSchema()
     const placeholder = intl.formatMessage(messages.name_placeholder, { schema: schema.label });
     const vertexSelectText = schema ? schema.label : intl.formatMessage(messages.type_placeholder);
-    const vertexSelectIcon = schema ? SchemaIcon.get(schema) : 'select'
+    const vertexSelectIcon = schema ? SchemaIcon.get(schema) : 'select';
 
     return (
       <Dialog
@@ -175,7 +181,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
           e.preventDefault();
           e.stopPropagation();
           // only allow submit of input on enter when no suggestions are present
-          !suggestions.length && this.onSubmit(query)
+          !suggestions.length && query.length && this.onSubmit(query)
         }}>
           <div className="bp3-dialog-body">
             <ControlGroup fill>
@@ -195,7 +201,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
               </VertexSchemaSelect>
               <Suggest
                 fill
-                inputValueRenderer={entity => entity.getCaption()}
+                inputValueRenderer={query => typeof query === 'string' ? query : query.getCaption()}
                 items={suggestions}
                 itemListRenderer={this.itemListRenderer as ItemListRenderer<Entity>}
                 popoverProps={{
@@ -221,10 +227,12 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
                 )}
                 onQueryChange={this.onQueryChange}
                 onItemSelect={this.onSubmit}
+                query={query}
               />
               <Button
                 large
                 icon="arrow-right"
+                disabled={!query.length}
                 onClick={() => this.onSubmit(query)}
                 className="VertexCreateDial"
               />
