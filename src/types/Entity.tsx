@@ -25,7 +25,7 @@ export class EntityLabelBase extends React.Component<IEntityLabel> {
     const {
       entity, icon = false, intl, truncate,
     } = this.props;
-    if (!entity) return;
+    if (!entity) return null;
 
     const title = entity.getFirst('title') || entity.getCaption();
     const caption = title.toString();

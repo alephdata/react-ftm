@@ -31,7 +31,7 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
   }
 
   itemRenderer: ItemRenderer<Entity> = (entity, {handleClick, modifiers, query}) => {
-    if (!matchText(entity.getCaption() || '', query)) {
+    if (!entity || !matchText(!entity.getCaption() || '', query)) {
       return null;
     }
     return (
