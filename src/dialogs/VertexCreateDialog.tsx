@@ -201,7 +201,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
               </VertexSchemaSelect>
               <Suggest
                 fill
-                inputValueRenderer={entity => entity.getCaption()}
+                inputValueRenderer={query => typeof query === 'string' ? query : query.getCaption()}
                 items={suggestions}
                 itemListRenderer={this.itemListRenderer as ItemListRenderer<Entity>}
                 popoverProps={{
