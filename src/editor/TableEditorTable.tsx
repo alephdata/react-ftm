@@ -8,6 +8,7 @@ import { SelectProperty } from './SelectProperty';
 import { Cell, Column, ColumnHeaderCell, RenderMode, SelectionModes, Table } from "@blueprintjs/table";
 import { Button, Icon, Intent, Popover, Position, Tooltip } from "@blueprintjs/core";
 import { Entity, Property, Schema } from "@alephdata/followthemoney";
+import Datasheet from 'react-datasheet';
 
 import "./TableEditorTable.scss"
 
@@ -79,9 +80,55 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
   }
 
   onEntityChanged = (nextEntity: Entity) => {
+    console.log('in on entity changed');
     const { layout, updateLayout } = this.props;
     layout.updateEntity(nextEntity);
     updateLayout(layout, { updated: [nextEntity] }, { modifyHistory: true });
+  }
+
+  getRows = () => {
+    const entities = this.getEntities();
+    const visibleProps = this.getVisibleProperties();
+
+    return entities.map(entity => {
+      return visibleProps.map(property => {
+        // return <PropertyValues values={entity.getProperty(prop)} prop={prop} entitiesList={fullEntitiesList} />
+
+        return ({ entity, property });
+      })
+    });
+  }
+
+  renderValue = ({ entity, property }, i, j) => {
+    const { layout } = this.props;
+
+    return (
+      <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
+    )
+  }
+
+  renderEditor = ({ cell }) => {
+    const { layout } = this.props;
+    const { entity, property } = cell;
+    // return 'test-editor';
+    return (
+      <Popover
+        minimal
+        lazy
+        usePortal
+        isOpen={true}
+        popoverClassName="TableEditorTable__popover"
+        position={Position.BOTTOM}
+        autoFocus={false}
+        modifiers={{
+          inner: {enabled: true},
+        }}
+        openOnTargetFocus
+      >
+        <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
+        <PropertyEditor entity={entity} property={property} onSubmit={this.onEntityChanged} entitiesList={layout.entities} />
+      </Popover>
+    )
   }
 
   renderWriteable() {
@@ -98,95 +145,106 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     const columnWidths = new Array(visibleProps.length + 2);
     columnWidths[0] = 25;
 
-    return (
-      <div className="TableEditorTable">
-      {/*
-        // @ts-ignore */}
-        <Table
-          numRows={numRows}
-          enableGhostCells={false}
-          selectionModes={SelectionModes.ROWS_AND_CELLS}
-          enableMultipleSelection={false}
-          columnWidths={columnWidths}
-          defaultRowHeight={24}
-        >
-          <Column
-            id="remove"
-            columnHeaderCellRenderer={() => (
-              <ColumnHeaderCell />
-            )}
-            cellRenderer={(i) => {
-              return (
-                <Cell className="narrow">
-                  <>
-                    <Tooltip content={intl.formatMessage(messages.delete)}>
-                      <Button
-                        small
-                        minimal
-                        icon="graph-remove"
-                        onClick={() => this.onDeleteRow(entities[i])}
-                      />
-                    </Tooltip>
-                  </>
-                </Cell>
-              );
-            }}
-          />
-          {visibleProps.map(property => <Column
-            key={property.qname}
-            id={property.qname}
-            name={property.label}
-            cellRenderer={(i) => {
-              const entity = entities[i];
-              return (
-                <Cell>
-                  {entity && (
-                    <Popover
-                      minimal
-                      lazy
-                      usePortal
-                      interactionKind={'click'}
-                      popoverClassName="TableEditorTable__popover"
-                      position={Position.BOTTOM}
-                      autoFocus={false}
-                      modifiers={{
-                        inner: {enabled: true},
-                      }}
-                    >
-                      <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
-                      <PropertyEditor entity={entity} property={property} onSubmit={this.onEntityChanged} entitiesList={layout.entities} />
-                    </Popover>
-                  )}
-                </Cell>
-              );
-            }}
-          />)}
+    const data = this.getRows();
+    console.log('data', data);
 
-          <Column
-            id="add-field"
-            cellRenderer={() => (
-              <Cell className="TableEditorTable__ghostCell" interactive />
-            )}
-            columnHeaderCellRenderer={() => (
-              <ColumnHeaderCell>
-                <SelectProperty
-                  properties={otherProps}
-                  onSelected={this.onAddColumn}
-                  buttonProps={{minimal: true}}
-                />
-              </ColumnHeaderCell>
-            )}
-          />
-        </Table>
-        <Button
-          className="TableEditorTable__itemAdd"
-          text={intl.formatMessage(messages.add, { schema: schema.label })}
-          icon="new-object"
-          intent={Intent.PRIMARY}
-          onClick={() => actions.addVertex({ initialSchema: schema })}
-        />
-      </div>
-    );
+    return (
+      <Datasheet
+        data={data}
+        valueRenderer={this.renderValue}
+        dataEditor={this.renderEditor}
+      />
+    )
+
+    // return (
+    //   <div className="TableEditorTable">
+    //   {/*
+    //     // @ts-ignore */}
+    //     <Table
+    //       numRows={numRows}
+    //       enableGhostCells={false}
+    //       selectionModes={SelectionModes.ROWS_AND_CELLS}
+    //       enableMultipleSelection={false}
+    //       columnWidths={columnWidths}
+    //       defaultRowHeight={24}
+    //     >
+    //       <Column
+    //         id="remove"
+    //         columnHeaderCellRenderer={() => (
+    //           <ColumnHeaderCell />
+    //         )}
+    //         cellRenderer={(i) => {
+    //           return (
+    //             <Cell className="narrow">
+    //               <>
+    //                 <Tooltip content={intl.formatMessage(messages.delete)}>
+    //                   <Button
+    //                     small
+    //                     minimal
+    //                     icon="graph-remove"
+    //                     onClick={() => this.onDeleteRow(entities[i])}
+    //                   />
+    //                 </Tooltip>
+    //               </>
+    //             </Cell>
+    //           );
+    //         }}
+    //       />
+    //       {visibleProps.map(property => <Column
+    //         key={property.qname}
+    //         id={property.qname}
+    //         name={property.label}
+    //         cellRenderer={(i) => {
+    //           const entity = entities[i];
+    //           return (
+    //             <Cell>
+    //               {entity && (
+    //                 <Popover
+    //                   minimal
+    //                   lazy
+    //                   usePortal
+    //                   interactionKind={'click'}
+    //                   popoverClassName="TableEditorTable__popover"
+    //                   position={Position.BOTTOM}
+    //                   autoFocus={false}
+    //                   modifiers={{
+    //                     inner: {enabled: true},
+    //                   }}
+    //                 >
+    //                   <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
+    //                   <PropertyEditor entity={entity} property={property} onSubmit={this.onEntityChanged} entitiesList={layout.entities} />
+    //                 </Popover>
+    //               )}
+    //             </Cell>
+    //           );
+    //         }}
+    //       />)}
+    //
+    //       <Column
+    //         id="add-field"
+    //         cellRenderer={() => (
+    //           <Cell className="TableEditorTable__ghostCell" interactive />
+    //         )}
+    //         columnHeaderCellRenderer={() => (
+    //           <ColumnHeaderCell>
+    //             <SelectProperty
+    //               properties={otherProps}
+    //               onSelected={this.onAddColumn}
+    //               buttonProps={{minimal: true}}
+    //             />
+    //           </ColumnHeaderCell>
+    //         )}
+    //       />
+    //     </Table>
+    //     <Button
+    //       className="TableEditorTable__itemAdd"
+    //       text={intl.formatMessage(messages.add, { schema: schema.label })}
+    //       icon="new-object"
+    //       intent={Intent.PRIMARY}
+    //       onClick={() => actions.addVertex({ initialSchema: schema })}
+    //     />
+    //   </div>
+    // );
   }
 
   renderReadonly() {
