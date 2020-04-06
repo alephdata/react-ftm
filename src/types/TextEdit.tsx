@@ -52,10 +52,12 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
   }
 
   componentWillUnmount() {
+    console.log('text edit will unmount')
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
   handleClickOutside(event: MouseEvent) {
+    console.log('in handle click outside')
     const { onSubmit, values } = this.props;
     const { currMultiInputValue } = this.state;
 
@@ -71,13 +73,17 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
 
   onChange = (values: Array<string | React.ReactNode>) => {
     // remove duplicates
+    console.log('in on change')
     this.props.onChange(Array.from(new Set(values)) as unknown as Values)
     if (values.length <= 1) {
       this.setState({ forceMultiEdit: false });
     }
   }
 
-  triggerMultiEdit() {
+  triggerMultiEdit(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('triggering multiedit')
     this.setState({ forceMultiEdit: true });
   }
 
@@ -104,7 +110,6 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
                 return this.onChange(value ? [value] : [])
               }}
               rightElement={showMultiToggleButton ? (
-                <Tooltip content={intl.formatMessage(messages.add_additional)}>
                   <Button
                     className="TextEdit__toggleMulti"
                     minimal
@@ -112,7 +117,6 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
                     icon="plus"
                     onClick={this.triggerMultiEdit}
                   />
-                </Tooltip>
               ) : undefined}
             />
           )}

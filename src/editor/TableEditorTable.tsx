@@ -107,26 +107,27 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     )
   }
 
-  renderEditor = ({ cell }) => {
+  renderEditor = ({ cell, onCommit }) => {
     const { layout } = this.props;
     const { entity, property } = cell;
+
     // return 'test-editor';
     return (
       <Popover
         minimal
         lazy
         usePortal
+        captureDismiss={true}
         isOpen={true}
         popoverClassName="TableEditorTable__popover"
         position={Position.BOTTOM}
-        autoFocus={false}
+        enforceFocus={false}
         modifiers={{
           inner: {enabled: true},
         }}
-        openOnTargetFocus
       >
         <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
-        <PropertyEditor entity={entity} property={property} onSubmit={this.onEntityChanged} entitiesList={layout.entities} />
+        <PropertyEditor entity={entity} property={property} onSubmit={(e) => { console.log('submitting'); this.onEntityChanged(e); onCommit(e); } entitiesList={layout.entities} />
       </Popover>
     )
   }
@@ -146,7 +147,7 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     columnWidths[0] = 25;
 
     const data = this.getRows();
-    console.log('data', data);
+    console.log('datas', data);
 
     return (
       <Datasheet
