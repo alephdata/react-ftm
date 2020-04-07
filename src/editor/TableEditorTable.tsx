@@ -139,7 +139,7 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
 
   renderEditor = ({ cell, onCommit }) => {
     const { layout } = this.props;
-    const { entity, property } = cell;
+    const { entity, property } = cell.value;
 
     // return (
     //   <Popover
