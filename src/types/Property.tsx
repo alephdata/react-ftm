@@ -1,13 +1,13 @@
 import React from 'react';
-import {Values, Value, Property, Entity} from "@alephdata/followthemoney";
+import { Values, Value, Property, Entity } from "@alephdata/followthemoney";
+import { Classes } from "@blueprintjs/core";
 
-import {
-  EntityLabel,
-  DateComponent,
-  EnumValue, LanguageName, URL
-} from '.';
-import {wordList} from "../utils";
-import {Classes} from "@blueprintjs/core";
+import { EntityLabel } from './Entity';
+import { DateComponent } from './Date';
+import { EnumValue } from './EnumValue';
+import { LanguageName } from './Language';
+import { URL } from './URL';
+import { wordList } from "../utils";
 
 interface IPropertyCommonProps {
   prop:Property
@@ -25,8 +25,8 @@ export class PropertyValue extends React.PureComponent<IValueProps> {
       return null;
     }
 
-    if (prop.type.name === 'country') {
-      return <EnumValue code={value as string} countries={prop.type.values}/>;
+    if (prop.type.name === 'country' || prop.type.name === 'topic') {
+      return <EnumValue code={value as string} fullList={prop.type.values}/>;
     }
     if (prop.type.name === 'language') {
       return <LanguageName code={value as string} languages={prop.type.values}/>;

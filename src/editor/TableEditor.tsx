@@ -2,7 +2,7 @@ import React from 'react';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { GraphLayout } from '../layout';
 import { GraphUpdateHandler } from '../GraphContext';
-import { VertexSchemaSelect } from '.';
+import { VertexSchemaSelect } from './VertexSchemaSelect';
 import { TableEditorTable } from './TableEditorTable';
 import { Button, Classes, Drawer, Icon, Position, Tab, TabId, Tabs } from "@blueprintjs/core";
 import { Entity, Schema } from "@alephdata/followthemoney";

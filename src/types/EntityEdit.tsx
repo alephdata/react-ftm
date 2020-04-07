@@ -2,7 +2,7 @@ import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { Entity } from "@alephdata/followthemoney";
-import { EntityLabel } from '.';
+import { EntityLabel } from './Entity';
 import { Alignment, Button, ControlGroup, FormGroup, MenuItem, Position } from "@blueprintjs/core";
 import { ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
 import { ITypeProps } from "./common";

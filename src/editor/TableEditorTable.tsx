@@ -2,7 +2,7 @@ import React from 'react';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { GraphLayout } from '../layout';
 import { GraphUpdateHandler } from '../GraphContext';
-import { PropertyEditor } from '.';
+import { PropertyEditor } from './PropertyEditor';
 import { PropertyValues } from '../types';
 import { SelectProperty } from './SelectProperty';
 import { Cell, Column, ColumnHeaderCell, RenderMode, SelectionModes, Table } from "@blueprintjs/table";
