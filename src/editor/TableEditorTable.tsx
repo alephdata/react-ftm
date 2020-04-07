@@ -96,49 +96,44 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
   }
 
   getRows = () => {
+    const { writeable } = this.props;
     const { visibleProps } = this.state;
     const entities = this.getEntities();
 
-    const headerPropColumns = visibleProps.map(property => ({ readOnly: true, label: property.label }));
-    const header = [{}, ...headerPropColumns, { readOnly: true, isAddProp: true }];
+    const headerPropColumns = visibleProps.map(property => ({ type: "header", readOnly: true, value: property.label }));
+    let header;
+    if (writeable) {
+      header = [{}, ...headerPropColumns, { type: "action", readOnly: true, value: this.renderPropertySelect() }];
+    } else {
+      header = headerPropColumns;
+    }
 
     const content = entities.map(entity => {
-      const actionColumn = { readOnly: true, entity, isRemoveEntity: true };
-      const propColumns = visibleProps.map(property => ({ entity, property }))
-      return [actionColumn, ...propColumns];
+      const actionColumn = { type: "action", readOnly: true, value: this.renderDeleteButton(entity) };
+      const propColumns = visibleProps.map(property => ({ type: "property", readOnly: !writeable, value: { entity, property } }))
+      if (writeable) {
+        return [actionColumn, ...propColumns];
+      } else {
+        return propColumns;
+      }
+
     });
     return [header, ...content];
   }
 
-  renderValue = ({ entity, property, label, isAddProp, isRemoveEntity }, i, j) => {
+  renderValue = ({ type, value }, i, j) => {
     const { layout } = this.props;
 
-    if (label) {
-      return label;
-    }
-    if (isRemoveEntity) {
-      return (
-        <Button
-          small
-          minimal
-          icon="graph-remove"
-          onClick={() => this.onDelete(entity)}
-        />
-      )
-    }
-    if (isAddProp) {
-      return (
-        <SelectProperty
-          properties={this.getNonVisibleProperties()}
-          onSelected={this.onAddColumn}
-          buttonProps={{minimal: true}}
-        />
-      )
-    }
-    if (property) {
-      return (
-        <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
-      )
+    switch (type) {
+      case 'action':
+        return value;
+      case 'header':
+        return value;
+      case 'property':
+        const { entity, property } = value
+        return (
+          <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
+        );
     }
   }
 
@@ -168,22 +163,30 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     );
   }
 
+  renderPropertySelect = () => {
+    return (
+      <SelectProperty
+        properties={this.getNonVisibleProperties()}
+        onSelected={this.onAddColumn}
+        buttonProps={{minimal: true}}
+      />
+    )
+  }
+
+  renderDeleteButton = (entity) => {
+    return (
+      <Button
+        small
+        minimal
+        icon="graph-remove"
+        onClick={() => this.onDelete(entity)}
+      />
+    )
+  }
+
   renderWriteable() {
-    const { actions, intl, layout, schema, updateLayout } = this.props;
-    const { selected, visibleProps } = this.state;
-
-    const entities = this.getEntities();
-    const numRows = entities.length;
-
-    const otherProps = schema.getEditableProperties()
-      .filter(prop => visibleProps.indexOf(prop) < 0)
-      .sort(propSort);
-
-    const columnWidths = new Array(visibleProps.length + 2);
-    columnWidths[0] = 25;
-
+    const { actions, intl, schema } = this.props;
     const data = this.getRows();
-    console.log('datas', data);
 
     return (
       <div className="TableEditorTable">
@@ -191,7 +194,8 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
           data={data}
           valueRenderer={this.renderValue}
           dataEditor={this.renderEditor}
-          onContextMenu={(e, cell, i, j) => cell.readOnly ? e.preventDefault() : null}
+          onContextMenu={(e, cell) => cell.header ? e.preventDefault() : null}
+          isCellNavigable={(e, cell) => { return false; }}
         />
         <Button
           className="TableEditorTable__itemAdd"
@@ -288,37 +292,15 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
   }
 
   renderReadonly() {
-    const { layout } = this.props;
-    const { visibleProps } = this.state;
-
-    const entities = this.getEntities();
-    const numRows = entities.length;
+    const data = this.getRows();
 
     return (
       <div className="TableEditorTable">
-      {/*
-        // @ts-ignore */}
-        <Table
-          numRows={numRows}
-          enableGhostCells={false}
-          selectionModes={SelectionModes.ROWS_AND_CELLS}
-          enableMultipleSelection={true}
-          defaultRowHeight={24}
-        >
-          {visibleProps.map(property => <Column
-            key={property.qname}
-            id={property.qname}
-            name={property.label}
-            cellRenderer={(i) => {
-              const entity = entities[i];
-              return (
-                <Cell>
-                  <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
-                </Cell>
-              );
-            }}
-          />)}
-        </Table>
+        <Datasheet
+          data={data}
+          valueRenderer={this.renderValue}
+          onContextMenu={(e, cell, i, j) => cell.readOnly ? e.preventDefault() : null}
+        />
       </div>
     );
   }
