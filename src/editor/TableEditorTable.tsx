@@ -46,7 +46,7 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     }
 
     this.onAddColumn = this.onAddColumn.bind(this);
-    this.onDeleteRow = this.onDeleteRow.bind(this);
+    this.onDelete = this.onDelete.bind(this);
   }
 
   getEntities() {
@@ -66,7 +66,7 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     return Array.from(new Set([...featuredProps, ...filledProps]));
   }
 
-  onDeleteRow(entity: Entity) {
+  onDelete(entity: Entity) {
     const { layout, schema, updateLayout } = this.props;
 
     layout.removeEntity(entity.id, true);
@@ -89,24 +89,39 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
   getRows = () => {
     const entities = this.getEntities();
     const visibleProps = this.getVisibleProperties();
-    const header = visibleProps.map(property => ({ readOnly: true, label: property.label }));
+
+    const headerPropColumns = visibleProps.map(property => ({ readOnly: true, label: property.label }));
+    const header = [{}, ...headerPropColumns];
 
     const content = entities.map(entity => {
-      return visibleProps.map(property => ({ entity, property }))
+      const actionColumn = { readOnly: true, entity, action: true };
+      const propColumns = visibleProps.map(property => ({ entity, property }))
+      return [actionColumn, ...propColumns];
     });
     return [header, ...content];
   }
 
-  renderValue = ({ entity, property, readOnly, label }, i, j) => {
+  renderValue = ({ entity, property, label, action }, i, j) => {
     const { layout } = this.props;
 
-    if (readOnly) {
+    if (label) {
       return label;
     }
-
-    return (
-      <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
-    )
+    if (action) {
+      return (
+        <Button
+          small
+          minimal
+          icon="graph-remove"
+          onClick={() => this.onDelete(entity)}
+        />
+      )
+    }
+    if (property) {
+      return (
+        <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
+      )
+    }
   }
 
   renderEditor = ({ cell, onCommit }) => {
@@ -160,6 +175,13 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
           dataEditor={this.renderEditor}
           onContextMenu={(e, cell, i, j) => cell.readOnly ? e.preventDefault() : null}
         />
+        <Button
+          className="TableEditorTable__itemAdd"
+          text={intl.formatMessage(messages.add, { schema: schema.label })}
+          icon="new-object"
+          intent={Intent.PRIMARY}
+          onClick={() => actions.addVertex({ initialSchema: schema })}
+        />
       </div>
     )
 
@@ -189,7 +211,7 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     //                     small
     //                     minimal
     //                     icon="graph-remove"
-    //                     onClick={() => this.onDeleteRow(entities[i])}
+    //                     onClick={() => this.onDelete(entities[i])}
     //                   />
     //                 </Tooltip>
     //               </>
@@ -243,13 +265,6 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     //         )}
     //       />
     //     </Table>
-    //     <Button
-    //       className="TableEditorTable__itemAdd"
-    //       text={intl.formatMessage(messages.add, { schema: schema.label })}
-    //       icon="new-object"
-    //       intent={Intent.PRIMARY}
-    //       onClick={() => actions.addVertex({ initialSchema: schema })}
-    //     />
     //   </div>
     // );
   }
