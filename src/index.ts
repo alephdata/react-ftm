@@ -9,7 +9,7 @@ import 'react-datasheet/lib/react-datasheet.css';
 import './index.scss';
 
 import { VisGraph as VisGraphBase, IVisGraphProps } from './VisGraph';
-const VisGraph = withTranslator(VisGraph);
+const VisGraph = withTranslator(VisGraphBase);
 export { VisGraph, IVisGraphProps };
 
 export * from './layout'
