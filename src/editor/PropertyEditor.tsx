@@ -5,6 +5,7 @@ import { DateEdit } from '../types/DateEdit';
 import { TextEdit } from '../types/TextEdit';
 import EntityEdit from '../types/EntityEdit';
 import { CountryEdit } from "../types/CountryEdit";
+import { TopicEdit } from "../types/TopicEdit";
 
 const messages = defineMessages({
   required: {
@@ -73,6 +74,8 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
       content = <DateEdit {...commonProps} />;
     } else if (CountryEdit.group.has(property.type.name)) {
       content = <CountryEdit {...commonProps} />;
+    } else if (TopicEdit.group.has(property.type.name)) {
+      content = <TopicEdit {...commonProps} />;
     } else if (EntityEdit.group.has(property.type.name)) {
       content = <EntityEdit entities={entitiesList} {...commonProps} />
     } else {

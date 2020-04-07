@@ -4,7 +4,7 @@ import {Values, Value, Property, Entity} from "@alephdata/followthemoney";
 import {
   EntityLabel,
   DateComponent,
-  CountryName, LanguageName, URL
+  EnumValue, LanguageName, URL
 } from '.';
 import {wordList} from "../utils";
 import {Classes} from "@blueprintjs/core";
@@ -26,7 +26,7 @@ export class PropertyValue extends React.PureComponent<IValueProps> {
     }
 
     if (prop.type.name === 'country') {
-      return <CountryName code={value as string} countries={prop.type.values}/>;
+      return <EnumValue code={value as string} countries={prop.type.values}/>;
     }
     if (prop.type.name === 'language') {
       return <LanguageName code={value as string} languages={prop.type.values}/>;

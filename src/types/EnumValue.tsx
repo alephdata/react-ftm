@@ -2,36 +2,36 @@ import React from 'react';
 import {wordList} from "../utils";
 
 
-interface ICountryNameProps {
+interface IEnumValueProps {
   code:string
-  countries:Map<string, string>
+  fullList:Map<string, string>
   short?:boolean
 }
 
-export class CountryName extends React.PureComponent<ICountryNameProps> {
+export class EnumValue extends React.PureComponent<IEnumValueProps> {
   render() {
-    const { code, countries, short = false } = this.props;
+    const { code, fullList, short = false } = this.props;
     const codeLabel = code ? code.toUpperCase() : '-';
-    const label = short ? codeLabel : (countries.get(code) || codeLabel);
+    const label = short ? codeLabel : (fullList.get(code) || codeLabel);
 
     if (!code) return null;
     return label;
   }
 }
 
-interface ICountriesListProps {
+interface IEnumValueListProps {
   codes:string[],
   truncate: number
-  countries:Map<string, string>
+  fullList:Map<string, string>
 }
 
-export class CountriesList extends React.Component<ICountriesListProps> {
+export class EnumValueList extends React.Component<IEnumValueListProps> {
   render() {
     const { codes, truncate = Infinity, ...props } = this.props;
     if (!codes) return null;
 
     let names:Array<any> = codes.map(code => (
-      <CountryName code={code} key={code} {...props} />
+      <EnumValueName code={code} key={code} {...props} />
     ));
 
     // Truncate if too long
