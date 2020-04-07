@@ -17,6 +17,10 @@ export class EnumValueSelect extends React.PureComponent<ITypeProps> {
     this.onRemove = this.onRemove.bind(this)
   }
 
+  componentDidMount() {
+    this.inputRef && this.inputRef.focus();
+  }
+
   onChange([countryId, label]: [string, string]) {
     const { values } = this.props;
     this.props.onSubmit([...values, ...[countryId]]);
@@ -89,7 +93,7 @@ export class EnumValueSelect extends React.PureComponent<ITypeProps> {
             }
           }}
           items={availableOptions}
-          popoverProps={{ minimal: true, position: Position.BOTTOM_LEFT }}
+          popoverProps={{ minimal: true, position: Position.BOTTOM_LEFT, usePortal: false }}
           tagInputProps={{
             inputRef: (ref) => this.inputRef = ref,
             tagProps: {interactive: false, minimal: true, fill: true},

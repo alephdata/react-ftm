@@ -5,7 +5,7 @@ import { GraphUpdateHandler } from '../GraphContext';
 import { PropertyEditor } from './PropertyEditor';
 import { PropertyValues } from '../types';
 import { SelectProperty } from './SelectProperty';
-import { Cell, Column, ColumnHeaderCell, RenderMode, SelectionModes, Table } from "@blueprintjs/table";
+import { TruncatedFormat } from "@blueprintjs/table";
 import { Button, Icon, Intent, Popover, Position, Tooltip } from "@blueprintjs/core";
 import { Entity, Property, Schema } from "@alephdata/followthemoney";
 import Datasheet from 'react-datasheet';
@@ -126,13 +126,15 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
 
     switch (type) {
       case 'action':
-        return value;
+        return <span className="action">{value}</span>;
       case 'header':
-        return value;
+        return <span className="header">{value}</span>;
       case 'property':
         const { entity, property } = value
         return (
-          <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
+          <span className="property">
+            <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
+          </span>;
         );
     }
   }
@@ -159,7 +161,7 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     //   </Popover>
     // )
     return (
-      <PropertyEditor entity={entity} property={property} onSubmit={(e) => { console.log('submitting', e); this.onEntityChanged(e); onCommit(e); } entitiesList={layout.entities} />
+      <PropertyEditor entity={entity} property={property} onSubmit={(entity) => { console.log('submitting', entity); this.onEntityChanged(entity); onCommit(entity); } entitiesList={layout.entities} />
     );
   }
 
@@ -184,6 +186,25 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     )
   }
 
+  renderCell = (props) => {
+    const {
+      cell, row, col, columns, attributesRenderer,
+      selected, editing, updated,
+      ...rest
+    } = props;
+
+    let style;
+    if (cell?.type === 'property') {
+      style = { backgroundColor: 'white' };
+    }
+
+    return (
+      <td {...rest} style={style}>
+        {props.children}
+      </td>
+    );
+  }
+
   renderWriteable() {
     const { actions, intl, schema } = this.props;
     const data = this.getRows();
@@ -195,7 +216,7 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
           valueRenderer={this.renderValue}
           dataEditor={this.renderEditor}
           onContextMenu={(e, cell) => cell.header ? e.preventDefault() : null}
-          isCellNavigable={(e, cell) => { return false; }}
+          cellRenderer={this.renderCell}
         />
         <Button
           className="TableEditorTable__itemAdd"

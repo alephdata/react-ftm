@@ -1,5 +1,4 @@
-$table-editor-padding: 20px;
-$border-color: rgba(16, 22, 26, 0.15);
+@import "src/variables.scss";
 
 .TableEditorTable {
   .data-grid-container .data-grid .cell {
@@ -7,10 +6,13 @@ $border-color: rgba(16, 22, 26, 0.15);
     height: 30px;
     vertical-align: middle;
     text-align: left;
-    background-color: white;
+    background-color: $light-gray5;
+    color: black;
 
     .value-viewer {
-      padding: 0 10px;
+      .property, .header {
+        padding: 0 10px;
+      }
     }
   }
   .bp3-form-group {
