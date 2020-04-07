@@ -85,12 +85,12 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
     const foundError = this.checkErrors();
 
     return (
-      <form onSubmit={e => { e.preventDefault(); this.onSubmit(); }}>
+      <>
         {content}
         {foundError && (
           <div className="EntityViewer__property-list-item__error">{foundError}</div>
         )}
-      </form>
+      </>
     )
   }
 }

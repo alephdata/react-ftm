@@ -88,7 +88,7 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
   }
 
   render() {
-    const { intl, property, values } = this.props;
+    const { intl, onSubmit, property, values } = this.props;
     const { currMultiInputValue, forceMultiEdit } = this.state;
     const numVals = values.length;
     // don't show multi button if there is no existing input
@@ -96,48 +96,51 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
 
     return (
       <div ref={(node) => this.containerRef = node}>
-        <FormGroup>
-          {(!forceMultiEdit && numVals <= 1) && (
-            <InputGroup
-              className="TextEdit__singleInput"
-              inputRef={(ref) => this.singleInputRef = ref}
-              autoFocus
-              fill
-              value={values[0] as string || ''}
-              onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value;
-                // avoid setting an empty string val
-                return this.onChange(value ? [value] : [])
-              }}
-              rightElement={showMultiToggleButton ? (
-                  <Button
-                    className="TextEdit__toggleMulti"
-                    minimal
-                    small
-                    icon="plus"
-                    onClick={this.triggerMultiEdit}
-                  />
-              ) : undefined}
-            />
-          )}
-          {(forceMultiEdit || numVals > 1) && (
-            <TagInput
-              inputRef={(ref) => this.multiInputRef = ref}
-              tagProps={{
-                minimal:true,
-              }}
-              addOnBlur
-              addOnPaste
-              fill
-              onChange={this.onChange}
-              values={this.props.values}
-              inputValue={currMultiInputValue}
-              onInputChange={(e:React.ChangeEvent<HTMLInputElement>) => (
-                this.setState({ currMultiInputValue: e.target.value })
-              )}
-            />
-          )}
-        </FormGroup>
+        <form onSubmit={e => { e.preventDefault(); onSubmit(); }}>
+
+          <FormGroup>
+            {(!forceMultiEdit && numVals <= 1) && (
+              <InputGroup
+                className="TextEdit__singleInput"
+                inputRef={(ref) => this.singleInputRef = ref}
+                autoFocus
+                fill
+                value={values[0] as string || ''}
+                onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
+                  const value = e.target.value;
+                  // avoid setting an empty string val
+                  return this.onChange(value ? [value] : [])
+                }}
+                rightElement={showMultiToggleButton ? (
+                    <Button
+                      className="TextEdit__toggleMulti"
+                      minimal
+                      small
+                      icon="plus"
+                      onClick={this.triggerMultiEdit}
+                    />
+                ) : undefined}
+              />
+            )}
+            {(forceMultiEdit || numVals > 1) && (
+              <TagInput
+                inputRef={(ref) => this.multiInputRef = ref}
+                tagProps={{
+                  minimal:true,
+                }}
+                addOnBlur
+                addOnPaste
+                fill
+                onChange={this.onChange}
+                values={this.props.values}
+                inputValue={currMultiInputValue}
+                onInputChange={(e:React.ChangeEvent<HTMLInputElement>) => (
+                  this.setState({ currMultiInputValue: e.target.value })
+                )}
+              />
+            )}
+          </FormGroup>
+        </form>
       </div>
     );
   }

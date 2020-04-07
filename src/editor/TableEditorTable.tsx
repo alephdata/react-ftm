@@ -139,7 +139,7 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     }
   }
 
-  renderEditor = ({ cell, onCommit }) => {
+  renderEditor = ({ cell, onCommit, onKeyDown }) => {
     const { layout } = this.props;
     const { entity, property } = cell.value;
 
@@ -160,9 +160,11 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     //     <PropertyEditor entity={entity} property={property} onSubmit={(e) => { console.log('submitting', e); this.onEntityChanged(e); onCommit(e); } entitiesList={layout.entities} />
     //   </Popover>
     // )
+    // console.log(onKeyDown);
+
 
     return (
-      <PropertyEditor entity={entity} property={property} onSubmit={(entity) => { console.log('submitting', entity); this.onEntityChanged(entity); onCommit(entity, new KeyboardEvent('onkeydown', { keyCode: 13 })); } entitiesList={layout.entities} />
+      <PropertyEditor entity={entity} property={property} onSubmit={(entity) => { this.onEntityChanged(entity); onCommit(entity, new KeyboardEvent('onkeydown', { keyCode: 13 })); } entitiesList={layout.entities} />
     );
   }
 

@@ -72,33 +72,26 @@ export class EnumValueSelect extends React.PureComponent<ITypeProps> {
         <AbstractMultiSelect
           tagRenderer={i => i[1]}
           onItemSelect={this.onChange}
-          itemRenderer={(country, {handleClick, modifiers, query}) => {
-            if (!modifiers.matchesPredicate) {
-              return null;
-            }
-            const [key, label] = country;
-
-            if (label.toLowerCase().includes(query.toLowerCase())) {
-              return (
-                <MenuItem
-                  active={modifiers.active}
-                  disabled={modifiers.disabled}
-                  key={key}
-                  onClick={handleClick}
-                  text={highlightText(label, query)}
-                />
-              );
-            } else {
-              return null;
-            }
-          }}
+          itemRenderer={([key, label], {handleClick, modifiers, query}) => (
+            <MenuItem
+              active={modifiers.active}
+              disabled={modifiers.disabled}
+              key={key}
+              onClick={handleClick}
+              text={highlightText(label, query)}
+            />
+          )}
           items={availableOptions}
           popoverProps={{ minimal: true, position: Position.BOTTOM_LEFT, usePortal: false }}
           tagInputProps={{
             inputRef: (ref) => this.inputRef = ref,
-            tagProps: {interactive: false, minimal: true, fill: true},
+            tagProps: {interactive: false, minimal: true},
             onRemove: this.onRemove,
-            placeholder: '',
+            placeholder: ''
+          }}
+          itemListPredicate={(query, items) => {
+            const queryProcessed = query.toLowerCase();
+            return items.filter(([key, label]) => label.toLowerCase().includes(queryProcessed));
           }}
           selectedItems={selectedOptions}
           openOnKeyDown
