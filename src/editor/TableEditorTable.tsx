@@ -66,6 +66,15 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     return Array.from(new Set([...featuredProps, ...filledProps]));
   }
 
+  getNonVisibleProperties() {
+    const { schema } = this.props;
+    const { visibleProps } = this.state;
+
+    return schema.getEditableProperties()
+      .filter(prop => visibleProps.indexOf(prop) < 0)
+      .sort(propSort);
+  }
+
   onDelete(entity: Entity) {
     const { layout, schema, updateLayout } = this.props;
 
@@ -87,33 +96,42 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
   }
 
   getRows = () => {
+    const { visibleProps } = this.state;
     const entities = this.getEntities();
-    const visibleProps = this.getVisibleProperties();
 
     const headerPropColumns = visibleProps.map(property => ({ readOnly: true, label: property.label }));
-    const header = [{}, ...headerPropColumns];
+    const header = [{}, ...headerPropColumns, { readOnly: true, isAddProp: true }];
 
     const content = entities.map(entity => {
-      const actionColumn = { readOnly: true, entity, action: true };
+      const actionColumn = { readOnly: true, entity, isRemoveEntity: true };
       const propColumns = visibleProps.map(property => ({ entity, property }))
       return [actionColumn, ...propColumns];
     });
     return [header, ...content];
   }
 
-  renderValue = ({ entity, property, label, action }, i, j) => {
+  renderValue = ({ entity, property, label, isAddProp, isRemoveEntity }, i, j) => {
     const { layout } = this.props;
 
     if (label) {
       return label;
     }
-    if (action) {
+    if (isRemoveEntity) {
       return (
         <Button
           small
           minimal
           icon="graph-remove"
           onClick={() => this.onDelete(entity)}
+        />
+      )
+    }
+    if (isAddProp) {
+      return (
+        <SelectProperty
+          properties={this.getNonVisibleProperties()}
+          onSelected={this.onAddColumn}
+          buttonProps={{minimal: true}}
         />
       )
     }
