@@ -20,7 +20,12 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
 
   onChange([countryId, label]: [string, string]) {
     const { values } = this.props;
+    console.log('COUNTRY CHANGED', [...values, ...[countryId]]);
     this.props.onSubmit([...values, ...[countryId]]);
+  }
+
+  componentDidMount() {
+    this.inputRef && this.inputRef.focus();
   }
 
   getAvailableOptions() {
@@ -81,7 +86,7 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
                   active={modifiers.active}
                   disabled={modifiers.disabled}
                   key={key}
-                  onClick={handleClick}
+                  onClick={(e) => { console.log('country item clicked!', e); handleClick(e); }}
                   text={highlightText(label, query)}
                 />
               );
@@ -90,7 +95,7 @@ export class CountryEdit extends React.PureComponent<ITypeProps> {
             }
           }}
           items={availableOptions}
-          popoverProps={{ minimal: true, position: Position.BOTTOM_LEFT }}
+          popoverProps={{ minimal: true, position: Position.BOTTOM_LEFT, usePortal: false }}
           tagInputProps={{
             inputRef: (ref) => this.inputRef = ref,
             tagProps: {interactive: false, minimal: true, fill: true},

@@ -89,18 +89,20 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
   getRows = () => {
     const entities = this.getEntities();
     const visibleProps = this.getVisibleProperties();
+    const header = visibleProps.map(property => ({ readOnly: true, label: property.label }));
 
-    return entities.map(entity => {
-      return visibleProps.map(property => {
-        // return <PropertyValues values={entity.getProperty(prop)} prop={prop} entitiesList={fullEntitiesList} />
-
-        return ({ entity, property });
-      })
+    const content = entities.map(entity => {
+      return visibleProps.map(property => ({ entity, property }))
     });
+    return [header, ...content];
   }
 
-  renderValue = ({ entity, property }, i, j) => {
+  renderValue = ({ entity, property, readOnly, label }, i, j) => {
     const { layout } = this.props;
+
+    if (readOnly) {
+      return label;
+    }
 
     return (
       <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
@@ -111,30 +113,31 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     const { layout } = this.props;
     const { entity, property } = cell;
 
-    // return 'test-editor';
+    // return (
+    //   <Popover
+    //     minimal
+    //     lazy
+    //     usePortal={false}
+    //     isOpen
+    //     popoverClassName="TableEditorTable__popover"
+    //     position={Position.BOTTOM}
+    //     autoFocus={false}
+    //     modifiers={{
+    //       inner: {enabled: true},
+    //     }}
+    //   >
+    //     <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
+    //     <PropertyEditor entity={entity} property={property} onSubmit={(e) => { console.log('submitting', e); this.onEntityChanged(e); onCommit(e); } entitiesList={layout.entities} />
+    //   </Popover>
+    // )
     return (
-      <Popover
-        minimal
-        lazy
-        usePortal
-        captureDismiss={true}
-        isOpen={true}
-        popoverClassName="TableEditorTable__popover"
-        position={Position.BOTTOM}
-        enforceFocus={false}
-        modifiers={{
-          inner: {enabled: true},
-        }}
-      >
-        <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
-        <PropertyEditor entity={entity} property={property} onSubmit={(e) => { console.log('submitting'); this.onEntityChanged(e); onCommit(e); } entitiesList={layout.entities} />
-      </Popover>
-    )
+      <PropertyEditor entity={entity} property={property} onSubmit={(e) => { console.log('submitting', e); this.onEntityChanged(e); onCommit(e); } entitiesList={layout.entities} />
+    );
   }
 
   renderWriteable() {
     const { actions, intl, layout, schema, updateLayout } = this.props;
-    const { visibleProps } = this.state;
+    const { selected, visibleProps } = this.state;
 
     const entities = this.getEntities();
     const numRows = entities.length;
@@ -150,11 +153,14 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     console.log('datas', data);
 
     return (
-      <Datasheet
-        data={data}
-        valueRenderer={this.renderValue}
-        dataEditor={this.renderEditor}
-      />
+      <div className="TableEditorTable">
+        <Datasheet
+          data={data}
+          valueRenderer={this.renderValue}
+          dataEditor={this.renderEditor}
+          onContextMenu={(e, cell, i, j) => cell.readOnly ? e.preventDefault() : null}
+        />
+      </div>
     )
 
     // return (

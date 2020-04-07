@@ -40,7 +40,8 @@ export class DateEdit extends React.Component<ITypeProps> {
         popoverProps={{
           position: Position.BOTTOM_LEFT,
           minimal: true,
-          targetProps: {style: {width: '100%'}}
+          targetProps: {style: {width: '100%'}},
+          usePortal: false,
         }}
         value={values[0] ? new Date(values[0] as string) : undefined}
       />
