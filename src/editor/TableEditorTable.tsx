@@ -95,6 +95,11 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     updateLayout(layout, { updated: [nextEntity] }, { modifyHistory: true });
   }
 
+  deleteEntityProp = ({ entity, property }) => {
+    entity.properties.set(property, []);
+    this.onEntityChanged(entity);
+  }
+
   getRows = () => {
     const { writeable } = this.props;
     const { visibleProps } = this.state;
@@ -134,12 +139,12 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
         return (
           <div className="property">
             <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
-          </div>;
+          </div>
         );
     }
   }
 
-  renderEditor = ({ cell, onCommit, onKeyDown }) => {
+  renderEditor = ({ cell, onCommit, onChange, onKeyDown }) => {
     const { layout } = this.props;
     const { entity, property } = cell.value;
 
@@ -164,11 +169,14 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
 
     // onCommit(entity, new KeyboardEvent('onkeydown', { keyCode: 13 }));
 
+    // workaround placeholder to signal to changeHandler
+    onChange('user-edit');
+
     return (
       <PropertyEditor
         entity={entity}
         property={property}
-        onSubmit={(entity) => { this.onEntityChanged(entity); onCommit(entity); }
+        onSubmit={(entity) => { this.onEntityChanged(entity); onCommit(); }}
         entitiesList={layout.entities}
         usePortal={false}
       />
@@ -208,6 +216,7 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
       style = { backgroundColor: 'white' };
     }
 
+
     return (
       <td {...rest} style={style}>
         {props.children}
@@ -227,6 +236,17 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
           dataEditor={this.renderEditor}
           onContextMenu={(e, cell) => cell.header ? e.preventDefault() : null}
           cellRenderer={this.renderCell}
+          onCellsChanged={changes => {
+            console.log('changes', changes);
+
+            changes.forEach(({ cell, value }) => {
+              console.log('value', value);
+              if (value === "") {
+                this.deleteEntityProp(cell.value);
+              }
+            })
+          }}
+          parsePaste={(pasted, i) => console.log('pasted', pasted, i)}
         />
         <Button
           className="TableEditorTable__itemAdd"
