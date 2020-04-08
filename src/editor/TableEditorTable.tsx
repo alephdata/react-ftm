@@ -126,7 +126,22 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     return [header, ...content];
   }
 
-  renderValue = ({ type, value }, i, j) => {
+  renderValue = (cell) => {
+    const { type, value } = cell;
+
+    switch (type) {
+      case 'header':
+        return value;
+      case 'property':
+        const { entity, property } = value
+        return entity.getProperty(property);
+      default:
+        return null;
+    }
+  }
+
+  valueViewer = ({ cell }) => {
+    const { type, value } = cell;
     const { layout } = this.props;
 
     switch (type) {
@@ -141,6 +156,8 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
             <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
           </div>
         );
+      default:
+        return null;
     }
   }
 
@@ -233,6 +250,7 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
         <Datasheet
           data={data}
           valueRenderer={this.renderValue}
+          valueViewer={this.valueViewer}
           dataEditor={this.renderEditor}
           onContextMenu={(e, cell) => cell.header ? e.preventDefault() : null}
           cellRenderer={this.renderCell}
@@ -246,7 +264,7 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
               }
             })
           }}
-          parsePaste={(pasted, i) => console.log('pasted', pasted, i)}
+          parsePaste={(pasted) => console.log('pasted', pasted)}
         />
         <Button
           className="TableEditorTable__itemAdd"
