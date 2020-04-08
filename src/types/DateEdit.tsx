@@ -29,7 +29,7 @@ export class DateEdit extends React.Component<ITypeProps> {
   };
 
   render() {
-    const {property, values} = this.props
+    const {property, usePortal, values} = this.props
     return <FormGroup>
       <DateInput
         {...this.jsDateFormatter}
@@ -41,7 +41,7 @@ export class DateEdit extends React.Component<ITypeProps> {
           position: Position.BOTTOM_LEFT,
           minimal: true,
           targetProps: {style: {width: '100%'}},
-          usePortal: false,
+          usePortal,
         }}
         value={values[0] ? new Date(values[0] as string) : undefined}
       />

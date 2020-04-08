@@ -19,6 +19,7 @@ interface IPropertyEditorProps extends WrappedComponentProps {
   property: Property,
   entitiesList: Map<string, Entity>,
   onSubmit: (nextEntity: Entity) => void
+  usePortal?: boolean
 }
 
 interface IPropertyEditorState {
@@ -58,15 +59,16 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
   }
 
   render() {
-    const { entitiesList, entity, property } = this.props;
+    const { entitiesList, entity, property, usePortal } = this.props;
     const { values } = this.state;
 
     const commonProps = {
       onSubmit: this.onSubmit,
       onChange: this.onChange,
-      values: values,
-      property: property,
-      entity: entity
+      values,
+      property,
+      entity,
+      usePortal: usePortal === undefined ? true : usePortal,
     };
     let content;
 

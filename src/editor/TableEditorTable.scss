@@ -2,8 +2,8 @@
 
 .TableEditorTable {
   .data-grid-container .data-grid .cell {
-    white-space: nowrap;
-    height: 30px;
+    // white-space: nowrap;
+    min-height: 30px;
     vertical-align: middle;
     text-align: left;
     background-color: $light-gray5;
@@ -11,7 +11,9 @@
 
     .value-viewer {
       .property, .header {
-        padding: 0 10px;
+        padding: 10px;
+        max-width: 250px;
+        min-width: 80px;
       }
     }
   }

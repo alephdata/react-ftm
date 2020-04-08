@@ -62,7 +62,7 @@ export class EnumValueSelect extends React.PureComponent<ITypeProps> {
   }
 
   render() {
-    const { property } = this.props;
+    const { property, usePortal } = this.props;
 
     const availableOptions = this.getAvailableOptions();
     const selectedOptions = this.getIdLabelPairs();
@@ -82,7 +82,7 @@ export class EnumValueSelect extends React.PureComponent<ITypeProps> {
             />
           )}
           items={availableOptions}
-          popoverProps={{ minimal: true, position: Position.BOTTOM_LEFT, usePortal: false }}
+          popoverProps={{ minimal: true, position: Position.BOTTOM_LEFT, usePortal }}
           tagInputProps={{
             inputRef: (ref) => this.inputRef = ref,
             tagProps: {interactive: false, minimal: true},

@@ -126,15 +126,15 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
 
     switch (type) {
       case 'action':
-        return <span className="action">{value}</span>;
+        return <div className="action">{value}</div>;
       case 'header':
-        return <span className="header">{value}</span>;
+        return <div className="header">{value}</div>;
       case 'property':
         const { entity, property } = value
         return (
-          <span className="property">
+          <div className="property">
             <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
-          </span>;
+          </div>;
         );
     }
   }
@@ -162,9 +162,16 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     // )
     // console.log(onKeyDown);
 
+    // onCommit(entity, new KeyboardEvent('onkeydown', { keyCode: 13 }));
 
     return (
-      <PropertyEditor entity={entity} property={property} onSubmit={(entity) => { this.onEntityChanged(entity); onCommit(entity, new KeyboardEvent('onkeydown', { keyCode: 13 })); } entitiesList={layout.entities} />
+      <PropertyEditor
+        entity={entity}
+        property={property}
+        onSubmit={(entity) => { this.onEntityChanged(entity); onCommit(entity); }
+        entitiesList={layout.entities}
+        usePortal={false}
+      />
     );
   }
 
@@ -324,6 +331,7 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
           data={data}
           valueRenderer={this.renderValue}
           onContextMenu={(e, cell, i, j) => cell.readOnly ? e.preventDefault() : null}
+          cellRenderer={this.renderCell}
         />
       </div>
     );
