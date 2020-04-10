@@ -89,14 +89,18 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
   }
 
   onEntityChanged = (nextEntity: Entity) => {
-    console.log('in on entity changed');
     const { layout, updateLayout } = this.props;
     layout.updateEntity(nextEntity);
     updateLayout(layout, { updated: [nextEntity] }, { modifyHistory: true });
   }
 
-  deleteEntityProp = ({ entity, property }) => {
+  handleDelete = ({ entity, property }) => {
     entity.properties.set(property, []);
+    this.onEntityChanged(entity);
+  }
+
+  handlePaste = ({ entity, property }, value) => {
+    entity.properties.set(property, value.split(','));
     this.onEntityChanged(entity);
   }
 
@@ -187,7 +191,7 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
     // onCommit(entity, new KeyboardEvent('onkeydown', { keyCode: 13 }));
 
     // workaround placeholder to signal to changeHandler
-    onChange('user-edit');
+    onChange('user-edit')
 
     return (
       <PropertyEditor
@@ -255,16 +259,23 @@ class TableEditorTableBase extends React.Component<ITableEditorTableProps, ITabl
           onContextMenu={(e, cell) => cell.header ? e.preventDefault() : null}
           cellRenderer={this.renderCell}
           onCellsChanged={changes => {
-            console.log('changes', changes);
 
             changes.forEach(({ cell, value }) => {
-              console.log('value', value);
               if (value === "") {
-                this.deleteEntityProp(cell.value);
+                this.handleDelete(cell.value);
+              } else if (value.trigger === 'paste') {
+                this.handlePaste(cell.value, value.pastedVal);
               }
             })
           }}
-          parsePaste={(pasted) => console.log('pasted', pasted)}
+          parsePaste={(pasted) => {
+            const lines = pasted.split(/[\r\n]+/g)
+            return lines
+              .map(line => line
+                .split('\t')
+                .map(value => ({ trigger: 'paste', pastedVal: value }) )
+              );
+          }}
         />
         <Button
           className="TableEditorTable__itemAdd"

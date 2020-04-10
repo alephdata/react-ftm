@@ -10,12 +10,10 @@
     color: black;
     width: 250px;
 
-    .value-viewer {
-      .property, .header {
-        padding: 10px;
-        max-width: 250px;
-        min-width: 80px;
-      }
+    .property, .header {
+      padding: 10px;
+      max-width: 250px;
+      min-width: 80px;
     }
   }
   .bp3-form-group {
