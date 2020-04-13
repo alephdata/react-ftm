@@ -48,6 +48,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     }
 
     this.onAddColumn = this.onAddColumn.bind(this);
+    this.renderEditor = this.renderEditor.bind(this);
+
   }
 
   getVisibleProperties() {
@@ -167,49 +169,28 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     }
   }
 
-  renderEditor = ({ cell, onCommit, onChange, onKeyDown }) => {
+  renderEditor({ cell, onCommit, onChange, onKeyDown }) {
     const { entityManager, schema } = this.props;
     const { entity, property } = cell.value;
 
-    // let editingEntity, submitHandler;
-    //
-    // if (entity) {
-    //   editingEntity = entity;
-      // submitHandler = (e) => { entityManager.updateEntity(e); onCommit(); }
-    // } else {
-    //   editingEntity = new Entity(entityManager.model, { schema });
-    //   submitHandler = (e) => { entityManager.createEntity(e); onCommit(); };
-    // }
+    let editingEntity, submitHandler;
 
-    // return (
-    //   <Popover
-    //     minimal
-    //     lazy
-    //     usePortal={false}
-    //     isOpen
-    //     popoverClassName="TableEditor__popover"
-    //     position={Position.BOTTOM}
-    //     autoFocus={false}
-    //     modifiers={{
-    //       inner: {enabled: true},
-    //     }}
-    //   >
-    //     <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={layout.entities} />
-    //     <PropertyEditor entity={entity} property={property} onSubmit={(e) => { console.log('submitting', e); this.updateEntity(e); onCommit(e); } entitiesList={layout.entities} />
-    //   </Popover>
-    // )
-    // console.log(onKeyDown);
-
-    // onCommit(entity, new KeyboardEvent('onkeydown', { keyCode: 13 }));
+    if (entity) {
+      editingEntity = entity;
+      submitHandler = (e) => { entityManager.updateEntity(e); onCommit(); }
+    } else {
+      editingEntity = new Entity(entityManager.model, { schema });
+      submitHandler = (e) => { entityManager.createEntity({ schema, properties: { [property.name]: e.getFirst(property)} }); onCommit(); };
+    }
 
     // workaround placeholder to signal to changeHandler
     onChange('user-edit')
 
     return (
       <PropertyEditor
-        entity={entity}
+        entity={editingEntity}
         property={property}
-        onSubmit={(e) => { entityManager.updateEntity(e); onCommit(); }}
+        onSubmit={submitHandler}
         entitiesList={[]}
         usePortal={false}
       />

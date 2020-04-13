@@ -27,16 +27,23 @@ export class EntityManager {
 
   async createEntity(entityData: any) {
     if (this.overload?.createEntity) {
+      console.log('in overload!!!!');
       const entityWithId: IEntityDatum = await this.overload.createEntity(entityData);
       return new Entity(this.model, entityWithId);
     } else {
+      console.log('not in overload!');
       const { schema, properties } = entityData;
+      console.log(schema, properties);
       const entity = this.model.createEntity(schema);
+      console.log('in entity manager, entity created', entity);
       if (properties) {
+        console.log('there are props', properties);
         Object.entries(properties).forEach(([prop, value]: [string, any]) => (
           entity.setProperty(prop, value)
         ));
       }
+
+      console.log('returning from entitymanager', entity);
 
       return entity;
     }

@@ -99,7 +99,9 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
 
   async onEntityCreate(entityData: any) {
     const { layout, updateLayout } = this.props;
+    console.log('creating', entityData);
     const entity = await layout.createEntity(entityData);
+    console.log('created', entity)
     updateLayout(layout, { created: [entity] }, { modifyHistory: true });
     return entity;
   }
