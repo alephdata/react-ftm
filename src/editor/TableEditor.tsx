@@ -88,7 +88,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const { entities, writeable } = this.props;
     const { visibleProps } = this.state;
 
-    const headerPropColumns = visibleProps.map(property => ({ type: "header", readOnly: true, value: property.label }));
+    const headerPropColumns = visibleProps.map(property => ({ type: "header", readOnly: true, value: { property } }));
     let header;
     if (writeable) {
       header = [{}, ...headerPropColumns, { type: "action", readOnly: true, value: this.renderPropertySelect() }];
@@ -105,7 +105,11 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
         return propColumns;
       }
     });
-    return [header, ...content];
+
+    const addRowPropColumns = visibleProps.map(property => ({ type: "addNew", value: { entity: null, property } }));
+    const addRow = writeable ? [{}, ...addRowPropColumns] : []
+
+    return [header, ...content, addRow];
   }
 
   renderValue = (cell) => {
@@ -113,7 +117,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     switch (type) {
       case 'header':
-        return value;
+        const { property } = value
+        return property.label;
       case 'property':
         const { entity, property } = value
         return entity.getProperty(property);
@@ -126,23 +131,32 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const { type, value } = cell;
     const { sort, sortColumn } = this.props;
 
+
     switch (type) {
       case 'action':
         return <div className="action">{value}</div>;
+      case 'addNew':
+        return (
+          <div className="property">
+            <span>—</span>
+          </div>
+        );
       case 'header':
-        const isSorted = sort && sort.field === value;
-        const sortIcon = isSorted ? (sort.direction === 'asc' ? 'caret-down' : 'caret-up') : 'double-caret-vertical';
+        const isSorted = sort && sort.field === value.property;
+        const sortIcon = isSorted ? (sort.direction === 'asc' ? 'caret-up' : 'caret-down') : 'double-caret-vertical';
         return (
           <Button
-            onClick={(e) => { sortColumn({field: value, direction: (isSorted && sort.direction === 'asc') ? 'desc' : 'asc'})}
+            onClick={(e) => { sortColumn({field: value.property, direction: (isSorted && sort.direction === 'asc') ? 'desc' : 'asc'})}
             rightIcon={sortIcon}
             minimal
             fill
-            text={value}
+            text={value.property.label}
             className="header"
           />
+        );
       case 'property':
-        const { entity, property } = value
+        const { entity, property } = value;
+
         return (
           <div className="property">
             <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={[]} />
@@ -154,8 +168,18 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   renderEditor = ({ cell, onCommit, onChange, onKeyDown }) => {
-    const { entityManager } = this.props;
+    const { entityManager, schema } = this.props;
     const { entity, property } = cell.value;
+
+    // let editingEntity, submitHandler;
+    //
+    // if (entity) {
+    //   editingEntity = entity;
+      // submitHandler = (e) => { entityManager.updateEntity(e); onCommit(); }
+    // } else {
+    //   editingEntity = new Entity(entityManager.model, { schema });
+    //   submitHandler = (e) => { entityManager.createEntity(e); onCommit(); };
+    // }
 
     // return (
     //   <Popover
@@ -185,7 +209,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       <PropertyEditor
         entity={entity}
         property={property}
-        onSubmit={(entity) => { entityManager.updateEntity(entity); onCommit(); }}
+        onSubmit={(e) => { entityManager.updateEntity(e); onCommit(); }}
         entitiesList={[]}
         usePortal={false}
       />
@@ -218,7 +242,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     } = props;
 
     let style;
-    if (cell?.type === 'property') {
+    if (cell?.type === 'property' || cell?.type === 'addNew') {
       style = { backgroundColor: 'white' };
     }
 
@@ -233,7 +257,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const { actions, intl, schema } = this.props;
     const data = this.getRows();
 
-    console.log(this.props.selection);
+    console.log(data);
 
     return (
       <div className="TableEditor">
@@ -261,13 +285,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
                 .map(value => ({ trigger: 'paste', pastedVal: value }) )
               );
           }}
-        />
-        <Button
-          className="TableEditor__itemAdd"
-          text={intl.formatMessage(messages.add, { schema: schema.label })}
-          icon="new-object"
-          intent={Intent.PRIMARY}
-          onClick={() => actions.addVertex({ initialSchema: schema })}
         />
       </div>
     )

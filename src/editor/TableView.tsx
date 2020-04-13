@@ -73,10 +73,12 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     if (sort) {
       const = { field, direction } = sort;
       return entities.sort((a, b) => {
+        console.log(a.getProperty(field), b.getProperty(field));
+        console.log(a.getFirst(field), b.getFirst(field), a.getFirst(field) > b.getFirst(field));
         if (direction === 'asc') {
-          return a.getFirst(field) > b.getFirst(field) ? -1 : 1;
+          return a && a.getFirst(field) < b.getFirst(field) ? -1 : 1;
         } else {
-          return a.getFirst(field) > b.getFirst(field) ? 1 : -1;
+          return a && a.getFirst(field) < b.getFirst(field) ? 1 : -1;
         }
       });
     } else {
@@ -95,10 +97,11 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     this.setState({ activeTabId: newTabId });
   }
 
-  onEntityCreate(entityData: any) {
+  async onEntityCreate(entityData: any) {
     const { layout, updateLayout } = this.props;
-    layout.createEntity(entity.id, true);
+    const entity = await layout.createEntity(entityData);
     updateLayout(layout, { created: [entity] }, { modifyHistory: true });
+    return entity;
   }
 
   onEntityDelete(entity: Entity) {
@@ -120,7 +123,6 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
   onSelectionUpdate(entity) {
     const { layout, updateLayout } = this.props;
     const entityId = entity.id;
-    console.log('selecting', entityId)
 
     // select graphElement by entityId
     layout.selectVerticesByFilter((v) => v.entityId === entityId, true, true);
