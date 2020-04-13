@@ -184,6 +184,7 @@ export class GraphLayout {
 
   selectVerticesByFilter(predicate: VertexPredicate) {
     this.selection = this.getVertices().filter((vertex) => !vertex.isHidden()).filter(predicate).map((v) => v.id)
+    console.log(this.selection);
   }
 
   selectArea(area: Rectangle) {

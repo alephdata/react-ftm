@@ -12,7 +12,7 @@ import { Toolbar } from './Toolbar';
 import { Sidebar } from './Sidebar';
 import { History } from './History';
 import { EdgeCreateDialog, GroupingCreateDialog, VertexCreateDialog } from "./dialogs";
-import { TableEditor } from "./editor";
+import { TableView } from "./editor";
 
 import { modes } from './interactionModes'
 import { filterVerticesByText } from './filters';
@@ -280,7 +280,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                 writeable={writeable}
                 {...layoutContext}
               />
-              <TableEditor
+              <TableView
                 isOpen={tableView}
                 layout={layout}
                 updateLayout={this.updateLayout}

@@ -1,0 +1,23 @@
+$table-editor-padding: 20px;
+$border-color: rgba(16, 22, 26, 0.15);
+
+.TableView {
+  padding: $table-editor-padding;
+
+  .bp3-tabs.bp3-vertical {
+    & > .bp3-tab-panel {
+      border-left: 1px solid $border-color;
+      width: 100%;
+      overflow-x: scroll;
+    }
+
+    & > .bp3-tab-list {
+      overflow-y: scroll;
+      padding-right: $table-editor-padding;
+    }
+  }
+
+  &__schemaAdd {
+    margin-top: $table-editor-padding;
+  }
+}
