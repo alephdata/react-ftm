@@ -65,9 +65,23 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
 
   getEntities(schema) {
     const { layout } = this.props;
+    const { sort } = this.state;
 
-    return layout.getEntities()
+    const entities = layout.getEntities()
       .filter(e => e.schema === schema);
+
+    if (sort) {
+      const = { field, direction } = sort;
+      return entities.sort((a, b) => {
+        if (direction === 'asc') {
+          return a.getFirst(field) > b.getFirst(field) ? -1 : 1;
+        } else {
+          return a.getFirst(field) > b.getFirst(field) ? 1 : -1;
+        }
+      });
+    } else {
+      return entities;
+    }
   }
 
   addSchema(schema: Schema) {
@@ -100,17 +114,16 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
   }
 
   onColumnSort(sort) {
-    console.log('sorting', sort)
-
     this.setState({ sort })
   }
 
   onSelectionUpdate(entity) {
     const { layout, updateLayout } = this.props;
-    console.log('selecting', entity)
     const entityId = entity.id;
+    console.log('selecting', entityId)
+
     // select graphElement by entityId
-    layout.selectVerticesByFilter((v) => v.entityId === entityId);
+    layout.selectVerticesByFilter((v) => v.entityId === entityId, true, true);
     updateLayout(layout, null, { clearSearch: true });
   }
 

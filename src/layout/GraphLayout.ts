@@ -172,19 +172,24 @@ export class GraphLayout {
       .find((v) => v.entityId === entity.id)
   }
 
-  selectElement(element: GraphElement | Array<GraphElement>, additional: boolean = false) {
+  selectElement(element: GraphElement | Array<GraphElement>, additional: boolean = false, allowUnselect: boolean = false) {
     const newSelection = Array.isArray(element) ? element.map(e => e.id) : [element.id]
+    const isAlreadySelected = this.isElementSelected(element);
 
-    if (!additional) {
-      this.selection = newSelection
-    } else if (!this.isElementSelected(element)) {
-      this.selection = [...this.selection, ...newSelection]
+    if (allowUnselect && isAlreadySelected) {
+      this.selection = this.selection.filter(id => newSelection.indexOf(id) < 0);
+    } else {
+      if (!additional) {
+        this.selection = newSelection
+      } else if (!isAlreadySelected) {
+        this.selection = [...this.selection, ...newSelection]
+      }
     }
   }
 
-  selectVerticesByFilter(predicate: VertexPredicate) {
-    this.selection = this.getVertices().filter((vertex) => !vertex.isHidden()).filter(predicate).map((v) => v.id)
-    console.log(this.selection);
+  selectVerticesByFilter(predicate: VertexPredicate, additional: boolean = false, allowUnselect: boolean = false) {
+    const vertices = this.getVertices().filter((vertex) => !vertex.isHidden()).filter(predicate);
+    this.selectElement(vertices, additional, allowUnselect);
   }
 
   selectArea(area: Rectangle) {

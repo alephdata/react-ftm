@@ -15,6 +15,11 @@
       max-width: 250px;
       min-width: 80px;
     }
+
+    .header {
+      justify-content: space-between;
+      border-radius: 0 !important;
+    }
   }
   .bp3-form-group {
     margin: 0;

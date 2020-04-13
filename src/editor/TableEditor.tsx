@@ -104,7 +104,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       } else {
         return propColumns;
       }
-
     });
     return [header, ...content];
   }
@@ -125,12 +124,23 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   valueViewer = ({ cell }) => {
     const { type, value } = cell;
+    const { sort, sortColumn } = this.props;
 
     switch (type) {
       case 'action':
         return <div className="action">{value}</div>;
       case 'header':
-        return <div className="header">{value}</div>;
+        const isSorted = sort && sort.field === value;
+        const sortIcon = isSorted ? (sort.direction === 'asc' ? 'caret-down' : 'caret-up') : 'double-caret-vertical';
+        return (
+          <Button
+            onClick={(e) => { sortColumn({field: value, direction: (isSorted && sort.direction === 'asc') ? 'desc' : 'asc'})}
+            rightIcon={sortIcon}
+            minimal
+            fill
+            text={value}
+            className="header"
+          />
       case 'property':
         const { entity, property } = value
         return (
