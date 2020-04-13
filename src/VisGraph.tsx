@@ -245,7 +245,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
       onSubmitSearch: this.onSubmitSearch,
     };
 
-    const showSidebar = layout.vertices && layout.vertices.size > 0;
+    const showSidebar = layout.vertices && layout.vertices.size > 0 && !tableView;
 
     return (
       <GraphContext.Provider value={layoutContext}>
@@ -261,8 +261,8 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
               {...layoutContext}
             />
           </div>
-          <div className="VisGraph__content">
-            <div className="VisGraph__content__inner-container">
+          <div className={c("VisGraph__content", { 'sidebar-open': showSidebar, 'table-open': tableView })}>
+            <div className="VisGraph__main">
               <div className="VisGraph__button-group">
                 <ButtonGroup vertical>
                   <Tooltip content={intl.formatMessage(messages.tooltip_fit_selection)}>
@@ -280,19 +280,24 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                 writeable={writeable}
                 {...layoutContext}
               />
-              <TableView
-                isOpen={tableView}
-                layout={layout}
-                updateLayout={this.updateLayout}
-                writeable={writeable}
-                actions={actions}
-              />
             </div>
             {showSidebar &&
               <div className="VisGraph__sidebar">
                 <Sidebar {...layoutContext} writeable={writeable} searchText={searchText} />
               </div>
             }
+            {tableView &&
+              <div className="VisGraph__table">
+                <TableView
+                  isOpen={tableView}
+                  layout={layout}
+                  updateLayout={this.updateLayout}
+                  writeable={writeable}
+                  actions={actions}
+                />
+              </div>
+            }
+
           </div>
         </div>
         {writeable && (

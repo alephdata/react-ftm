@@ -119,59 +119,47 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     const { activeTabId, sort, schemata } = this.state;
 
     return (
-      <Drawer
-        position={Position.BOTTOM}
-        icon="th"
-        isOpen={isOpen}
-        canOutsideClickClose
-        title="Table viewer"
-        onClose={actions.toggleTableView}
-        style={{ height: '60%' }}
-        portalClassName="VisGraph__table-container"
-      >
-        <div className={c('TableView', Classes.DRAWER_BODY)}>
-          <Tabs
-            vertical
-            renderActiveTabPanelOnly
-            selectedTabId={activeTabId}
-            onChange={this.setActiveTab}
-          >
-            {schemata.map(schema => (
-                <Tab
-                  id={schema.name}
-                  key={schema.name}
-                  title={schema.plural}
-                  panel={(
-                    <TableEditor
-                      entities={this.getEntities(schema)}
-                      schema={schema}
-                      sort={sort}
-                      sortColumn={this.onColumnSort}
-                      selection={layout.getSelectedEntities().map(e => e.id)}
-                      updateSelection={this.onSelectionUpdate}
-                      writeable={writeable}
-                      entityManager={this.overloadedEntityManager}
-                    />
-                  )}
-                />
-            ))}
-            {writeable && (
-              <div className="TableView__schemaAdd">
-                <VertexSchemaSelect
-                  model={layout.entityManager.model}
-                  onSelect={schema => this.addSchema(schema)}
-                  optionsFilter={(schema => !schemata.includes(schema))}
-                >
-                  <Button
-                    text={intl.formatMessage(messages.add)}
-                    icon="plus"
+      <div className="TableView">
+        <Tabs
+          renderActiveTabPanelOnly
+          selectedTabId={activeTabId}
+          onChange={this.setActiveTab}
+        >
+          {schemata.map(schema => (
+              <Tab
+                id={schema.name}
+                key={schema.name}
+                title={schema.plural}
+                panel={(
+                  <TableEditor
+                    entities={this.getEntities(schema)}
+                    schema={schema}
+                    sort={sort}
+                    sortColumn={this.onColumnSort}
+                    selection={layout.getSelectedEntities().map(e => e.id)}
+                    updateSelection={this.onSelectionUpdate}
+                    writeable={writeable}
+                    entityManager={this.overloadedEntityManager}
                   />
-                </VertexSchemaSelect>
-              </div>
-            )}
-          </Tabs>
-        </div>
-      </Drawer>
+                )}
+              />
+          ))}
+          {writeable && (
+            <div className="TableView__schemaAdd">
+              <VertexSchemaSelect
+                model={layout.entityManager.model}
+                onSelect={schema => this.addSchema(schema)}
+                optionsFilter={(schema => !schemata.includes(schema))}
+              >
+                <Button
+                  text={intl.formatMessage(messages.add)}
+                  icon="plus"
+                />
+              </VertexSchemaSelect>
+            </div>
+          )}
+        </Tabs>
+      </div>
     )
   }
 }

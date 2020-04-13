@@ -29,13 +29,22 @@
     flex-basis: 100%;
     overflow: hidden;
 
-    &__inner-container {
-      flex-grow: 4;
-      flex-shrink: 1;
-      flex-basis: auto;
-      position: relative;
-      overflow: hidden;
+    &.sidebar-open {
+      flex-flow: row;
     }
+
+    &.table-open {
+      flex-flow: column;
+    }
+  }
+
+  &__main {
+    flex-grow: 4;
+    flex-shrink: 1;
+    flex-basis: auto;
+    position: relative;
+    overflow: hidden;
+    display: flex;
   }
 
   &__sidebar {
@@ -46,9 +55,12 @@
     box-shadow: $editor-box-shadow;
   }
 
-  &__table-container {
-    z-index: 1;
+  &__table {
+    height: 50%;
+    width: 100%;
+    box-shadow: $editor-box-shadow;
   }
+
 
   &__button-group {
     position: absolute;
