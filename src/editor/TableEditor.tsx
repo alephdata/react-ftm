@@ -81,9 +81,17 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     this.props.entityManager.updateEntity(entity);
   }
 
-  handlePaste = ({ entity, property }, value) => {
-    entity.properties.set(property, value.split(','));
-    this.props.entityManager.updateEntity(entity);
+  handlePaste = (cell, value) => {
+    const { schema } = this.props;
+    if (cell.type === 'property') {
+      const { entity, property } = cell.value;
+      entity.properties.set(property, value.split(','));
+      this.props.entityManager.updateEntity(entity);
+    } else {
+      console.log('creating!!!!!!!!')
+      const { property } = cell.value;
+      this.props.entityManager.createEntity({ schema, properties: { [property.name]: value.split(',') }});
+    }
   }
 
   getRows = () => {
@@ -180,7 +188,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       submitHandler = (e) => { entityManager.updateEntity(e); onCommit(); }
     } else {
       editingEntity = new Entity(entityManager.model, { schema });
-      submitHandler = (e) => { entityManager.createEntity({ schema, properties: { [property.name]: e.getFirst(property)} }); onCommit(); };
+      submitHandler = (e) => { entityManager.createEntity({ schema, properties: { [property.name]: e.getProperty(property)} }); onCommit(); };
     }
 
     // workaround placeholder to signal to changeHandler
@@ -249,14 +257,16 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
           dataEditor={this.renderEditor}
           onContextMenu={(e, cell) => cell.header ? e.preventDefault() : null}
           cellRenderer={this.renderCell}
-          onCellsChanged={changes => {
+          onCellsChanged={(changes, outOfBounds) => {
             changes.forEach(({ cell, value }) => {
               if (value === "") {
                 this.handleDelete(cell.value);
               } else if (value.trigger === 'paste') {
-                this.handlePaste(cell.value, value.pastedVal);
+                this.handlePaste(cell, value.pastedVal);
               }
             })
+
+            console.log('outOfBounds', outOfBounds);
           }}
           parsePaste={(pasted) => {
             const lines = pasted.split(/[\r\n]+/g)

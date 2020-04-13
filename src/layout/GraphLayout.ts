@@ -125,7 +125,6 @@ export class GraphLayout {
 
   async createEntity(entityData: any) {
     const entity = await this.entityManager.createEntity(entityData);
-    console.log('in g layout', entity);
     this.addEntity(entity);
     return entity;
   }
