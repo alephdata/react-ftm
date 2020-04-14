@@ -80,17 +80,17 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const { entities, writeable } = this.props;
     const { visibleProps } = this.state;
 
-    const headerPropColumns = visibleProps.map(property => ({ type: "header", readOnly: true, value: { property } }));
+    const headerPropColumns = visibleProps.map(property => ({ type: "header", readOnly: true, data: { property } }));
     let header;
     if (writeable) {
-      header = [{}, ...headerPropColumns, { type: "action", readOnly: true, value: this.renderPropertySelect() }];
+      header = [{}, ...headerPropColumns, { type: "action", readOnly: true, data: this.renderPropertySelect() }];
     } else {
       header = headerPropColumns;
     }
 
     const content = entities.map(entity => {
-      const actionColumn = { type: "action", readOnly: true, value: this.renderCheckbox(entity) };
-      const propColumns = visibleProps.map(property => ({ type: "property", readOnly: !writeable, value: { entity, property } }))
+      const actionColumn = { type: "action", readOnly: true, data: this.renderCheckbox(entity) };
+      const propColumns = visibleProps.map(property => ({ type: "property", readOnly: !writeable, data: { entity, property } }))
       if (writeable) {
         return [actionColumn, ...propColumns];
       } else {
@@ -98,21 +98,21 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       }
     });
 
-    const addRowPropColumns = visibleProps.map(property => ({ type: "addNew", value: { entity: null, property } }));
+    const addRowPropColumns = visibleProps.map(property => ({ type: "addNew", data: { entity: null, property } }));
     const addRow = writeable ? [{}, ...addRowPropColumns] : []
 
     return [header, ...content, addRow];
   }
 
   renderValue = (cell) => {
-    const { type, value } = cell;
+    const { type, data } = cell;
 
     switch (type) {
       case 'header':
-        const { property } = value
+        const { property } = data
         return property.label;
       case 'property':
-        const { entity, property } = value
+        const { entity, property } = data
         return entity.getProperty(property);
       default:
         return null;
@@ -120,13 +120,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   valueViewer = ({ cell }) => {
-    const { type, value } = cell;
+    const { type, data } = cell;
     const { sort, sortColumn } = this.props;
 
 
     switch (type) {
       case 'action':
-        return <div className="action">{value}</div>;
+        return <div className="action">{data}</div>;
       case 'addNew':
         return (
           <div className="property">
@@ -134,20 +134,20 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
           </div>
         );
       case 'header':
-        const isSorted = sort && sort.field === value.property;
+        const isSorted = sort && sort.field === data.property;
         const sortIcon = isSorted ? (sort.direction === 'asc' ? 'caret-up' : 'caret-down') : 'double-caret-vertical';
         return (
           <Button
-            onClick={(e) => { sortColumn({field: value.property, direction: (isSorted && sort.direction === 'asc') ? 'desc' : 'asc'})}
+            onClick={(e) => { sortColumn({field: data.property, direction: (isSorted && sort.direction === 'asc') ? 'desc' : 'asc'})}
             rightIcon={sortIcon}
             minimal
             fill
-            text={value.property.label}
+            text={data.property.label}
             className="header"
           />
         );
       case 'property':
-        const { entity, property } = value;
+        const { entity, property } = data;
 
         return (
           <div className="property">
@@ -161,7 +161,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   renderEditor = ({ cell, onCommit, onChange, onKeyDown }) => {
     const { entityManager, schema } = this.props;
-    const { entity, property } = cell.value;
+    const { entity, property } = cell.data;
 
     return (
       <PropertyEditor
@@ -220,7 +220,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const entityData = { schema, properties: {} };
 
     changes.forEach(({ cell, value, col }) => {
-      const property = cell?.value?.property || visibleProps[col-1];
+      const property = cell?.data?.property || visibleProps[col-1];
       entityData.properties[property.name] = value;
     })
 
@@ -230,7 +230,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   handleExistingRow = (changes) => {
     let changedEntity;
     changes.forEach(({ cell, value }) => {
-      const { entity, property } = cell.value;
+      const { entity, property } = cell.data;
       if (value === "") {
         entity.properties.set(property, []);
       } else {
