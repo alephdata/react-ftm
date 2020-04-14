@@ -8,17 +8,36 @@
     text-align: left;
     background-color: $light-gray5;
     color: black;
-    width: 250px;
 
-    .property, .header {
+    &.property {
+      background-color: white;
+      width: 250px;
       padding: 10px;
-      max-width: 250px;
-      min-width: 80px;
+
+      &.editing {
+        padding: 0;
+      }
     }
 
-    .header {
+    &.header > .bp3-button {
       justify-content: space-between;
       border-radius: 0 !important;
+    }
+
+    &.checkbox {
+      .bp3-control {
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        position: relative;
+      }
+      .bp3-control-indicator {
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        left: 50%;
+        margin: 0;
+      }
     }
   }
   .bp3-form-group {

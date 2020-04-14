@@ -24,6 +24,11 @@ const messages = defineMessages({
   },
 });
 
+const readOnlyCellProps = { readOnly: true, disableEvents: true, forceComponent: true }''
+const headerCellProps = { className: "header", ...readOnlyCellProps };
+const checkboxCellProps = { className: "checkbox", ...readOnlyCellProps };
+const propertyCellProps = { className: "property" };
+
 const propSort = (a:Property, b:Property) => (a.label > b.label ? 1 : -1);
 
 interface ITableEditorProps extends WrappedComponentProps {
@@ -71,91 +76,69 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   onAddColumn(newColumn: Property) {
     this.setState(({visibleProps}) => ({
-      visibleProps: [...visibleProps, ...[newColumn]],
+      visibleProps: [...visibleProps, newColumn],
     }));
   }
 
+  getTableHeader = () => {
+    const { writeable } = this.props;
+    const { visibleProps } = this.state;
 
-  getRows = () => {
+    const headerCells = visibleProps.map(property => ({ ...headerCellProps, component: this.renderColumnHeader(property) }));
+    if (writeable) {
+      return [{ ...checkboxCellProps }, ...headerCells, { ...headerCellProps, component: this.renderPropertySelect() }];
+    } else {
+      return headerCells;
+    }
+  }
+
+  getTableContent = () => {
     const { entities, writeable } = this.props;
     const { visibleProps } = this.state;
 
-    const headerPropColumns = visibleProps.map(property => ({ type: "header", readOnly: true, data: { property } }));
-    let header;
-    if (writeable) {
-      header = [{}, ...headerPropColumns, { type: "action", readOnly: true, data: this.renderPropertySelect() }];
-    } else {
-      header = headerPropColumns;
-    }
-
     const content = entities.map(entity => {
-      const actionColumn = { type: "action", readOnly: true, data: this.renderCheckbox(entity) };
-      const propColumns = visibleProps.map(property => ({ type: "property", readOnly: !writeable, data: { entity, property } }))
+      const propCells = visibleProps.map(property => ({ ...propertyCellProps, readOnly: !writeable, data: { entity, property } }))
       if (writeable) {
-        return [actionColumn, ...propColumns];
+        const checkbox = { ...checkboxCellProps, component: this.renderCheckbox(entity) };
+        return [checkbox, ...propCells];
       } else {
-        return propColumns;
+        return propCells;
       }
     });
 
-    const addRowPropColumns = visibleProps.map(property => ({ type: "addNew", data: { entity: null, property } }));
-    const addRow = writeable ? [{}, ...addRowPropColumns] : []
+    if (writeable) {
+      const placeholderCells = visibleProps.map(property => ({ ...propertyCellProps, data: { entity: null, property } }));
+      const placeholderRow = [{...checkboxCellProps}, ...placeholderCells]
 
-    return [header, ...content, addRow];
-  }
-
-  renderValue = (cell) => {
-    const { type, data } = cell;
-
-    switch (type) {
-      case 'header':
-        const { property } = data
-        return property.label;
-      case 'property':
-        const { entity, property } = data
-        return entity.getProperty(property);
-      default:
-        return null;
+      return [...content, placeholderRow];
+    } else {
+      return content;
     }
   }
 
-  valueViewer = ({ cell }) => {
-    const { type, data } = cell;
-    const { sort, sortColumn } = this.props;
+  getUnderlyingValue = (cell) => {
+    const { data } = cell;
 
+    if (data?.entity) {
+      const { entity, property } = data;
+      return entity.getProperty(property);
+    } else {
+      return null;
+    }
+  }
 
-    switch (type) {
-      case 'action':
-        return <div className="action">{data}</div>;
-      case 'addNew':
-        return (
-          <div className="property">
-            <span>—</span>
-          </div>
-        );
-      case 'header':
-        const isSorted = sort && sort.field === data.property;
-        const sortIcon = isSorted ? (sort.direction === 'asc' ? 'caret-up' : 'caret-down') : 'double-caret-vertical';
-        return (
-          <Button
-            onClick={(e) => { sortColumn({field: data.property, direction: (isSorted && sort.direction === 'asc') ? 'desc' : 'asc'})}
-            rightIcon={sortIcon}
-            minimal
-            fill
-            text={data.property.label}
-            className="header"
-          />
-        );
-      case 'property':
-        const { entity, property } = data;
+  renderValue = ({ cell }) => {
+    const { data } = cell;
 
-        return (
-          <div className="property">
-            <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={[]} />
-          </div>
-        );
-      default:
-        return null;
+    if (data) {
+      const { entity, property } = data;
+      if (entity) {
+        return <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={[]} />;
+      } else {
+        return <span>—</span>
+      }
+    } else {
+      return null;
     }
   }
 
@@ -175,6 +158,22 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     );
   }
 
+  renderColumnHeader = (property) => {
+    const { sort, sortColumn } = this.props;
+
+    const isSorted = sort && sort.field === property;
+    const sortIcon = isSorted ? (sort.direction === 'asc' ? 'caret-up' : 'caret-down') : 'double-caret-vertical';
+    return (
+      <Button
+        onClick={(e) => { sortColumn({field: property, direction: (isSorted && sort.direction === 'asc') ? 'desc' : 'asc'})}
+        rightIcon={sortIcon}
+        minimal
+        fill
+        text={property.label}
+      />
+    );
+  }
+
   renderPropertySelect = () => {
     return (
       <SelectProperty
@@ -190,26 +189,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const isSelected = selection.indexOf(entity.id) > -1;
     return (
       <Checkbox checked={isSelected} onChange={() => updateSelection(entity)} />
-    );
-  }
-
-  renderCell = (props) => {
-    console.log('renderCell props', props);
-    const {
-      cell, row, col, columns, attributesRenderer,
-      selected, editing, updated,
-      ...rest
-    } = props;
-
-    let style;
-    if (cell?.type === 'property' || cell?.type === 'addNew') {
-      style = { backgroundColor: 'white' };
-    }
-
-    return (
-      <td {...rest} style={style}>
-        {props.children}
-      </td>
     );
   }
 
@@ -258,56 +237,30 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     });
   }
 
-  renderWriteable() {
-    const { actions, entities, intl, schema } = this.props;
-    const data = this.getRows();
+  parsePaste(pasted) {
+    const lines = pasted.split(/[\r\n]+/g)
+    return lines.map(line => (
+      line.split('\t').map(val => val.split(','))
+    ));
+  }
+
+  render() {
+    const { entities, intl, schema } = this.props;
     const entityCount = entities.length;
 
     return (
       <div className="TableEditor">
         <Datasheet
-          data={data}
-          valueRenderer={this.renderValue}
-          valueViewer={this.valueViewer}
+          data={[this.getTableHeader(), ...this.getTableContent()]}
+          valueRenderer={this.getUnderlyingValue}
+          valueViewer={this.renderValue}
           dataEditor={this.renderEditor}
-          onContextMenu={(e, cell) => cell.header ? e.preventDefault() : null}
-          cellRenderer={this.renderCell}
           onCellsChanged={this.onCellsChanged}
           isCellNavigable={(cell, row, col) => { console.log('in cell navigable'); return false; }}
-          parsePaste={(pasted) => {
-            const lines = pasted.split(/[\r\n]+/g)
-            return lines.map(line => (
-              line.split('\t').map(val => val.split(','))
-            ));
-          }}
+          parsePaste={this.parsePaste}
         />
       </div>
     )
-  }
-
-  renderReadonly() {
-    const data = this.getRows();
-
-    return (
-      <div className="TableEditor">
-        <Datasheet
-          data={data}
-          valueRenderer={this.renderValue}
-          onContextMenu={(e, cell, i, j) => cell.readOnly ? e.preventDefault() : null}
-          cellRenderer={this.renderCell}
-        />
-      </div>
-    );
-  }
-
-  render() {
-    const { writeable } = this.props;
-
-    if (writeable) {
-      return this.renderWriteable();
-    } else {
-      return this.renderReadonly();
-    }
   }
 }
 
