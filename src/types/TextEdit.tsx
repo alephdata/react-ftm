@@ -52,12 +52,10 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
   }
 
   componentWillUnmount() {
-    console.log('text edit will unmount')
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
   handleClickOutside(event: MouseEvent) {
-    console.log('in handle click outside')
     const { onSubmit, values } = this.props;
     const { currMultiInputValue } = this.state;
 
@@ -73,7 +71,6 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
 
   onChange = (values: Array<string | React.ReactNode>) => {
     // remove duplicates
-    console.log('in on change')
     this.props.onChange(Array.from(new Set(values)) as unknown as Values)
     if (values.length <= 1) {
       this.setState({ forceMultiEdit: false });
@@ -83,7 +80,6 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
   triggerMultiEdit(e) {
     e.preventDefault();
     e.stopPropagation();
-    console.log('triggering multiedit')
     this.setState({ forceMultiEdit: true });
   }
 
@@ -97,7 +93,6 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
     return (
       <div ref={(node) => this.containerRef = node}>
         <form onSubmit={e => { e.preventDefault(); onSubmit(); }}>
-
           <FormGroup>
             {(!forceMultiEdit && numVals <= 1) && (
               <InputGroup
@@ -128,7 +123,6 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
                 tagProps={{
                   minimal:true,
                 }}
-                addOnBlur
                 addOnPaste
                 fill
                 onChange={this.onChange}

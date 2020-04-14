@@ -73,8 +73,6 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     if (sort) {
       const = { field, direction } = sort;
       return entities.sort((a, b) => {
-        console.log(a.getProperty(field), b.getProperty(field));
-        console.log(a.getFirst(field), b.getFirst(field), a.getFirst(field) > b.getFirst(field));
         if (direction === 'asc') {
           return a && a.getFirst(field) < b.getFirst(field) ? -1 : 1;
         } else {

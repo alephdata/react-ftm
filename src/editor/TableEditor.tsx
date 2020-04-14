@@ -49,9 +49,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     }
 
     this.onAddColumn = this.onAddColumn.bind(this);
-    this.renderEditor = this.renderEditor.bind(this);
-    this.handleNewRowPaste = this.handleNewRowPaste.bind(this);
-    this.handleExistingRowPaste = this.handleExistingRowPaste.bind(this);
   }
 
   getVisibleProperties() {
@@ -78,17 +75,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     }));
   }
 
-  handleDelete = ({ entity, property }) => {
-    entity.properties.set(property, []);
-    return entity;
-  }
-
-  handlePaste = (cell, value) => {
-    const { schema } = this.props;
-    const { entity, property } = cell.value;
-    entity.properties.set(property, value.split(','));
-    return entity;
-  }
 
   getRows = () => {
     const { entities, writeable } = this.props;
@@ -173,28 +159,16 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     }
   }
 
-  renderEditor({ cell, onCommit, onChange, onKeyDown }) {
+  renderEditor = ({ cell, onCommit, onChange, onKeyDown }) => {
     const { entityManager, schema } = this.props;
     const { entity, property } = cell.value;
 
-    let editingEntity, submitHandler;
-
-    if (entity) {
-      editingEntity = entity;
-      submitHandler = (e) => { entityManager.updateEntity(e); onCommit(); }
-    } else {
-      editingEntity = new Entity(entityManager.model, { schema });
-      submitHandler = (e) => { entityManager.createEntity({ schema, properties: { [property.name]: e.getProperty(property)} }); onCommit(); };
-    }
-
-    // workaround placeholder to signal to changeHandler
-    onChange('user-edit')
-
     return (
       <PropertyEditor
-        entity={editingEntity}
+        entity={entity || new Entity(entityManager.model, { schema })}
         property={property}
-        onSubmit={submitHandler}
+        onChange={(newVal) => onChange(newVal)}
+        onSubmit={(ent) => onCommit(ent.getProperty(property))}
         entitiesList={[]}
         usePortal={false}
       />
@@ -220,6 +194,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   renderCell = (props) => {
+    console.log('renderCell props', props);
     const {
       cell, row, col, columns, attributesRenderer,
       selected, editing, updated,
@@ -238,34 +213,30 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     );
   }
 
-  handleNewRowPaste(changes) {
-    console.log('in handleNew', changes)
+  handleNewRow = (changes) => {
     const { schema } = this.props;
     const { visibleProps } = this.state;
 
     const entityData = { schema, properties: {} };
-    let changed = false;
+
     changes.forEach(({ cell, value, col }) => {
-      if (!cell || cell.type === 'addNew') {
-        const property = cell?.value?.property || visibleProps[col-1];
-        entityData.properties[property.name] = value.pastedVal.split(',');
-        changed = true;
-      }
+      const property = cell?.value?.property || visibleProps[col-1];
+      entityData.properties[property.name] = value;
     })
-    if (changed) {
-      this.props.entityManager.createEntity(entityData);
-    }
+
+    this.props.entityManager.createEntity(entityData);
   }
 
-  handleExistingRowPaste(changes) {
-    console.log('in handleExisting', changes);
+  handleExistingRow = (changes) => {
     let changedEntity;
     changes.forEach(({ cell, value }) => {
+      const { entity, property } = cell.value;
       if (value === "") {
-        changedEntity = this.handleDelete(cell.value);
-      } else if (value.trigger === 'paste') {
-        changedEntity = this.handlePaste(cell, value.pastedVal);
+        entity.properties.set(property, []);
+      } else {
+        entity.properties.set(property, value);
       }
+      changedEntity = entity;
     })
     if (changedEntity) {
       this.props.entityManager.updateEntity(changedEntity);
@@ -278,13 +249,11 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const fullChangeList = outOfBounds ? [...changeList, ...outOfBounds] : changeList;
     const changesByRow = _.groupBy(fullChangeList, c => c.row);
 
-    console.log('changes by row', changesByRow)
-
     Object.entries(changesByRow).forEach(([rowIndex, changes]) => {
       if (rowIndex > entityCount) {
-        this.handleNewRowPaste(changes);
+        this.handleNewRow(changes);
       } else {
-        this.handleExistingRowPaste(changes);
+        this.handleExistingRow(changes);
       }
     });
   }
@@ -304,13 +273,12 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
           onContextMenu={(e, cell) => cell.header ? e.preventDefault() : null}
           cellRenderer={this.renderCell}
           onCellsChanged={this.onCellsChanged}
+          isCellNavigable={(cell, row, col) => { console.log('in cell navigable'); return false; }}
           parsePaste={(pasted) => {
             const lines = pasted.split(/[\r\n]+/g)
-            return lines
-              .map(line => line
-                .split('\t')
-                .map(value => ({ trigger: 'paste', pastedVal: value }) )
-              );
+            return lines.map(line => (
+              line.split('\t').map(val => val.split(','))
+            ));
           }}
         />
       </div>

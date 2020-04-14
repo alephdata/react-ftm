@@ -36,12 +36,15 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
   }
 
   onChange = (values: Values) => {
+    if (this.props.onChange) {
+      this.props.onChange(values);
+    }
     this.setState({ values });
   }
 
   onSubmit = (overrideStateValues?: Values) => {
     if (overrideStateValues) {
-      this.setState({ values: overrideStateValues });
+      this.onChange(overrideStateValues);
     }
     if (!this.checkErrors()) {
       this.props.entity.properties.set(this.props.property, overrideStateValues || this.state.values);
