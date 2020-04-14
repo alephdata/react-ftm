@@ -9,6 +9,7 @@ import { TruncatedFormat } from "@blueprintjs/table";
 import { Button, Checkbox, Icon, Intent, Popover, Position, Tooltip } from "@blueprintjs/core";
 import { Entity, Property, Schema } from "@alephdata/followthemoney";
 import Datasheet from 'react-datasheet';
+import _ from 'lodash';
 
 import "./TableEditor.scss"
 
@@ -49,7 +50,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     this.onAddColumn = this.onAddColumn.bind(this);
     this.renderEditor = this.renderEditor.bind(this);
-
+    this.handleNewRowPaste = this.handleNewRowPaste.bind(this);
+    this.handleExistingRowPaste = this.handleExistingRowPaste.bind(this);
   }
 
   getVisibleProperties() {
@@ -78,20 +80,14 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   handleDelete = ({ entity, property }) => {
     entity.properties.set(property, []);
-    this.props.entityManager.updateEntity(entity);
+    return entity;
   }
 
   handlePaste = (cell, value) => {
     const { schema } = this.props;
-    if (cell.type === 'property') {
-      const { entity, property } = cell.value;
-      entity.properties.set(property, value.split(','));
-      this.props.entityManager.updateEntity(entity);
-    } else {
-      console.log('creating!!!!!!!!')
-      const { property } = cell.value;
-      this.props.entityManager.createEntity({ schema, properties: { [property.name]: value.split(',') }});
-    }
+    const { entity, property } = cell.value;
+    entity.properties.set(property, value.split(','));
+    return entity;
   }
 
   getRows = () => {
@@ -242,11 +238,61 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     );
   }
 
-  renderWriteable() {
-    const { actions, intl, schema } = this.props;
-    const data = this.getRows();
+  handleNewRowPaste(changes) {
+    console.log('in handleNew', changes)
+    const { schema } = this.props;
+    const { visibleProps } = this.state;
 
-    console.log(data);
+    const entityData = { schema, properties: {} };
+    let changed = false;
+    changes.forEach(({ cell, value, col }) => {
+      if (!cell || cell.type === 'addNew') {
+        const property = cell?.value?.property || visibleProps[col-1];
+        entityData.properties[property.name] = value.pastedVal.split(',');
+        changed = true;
+      }
+    })
+    if (changed) {
+      this.props.entityManager.createEntity(entityData);
+    }
+  }
+
+  handleExistingRowPaste(changes) {
+    console.log('in handleExisting', changes);
+    let changedEntity;
+    changes.forEach(({ cell, value }) => {
+      if (value === "") {
+        changedEntity = this.handleDelete(cell.value);
+      } else if (value.trigger === 'paste') {
+        changedEntity = this.handlePaste(cell, value.pastedVal);
+      }
+    })
+    if (changedEntity) {
+      this.props.entityManager.updateEntity(changedEntity);
+    }
+  }
+
+  onCellsChanged = (changeList, outOfBounds) => {
+    const { entities } = this.props;
+    const entityCount = entities.length;
+    const fullChangeList = outOfBounds ? [...changeList, ...outOfBounds] : changeList;
+    const changesByRow = _.groupBy(fullChangeList, c => c.row);
+
+    console.log('changes by row', changesByRow)
+
+    Object.entries(changesByRow).forEach(([rowIndex, changes]) => {
+      if (rowIndex > entityCount) {
+        this.handleNewRowPaste(changes);
+      } else {
+        this.handleExistingRowPaste(changes);
+      }
+    });
+  }
+
+  renderWriteable() {
+    const { actions, entities, intl, schema } = this.props;
+    const data = this.getRows();
+    const entityCount = entities.length;
 
     return (
       <div className="TableEditor">
@@ -257,17 +303,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
           dataEditor={this.renderEditor}
           onContextMenu={(e, cell) => cell.header ? e.preventDefault() : null}
           cellRenderer={this.renderCell}
-          onCellsChanged={(changes, outOfBounds) => {
-            changes.forEach(({ cell, value }) => {
-              if (value === "") {
-                this.handleDelete(cell.value);
-              } else if (value.trigger === 'paste') {
-                this.handlePaste(cell, value.pastedVal);
-              }
-            })
-
-            console.log('outOfBounds', outOfBounds);
-          }}
+          onCellsChanged={this.onCellsChanged}
           parsePaste={(pasted) => {
             const lines = pasted.split(/[\r\n]+/g)
             return lines
