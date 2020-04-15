@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Values } from "@alephdata/followthemoney";
-import { Button, ControlGroup, FormGroup, InputGroup, TagInput, Tooltip } from "@blueprintjs/core";
+import { Button, ControlGroup, FormGroup, InputGroup, TagInput, TextArea, Tooltip } from "@blueprintjs/core";
 import { ITypeProps } from "./common";
 
 import "./TextEdit.scss";
@@ -95,27 +95,38 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
         <form onSubmit={e => { e.preventDefault(); onSubmit(); }}>
           <FormGroup>
             {(!forceMultiEdit && numVals <= 1) && (
-              <InputGroup
-                className="TextEdit__singleInput"
-                inputRef={(ref) => this.singleInputRef = ref}
-                autoFocus
-                fill
-                value={values[0] as string || ''}
-                onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
-                  const value = e.target.value;
-                  // avoid setting an empty string val
-                  return this.onChange(value ? [value] : [])
-                }}
-                rightElement={showMultiToggleButton ? (
-                    <Button
-                      className="TextEdit__toggleMulti"
-                      minimal
-                      small
-                      icon="plus"
-                      onClick={this.triggerMultiEdit}
-                    />
-                ) : undefined}
-              />
+              <div class="bp3-input-group">
+                <TextArea
+                  className="TextEdit__singleInput"
+                  inputRef={(ref) => this.singleInputRef = ref}
+                  value={values[0] as string || ''}
+                  rows={1}
+                  growVertically
+                  fill
+                  onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
+                    const value = e.target.value;
+                    // avoid setting an empty string val
+                    return this.onChange(value ? [value] : [])
+                  }}
+                  onKeyDown={(e) => {
+                    // override textarea Enter to submit input
+                    if (e.keyCode == 13) {
+                      e.preventDefault();
+                      onSubmit();
+                    }
+                  }}
+                  style={{resize:"none", overflow:"auto"}}
+                />
+                {showMultiToggleButton && (
+                  <Button
+                    className="TextEdit__toggleMulti"
+                    minimal
+                    small
+                    icon="plus"
+                    onClick={this.triggerMultiEdit}
+                  />
+                )}
+              </div>
             )}
             {(forceMultiEdit || numVals > 1) && (
               <TagInput

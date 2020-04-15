@@ -9,6 +9,9 @@ import { LanguageName } from './Language';
 import { URL } from './URL';
 import { wordList } from "../utils";
 
+import './Property.scss';
+
+
 interface IPropertyCommonProps {
   prop:Property
 }
@@ -75,13 +78,16 @@ export class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
     const vals = values.map(value => (
       <PropertyValue key={value.toString()} prop={prop} value={value} entitiesList={entitiesList} />
     ));
+    let content;
     if (!vals.length) {
-      return (<span>—</span>);
+      content = (<span>—</span>);
     // display urls separated by newline
     } else if (prop.type.name === 'url') {
-      return vals.map(val => <span style={{ display: 'block' }}>{val}</span>);
+      content = vals.map(val => <span style={{ display: 'block' }}>{val}</span>);
     } else {
-      return (<span>{ wordList(vals, ' · ') }</span>);
+      content = (<span>{ wordList(vals, ' · ') }</span>);
     }
+
+    return <span className="PropertyValues">{content}</span>;
   }
 }
