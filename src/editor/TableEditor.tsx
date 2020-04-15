@@ -51,6 +51,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     this.state = {
       visibleProps: this.getVisibleProperties(),
+      shouldCommit: false,
     }
 
     this.onAddColumn = this.onAddColumn.bind(this);
@@ -144,14 +145,20 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   renderEditor = ({ cell, onCommit, onChange, onKeyDown }) => {
     const { entityManager, schema } = this.props;
+    const { shouldCommit } = this.state;
     const { entity, property } = cell.data;
+
+    if (shouldCommit) {
+      this.setState({ shouldCommit: false });
+      onCommit();
+    }
 
     return (
       <PropertyEditor
         entity={entity || new Entity(entityManager.model, { schema })}
         property={property}
         onChange={(newVal) => onChange(newVal)}
-        onSubmit={(ent) => onCommit(ent.getProperty(property))}
+        onSubmit={(ent) => {onChange(ent.getProperty(property)); this.setState({ shouldCommit: true }); }}
         entitiesList={[]}
         usePortal={false}
       />
@@ -217,12 +224,14 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       }
       changedEntity = entity;
     })
+    console.log('in handle existing row');
     if (changedEntity) {
       this.props.entityManager.updateEntity(changedEntity);
     }
   }
 
   onCellsChanged = (changeList, outOfBounds) => {
+    console.log('in onCellsChanged', changeList);
     const { entities } = this.props;
     const entityCount = entities.length;
     const fullChangeList = outOfBounds ? [...changeList, ...outOfBounds] : changeList;

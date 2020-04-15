@@ -95,7 +95,7 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
         <form onSubmit={e => { e.preventDefault(); onSubmit(); }}>
           <FormGroup>
             {(!forceMultiEdit && numVals <= 1) && (
-              <div class="bp3-input-group">
+              <div className="bp3-input-group">
                 <TextArea
                   className="TextEdit__singleInput"
                   inputRef={(ref) => this.singleInputRef = ref}
