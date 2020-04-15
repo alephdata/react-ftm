@@ -162,7 +162,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const { sort, sortColumn } = this.props;
 
     const isSorted = sort && sort.field === property;
-    const sortIcon = isSorted ? (sort.direction === 'asc' ? 'caret-up' : 'caret-down') : 'double-caret-vertical';
+    const sortIcon = isSorted ? (sort.direction === 'asc' ? 'caret-up' : 'caret-down') : null;
     return (
       <Button
         onClick={(e) => { sortColumn({field: property, direction: (isSorted && sort.direction === 'asc') ? 'desc' : 'asc'})}

@@ -7,6 +7,7 @@ import { TableEditor } from './TableEditor';
 import { EntityManager } from '../EntityManager';
 import { Button, Classes, Drawer, Icon, Position, Tab, TabId, Tabs } from "@blueprintjs/core";
 import { Entity, Schema } from "@alephdata/followthemoney";
+import { SchemaLabel } from '../types';
 import c from 'classnames';
 
 import "./TableView.scss"
@@ -142,7 +143,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
               <Tab
                 id={schema.name}
                 key={schema.name}
-                title={schema.plural}
+                title={<SchemaLabel schema={schema} icon />}
                 panel={(
                   <TableEditor
                     entities={this.getEntities(schema)}

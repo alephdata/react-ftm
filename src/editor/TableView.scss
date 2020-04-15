@@ -1,23 +1,24 @@
 $table-editor-padding: 20px;
 $border-color: rgba(16, 22, 26, 0.15);
 
+@import "src/variables.scss";
+
 .TableView {
   padding: $table-editor-padding;
 
-  .bp3-tabs.bp3-vertical {
-    & > .bp3-tab-panel {
-      border-left: 1px solid $border-color;
-      width: 100%;
-      overflow-x: scroll;
-    }
-
-    & > .bp3-tab-list {
-      overflow-y: scroll;
-      padding-right: $table-editor-padding;
-    }
+  .bp3-tab-panel {
+    height: 300px;
+    // box-shadow: 0 0 6px rgba(16,22,26,.2);
   }
 
-  &__schemaAdd {
-    margin-top: $table-editor-padding;
+  .bp3-tab-list {
+    // padding-bottom: 20px;
+    // border-bottom: 1px solid grey;
+  }
+
+  .bp3-tab[aria-selected="true"] {
+    .SchemaIcon {
+      fill: $blue2;
+    }
   }
 }
