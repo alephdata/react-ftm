@@ -8,6 +8,10 @@ import { CountryEdit } from "../types/CountryEdit";
 import { TopicEdit } from "../types/TopicEdit";
 
 const messages = defineMessages({
+  invalidDate: {
+    id: 'editor.property_date_invalid',
+    defaultMessage: 'Date format: yyyy-m-d',
+  },
   required: {
     id: 'editor.property_required',
     defaultMessage: 'This property is required',
@@ -58,7 +62,11 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
 
     if (property.required) {
       return values && values.length && values[0] ? null : intl.formatMessage(messages.required);
+    } else if (property.type.name === 'date') {
+      const dateRegex = RegExp(/^([12]\d{3}(-[01]?[0-9](-[0123]?[0-9]([T ]([012]?\d(:\d{1,2}(:\d{1,2}(\.\d{6})?(Z|[-+]\d{2}(:?\d{2})?)?)?)?)?)?)?)?)?$/)
+      return values.some(val => !dateRegex.test(val)) ? intl.formatMessage(messages.invalidDate) : null;
     }
+
   }
 
   render() {
@@ -75,9 +83,7 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
     };
     let content;
 
-    if (DateEdit.group.has(property.type.name)) {
-      content = <DateEdit {...commonProps} />;
-    } else if (CountryEdit.group.has(property.type.name)) {
+    if (CountryEdit.group.has(property.type.name)) {
       content = <CountryEdit {...commonProps} />;
     } else if (TopicEdit.group.has(property.type.name)) {
       content = <TopicEdit {...commonProps} />;

@@ -21,7 +21,7 @@ interface ITextEditState {
 }
 
 class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
-  static group = new Set(['text', 'string'])
+  static group = new Set(['date', 'text', 'string'])
   private containerRef: any | null = null;
   private multiInputRef: HTMLInputElement | null = null;
   private singleInputRef: HTMLInputElement | null = null;
