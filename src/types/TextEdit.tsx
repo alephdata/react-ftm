@@ -41,9 +41,10 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
   componentDidMount() {
     if (this.singleInputRef) {
       this.singleInputRef.focus();
-      const valLength = this.singleInputRef.value.length;
-      this.singleInputRef.setSelectionRange(valLength, valLength);
-
+      if (this.singleInputRef.value) {
+        const valLength = this.singleInputRef.value.length;
+        this.singleInputRef.setSelectionRange(valLength, valLength);
+      }
     }
     this.multiInputRef && this.multiInputRef.focus();
     document.addEventListener('mousedown', this.handleClickOutside);
@@ -60,11 +61,13 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
-  handleClickOutside(event: MouseEvent) {
+  handleClickOutside(e: MouseEvent) {
     const { onSubmit, values } = this.props;
     const { currMultiInputValue } = this.state;
+    e.preventDefault();
+    e.stopPropagation();
 
-    const target = event.target as Element;
+    const target = e.target as Element;
     if (target && this.containerRef && !this.containerRef.contains(target)) {
       if (currMultiInputValue) {
         onSubmit([...values, ...[currMultiInputValue]]);

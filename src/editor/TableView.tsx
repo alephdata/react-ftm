@@ -104,7 +104,11 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
 
   async onEntityCreate(entityData: any) {
     const { layout, updateLayout } = this.props;
+    console.log('updating entity', entityData);
     const entity = await layout.createEntity(entityData);
+
+    console.log('finished update', layout.entities);
+
     updateLayout(layout, { created: [entity] }, { modifyHistory: true });
     return entity;
   }
@@ -117,6 +121,8 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
 
   onEntityUpdate(entity: Entity) {
     const { layout, updateLayout } = this.props;
+
+    console.log('updating entity', entity);
     layout.updateEntity(entity);
     updateLayout(layout, { updated: [entity] }, { modifyHistory: true });
   }
