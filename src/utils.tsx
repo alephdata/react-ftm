@@ -70,3 +70,13 @@ export function partition(array: any[], filter: any) {
   array.forEach((e, idx, arr) => (filter(e, idx, arr) ? pass : fail).push(e));
   return [pass, fail];
 }
+
+export function isValidUrl(value: string) {
+  try {
+    new URL(value);
+  } catch (e) {
+    return false;
+  }
+
+  return true;
+};

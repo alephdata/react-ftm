@@ -1,16 +1,20 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity, Property, Values } from '@alephdata/followthemoney';
-import { DateEdit } from '../types/DateEdit';
 import { TextEdit } from '../types/TextEdit';
 import EntityEdit from '../types/EntityEdit';
 import { CountryEdit } from "../types/CountryEdit";
 import { TopicEdit } from "../types/TopicEdit";
+import { isValidUrl } from '../utils';
 
 const messages = defineMessages({
   invalidDate: {
     id: 'editor.property_date_invalid',
     defaultMessage: 'Date format: yyyy-m-d',
+  },
+  invalidUrl: {
+    id: 'editor.property_url_invalid',
+    defaultMessage: 'Invalid URL format',
   },
   required: {
     id: 'editor.property_required',
@@ -62,11 +66,15 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
 
     if (property.required) {
       return values && values.length && values[0] ? null : intl.formatMessage(messages.required);
-    } else if (property.type.name === 'date') {
+    }
+    const propType = property.type.name;
+
+    if (propType === 'url') {
+      return values.some(val => !isValidUrl(val)) ? intl.formatMessage(messages.invalidUrl) : null;
+    } else if (propType === 'date') {
       const dateRegex = RegExp(/^([12]\d{3}(-[01]?[0-9](-[0123]?[0-9]([T ]([012]?\d(:\d{1,2}(:\d{1,2}(\.\d{6})?(Z|[-+]\d{2}(:?\d{2})?)?)?)?)?)?)?)?)?$/)
       return values.some(val => !dateRegex.test(val)) ? intl.formatMessage(messages.invalidDate) : null;
     }
-
   }
 
   render() {

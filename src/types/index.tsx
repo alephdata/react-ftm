@@ -2,7 +2,6 @@ export * from './Count';
 export * from './CountryEdit';
 export * from './Numeric';
 export * from './Date';
-export * from './DateEdit';
 export * from './Entity';
 export * from './EntityEdit';
 export * from './EnumValue';
