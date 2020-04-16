@@ -39,7 +39,12 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
   }
 
   componentDidMount() {
-    this.singleInputRef && this.singleInputRef.focus();
+    if (this.singleInputRef) {
+      this.singleInputRef.focus();
+      const valLength = this.singleInputRef.value.length;
+      this.singleInputRef.setSelectionRange(valLength, valLength);
+
+    }
     this.multiInputRef && this.multiInputRef.focus();
     document.addEventListener('mousedown', this.handleClickOutside);
   }
@@ -103,6 +108,7 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
                   rows={1}
                   growVertically
                   fill
+                  style={{resize:"none", overflow:"hidden"}}
                   onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
                     const value = e.target.value;
                     // avoid setting an empty string val
@@ -115,7 +121,6 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
                       onSubmit();
                     }
                   }}
-                  style={{resize:"none", overflow:"auto"}}
                 />
                 {showMultiToggleButton && (
                   <Button
