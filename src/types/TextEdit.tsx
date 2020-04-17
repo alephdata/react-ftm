@@ -41,7 +41,7 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
   componentDidMount() {
     if (this.singleInputRef) {
       this.singleInputRef.focus();
-      if (this.singleInputRef.value) {
+      if (this.singleInputRef?.value?.length) {
         const valLength = this.singleInputRef.value.length;
         this.singleInputRef.setSelectionRange(valLength, valLength);
       }

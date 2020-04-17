@@ -64,10 +64,10 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
   checkErrors() {
     const { intl, property } = this.props;
     const { values } = this.state;
-
-    if (property.required) {
-      return values && values.length && values[0] ? null : intl.formatMessage(messages.required);
-    }
+    // 
+    // if (property.required) {
+    //   return values && values.length && values[0] ? null : intl.formatMessage(messages.required);
+    // }
     const propType = property.type.name;
 
     if (propType === 'url') {
