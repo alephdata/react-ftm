@@ -6,8 +6,9 @@ import { VertexSchemaSelect } from './VertexSchemaSelect';
 import { TableEditor } from './TableEditor';
 import { EntityManager } from '../EntityManager';
 import { Button, Classes, Drawer, Icon, Position, Tab, TabId, Tabs } from "@blueprintjs/core";
-import { Entity, Schema } from "@alephdata/followthemoney";
+import { Entity, IEntityDatum, Schema } from "@alephdata/followthemoney";
 import { SchemaLabel } from '../types';
+import { SortType } from './SortType';
 import c from 'classnames';
 
 import "./TableView.scss"
@@ -26,15 +27,18 @@ interface ITableViewProps extends WrappedComponentProps {
   updateLayout: GraphUpdateHandler,
   writeable: boolean,
   actions: any,
+  toggleTableView: () => void
 }
 
 interface ITableViewState {
   activeTabId: TabId,
   schemata: Array<Schema>,
-  sort: any
+  sort: SortType | null
 }
 
 export class TableViewBase extends React.Component<ITableViewProps, ITableViewState> {
+  private localEntityManager: EntityManager
+
   constructor(props: ITableViewProps) {
     super(props);
 
@@ -52,7 +56,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
       sort: null,
     };
 
-    this.overloadedEntityManager = new EntityManager({
+    this.localEntityManager = new EntityManager({
       createEntity: this.onEntityCreate.bind(this),
       updateEntity: this.onEntityUpdate.bind(this),
     });
@@ -64,7 +68,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     this.onSelectionUpdate = this.onSelectionUpdate.bind(this);
   }
 
-  getEntities(schema) {
+  getEntities(schema: Schema) {
     const { layout } = this.props;
     const { sort } = this.state;
 
@@ -72,18 +76,18 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
       .filter(e => e.schema === schema);
 
     if (sort) {
-      const = { field, direction } = sort;
+      const { field, direction } = sort;
       return entities.sort((a, b) => {
-        const aVal = a?.getFirst(field)?.toLowerCase();
-        const bVal = b?.getFirst(field)?.toLowerCase();
+        const aVal = a?.getFirst(field) as string;
+        const bVal = b?.getFirst(field) as string;
 
         if (!aVal) return 1;
         if (!bVal) return -1;
 
         if (direction === 'asc') {
-          return aVal < bVal ? -1 : 1;
+          return aVal.toLowerCase() < bVal.toLowerCase() ? -1 : 1;
         } else {
-          return aVal < bVal ? 1 : -1;
+          return aVal.toLowerCase() < bVal.toLowerCase() ? 1 : -1;
         }
       });
     } else {
@@ -102,7 +106,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     this.setState({ activeTabId: newTabId });
   }
 
-  async onEntityCreate(entityData: any) {
+  async onEntityCreate(entityData: IEntityDatum) {
     const { layout, updateLayout } = this.props;
     console.log('updating entity', entityData);
     const entity = await layout.createEntity(entityData);
@@ -125,13 +129,12 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     updateLayout(layout, { updated: [entity] }, { modifyHistory: true });
   }
 
-  onColumnSort(sort) {
+  onColumnSort(sort: SortType) {
     this.setState({ sort })
   }
 
-  onSelectionUpdate(entity) {
+  onSelectionUpdate(entityId: string) {
     const { layout, updateLayout } = this.props;
-    const entityId = entity.id;
 
     // select graphElement by entityId
     layout.selectVerticesByFilter((v) => v.entityId === entityId, true, true);
@@ -177,7 +180,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
                     selection={layout.getSelectedEntities().map(e => e.id)}
                     updateSelection={this.onSelectionUpdate}
                     writeable={writeable}
-                    entityManager={this.overloadedEntityManager}
+                    entityManager={this.localEntityManager}
                   />
                 )}
               />
@@ -197,7 +200,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
             </div>
           )}
         </Tabs>
-      </div>
+      </Drawer>
     )
   }
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { Entity } from '@alephdata/followthemoney';
 import { Button, Menu, MenuItem, Icon } from '@blueprintjs/core'
 import { SchemaIcon } from '../types';
-import { groupBy } from '../utils'
+import _ from 'lodash'
 import './EntityList.scss';
 
 
@@ -49,7 +49,7 @@ export class EntityList extends React.PureComponent<IEntityListProps>{
     const { entities } = this.props;
     entities
       .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
-    const entityGroups = groupBy(entities, (e:Entity) => e.schema.plural)
+    const entityGroups = _.groupBy(entities, (e:Entity) => e.schema.plural)
 
     return <Menu className="EntityList">
       {Object.entries(entityGroups).map(([key, values]:any) => {

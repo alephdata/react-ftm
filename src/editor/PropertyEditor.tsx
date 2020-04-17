@@ -27,6 +27,7 @@ interface IPropertyEditorProps extends WrappedComponentProps {
   property: Property,
   entitiesList: Map<string, Entity>,
   onSubmit: (nextEntity: Entity) => void
+  onChange?: (values: Values) => void
   usePortal?: boolean
 }
 
@@ -70,10 +71,10 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
     const propType = property.type.name;
 
     if (propType === 'url') {
-      return values.some(val => !isValidUrl(val)) ? intl.formatMessage(messages.invalidUrl) : null;
+      return values.some(val => !isValidUrl(val as string)) ? intl.formatMessage(messages.invalidUrl) : null;
     } else if (propType === 'date') {
       const dateRegex = RegExp(/^([12]\d{3}(-[01]?[0-9](-[0123]?[0-9]([T ]([012]?\d(:\d{1,2}(:\d{1,2}(\.\d{6})?(Z|[-+]\d{2}(:?\d{2})?)?)?)?)?)?)?)?)?$/)
-      return values.some(val => !dateRegex.test(val)) ? intl.formatMessage(messages.invalidDate) : null;
+      return values.some(val => !dateRegex.test(val as string)) ? intl.formatMessage(messages.invalidDate) : null;
     }
   }
 

@@ -31,7 +31,7 @@ export class EnumValueList extends React.Component<IEnumValueListProps> {
     if (!codes) return null;
 
     let names:Array<any> = codes.map(code => (
-      <EnumValueName code={code} key={code} {...props} />
+      <EnumValue code={code} key={code} {...props} />
     ));
 
     // Truncate if too long

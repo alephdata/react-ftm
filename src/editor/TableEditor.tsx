@@ -1,5 +1,6 @@
 import React from 'react';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
+import _ from 'lodash';
 import { GraphUpdateHandler } from '../GraphContext';
 import { PropertyEditor } from './PropertyEditor';
 import { PropertyValues } from '../types';
@@ -9,7 +10,7 @@ import { TruncatedFormat } from "@blueprintjs/table";
 import { Button, Checkbox, Icon, Intent, Popover, Position, Tooltip } from "@blueprintjs/core";
 import { Entity, Property, Schema } from "@alephdata/followthemoney";
 import Datasheet from 'react-datasheet';
-import _ from 'lodash';
+import { SortType } from './SortType';
 
 import "./TableEditor.scss"
 
@@ -24,25 +25,32 @@ const messages = defineMessages({
   },
 });
 
-const readOnlyCellProps = { readOnly: true, disableEvents: true, forceComponent: true }''
+const readOnlyCellProps = { readOnly: true, disableEvents: true, forceComponent: true };
 const headerCellProps = { className: "header", ...readOnlyCellProps };
 const checkboxCellProps = { className: "checkbox", ...readOnlyCellProps };
 const propertyCellProps = { className: "property" };
 
 const propSort = (a:Property, b:Property) => (a.label > b.label ? 1 : -1);
 
+export interface CellData extends Datasheet.Cell<CellData, any> {
+  className: string
+  data: any
+}
+
 interface ITableEditorProps extends WrappedComponentProps {
   entities: Array<Entity>
   schema: Schema
-  sort: any
-  sortColumn: (sort: any) => void
-  selection: Array<Entity>
-  updateSelection: (entities:Array<Entity>) => void
+  sort: SortType | null
+  sortColumn: (sort: SortType) => void
+  selection: Array<string>
+  updateSelection: (entityId: string) => void
   entityManager: EntityManager
+  writeable: boolean
 }
 
 interface ITableEditorState {
   visibleProps: Array<Property>
+  shouldCommit: boolean
 }
 
 class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorState> {
@@ -117,7 +125,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     }
   }
 
-  getUnderlyingValue = (cell) => {
+  getUnderlyingValue = (cell: CellData) => {
     const { data } = cell;
 
     if (data?.entity) {
@@ -128,13 +136,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     }
   }
 
-  renderValue = ({ cell }) => {
+  renderValue = ({ cell }: { cell: CellData }) => {
     const { data } = cell;
 
     if (data) {
       const { entity, property } = data;
       if (entity) {
-        return <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={[]} />;
+        return <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={new Map()} />;
       } else {
         return <span>—</span>
       }
@@ -143,36 +151,36 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     }
   }
 
-  renderEditor = ({ cell, onCommit, onChange, onKeyDown }) => {
+  renderEditor = ({ cell, onCommit, onChange, onKeyDown }: Datasheet.DataEditorProps<CellData, any>) => {
     const { entityManager, schema } = this.props;
     const { shouldCommit } = this.state;
     const { entity, property } = cell.data;
 
     if (shouldCommit) {
       this.setState({ shouldCommit: false });
-      onCommit();
+      onCommit(null);
     }
 
     return (
       <PropertyEditor
-        entity={entity || new Entity(entityManager.model, { schema })}
+        entity={entity || new Entity(entityManager.model, { schema, id: `${Math.random()}` })}
         property={property}
         onChange={(newVal) => onChange(newVal)}
         onSubmit={(ent) => {onChange(ent.getProperty(property)); this.setState({ shouldCommit: true }); }}
-        entitiesList={[]}
+        entitiesList={new Map()}
         usePortal={false}
       />
     );
   }
 
-  renderColumnHeader = (property) => {
+  renderColumnHeader = (property: Property) => {
     const { sort, sortColumn } = this.props;
 
     const isSorted = sort && sort.field === property;
-    const sortIcon = isSorted ? (sort.direction === 'asc' ? 'caret-up' : 'caret-down') : null;
+    const sortIcon = isSorted ? (sort && sort.direction === 'asc' ? 'caret-up' : 'caret-down') : null;
     return (
       <Button
-        onClick={(e) => { sortColumn({field: property, direction: (isSorted && sort.direction === 'asc') ? 'desc' : 'asc'})}
+        onClick={() => { sortColumn({field: property, direction: (isSorted && sort?.direction === 'asc') ? 'desc' : 'asc'})}}
         rightIcon={sortIcon}
         minimal
         fill
@@ -191,21 +199,21 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     )
   }
 
-  renderCheckbox = (entity) => {
+  renderCheckbox = (entity: Entity) => {
     const { selection, updateSelection } = this.props;
     const isSelected = selection.indexOf(entity.id) > -1;
     return (
-      <Checkbox checked={isSelected} onChange={() => updateSelection(entity)} />
+      <Checkbox checked={isSelected} onChange={() => updateSelection(entity.id)} />
     );
   }
 
-  handleNewRow = (changes) => {
+  handleNewRow = (changes: any) => {
     const { schema } = this.props;
     const { visibleProps } = this.state;
 
     const entityData = { schema, properties: {} };
 
-    changes.forEach(({ cell, value, col }) => {
+    changes.forEach(({ cell, value, col }: any) => {
       const property = cell?.data?.property || visibleProps[col-1];
       entityData.properties[property.name] = value;
     })
@@ -213,9 +221,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     this.props.entityManager.createEntity(entityData);
   }
 
-  handleExistingRow = (changes) => {
+  handleExistingRow = (changes: Datasheet.CellsChangedArgs<CellData, any> | Datasheet.CellAdditionsArgs<CellData>) => {
     let changedEntity;
-    changes.forEach(({ cell, value }) => {
+    changes.forEach(({ cell, value }: any) => {
       const { entity, property } = cell.data;
       if (value === "") {
         entity.properties.set(property, []);
@@ -224,21 +232,19 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       }
       changedEntity = entity;
     })
-    console.log('in handle existing row');
     if (changedEntity) {
       this.props.entityManager.updateEntity(changedEntity);
     }
   }
 
-  onCellsChanged = (changeList, outOfBounds) => {
-    console.log('in onCellsChanged', changeList);
+  onCellsChanged = (changeList: Datasheet.CellsChangedArgs<CellData, any>, outOfBounds: Datasheet.CellAdditionsArgs<CellData>) => {
     const { entities } = this.props;
     const entityCount = entities.length;
     const fullChangeList = outOfBounds ? [...changeList, ...outOfBounds] : changeList;
     const changesByRow = _.groupBy(fullChangeList, c => c.row);
 
-    Object.entries(changesByRow).forEach(([rowIndex, changes]) => {
-      if (rowIndex > entityCount) {
+    Object.entries(changesByRow).forEach(([rowIndex, changes]: [string, any]) => {
+      if (+rowIndex > entityCount) {
         this.handleNewRow(changes);
       } else {
         this.handleExistingRow(changes);
@@ -246,8 +252,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     });
   }
 
-  parsePaste(pasted) {
-    const lines = pasted.split(/[\r\n]+/g)
+  parsePaste(pastedString: string) {
+    const lines = pastedString.split(/[\r\n]+/g)
     return lines.map(line => (
       line.split('\t').map(val => val.split(','))
     ));
@@ -260,13 +266,12 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     return (
       <div className="TableEditor">
         <Datasheet
-          data={[this.getTableHeader(), ...this.getTableContent()]}
+          data={[this.getTableHeader(), ...this.getTableContent()] as CellData[][]}
           valueRenderer={this.getUnderlyingValue}
           valueViewer={this.renderValue}
           dataEditor={this.renderEditor}
-          onCellsChanged={this.onCellsChanged}
-          isCellNavigable={(cell, row, col) => { console.log('in cell navigable'); return false; }}
-          parsePaste={this.parsePaste}
+          onCellsChanged={this.onCellsChanged as Datasheet.CellsChangedHandler<CellData, CellData>}
+          parsePaste={this.parsePaste as any}
         />
       </div>
     )

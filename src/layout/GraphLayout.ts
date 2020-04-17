@@ -8,7 +8,6 @@ import { Point } from './Point';
 import { Rectangle } from './Rectangle';
 import { EntityManager } from '../EntityManager';
 import { GraphConfig } from '../GraphConfig';
-import { groupBy } from '../utils';
 
 export interface IGraphLayoutData {
   entities: Array<IEntityDatum>

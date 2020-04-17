@@ -24,7 +24,7 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
   static group = new Set(['date', 'text', 'string'])
   private containerRef: any | null = null;
   private multiInputRef: HTMLInputElement | null = null;
-  private singleInputRef: HTMLInputElement | null = null;
+  private singleInputRef: HTMLTextAreaElement | null = null;
 
   constructor(props: ITextEditProps) {
     super(props);
@@ -85,7 +85,7 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
     }
   }
 
-  triggerMultiEdit(e) {
+  triggerMultiEdit(e: any) {
     e.preventDefault();
     e.stopPropagation();
     this.setState({ forceMultiEdit: true });
@@ -100,7 +100,7 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
 
     return (
       <div ref={(node) => this.containerRef = node}>
-        <form onSubmit={e => { e.preventDefault(); onSubmit(); }}>
+        <form onSubmit={(e: any) => { e.preventDefault(); onSubmit(values); }}>
           <FormGroup>
             {(!forceMultiEdit && numVals <= 1) && (
               <div className="bp3-input-group">
@@ -112,16 +112,16 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
                   growVertically
                   fill
                   style={{resize:"none", overflow:"hidden"}}
-                  onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
+                  onChange={(e:React.ChangeEvent<HTMLTextAreaElement>) => {
                     const value = e.target.value;
                     // avoid setting an empty string val
                     return this.onChange(value ? [value] : [])
                   }}
-                  onKeyDown={(e) => {
+                  onKeyDown={(e:any) => {
                     // override textarea Enter to submit input
                     if (e.keyCode == 13) {
                       e.preventDefault();
-                      onSubmit();
+                      onSubmit(values);
                     }
                   }}
                 />

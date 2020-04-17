@@ -3,7 +3,7 @@ import { defaultModel, Entity, Model, Schema, IEntityDatum } from '@alephdata/fo
 
 export interface IEntityManagerProps {
   model?: Model,
-  createEntity?: (entityData: IEntityDatum) => Promise<IEntityDatum>,
+  createEntity?: (entityData: IEntityDatum) => Promise<Entity>,
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
   getEntitySuggestions?: (queryText: string, schema?: Schema) => Promise<Entity[]>,
@@ -39,7 +39,7 @@ export class EntityManager {
           } else {
             entity.setProperty(prop, value);
           }
-        }));
+        });
       }
 
       return entity;

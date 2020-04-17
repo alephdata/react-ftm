@@ -29,6 +29,7 @@ const messages = defineMessages({
 export interface ISidebarProps extends IGraphContext {
   searchText: string,
   writeable: boolean,
+  isOpen: boolean
 }
 
 export class Sidebar extends React.Component<ISidebarProps> {
