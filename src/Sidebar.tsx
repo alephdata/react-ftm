@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
 import { Entity } from '@alephdata/followthemoney';
+import { Drawer, Icon, Position } from "@blueprintjs/core";
 import { IGraphContext } from './GraphContext'
 import { GroupingViewer } from "./editor/GroupingViewer";
 import { EntityViewer } from "./editor/EntityViewer";
@@ -93,7 +94,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
   }
 
   render() {
-    const { intl, layout, writeable, searchText } = this.props
+    const { intl, isOpen, layout, writeable, searchText } = this.props
     const selection = layout.getSelectedEntities()
     const selectedGroupings = layout.getSelectedGroupings()
     let contents, searchResultsText;
@@ -135,14 +136,21 @@ export class Sidebar extends React.Component<ISidebarProps> {
     }
 
     return (
-      <div className="Sidebar">
+      <Drawer
+        className="Sidebar"
+        isOpen={isOpen}
+        hasBackdrop={false}
+        autoFocus={false}
+        enforceFocus={false}
+        usePortal={false}
+      >
         {searchText && (
           <div className="Sidebar__search-text">
             {searchResultsText}
           </div>
         )}
         {contents}
-      </div>
+      </Drawer>
     )
   }
 }

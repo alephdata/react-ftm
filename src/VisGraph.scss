@@ -48,16 +48,18 @@
   }
 
   &__sidebar {
-    max-height: 100%;
     box-sizing: border-box;
-    overflow-y: scroll;
     width: $sidebar-width;
-    box-shadow: $editor-box-shadow;
+    position: relative;
   }
 
   &__table {
+    flex-grow: 3;
+    flex-shrink: 1;
+    flex-basis: $table-height;
     width: 100%;
-    box-shadow: $editor-box-shadow;
+    position: relative;
+    z-index: 0;
   }
 
 

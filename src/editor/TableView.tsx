@@ -107,8 +107,6 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     console.log('updating entity', entityData);
     const entity = await layout.createEntity(entityData);
 
-    console.log('finished update', layout.entities);
-
     updateLayout(layout, { created: [entity] }, { modifyHistory: true });
     return entity;
   }
@@ -141,11 +139,25 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
   }
 
   render() {
-    const { actions, intl, isOpen, layout, updateLayout, writeable } = this.props;
+    const { actions, intl, isOpen, layout, toggleTableView, updateLayout, writeable } = this.props;
     const { activeTabId, sort, schemata } = this.state;
 
     return (
-      <div className="TableView">
+      <Drawer
+        className="TableView"
+        isOpen={isOpen}
+        hasBackdrop={false}
+        position={Position.BOTTOM}
+        autoFocus={false}
+        enforceFocus={false}
+        usePortal={false}
+      >
+        <Button
+          className="TableView__close"
+          icon="cross"
+          minimal
+          onClick={toggleTableView}
+        />
         <Tabs
           renderActiveTabPanelOnly
           selectedTabId={activeTabId}

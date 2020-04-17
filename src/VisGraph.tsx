@@ -258,6 +258,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
               showEditingButtons={writeable}
               logo={config.logo}
               searchText={searchText}
+              tableView={tableView}
               {...layoutContext}
             />
           </div>
@@ -281,23 +282,23 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                 {...layoutContext}
               />
             </div>
-            {showSidebar &&
+            {!tableView && (
               <div className="VisGraph__sidebar">
-                <Sidebar {...layoutContext} writeable={writeable} searchText={searchText} />
+                <Sidebar {...layoutContext} writeable={writeable} searchText={searchText} isOpen={showSidebar} />
               </div>
-            }
-            {tableView &&
+            )}
+            {tableView && (
               <div className="VisGraph__table">
                 <TableView
                   isOpen={tableView}
+                  toggleTableView={this.toggleTableView}
                   layout={layout}
                   updateLayout={this.updateLayout}
                   writeable={writeable}
                   actions={actions}
                 />
               </div>
-            }
-
+            )}
           </div>
         </div>
         {writeable && (

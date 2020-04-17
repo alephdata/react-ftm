@@ -2,8 +2,8 @@
 @import "src/themes.scss";
 
 .EntityViewer {
-  height: 100%;
   padding: 0;
+  
   @include themify() {
     color: themed('textColor');
   }
