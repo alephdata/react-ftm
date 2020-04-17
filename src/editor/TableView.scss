@@ -1,0 +1,33 @@
+$table-editor-padding: 20px;
+$border-color: rgba(16, 22, 26, 0.15);
+
+@import "src/variables.scss";
+
+.TableView {
+  padding: $table-editor-padding;
+  position: relative;
+  height: 100% !important;
+
+  &__close {
+    position: absolute;
+    top: $table-editor-padding/2;
+    right: $table-editor-padding/2;
+    z-index: 3;
+  }
+
+  .bp3-tab-panel {
+    // height: 300px;
+    // box-shadow: 0 0 6px rgba(16,22,26,.2);
+  }
+
+  .bp3-tab-list {
+    // padding-bottom: 20px;
+    // border-bottom: 1px solid grey;
+  }
+
+  .bp3-tab[aria-selected="true"] {
+    .SchemaIcon {
+      fill: $blue2;
+    }
+  }
+}

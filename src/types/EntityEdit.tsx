@@ -2,7 +2,7 @@ import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { Entity } from "@alephdata/followthemoney";
-import { EntityLabel } from '.';
+import { EntityLabel } from './Entity';
 import { Alignment, Button, ControlGroup, FormGroup, MenuItem, Position } from "@blueprintjs/core";
 import { ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
 import { ITypeProps } from "./common";
@@ -81,7 +81,7 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
   }
 
   render() {
-    const { entity, intl, onSubmit } = this.props;
+    const { entity, intl, onSubmit, usePortal } = this.props;
     const items = this.getItemsList()
     const selectedEntities = this.getSelectedEntities();
     const buttonText = selectedEntities && selectedEntities.length
@@ -101,7 +101,8 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
             popoverProps={{
               position: Position.BOTTOM_LEFT,
               minimal: true,
-              targetProps: {style: {width: '100%'}}
+              targetProps: {style: {width: '100%'}},
+              usePortal
             }}
             resetOnSelect
             filterable={false}
@@ -124,7 +125,8 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
             popoverProps={{
               position: Position.BOTTOM_LEFT,
               minimal: true,
-              targetProps: {style: {width: '100%'}}
+              targetProps: {style: {width: '100%'}},
+              usePortal
             }}
             tagInputProps={{
               inputRef: (ref) => this.inputRef = ref,

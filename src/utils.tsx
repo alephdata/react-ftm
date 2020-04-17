@@ -57,16 +57,12 @@ export function getHost(url:string) {
   }
 }
 
-export function groupBy(xs: any, key: any) {
-  return xs.reduce(function(rv: any, x: any) {
-    var v = key instanceof Function ? key(x) : x[key]; (rv[v] = rv[v] || []).push(x);
-    return rv;
-  }, []);
-};
+export function isValidUrl(value: string) {
+  try {
+    new URL(value);
+  } catch (e) {
+    return false;
+  }
 
-export function partition(array: any[], filter: any) {
-  let pass: any[] = [];
-  let fail: any[] = [];
-  array.forEach((e, idx, arr) => (filter(e, idx, arr) ? pass : fail).push(e));
-  return [pass, fail];
-}
+  return true;
+};

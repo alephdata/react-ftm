@@ -3,7 +3,7 @@ import { defaultModel, Entity, Model, Schema, IEntityDatum } from '@alephdata/fo
 
 export interface IEntityManagerProps {
   model?: Model,
-  createEntity?: (entityData: IEntityDatum) => Promise<IEntityDatum>,
+  createEntity?: (entityData: IEntityDatum) => Promise<Entity>,
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
   getEntitySuggestions?: (queryText: string, schema?: Schema) => Promise<Entity[]>,
@@ -33,9 +33,13 @@ export class EntityManager {
       const { schema, properties } = entityData;
       const entity = this.model.createEntity(schema);
       if (properties) {
-        Object.entries(properties).forEach(([prop, value]: [string, any]) => (
-          entity.setProperty(prop, value)
-        ));
+        Object.entries(properties).forEach(([prop, value]: [string, any]) => {
+          if (Array.isArray(value)) {
+            value.forEach(v => entity.setProperty(prop, v));
+          } else {
+            entity.setProperty(prop, value);
+          }
+        });
       }
 
       return entity;

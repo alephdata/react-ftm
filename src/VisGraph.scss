@@ -29,26 +29,39 @@
     flex-basis: 100%;
     overflow: hidden;
 
-    &__inner-container {
-      flex-grow: 4;
-      flex-shrink: 1;
-      flex-basis: auto;
-      position: relative;
-      overflow: hidden;
+    &.sidebar-open {
+      flex-flow: row;
+    }
+
+    &.table-open {
+      flex-flow: column;
     }
   }
 
-  &__sidebar {
-    max-height: 100%;
-    box-sizing: border-box;
-    overflow-y: scroll;
-    width: $sidebar-width;
-    box-shadow: $editor-box-shadow;
+  &__main {
+    flex-grow: 4;
+    flex-shrink: 1;
+    flex-basis: auto;
+    position: relative;
+    overflow: hidden;
+    display: flex;
   }
 
-  &__table-container {
-    z-index: 1;
+  &__sidebar {
+    box-sizing: border-box;
+    width: $sidebar-width;
+    position: relative;
   }
+
+  &__table {
+    flex-grow: 3;
+    flex-shrink: 1;
+    flex-basis: $table-height;
+    width: 100%;
+    position: relative;
+    z-index: 0;
+  }
+
 
   &__button-group {
     position: absolute;

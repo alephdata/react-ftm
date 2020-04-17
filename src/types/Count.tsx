@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Numeric } from './index';
+import { Numeric } from './Numeric';
 
 interface ICountProps {
   count:number
@@ -22,4 +22,3 @@ export class Count extends React.PureComponent<ICountProps> {
     );
   }
 }
-

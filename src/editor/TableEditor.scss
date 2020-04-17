@@ -1,23 +1,66 @@
-$table-editor-padding: 20px;
-$border-color: rgba(16, 22, 26, 0.15);
+@import "src/variables.scss";
 
 .TableEditor {
-  padding: $table-editor-padding;
+  height: 100%;
+  width: 100%;
 
-  .bp3-tabs.bp3-vertical {
-    & > .bp3-tab-panel {
-      border-left: 1px solid $border-color;
-      width: 100%;
-      overflow-x: scroll;
-    }
-
-    & > .bp3-tab-list {
-      overflow-y: scroll;
-      padding-right: $table-editor-padding;
-    }
+  .data-grid-container {
+    display: block;
+    overflow: scroll;
+    position: relative;
+    height: 100%;
   }
 
-  &__schemaAdd {
-    margin-top: $table-editor-padding;
+  .data-grid-container .data-grid .cell {
+    // white-space: nowrap;
+    min-height: 30px;
+    vertical-align: middle;
+    text-align: left;
+    background-color: $light-gray5;
+    color: black;
+
+    &.selected {
+      background-color: rgba(33, 133, 208, 0.15) !important;
+      box-shadow: none;
+    }
+
+    &.property, &.header {
+      min-width: 200px;
+      max-width: 200px;
+    }
+
+    &.property {
+      background-color: white;
+      padding: 10px;
+
+      &.editing {
+        padding: 0;
+      }
+    }
+
+    &.header > .bp3-button {
+      justify-content: space-between;
+      border-radius: 0 !important;
+    }
+
+    &.checkbox {
+      width: 12px;
+      .bp3-control {
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        position: relative;
+      }
+      .bp3-control-indicator {
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        left: 50%;
+        margin: 0;
+      }
+    }
+  }
+  .bp3-form-group {
+    margin: 0;
   }
 }

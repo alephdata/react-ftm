@@ -78,9 +78,13 @@ const messages = defineMessages({
     id: 'tooltip.layout_hierarchy',
     defaultMessage: 'Arrange as hierarchy',
   },
+  tooltip_sidebar_view: {
+    id: 'tooltip.sidebar_view',
+    defaultMessage: 'Show sidebar',
+  },
   tooltip_table_view: {
     id: 'tooltip.table_view',
-    defaultMessage: 'View as table',
+    defaultMessage: 'Show table',
   },
   tooltip_export_svg: {
     id: 'tooltip.export_svg',
@@ -95,6 +99,7 @@ interface IToolbarProps extends IGraphContext {
   interactionMode: string,
   showEditingButtons: boolean,
   searchText: string,
+  tableView: boolean,
   logo?: GraphLogo,
 }
 
@@ -163,7 +168,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
   }
 
   render() {
-    const { intl, layout, viewport, updateLayout, updateViewport, actions, history, interactionMode, showEditingButtons, logo, searchText } = this.props
+    const { intl, layout, viewport, updateLayout, updateViewport, actions, history, interactionMode, showEditingButtons, logo, searchText, tableView } = this.props
     const vertices = this.props.layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
@@ -265,8 +270,15 @@ export class Toolbar extends React.Component<IToolbarProps> {
       ],
       [
         {
+          helpText: intl.formatMessage(messages.tooltip_sidebar_view),
+          icon: "panel-stats",
+          disabled: !tableView,
+          onClick: () => actions.toggleTableView(),
+        },
+        {
           helpText: intl.formatMessage(messages.tooltip_table_view),
           icon: "th",
+          disabled: tableView,
           onClick: () => actions.toggleTableView(),
         }
       ],

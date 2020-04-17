@@ -1,13 +1,12 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
-
+import _ from 'lodash';
 import { Menu, MenuItem, FormGroup, Intent, Button, Alignment, Position } from '@blueprintjs/core'
 import { Select, IItemListRendererProps, IItemRendererProps } from '@blueprintjs/select';
 import { IGraphContext } from '../GraphContext'
 import { EdgeType, VertexSelect } from '../editor/'
 import { Vertex,Edge } from '../layout';
 import { SchemaIcon } from '../types';
-import { partition } from '../utils';
 
 import Dialog from './Dialog';
 
@@ -217,7 +216,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
 
   renderEdgeTypeList(props: IItemListRendererProps<EdgeType>) {
     const { items, itemsParentRef, renderItem } = props;
-    const [propertyEdgeTypes, entityEdgeTypes] = partition(
+    const [propertyEdgeTypes, entityEdgeTypes] = _.partition(
       items,
       (et: EdgeType) => et.isPropertyEdgeType()
     );

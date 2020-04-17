@@ -1,6 +1,8 @@
 import React from 'react';
 import {Schema, IconRegistry} from '@alephdata/followthemoney';
 
+import './Schema.scss';
+
 interface ISchemaCommonProps {
   schema: Schema,
   size?: number
@@ -10,7 +12,7 @@ export class SchemaIcon extends React.Component<ISchemaCommonProps>{
   static get(schema: Schema, size: number = 16) {
     const iconPaths = IconRegistry.getSchemaIcon(schema);
     return (
-      <svg viewBox={'0 0 24 24'} height={size} width={size}>
+      <svg className="SchemaIcon" viewBox={'0 0 24 24'} height={size} width={size}>
         {iconPaths.map((d, i) => <path key={i} d={d}/>)}/>
       </svg>
     );
@@ -31,7 +33,7 @@ export class SchemaLabel extends React.Component<ISchemaLabelProps> {
     const label = plural ? schema.plural : schema.label;
     if (icon) {
       return (
-        <span>
+        <span className="SchemaLabel">
           <SchemaIcon schema={schema} />
           {label}
         </span>

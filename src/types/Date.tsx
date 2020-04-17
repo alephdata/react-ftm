@@ -19,8 +19,6 @@ export class DateComponent extends React.PureComponent<IDateComponentProps> {
   static Earliest = Earliest;
 
   render() {
-    const { value: dateString } = this.props;
-    const dateObject:Date = new Date(dateString)
-    return dateObject.toLocaleDateString()
+    return this.props.value;
   }
 }

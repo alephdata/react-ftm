@@ -2,8 +2,8 @@
 @import "src/themes.scss";
 
 .EntityViewer {
-  height: 100%;
   padding: 0;
+  
   @include themify() {
     color: themed('textColor');
   }
@@ -75,7 +75,7 @@
       font-style: italic;
       font-size: 12px;
       color: $red1;
-      padding-top: 7px;
+      padding: 5px;
     }
 
     &__label {

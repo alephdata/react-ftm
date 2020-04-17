@@ -12,7 +12,7 @@ import { Toolbar } from './Toolbar';
 import { Sidebar } from './Sidebar';
 import { History } from './History';
 import { EdgeCreateDialog, GroupingCreateDialog, VertexCreateDialog } from "./dialogs";
-import { TableEditor } from "./editor";
+import { TableView } from "./editor";
 
 import { modes } from './interactionModes'
 import { filterVerticesByText } from './filters';
@@ -245,7 +245,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
       onSubmitSearch: this.onSubmitSearch,
     };
 
-    const showSidebar = layout.vertices && layout.vertices.size > 0;
+    const showSidebar = layout.vertices && layout.vertices.size > 0 && !tableView;
 
     return (
       <GraphContext.Provider value={layoutContext}>
@@ -258,11 +258,12 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
               showEditingButtons={writeable}
               logo={config.logo}
               searchText={searchText}
+              tableView={tableView}
               {...layoutContext}
             />
           </div>
-          <div className="VisGraph__content">
-            <div className="VisGraph__content__inner-container">
+          <div className={c("VisGraph__content", { 'sidebar-open': showSidebar, 'table-open': tableView })}>
+            <div className="VisGraph__main">
               <div className="VisGraph__button-group">
                 <ButtonGroup vertical>
                   <Tooltip content={intl.formatMessage(messages.tooltip_fit_selection)}>
@@ -280,19 +281,24 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                 writeable={writeable}
                 {...layoutContext}
               />
-              <TableEditor
-                isOpen={tableView}
-                layout={layout}
-                updateLayout={this.updateLayout}
-                writeable={writeable}
-                actions={actions}
-              />
             </div>
-            {showSidebar &&
+            {!tableView && (
               <div className="VisGraph__sidebar">
-                <Sidebar {...layoutContext} writeable={writeable} searchText={searchText} />
+                <Sidebar {...layoutContext} writeable={writeable} searchText={searchText} isOpen={showSidebar} />
               </div>
-            }
+            )}
+            {tableView && (
+              <div className="VisGraph__table">
+                <TableView
+                  isOpen={tableView}
+                  toggleTableView={this.toggleTableView}
+                  layout={layout}
+                  updateLayout={this.updateLayout}
+                  writeable={writeable}
+                  actions={actions}
+                />
+              </div>
+            )}
           </div>
         </div>
         {writeable && (

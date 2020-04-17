@@ -1,13 +1,16 @@
 import React from 'react';
-import {Values, Value, Property, Entity} from "@alephdata/followthemoney";
+import { Values, Value, Property, Entity } from "@alephdata/followthemoney";
+import { Classes } from "@blueprintjs/core";
 
-import {
-  EntityLabel,
-  DateComponent,
-  CountryName, LanguageName, URL
-} from '.';
-import {wordList} from "../utils";
-import {Classes} from "@blueprintjs/core";
+import { EntityLabel } from './Entity';
+import { DateComponent } from './Date';
+import { EnumValue } from './EnumValue';
+import { LanguageName } from './Language';
+import { URL } from './URL';
+import { wordList } from "../utils";
+
+import './Property.scss';
+
 
 interface IPropertyCommonProps {
   prop:Property
@@ -25,8 +28,8 @@ export class PropertyValue extends React.PureComponent<IValueProps> {
       return null;
     }
 
-    if (prop.type.name === 'country') {
-      return <CountryName code={value as string} countries={prop.type.values}/>;
+    if (prop.type.name === 'country' || prop.type.name === 'topic') {
+      return <EnumValue code={value as string} fullList={prop.type.values}/>;
     }
     if (prop.type.name === 'language') {
       return <LanguageName code={value as string} languages={prop.type.values}/>;
@@ -75,13 +78,16 @@ export class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
     const vals = values.map(value => (
       <PropertyValue key={value.toString()} prop={prop} value={value} entitiesList={entitiesList} />
     ));
+    let content;
     if (!vals.length) {
-      return (<span>—</span>);
+      content = (<span>—</span>);
     // display urls separated by newline
     } else if (prop.type.name === 'url') {
-      return vals.map(val => <span style={{ display: 'block' }}>{val}</span>);
+      content = vals.map(val => <span style={{ display: 'block' }}>{val}</span>);
     } else {
-      return (<span>{ wordList(vals, ' · ') }</span>);
+      content = (<span>{ wordList(vals, ' · ') }</span>);
     }
+
+    return <span className="PropertyValues">{content}</span>;
   }
 }

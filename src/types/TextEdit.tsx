@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Values } from "@alephdata/followthemoney";
-import { Button, ControlGroup, FormGroup, InputGroup, TagInput, Tooltip } from "@blueprintjs/core";
+import { Button, ControlGroup, FormGroup, InputGroup, TagInput, TextArea, Tooltip } from "@blueprintjs/core";
 import { ITypeProps } from "./common";
 
 import "./TextEdit.scss";
@@ -21,10 +21,10 @@ interface ITextEditState {
 }
 
 class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
-  static group = new Set(['text', 'string'])
+  static group = new Set(['date', 'text', 'string'])
   private containerRef: any | null = null;
   private multiInputRef: HTMLInputElement | null = null;
-  private singleInputRef: HTMLInputElement | null = null;
+  private singleInputRef: HTMLTextAreaElement | null = null;
 
   constructor(props: ITextEditProps) {
     super(props);
@@ -39,7 +39,13 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
   }
 
   componentDidMount() {
-    this.singleInputRef && this.singleInputRef.focus();
+    if (this.singleInputRef) {
+      this.singleInputRef.focus();
+      if (this.singleInputRef?.value?.length) {
+        const valLength = this.singleInputRef.value.length;
+        this.singleInputRef.setSelectionRange(valLength, valLength);
+      }
+    }
     this.multiInputRef && this.multiInputRef.focus();
     document.addEventListener('mousedown', this.handleClickOutside);
   }
@@ -55,11 +61,13 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
-  handleClickOutside(event: MouseEvent) {
+  handleClickOutside(e: MouseEvent) {
     const { onSubmit, values } = this.props;
     const { currMultiInputValue } = this.state;
+    e.preventDefault();
+    e.stopPropagation();
 
-    const target = event.target as Element;
+    const target = e.target as Element;
     if (target && this.containerRef && !this.containerRef.contains(target)) {
       if (currMultiInputValue) {
         onSubmit([...values, ...[currMultiInputValue]]);
@@ -77,12 +85,14 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
     }
   }
 
-  triggerMultiEdit() {
+  triggerMultiEdit(e: any) {
+    e.preventDefault();
+    e.stopPropagation();
     this.setState({ forceMultiEdit: true });
   }
 
   render() {
-    const { intl, property, values } = this.props;
+    const { intl, onSubmit, property, values } = this.props;
     const { currMultiInputValue, forceMultiEdit } = this.state;
     const numVals = values.length;
     // don't show multi button if there is no existing input
@@ -90,21 +100,32 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
 
     return (
       <div ref={(node) => this.containerRef = node}>
-        <FormGroup>
-          {(!forceMultiEdit && numVals <= 1) && (
-            <InputGroup
-              className="TextEdit__singleInput"
-              inputRef={(ref) => this.singleInputRef = ref}
-              autoFocus
-              fill
-              value={values[0] as string || ''}
-              onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value;
-                // avoid setting an empty string val
-                return this.onChange(value ? [value] : [])
-              }}
-              rightElement={showMultiToggleButton ? (
-                <Tooltip content={intl.formatMessage(messages.add_additional)}>
+        <form onSubmit={(e: any) => { e.preventDefault(); onSubmit(values); }}>
+          <FormGroup>
+            {(!forceMultiEdit && numVals <= 1) && (
+              <div className="bp3-input-group">
+                <TextArea
+                  className="TextEdit__singleInput"
+                  inputRef={(ref) => this.singleInputRef = ref}
+                  value={values[0] as string || ''}
+                  rows={1}
+                  growVertically
+                  fill
+                  style={{resize:"none", overflow:"hidden"}}
+                  onChange={(e:React.ChangeEvent<HTMLTextAreaElement>) => {
+                    const value = e.target.value;
+                    // avoid setting an empty string val
+                    return this.onChange(value ? [value] : [])
+                  }}
+                  onKeyDown={(e:any) => {
+                    // override textarea Enter to submit input
+                    if (e.keyCode == 13) {
+                      e.preventDefault();
+                      onSubmit(values);
+                    }
+                  }}
+                />
+                {showMultiToggleButton && (
                   <Button
                     className="TextEdit__toggleMulti"
                     minimal
@@ -112,28 +133,27 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
                     icon="plus"
                     onClick={this.triggerMultiEdit}
                   />
-                </Tooltip>
-              ) : undefined}
-            />
-          )}
-          {(forceMultiEdit || numVals > 1) && (
-            <TagInput
-              inputRef={(ref) => this.multiInputRef = ref}
-              tagProps={{
-                minimal:true,
-              }}
-              addOnBlur
-              addOnPaste
-              fill
-              onChange={this.onChange}
-              values={this.props.values}
-              inputValue={currMultiInputValue}
-              onInputChange={(e:React.ChangeEvent<HTMLInputElement>) => (
-                this.setState({ currMultiInputValue: e.target.value })
-              )}
-            />
-          )}
-        </FormGroup>
+                )}
+              </div>
+            )}
+            {(forceMultiEdit || numVals > 1) && (
+              <TagInput
+                inputRef={(ref) => this.multiInputRef = ref}
+                tagProps={{
+                  minimal:true,
+                }}
+                addOnPaste
+                fill
+                onChange={this.onChange}
+                values={this.props.values}
+                inputValue={currMultiInputValue}
+                onInputChange={(e:React.ChangeEvent<HTMLInputElement>) => (
+                  this.setState({ currMultiInputValue: e.target.value })
+                )}
+              />
+            )}
+          </FormGroup>
+        </form>
       </div>
     );
   }

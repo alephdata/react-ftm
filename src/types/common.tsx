@@ -6,4 +6,5 @@ export interface ITypeProps {
   entity: Entity
   onChange: (values: Values) => void
   onSubmit: (values: Values) => void
+  usePortal?: boolean
 }
