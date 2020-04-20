@@ -60,7 +60,7 @@
     ]
   },
   "devDependencies": {
-    "@alephdata/followthemoney": "^1.27.7",
+    "@alephdata/followthemoney": "^1.29.5",
     "@blueprintjs/core": "^3.20.0",
     "@blueprintjs/datetime": "^3.15.2",
     "@blueprintjs/select": "^3.11.2",
