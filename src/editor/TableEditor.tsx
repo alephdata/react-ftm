@@ -42,8 +42,8 @@ interface ITableEditorProps extends WrappedComponentProps {
   schema: Schema
   sort: SortType | null
   sortColumn: (sort: SortType) => void
-  selection: Array<string>
-  updateSelection: (entityId: string) => void
+  selection: Array<Entity>
+  updateSelection: (entity: Entity) => void
   entityManager: EntityManager
   writeable: boolean
 }
@@ -201,9 +201,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   renderCheckbox = (entity: Entity) => {
     const { selection, updateSelection } = this.props;
-    const isSelected = selection.indexOf(entity.id) > -1;
+    const isSelected = selection.find(e => e.id === entity.id);
     return (
-      <Checkbox checked={isSelected} onChange={() => updateSelection(entity.id)} />
+      <Checkbox checked={isSelected} onChange={() => updateSelection(entity)} />
     );
   }
 

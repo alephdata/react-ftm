@@ -133,11 +133,11 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     this.setState({ sort })
   }
 
-  onSelectionUpdate(entityId: string) {
+  onSelectionUpdate(entity: Entity) {
     const { layout, updateLayout } = this.props;
 
     // select graphElement by entityId
-    layout.selectVerticesByFilter((v) => v.entityId === entityId, true, true);
+    layout.selectVerticesByFilter((v) => v.entityId === entity.id, true, true);
     updateLayout(layout, null, { clearSearch: true });
   }
 
@@ -177,7 +177,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
                     schema={schema}
                     sort={sort}
                     sortColumn={this.onColumnSort}
-                    selection={layout.getSelectedEntities().map(e => e.id)}
+                    selection={layout.getSelectedEntities()}
                     updateSelection={this.onSelectionUpdate}
                     writeable={writeable}
                     entityManager={this.localEntityManager}
