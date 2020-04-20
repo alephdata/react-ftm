@@ -7,7 +7,7 @@ import { PropertyValues } from '../types';
 import { EntityManager } from '../EntityManager';
 import { SelectProperty } from './SelectProperty';
 import { TruncatedFormat } from "@blueprintjs/table";
-import { Button, Checkbox, Icon, Intent, Popover, Position, Tooltip } from "@blueprintjs/core";
+import { Button, Checkbox, Classes, Icon, Intent, Popover, Position, Tooltip } from "@blueprintjs/core";
 import { Entity, Property, Schema } from "@alephdata/followthemoney";
 import Datasheet from 'react-datasheet';
 import { SortType } from './SortType';
@@ -28,6 +28,7 @@ const messages = defineMessages({
 const readOnlyCellProps = { readOnly: true, disableEvents: true, forceComponent: true };
 const headerCellProps = { className: "header", ...readOnlyCellProps };
 const checkboxCellProps = { className: "checkbox", ...readOnlyCellProps };
+const skeletonCellProps = { className: "skeleton", ...readOnlyCellProps };
 const propertyCellProps = { className: "property" };
 
 const propSort = (a:Property, b:Property) => (a.label > b.label ? 1 : -1);
@@ -46,6 +47,7 @@ interface ITableEditorProps extends WrappedComponentProps {
   updateSelection: (entity: Entity) => void
   entityManager: EntityManager
   writeable: boolean
+  isPending: boolean
 }
 
 interface ITableEditorState {
@@ -114,8 +116,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   getTableContent = () => {
-    const { entities, writeable } = this.props;
+    const { entities, isPending, writeable } = this.props;
     const { visibleProps } = this.state;
+    let skeletonRows = [];
 
     const content = entities.map(entity => {
       const propCells = visibleProps.map(property => ({ ...propertyCellProps, readOnly: !writeable, data: { entity, property } }))
@@ -127,13 +130,21 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       }
     });
 
+    if (isPending) {
+      const skeletonRowCount = 5;
+      skeletonRows = (Array.from(Array(skeletonRowCount).keys())).map(key => {
+        const propCells = visibleProps.map(() => ({ ...skeletonCellProps, component: this.renderSkeleton() }));
+        return [{...checkboxCellProps}, ...propCells];
+      });
+    }
+
     if (writeable) {
       const placeholderCells = visibleProps.map(property => ({ ...propertyCellProps, data: { entity: null, property } }));
       const placeholderRow = [{...checkboxCellProps}, ...placeholderCells]
 
-      return [...content, placeholderRow];
+      return [...content, ...skeletonRows, placeholderRow];
     } else {
-      return content;
+      return [...content, ...skeletonRows];
     }
   }
 
@@ -216,6 +227,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const isSelected = selection.find(e => e.id === entity.id);
     return (
       <Checkbox checked={isSelected} onChange={() => updateSelection(entity)} />
+    );
+  }
+
+  renderSkeleton = () => {
+    const skeletonLength = 15;
+    return (
+      <span className={Classes.SKELETON}>{'-'.repeat(skeletonLength)}</span>
     );
   }
 

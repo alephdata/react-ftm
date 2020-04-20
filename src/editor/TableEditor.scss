@@ -29,7 +29,7 @@
       max-width: 200px;
     }
 
-    &.property {
+    &.property, &.skeleton {
       background-color: white;
       padding: 10px;
 
@@ -44,7 +44,8 @@
     }
 
     &.checkbox {
-      width: 12px;
+      min-width: 26px;
+
       .bp3-control {
         margin: 0;
         height: 100%;
