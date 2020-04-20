@@ -58,20 +58,32 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     super(props);
 
     this.state = {
-      visibleProps: this.getVisibleProperties(),
+      visibleProps: [],
       shouldCommit: false,
     }
 
     this.onAddColumn = this.onAddColumn.bind(this);
   }
 
+  componentDidMount() {
+    this.setState({ visibleProps: this.getVisibleProperties() });
+  }
+
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.entities?.length !== this.props.entities?.length) {
+      this.setState({ visibleProps: this.getVisibleProperties() });
+    }
+  }
+
   getVisibleProperties() {
     const { entities, schema } = this.props;
 
-    const filledProps = entities.reduce((acc, entity: Entity) => [...acc, ...entity.getProperties()], [] as Property[]);
+    const requiredProps = schema.required.map(name => schema.getProperty(name));
     const featuredProps = schema.getFeaturedProperties();
+    const filledProps = entities.reduce((acc, entity: Entity) => [...acc, ...entity.getProperties()], [] as Property[]);
 
-    return Array.from(new Set([...featuredProps, ...filledProps]));
+    return Array.from(new Set([...requiredProps, ...featuredProps, ...filledProps]));
   }
 
   getNonVisibleProperties() {
