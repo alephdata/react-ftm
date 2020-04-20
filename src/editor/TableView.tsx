@@ -124,13 +124,21 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
   onEntityUpdate(entity: Entity) {
     const { layout, updateLayout } = this.props;
 
-    console.log('updating entity', entity);
     layout.updateEntity(entity);
     updateLayout(layout, { updated: [entity] }, { modifyHistory: true });
   }
 
-  onColumnSort(sort: SortType) {
-    this.setState({ sort })
+  onColumnSort(newField: string) {
+    this.setState(({ sort }) => {
+      if (sort?.field !== newField) {
+        return {sort: { field: newField, direction: 'asc'}};
+      }
+      if (sort?.direction === 'asc') {
+        return {sort: { field: sort.field, direction: 'desc'}};
+      } else {
+        return {sort: null};
+      }
+    });
   }
 
   onSelectionUpdate(entity: Entity) {

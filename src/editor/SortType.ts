@@ -1,6 +1,6 @@
 import { Property } from '@alephdata/followthemoney';
 
 export interface SortType {
-  field: Property
+  field: string
   direction: string
 }

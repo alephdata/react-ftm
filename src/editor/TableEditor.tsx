@@ -41,7 +41,7 @@ interface ITableEditorProps extends WrappedComponentProps {
   entities: Array<Entity>
   schema: Schema
   sort: SortType | null
-  sortColumn: (sort: SortType) => void
+  sortColumn: (field: string) => void
   selection: Array<Entity>
   updateSelection: (entity: Entity) => void
   entityManager: EntityManager
@@ -176,11 +176,11 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   renderColumnHeader = (property: Property) => {
     const { sort, sortColumn } = this.props;
 
-    const isSorted = sort && sort.field === property;
+    const isSorted = sort && sort.field === property.name;
     const sortIcon = isSorted ? (sort && sort.direction === 'asc' ? 'caret-up' : 'caret-down') : null;
     return (
       <Button
-        onClick={() => { sortColumn({field: property, direction: (isSorted && sort?.direction === 'asc') ? 'desc' : 'asc'})}}
+        onClick={() => sortColumn(property.name)}
         rightIcon={sortIcon}
         minimal
         fill
