@@ -1,5 +1,5 @@
 import { defineMessages } from 'react-intl';
-import { Entity, IEntityDatum, Property, Values } from '@alephdata/followthemoney';
+import { Schema, Property, Values } from '@alephdata/followthemoney';
 
 export const validationMessages = defineMessages({
   invalidDate: {
@@ -38,7 +38,7 @@ function isValidEnumValue(property: Property, value: string) {
   return property.type.values.has(value);
 };
 
-export function validate({ schema, property, values }) {
+export function validate({ schema, property, values }: { schema: Schema, property: Property, values: Values}) {
   if (!values || !values.length) {
     const isPropRequired = schema.required.indexOf(property.name) > -1;
     return isPropRequired ? validationMessages.required : null;
@@ -58,8 +58,8 @@ export function validate({ schema, property, values }) {
   return null;
 }
 
-export function checkEntityRequiredProps(entityData: IEntityDatum) {
+export function checkEntityRequiredProps(entityData: any) {
   const { schema, properties } = entityData;
 
-  return schema.required.some(propName => !properties.hasOwnProperty(propName)) ? validationMessages.required : null;
+  return schema.required.some((propName: string) => !properties.hasOwnProperty(propName)) ? validationMessages.required : null;
 }

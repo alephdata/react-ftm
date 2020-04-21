@@ -8,7 +8,7 @@ import { EntityManager } from '../EntityManager';
 import { SelectProperty } from './SelectProperty';
 import { TruncatedFormat } from "@blueprintjs/table";
 import { Button, Checkbox, Classes, Icon, Intent, Popover, Position, Tooltip } from "@blueprintjs/core";
-import { Entity, Property, Schema } from "@alephdata/followthemoney";
+import { Entity, Property, Schema, Values } from "@alephdata/followthemoney";
 import Datasheet from 'react-datasheet';
 import { SortType } from './SortType';
 import { showErrorToast } from './toaster';
@@ -37,7 +37,9 @@ const propSort = (a:Property, b:Property) => (a.label > b.label ? 1 : -1);
 
 export interface CellData extends Datasheet.Cell<CellData, any> {
   className: string
-  data: any
+  value?: any,
+  displayValue?: any,
+  data?: any,
 }
 
 interface ITableEditorProps extends WrappedComponentProps {
@@ -74,7 +76,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: ITableEditorProps) {
     if (prevProps.entities?.length !== this.props.entities?.length) {
       this.setState({ visibleProps: this.getVisibleProperties() });
     }
@@ -121,7 +123,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   getTableContent = () => {
     const { entities, isPending, writeable } = this.props;
     const { visibleProps } = this.state;
-    let skeletonRows = [];
+    let skeletonRows = [] as any[];
 
     const content = entities.map(entity => {
       const propCells = visibleProps.map(property => ({
@@ -218,7 +220,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   renderCheckbox = (entity: Entity) => {
     const { selection, updateSelection } = this.props;
-    const isSelected = selection.find(e => e.id === entity.id);
+    const isSelected = selection.some(e => e.id === entity.id);
     return (
       <Checkbox checked={isSelected} onChange={() => updateSelection(entity)} />
     );
@@ -247,7 +249,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       }
     })
 
-    const error = checkEntityRequiredProps(entityData));
+    const error = checkEntityRequiredProps(entityData);
     if (error) {
       showErrorToast(intl.formatMessage(error));
     } else {

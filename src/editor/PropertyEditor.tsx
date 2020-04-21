@@ -5,7 +5,7 @@ import { TextEdit } from '../types/TextEdit';
 import EntityEdit from '../types/EntityEdit';
 import { CountryEdit } from "../types/CountryEdit";
 import { TopicEdit } from "../types/TopicEdit";
-import { validate, validationErrors } from './utils';
+import { validate } from './utils';
 
 interface IPropertyEditorProps extends WrappedComponentProps {
   entity: Entity,
@@ -18,6 +18,7 @@ interface IPropertyEditorProps extends WrappedComponentProps {
 
 interface IPropertyEditorState {
   values: Values,
+  error: any | null
 }
 
 class PropertyEditorBase extends React.Component<IPropertyEditorProps, IPropertyEditorState> {

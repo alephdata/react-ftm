@@ -5,29 +5,29 @@ export const toaster = Toaster.create({
   className: 'aleph-toaster',
 });
 
-const showToast = (userProps, intentProps) => {
+const showToast = (userProps: any, intentProps: any) => {
   let userPropsConfig;
   if (typeof userProps === 'string') userPropsConfig = { message: userProps };
   else userPropsConfig = userProps;
   toaster.show({ ...intentProps, ...userPropsConfig });
 };
 
-export const showInfoToast = props => showToast(props, {
+export const showInfoToast = (props: any) => showToast(props, {
   intent: Intent.PRIMARY,
   icon: 'info-sign',
 });
 
-export const showSuccessToast = props => showToast(props, {
+export const showSuccessToast = (props: any) => showToast(props, {
   intent: Intent.SUCCESS,
   icon: 'tick',
 });
 
-export const showWarningToast = props => showToast(props, {
+export const showWarningToast = (props: any) => showToast(props, {
   intent: Intent.WARNING,
   icon: 'warning-sign',
 });
 
-export const showErrorToast = props => showToast(props, {
+export const showErrorToast = (props: any) => showToast(props, {
   intent: Intent.DANGER,
   icon: 'error',
 });
