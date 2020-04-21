@@ -3,7 +3,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-03-23T13:58:37.898Z\n"
+"POT-Creation-Date: 2020-04-21T12:51:47.893Z\n"
 "Last-Translator: jen occrp, 2020\n"
 "Language-Team: Russian (https://www.transifex.com/aleph/teams/76591/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -104,6 +104,13 @@ msgstr "Расположить в виде иерархии"
 msgid "Create"
 msgstr "Создать"
 
+#. [editor.validation.date_invalid]
+#. defaultMessage is:
+#. Date format: yyyy-m-d
+#: i18n/messages.json
+msgid "Date format: yyyy-m-d"
+msgstr ""
+
 #. [tooltip.delete]
 #. defaultMessage is:
 #. Delete selection
@@ -160,6 +167,27 @@ msgstr "Сгруппировать"
 msgid "Group selection"
 msgstr "Выделить группу"
 
+#. [editor.validation.url_invalid]
+#. defaultMessage is:
+#. Invalid URL format
+#: i18n/messages.json
+msgid "Invalid URL format"
+msgstr ""
+
+#. [editor.validation.country_invalid]
+#. defaultMessage is:
+#. Invalid country
+#: i18n/messages.json
+msgid "Invalid country"
+msgstr ""
+
+#. [editor.validation.topic_invalid]
+#. defaultMessage is:
+#. Invalid topic
+#: i18n/messages.json
+msgid "Invalid topic"
+msgstr ""
+
 #. [search.results_text.none]
 #. defaultMessage is:
 #. No results found
@@ -212,6 +240,20 @@ msgstr "Выбрать сущность"
 msgid "Select type"
 msgstr "Выбрать тип"
 
+#. [tooltip.sidebar_view]
+#. defaultMessage is:
+#. Show sidebar
+#: i18n/messages.json
+msgid "Show sidebar"
+msgstr ""
+
+#. [tooltip.table_view]
+#. defaultMessage is:
+#. Show table
+#: i18n/messages.json
+msgid "Show table"
+msgstr ""
+
 #. [dialog.edge_create.source_label]
 #. defaultMessage is:
 #. Source
@@ -226,7 +268,7 @@ msgstr "Источник"
 msgid "Target"
 msgstr "Цель"
 
-#. [editor.property_required]
+#. [editor.validation.required]
 #. defaultMessage is:
 #. This property is required
 #: i18n/messages.json
@@ -281,13 +323,6 @@ msgstr "Неизвестно"
 #: i18n/messages.json
 msgid "Untitled"
 msgstr "Без имени"
-
-#. [tooltip.table_view]
-#. defaultMessage is:
-#. View as table
-#: i18n/messages.json
-msgid "View as table"
-msgstr "Отобразить в виде таблицы"
 
 #. [dialog.vertex_create.name_placeholder]
 #. defaultMessage is:

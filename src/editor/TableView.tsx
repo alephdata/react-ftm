@@ -5,7 +5,7 @@ import { GraphUpdateHandler } from '../GraphContext';
 import { VertexSchemaSelect } from './VertexSchemaSelect';
 import { TableEditor } from './TableEditor';
 import { EntityManager } from '../EntityManager';
-import { Button, Classes, Drawer, Icon, Position, Tab, TabId, Tabs } from "@blueprintjs/core";
+import { Button, Classes, Drawer, Icon, Position, Tab, TabId, Tabs, Toaster } from "@blueprintjs/core";
 import { Entity, IEntityDatum, Schema } from "@alephdata/followthemoney";
 import { SchemaLabel } from '../types';
 import { SortType } from './SortType';
@@ -19,7 +19,6 @@ const messages = defineMessages({
     defaultMessage: 'Add an entity type',
   },
 });
-
 
 interface ITableViewProps extends WrappedComponentProps {
   isOpen: boolean,
@@ -108,7 +107,6 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
 
   async onEntityCreate(entityData: IEntityDatum) {
     const { layout, updateLayout } = this.props;
-    console.log('updating entity', entityData);
     const entity = await layout.createEntity(entityData);
 
     updateLayout(layout, { created: [entity] }, { modifyHistory: true });
@@ -124,20 +122,28 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
   onEntityUpdate(entity: Entity) {
     const { layout, updateLayout } = this.props;
 
-    console.log('updating entity', entity);
     layout.updateEntity(entity);
     updateLayout(layout, { updated: [entity] }, { modifyHistory: true });
   }
 
-  onColumnSort(sort: SortType) {
-    this.setState({ sort })
+  onColumnSort(newField: string) {
+    this.setState(({ sort }) => {
+      if (sort?.field !== newField) {
+        return {sort: { field: newField, direction: 'asc'}};
+      }
+      if (sort?.direction === 'asc') {
+        return {sort: { field: sort.field, direction: 'desc'}};
+      } else {
+        return {sort: null};
+      }
+    });
   }
 
-  onSelectionUpdate(entityId: string) {
+  onSelectionUpdate(entity: Entity) {
     const { layout, updateLayout } = this.props;
 
     // select graphElement by entityId
-    layout.selectVerticesByFilter((v) => v.entityId === entityId, true, true);
+    layout.selectVerticesByFilter((v) => v.entityId === entity.id, true, true);
     updateLayout(layout, null, { clearSearch: true });
   }
 
@@ -177,7 +183,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
                     schema={schema}
                     sort={sort}
                     sortColumn={this.onColumnSort}
-                    selection={layout.getSelectedEntities().map(e => e.id)}
+                    selection={layout.getSelectedEntities()}
                     updateSelection={this.onSelectionUpdate}
                     writeable={writeable}
                     entityManager={this.localEntityManager}

@@ -7,10 +7,12 @@ import { PropertyValues } from '../types';
 import { EntityManager } from '../EntityManager';
 import { SelectProperty } from './SelectProperty';
 import { TruncatedFormat } from "@blueprintjs/table";
-import { Button, Checkbox, Icon, Intent, Popover, Position, Tooltip } from "@blueprintjs/core";
-import { Entity, Property, Schema } from "@alephdata/followthemoney";
+import { Button, Checkbox, Classes, Icon, Intent, Popover, Position, Tooltip } from "@blueprintjs/core";
+import { Entity, Property, Schema, Values } from "@alephdata/followthemoney";
 import Datasheet from 'react-datasheet';
 import { SortType } from './SortType';
+import { showErrorToast } from './toaster';
+import { checkEntityRequiredProps, validate } from './utils';
 
 import "./TableEditor.scss"
 
@@ -28,24 +30,28 @@ const messages = defineMessages({
 const readOnlyCellProps = { readOnly: true, disableEvents: true, forceComponent: true };
 const headerCellProps = { className: "header", ...readOnlyCellProps };
 const checkboxCellProps = { className: "checkbox", ...readOnlyCellProps };
+const skeletonCellProps = { className: "skeleton", ...readOnlyCellProps };
 const propertyCellProps = { className: "property" };
 
 const propSort = (a:Property, b:Property) => (a.label > b.label ? 1 : -1);
 
 export interface CellData extends Datasheet.Cell<CellData, any> {
   className: string
-  data: any
+  value?: any,
+  displayValue?: any,
+  data?: any,
 }
 
 interface ITableEditorProps extends WrappedComponentProps {
   entities: Array<Entity>
   schema: Schema
   sort: SortType | null
-  sortColumn: (sort: SortType) => void
-  selection: Array<string>
-  updateSelection: (entityId: string) => void
+  sortColumn: (field: string) => void
+  selection: Array<Entity>
+  updateSelection: (entity: Entity) => void
   entityManager: EntityManager
   writeable: boolean
+  isPending?: boolean
 }
 
 interface ITableEditorState {
@@ -58,20 +64,33 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     super(props);
 
     this.state = {
-      visibleProps: this.getVisibleProperties(),
+      visibleProps: [],
       shouldCommit: false,
     }
 
     this.onAddColumn = this.onAddColumn.bind(this);
   }
 
+  componentDidMount() {
+    this.setState({ visibleProps: this.getVisibleProperties() });
+  }
+
+
+  componentDidUpdate(prevProps: ITableEditorProps) {
+    if (prevProps.entities?.length !== this.props.entities?.length) {
+      this.setState({ visibleProps: this.getVisibleProperties() });
+    }
+  }
+
   getVisibleProperties() {
     const { entities, schema } = this.props;
 
-    const filledProps = entities.reduce((acc, entity: Entity) => [...acc, ...entity.getProperties()], [] as Property[]);
+    const requiredProps = schema.required.map(name => schema.getProperty(name));
     const featuredProps = schema.getFeaturedProperties();
+    const filledProps = entities.reduce((acc, entity: Entity) => [...acc, ...entity.getProperties()], [] as Property[]);
 
-    return Array.from(new Set([...featuredProps, ...filledProps]));
+    return Array.from(new Set([...requiredProps, ...featuredProps, ...filledProps]))
+      .filter(prop => (!prop.stub && !prop.hidden));
   }
 
   getNonVisibleProperties() {
@@ -102,11 +121,20 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   getTableContent = () => {
-    const { entities, writeable } = this.props;
+    const { entities, isPending, writeable } = this.props;
     const { visibleProps } = this.state;
+    let skeletonRows = [] as any[];
 
     const content = entities.map(entity => {
-      const propCells = visibleProps.map(property => ({ ...propertyCellProps, readOnly: !writeable, data: { entity, property } }))
+      const propCells = visibleProps.map(property => ({
+        ...propertyCellProps,
+        readOnly: !writeable,
+        value: entity.getProperty(property),
+        displayValue: this.renderValue({ entity, property }),
+        dataEditor: this.renderEditor,
+        data: { entity, property },
+      }));
+
       if (writeable) {
         const checkbox = { ...checkboxCellProps, component: this.renderCheckbox(entity) };
         return [checkbox, ...propCells];
@@ -115,40 +143,31 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       }
     });
 
+    if (isPending) {
+      const skeletonRowCount = 5;
+      skeletonRows = (Array.from(Array(skeletonRowCount).keys())).map(key => {
+        const propCells = visibleProps.map(() => ({ ...skeletonCellProps, component: this.renderSkeleton() }));
+        return [{...checkboxCellProps}, ...propCells];
+      });
+    }
+
     if (writeable) {
-      const placeholderCells = visibleProps.map(property => ({ ...propertyCellProps, data: { entity: null, property } }));
+      const placeholderCells = visibleProps.map(property => ({
+        ...propertyCellProps,
+        displayValue: <span>—</span>,
+        dataEditor: this.renderEditor,
+        data: { entity: null, property }
+      }));
       const placeholderRow = [{...checkboxCellProps}, ...placeholderCells]
 
-      return [...content, placeholderRow];
+      return [...content, ...skeletonRows, placeholderRow];
     } else {
-      return content;
+      return [...content, ...skeletonRows];
     }
   }
 
-  getUnderlyingValue = (cell: CellData) => {
-    const { data } = cell;
-
-    if (data?.entity) {
-      const { entity, property } = data;
-      return entity.getProperty(property);
-    } else {
-      return null;
-    }
-  }
-
-  renderValue = ({ cell }: { cell: CellData }) => {
-    const { data } = cell;
-
-    if (data) {
-      const { entity, property } = data;
-      if (entity) {
-        return <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={new Map()} />;
-      } else {
-        return <span>—</span>
-      }
-    } else {
-      return null;
-    }
+  renderValue = ({ entity, property }: { entity: Entity, property: Property }) => {
+    return <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={new Map()} />;
   }
 
   renderEditor = ({ cell, onCommit, onChange, onKeyDown }: Datasheet.DataEditorProps<CellData, any>) => {
@@ -176,11 +195,11 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   renderColumnHeader = (property: Property) => {
     const { sort, sortColumn } = this.props;
 
-    const isSorted = sort && sort.field === property;
+    const isSorted = sort && sort.field === property.name;
     const sortIcon = isSorted ? (sort && sort.direction === 'asc' ? 'caret-up' : 'caret-down') : null;
     return (
       <Button
-        onClick={() => { sortColumn({field: property, direction: (isSorted && sort?.direction === 'asc') ? 'desc' : 'asc'})}}
+        onClick={() => sortColumn(property.name)}
         rightIcon={sortIcon}
         minimal
         fill
@@ -201,37 +220,63 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   renderCheckbox = (entity: Entity) => {
     const { selection, updateSelection } = this.props;
-    const isSelected = selection.indexOf(entity.id) > -1;
+    const isSelected = selection.some(e => e.id === entity.id);
     return (
-      <Checkbox checked={isSelected} onChange={() => updateSelection(entity.id)} />
+      <Checkbox checked={isSelected} onChange={() => updateSelection(entity)} />
+    );
+  }
+
+  renderSkeleton = () => {
+    const skeletonLength = 15;
+    return (
+      <span className={Classes.SKELETON}>{'-'.repeat(skeletonLength)}</span>
     );
   }
 
   handleNewRow = (changes: any) => {
-    const { schema } = this.props;
+    const { intl, schema } = this.props;
     const { visibleProps } = this.state;
 
     const entityData = { schema, properties: {} };
 
     changes.forEach(({ cell, value, col }: any) => {
       const property = cell?.data?.property || visibleProps[col-1];
-      entityData.properties[property.name] = value;
+      const error = validate({ schema, property, values: value });
+      if (error) {
+        showErrorToast(intl.formatMessage(error));
+      } else {
+        entityData.properties[property.name] = value;
+      }
     })
 
-    this.props.entityManager.createEntity(entityData);
+    const error = checkEntityRequiredProps(entityData);
+    if (error) {
+      showErrorToast(intl.formatMessage(error));
+    } else {
+      this.props.entityManager.createEntity(entityData);
+    }
   }
 
   handleExistingRow = (changes: Datasheet.CellsChangedArgs<CellData, any> | Datasheet.CellAdditionsArgs<CellData>) => {
+    const { intl } = this.props;
+
     let changedEntity;
     changes.forEach(({ cell, value }: any) => {
       const { entity, property } = cell.data;
-      if (value === "") {
-        entity.properties.set(property, []);
+      const error = validate({ schema: entity.schema, property, values: value});
+
+      if (error) {
+        showErrorToast(intl.formatMessage(error));
       } else {
-        entity.properties.set(property, value);
+        if (value === "") {
+          entity.properties.set(property, []);
+        } else {
+          entity.properties.set(property, value);
+        }
+        changedEntity = entity;
       }
-      changedEntity = entity;
     })
+
     if (changedEntity) {
       this.props.entityManager.updateEntity(changedEntity);
     }
@@ -267,9 +312,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       <div className="TableEditor">
         <Datasheet
           data={[this.getTableHeader(), ...this.getTableContent()] as CellData[][]}
-          valueRenderer={this.getUnderlyingValue}
-          valueViewer={this.renderValue}
-          dataEditor={this.renderEditor}
+          valueRenderer={cell => cell.value}
+          valueViewer={({ cell }) => cell.displayValue || null}
           onCellsChanged={this.onCellsChanged as Datasheet.CellsChangedHandler<CellData, CellData>}
           parsePaste={this.parsePaste as any}
         />
