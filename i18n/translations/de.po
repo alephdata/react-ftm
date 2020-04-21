@@ -1,7 +1,10 @@
+# Translators:
+# pudo <friedrich@pudo.org>, 2020
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-03-23T13:58:37.898Z\n"
+"POT-Creation-Date: 2020-04-21T12:51:47.893Z\n"
+"Last-Translator: pudo <friedrich@pudo.org>, 2020\n"
 "Language-Team: German (https://www.transifex.com/aleph/teams/76591/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -101,6 +104,13 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
+#. [editor.validation.date_invalid]
+#. defaultMessage is:
+#. Date format: yyyy-m-d
+#: i18n/messages.json
+msgid "Date format: yyyy-m-d"
+msgstr ""
+
 #. [tooltip.delete]
 #. defaultMessage is:
 #. Delete selection
@@ -157,6 +167,27 @@ msgstr ""
 msgid "Group selection"
 msgstr ""
 
+#. [editor.validation.url_invalid]
+#. defaultMessage is:
+#. Invalid URL format
+#: i18n/messages.json
+msgid "Invalid URL format"
+msgstr ""
+
+#. [editor.validation.country_invalid]
+#. defaultMessage is:
+#. Invalid country
+#: i18n/messages.json
+msgid "Invalid country"
+msgstr ""
+
+#. [editor.validation.topic_invalid]
+#. defaultMessage is:
+#. Invalid topic
+#: i18n/messages.json
+msgid "Invalid topic"
+msgstr ""
+
 #. [search.results_text.none]
 #. defaultMessage is:
 #. No results found
@@ -183,7 +214,7 @@ msgstr ""
 #. Redo
 #: i18n/messages.json
 msgid "Redo"
-msgstr ""
+msgstr "Wiederholen"
 
 #. [dialog.grouping_create.placeholder]
 #. defaultMessage is:
@@ -200,13 +231,27 @@ msgstr ""
 #. Select an entity
 #: i18n/messages.json i18n/messages.json
 msgid "Select an entity"
-msgstr ""
+msgstr "Entität auswählen"
 
 #. [dialog.edge_create.type_placeholder]
 #. defaultMessage is:
 #. Select type
 #: i18n/messages.json
 msgid "Select type"
+msgstr "Typ auswählen"
+
+#. [tooltip.sidebar_view]
+#. defaultMessage is:
+#. Show sidebar
+#: i18n/messages.json
+msgid "Show sidebar"
+msgstr ""
+
+#. [tooltip.table_view]
+#. defaultMessage is:
+#. Show table
+#: i18n/messages.json
+msgid "Show table"
 msgstr ""
 
 #. [dialog.edge_create.source_label]
@@ -214,16 +259,16 @@ msgstr ""
 #. Source
 #: i18n/messages.json
 msgid "Source"
-msgstr ""
+msgstr "Quelle"
 
 #. [dialog.edge_create.target_label]
 #. defaultMessage is:
 #. Target
 #: i18n/messages.json
 msgid "Target"
-msgstr ""
+msgstr "Ziel"
 
-#. [editor.property_required]
+#. [editor.validation.required]
 #. defaultMessage is:
 #. This property is required
 #: i18n/messages.json
@@ -256,35 +301,28 @@ msgstr ""
 #. Undo
 #: i18n/messages.json
 msgid "Undo"
-msgstr ""
+msgstr "Rückgängig"
 
 #. [tooltip.ungroup]
 #. defaultMessage is:
 #. Ungroup selection
 #: i18n/messages.json
 msgid "Ungroup selection"
-msgstr ""
+msgstr "Gruppe auflösen"
 
 #. [editor.language.unknown]
 #. defaultMessage is:
 #. Unknown
 #: i18n/messages.json
 msgid "Unknown"
-msgstr ""
+msgstr "Unbekannt"
 
 #. [editor.entity.unknown]
 #. defaultMessage is:
 #. Untitled
 #: i18n/messages.json
 msgid "Untitled"
-msgstr ""
-
-#. [tooltip.table_view]
-#. defaultMessage is:
-#. View as table
-#: i18n/messages.json
-msgid "View as table"
-msgstr ""
+msgstr "Unbenannt"
 
 #. [dialog.vertex_create.name_placeholder]
 #. defaultMessage is:
