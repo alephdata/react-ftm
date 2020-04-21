@@ -47,7 +47,7 @@ interface ITableEditorProps extends WrappedComponentProps {
   updateSelection: (entity: Entity) => void
   entityManager: EntityManager
   writeable: boolean
-  isPending: boolean
+  isPending?: boolean
 }
 
 interface ITableEditorState {
@@ -85,7 +85,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const featuredProps = schema.getFeaturedProperties();
     const filledProps = entities.reduce((acc, entity: Entity) => [...acc, ...entity.getProperties()], [] as Property[]);
 
-    return Array.from(new Set([...requiredProps, ...featuredProps, ...filledProps]));
+    return Array.from(new Set([...requiredProps, ...featuredProps, ...filledProps]))
+      .filter(prop => (!prop.stub && !prop.hidden));
   }
 
   getNonVisibleProperties() {

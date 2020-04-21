@@ -56,13 +56,3 @@ export function getHost(url:string) {
     return url;
   }
 }
-
-export function isValidUrl(value: string) {
-  try {
-    new URL(value);
-  } catch (e) {
-    return false;
-  }
-
-  return true;
-};

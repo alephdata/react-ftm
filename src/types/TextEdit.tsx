@@ -100,7 +100,7 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
 
     return (
       <div ref={(node) => this.containerRef = node}>
-        <form onSubmit={(e: any) => { e.preventDefault(); onSubmit(values); }}>
+        <form onSubmit={(e: any) => { e.preventDefault(); e.stopPropagation(); onSubmit(values); }}>
           <FormGroup>
             {(!forceMultiEdit && numVals <= 1) && (
               <div className="bp3-input-group">
@@ -121,6 +121,7 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
                     // override textarea Enter to submit input
                     if (e.keyCode == 13) {
                       e.preventDefault();
+                      e.stopPropagation();
                       onSubmit(values);
                     }
                   }}

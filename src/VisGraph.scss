@@ -54,14 +54,14 @@
   }
 
   &__table {
-    flex-grow: 3;
+    flex-grow: 4;
     flex-shrink: 1;
-    flex-basis: $table-height;
+    flex-basis: 50%;
     width: 100%;
     position: relative;
     z-index: 0;
+    min-height: 350px;
   }
-
 
   &__button-group {
     position: absolute;

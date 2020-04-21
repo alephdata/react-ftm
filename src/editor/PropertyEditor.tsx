@@ -5,7 +5,7 @@ import { TextEdit } from '../types/TextEdit';
 import EntityEdit from '../types/EntityEdit';
 import { CountryEdit } from "../types/CountryEdit";
 import { TopicEdit } from "../types/TopicEdit";
-import { isValidUrl } from '../utils';
+import { validate, validationErrors } from './utils';
 
 const messages = defineMessages({
   invalidDate: {
@@ -40,7 +40,8 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
     super(props);
 
     this.state = {
-      values: props.entity?.getProperty(props.property) || []
+      values: props.entity?.getProperty(props.property) || [],
+      error: null,
     };
   }
 
@@ -52,35 +53,26 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
   }
 
   onSubmit = (overrideStateValues?: Values) => {
+    const { entity, property } = this.props;
+    console.log('in prop editor on submit');
+    const values = overrideStateValues || this.state.values;
     if (overrideStateValues) {
       this.onChange(overrideStateValues);
     }
-    if (!this.checkErrors()) {
-      this.props.entity.properties.set(this.props.property, overrideStateValues || this.state.values);
-      this.props.onSubmit(this.props.entity)
-    }
-  }
-
-  checkErrors() {
-    const { intl, property } = this.props;
-    const { values } = this.state;
-    // 
-    // if (property.required) {
-    //   return values && values.length && values[0] ? null : intl.formatMessage(messages.required);
-    // }
-    const propType = property.type.name;
-
-    if (propType === 'url') {
-      return values.some(val => !isValidUrl(val as string)) ? intl.formatMessage(messages.invalidUrl) : null;
-    } else if (propType === 'date') {
-      const dateRegex = RegExp(/^([12]\d{3}(-[01]?[0-9](-[0123]?[0-9]([T ]([012]?\d(:\d{1,2}(:\d{1,2}(\.\d{6})?(Z|[-+]\d{2}(:?\d{2})?)?)?)?)?)?)?)?)?$/)
-      return values.some(val => !dateRegex.test(val as string)) ? intl.formatMessage(messages.invalidDate) : null;
+    console.log('calling check errors');
+    const validationError = validate({ entity, property, values });
+    if (validationError) {
+      this.setState({ error: validationError });
+    } else {
+      console.log('no errors')
+      entity.properties.set(property, values);
+      this.props.onSubmit(entity)
     }
   }
 
   render() {
-    const { entitiesList, entity, property, usePortal } = this.props;
-    const { values } = this.state;
+    const { entitiesList, entity, intl, property, usePortal } = this.props;
+    const { error, values } = this.state;
 
     const commonProps = {
       onSubmit: this.onSubmit,
@@ -102,13 +94,11 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
       content = <TextEdit {...commonProps} />;
     }
 
-    const foundError = this.checkErrors();
-
     return (
       <>
         {content}
-        {foundError && (
-          <div className="EntityViewer__property-list-item__error">{foundError}</div>
+        {error && (
+          <div className="EntityViewer__property-list-item__error">{intl.formatMessage(messages[error])}</div>
         )}
       </>
     )
