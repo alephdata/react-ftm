@@ -26,7 +26,7 @@ export const validationMessages = defineMessages({
 
 function isValidUrl(value: string) {
   try {
-    new URL(value);
+    const testUrl = new URL(value);
   } catch (e) {
     return false;
   }
