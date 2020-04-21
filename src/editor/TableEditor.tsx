@@ -122,7 +122,15 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     let skeletonRows = [];
 
     const content = entities.map(entity => {
-      const propCells = visibleProps.map(property => ({ ...propertyCellProps, readOnly: !writeable, data: { entity, property } }))
+      const propCells = visibleProps.map(property => ({
+        ...propertyCellProps,
+        readOnly: !writeable,
+        value: entity.getProperty(property),
+        displayValue: this.renderValue({ entity, property }),
+        dataEditor: this.renderEditor,
+        data: { entity, property },
+      }));
+
       if (writeable) {
         const checkbox = { ...checkboxCellProps, component: this.renderCheckbox(entity) };
         return [checkbox, ...propCells];
@@ -140,7 +148,12 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     }
 
     if (writeable) {
-      const placeholderCells = visibleProps.map(property => ({ ...propertyCellProps, data: { entity: null, property } }));
+      const placeholderCells = visibleProps.map(property => ({
+        ...propertyCellProps,
+        displayValue: <span>—</span>,
+        dataEditor: this.renderEditor,
+        data: { entity: null, property }
+      }));
       const placeholderRow = [{...checkboxCellProps}, ...placeholderCells]
 
       return [...content, ...skeletonRows, placeholderRow];
@@ -149,30 +162,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     }
   }
 
-  getUnderlyingValue = (cell: CellData) => {
-    const { data } = cell;
-
-    if (data?.entity) {
-      const { entity, property } = data;
-      return entity.getProperty(property);
-    } else {
-      return null;
-    }
-  }
-
-  renderValue = ({ cell }: { cell: CellData }) => {
-    const { data } = cell;
-
-    if (data) {
-      const { entity, property } = data;
-      if (entity) {
-        return <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={new Map()} />;
-      } else {
-        return <span>—</span>
-      }
-    } else {
-      return null;
-    }
+  renderValue = ({ entity, property }: { entity: Entity, property: Property }) => {
+    return <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={new Map()} />;
   }
 
   renderEditor = ({ cell, onCommit, onChange, onKeyDown }: Datasheet.DataEditorProps<CellData, any>) => {
@@ -298,9 +289,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       <div className="TableEditor">
         <Datasheet
           data={[this.getTableHeader(), ...this.getTableContent()] as CellData[][]}
-          valueRenderer={this.getUnderlyingValue}
-          valueViewer={this.renderValue}
-          dataEditor={this.renderEditor}
+          valueRenderer={cell => cell.value}
+          valueViewer={({ cell }) => cell.displayValue || null}
           onCellsChanged={this.onCellsChanged as Datasheet.CellsChangedHandler<CellData, CellData>}
           parsePaste={this.parsePaste as any}
         />
