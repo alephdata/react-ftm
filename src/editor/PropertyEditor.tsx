@@ -1,26 +1,11 @@
 import * as React from 'react'
-import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity, Property, Values } from '@alephdata/followthemoney';
 import { TextEdit } from '../types/TextEdit';
 import EntityEdit from '../types/EntityEdit';
 import { CountryEdit } from "../types/CountryEdit";
 import { TopicEdit } from "../types/TopicEdit";
 import { validate, validationErrors } from './utils';
-
-const messages = defineMessages({
-  invalidDate: {
-    id: 'editor.property_date_invalid',
-    defaultMessage: 'Date format: yyyy-m-d',
-  },
-  invalidUrl: {
-    id: 'editor.property_url_invalid',
-    defaultMessage: 'Invalid URL format',
-  },
-  required: {
-    id: 'editor.property_required',
-    defaultMessage: 'This property is required',
-  },
-});
 
 interface IPropertyEditorProps extends WrappedComponentProps {
   entity: Entity,
@@ -54,17 +39,14 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
 
   onSubmit = (overrideStateValues?: Values) => {
     const { entity, property } = this.props;
-    console.log('in prop editor on submit');
     const values = overrideStateValues || this.state.values;
     if (overrideStateValues) {
       this.onChange(overrideStateValues);
     }
-    console.log('calling check errors');
-    const validationError = validate({ entity, property, values });
+    const validationError = validate({ schema: entity.schema, property, values });
     if (validationError) {
       this.setState({ error: validationError });
     } else {
-      console.log('no errors')
       entity.properties.set(property, values);
       this.props.onSubmit(entity)
     }
@@ -98,7 +80,7 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
       <>
         {content}
         {error && (
-          <div className="EntityViewer__property-list-item__error">{intl.formatMessage(messages[error])}</div>
+          <div className="EntityViewer__property-list-item__error">{intl.formatMessage(error)}</div>
         )}
       </>
     )

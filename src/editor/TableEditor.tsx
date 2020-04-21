@@ -11,6 +11,8 @@ import { Button, Checkbox, Classes, Icon, Intent, Popover, Position, Tooltip } f
 import { Entity, Property, Schema } from "@alephdata/followthemoney";
 import Datasheet from 'react-datasheet';
 import { SortType } from './SortType';
+import { showErrorToast } from './toaster';
+import { checkEntityRequiredProps, validate } from './utils';
 
 import "./TableEditor.scss"
 
@@ -230,30 +232,48 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   handleNewRow = (changes: any) => {
-    const { schema } = this.props;
+    const { intl, schema } = this.props;
     const { visibleProps } = this.state;
 
     const entityData = { schema, properties: {} };
+    let toCreate;
 
     changes.forEach(({ cell, value, col }: any) => {
       const property = cell?.data?.property || visibleProps[col-1];
-      entityData.properties[property.name] = value;
+      const error = validate({ schema, property, values: value });
+      if (error) {
+        showErrorToast(intl.formatMessage(error));
+      } else {
+        toCreate = entityData.properties[property.name] = value;
+      }
     })
 
-    this.props.entityManager.createEntity(entityData);
+    if (toCreate) {
+      console.log(checkEntityRequiredProps(entityData));
+      this.props.entityManager.createEntity(entityData);
+    }
   }
 
   handleExistingRow = (changes: Datasheet.CellsChangedArgs<CellData, any> | Datasheet.CellAdditionsArgs<CellData>) => {
+    const { intl } = this.props;
+
     let changedEntity;
     changes.forEach(({ cell, value }: any) => {
       const { entity, property } = cell.data;
-      if (value === "") {
-        entity.properties.set(property, []);
+      const error = validate({ schema: entity.schema, property, values: value});
+
+      if (error) {
+        showErrorToast(intl.formatMessage(error));
       } else {
-        entity.properties.set(property, value);
+        if (value === "") {
+          entity.properties.set(property, []);
+        } else {
+          entity.properties.set(property, value);
+        }
+        changedEntity = entity;
       }
-      changedEntity = entity;
     })
+
     if (changedEntity) {
       this.props.entityManager.updateEntity(changedEntity);
     }
