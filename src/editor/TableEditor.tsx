@@ -236,7 +236,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const { visibleProps } = this.state;
 
     const entityData = { schema, properties: {} };
-    let toCreate;
 
     changes.forEach(({ cell, value, col }: any) => {
       const property = cell?.data?.property || visibleProps[col-1];
@@ -244,12 +243,14 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       if (error) {
         showErrorToast(intl.formatMessage(error));
       } else {
-        toCreate = entityData.properties[property.name] = value;
+        entityData.properties[property.name] = value;
       }
     })
 
-    if (toCreate) {
-      console.log(checkEntityRequiredProps(entityData));
+    const error = checkEntityRequiredProps(entityData));
+    if (error) {
+      showErrorToast(intl.formatMessage(error));
+    } else {
       this.props.entityManager.createEntity(entityData);
     }
   }
