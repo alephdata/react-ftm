@@ -9,6 +9,8 @@ import { Button, Classes, Drawer, Icon, Position, Tab, TabId, Tabs, Toaster } fr
 import { Entity, IEntityDatum, Schema } from "@alephdata/followthemoney";
 import { SchemaLabel } from '../types';
 import { SortType } from './SortType';
+import { matchText } from "../utils";
+
 import c from 'classnames';
 
 import "./TableView.scss"
@@ -132,26 +134,9 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     const { layout } = this.props;
 
     const entities = layout.getEntities()
-      .filter(e => e.schema.isA(schema))
+      .filter(e => e.schema.isA(schema) && matchText(e.getCaption() || '', query))
       .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
 
-
-    //   const { property, entity } = this.props;
-    //   const selectedIds = this.getSelectedEntities().map(e => e.id);
-    //   let excludeIds: string[] = [...[entity.id], ...selectedIds];
-    //
-    //   // exclude source and target entities from options (to avoid self-referential edges)
-    //   if (entity.schema.edge) {
-    //     const {source, target} = entity.schema.edge
-    //     const sourceProp = entity.schema.getProperty(source)
-    //     const targetProp = entity.schema.getProperty(target)
-    //     const sourceEntity = entity.getFirst(sourceProp) as string
-    //     const targetEntity = entity.getFirst(targetProp) as string
-    //     excludeIds = [...excludeIds, ...[sourceEntity], ...[targetEntity]];
-    //   }
-    //   return Array.from(this.props.entities.values())
-    //     .filter(e => e.schema.isA(property.getRange()) && !this.props.values.includes(e.id) && excludeIds.indexOf(e.id) === -1)
-    //     .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
     return new Promise((resolve) => resolve(entities));
   }
 

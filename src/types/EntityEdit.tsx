@@ -3,12 +3,15 @@ import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { Entity } from "@alephdata/followthemoney";
 import { EntityLabel } from './Entity';
-import { Alignment, Button, ControlGroup, FormGroup, MenuItem, Position } from "@blueprintjs/core";
+import { Alignment, Button, ControlGroup, FormGroup, Menu, MenuItem, Position, Spinner } from "@blueprintjs/core";
 import { ItemListRenderer, ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
 import { ITypeProps } from "./common";
-import { highlightText, matchText } from "../utils";
 
 const messages = defineMessages({
+  no_results: {
+    id: 'editor.entity.no_results',
+    defaultMessage: 'No entities found',
+  },
   placeholder: {
     id: 'editor.entity.placeholder',
     defaultMessage: 'Select an entity',
@@ -16,7 +19,7 @@ const messages = defineMessages({
 });
 
 interface IEntityTypeProps extends ITypeProps, WrappedComponentProps {
-  entitySuggestions: Array<Entity>
+  entitySuggestions: any
   fetchEntitySuggestions: (query: string) => void
 }
 
@@ -47,9 +50,6 @@ class EntityEditBase extends React.Component<IEntityTypeProps, IEntityEditState>
   }
 
   itemRenderer: ItemRenderer<Entity> = (entity, {handleClick, modifiers, query}) => {
-    if (!entity || !matchText(entity.getCaption() || '', query)) {
-      return null;
-    }
     return (
       <MenuItem
         active={modifiers.active}
@@ -70,14 +70,17 @@ class EntityEditBase extends React.Component<IEntityTypeProps, IEntityEditState>
   }
 
   itemListRenderer(rendererProps: IItemListRendererProps<Entity>) {
+    const { intl, entitySuggestions } = this.props;
     const { filteredItems, itemsParentRef, renderItem } = rendererProps;
-    const { isFetchingSuggestions, isProcessing } = this.state;
 
-    if ((!isFetchingSuggestions && !filteredItems.length) || isProcessing) return;
-
-    const content = isFetchingSuggestions
-      ? <Spinner className="VertexCreateDialog__spinner" size={Spinner.SIZE_SMALL} />
-      : filteredItems.map(renderItem);
+    let content;
+    if (entitySuggestions.isPending) {
+      content = <Spinner className="VertexCreateDialog__spinner" size={Spinner.SIZE_SMALL} />
+    } else if (filteredItems.length === 0) {
+      content = <span className="EntityViewer__property-list-item__error">{intl.formatMessage(messages.no_results)}</span>
+    } else {
+      content = filteredItems.map(renderItem);
+    }
 
     return (
       <Menu ulRef={itemsParentRef}>
@@ -100,7 +103,7 @@ class EntityEditBase extends React.Component<IEntityTypeProps, IEntityEditState>
 
     const allowMultiple = !entity.schema.isEdge;
 
-    const filteredSuggestions = entitySuggestions
+    const filteredSuggestions = entitySuggestions.results
       .filter(e => (e.id !== entity.id && !values.find(val => val.id === e.id )))
 
     return <FormGroup>
@@ -109,6 +112,7 @@ class EntityEditBase extends React.Component<IEntityTypeProps, IEntityEditState>
           <EntitySelect
             onItemSelect={(entity: Entity) => onSubmit([entity])}
             itemRenderer={this.itemRenderer}
+            itemListRenderer={this.itemListRenderer}
             items={filteredSuggestions}
             popoverProps={{
               position: Position.BOTTOM_LEFT,
@@ -135,6 +139,7 @@ class EntityEditBase extends React.Component<IEntityTypeProps, IEntityEditState>
             tagRenderer={entity => <EntityLabel entity={entity} icon />}
             onItemSelect={(entity: Entity) => onSubmit([...values, entity])}
             itemRenderer={this.itemRenderer}
+            itemListRenderer={this.itemListRenderer}
             items={filteredSuggestions}
             popoverProps={{
               position: Position.BOTTOM_LEFT,
@@ -144,7 +149,7 @@ class EntityEditBase extends React.Component<IEntityTypeProps, IEntityEditState>
             }}
             tagInputProps={{
               inputRef: (ref) => this.inputRef = ref,
-              tagProps: {interactive: false, minimal: true, fill: true},
+              tagProps: {interactive: false, minimal: true},
               onRemove: this.onRemove,
               placeholder: '',
             }}

@@ -8,6 +8,7 @@ import { SchemaIcon } from '../types';
 import { GraphLayout, Vertex } from '../layout'
 import {ColorPicker} from './ColorPicker'
 import {VertexRadiusPicker} from './VertexRadiusPicker'
+import { matchText } from "../utils";
 
 import c from 'classnames';
 
@@ -65,7 +66,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     const { layout } = this.props;
 
     const entities = layout.getEntities()
-      .filter(e => e.schema.isA(schema))
+      .filter(e => e.schema.isA(schema) && matchText(e.getCaption() || '', query))
       .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
 
     return new Promise((resolve) => resolve(entities));

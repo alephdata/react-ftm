@@ -35,7 +35,7 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
     }
 
     this.state = {
-      entitySuggestions: [],
+      entitySuggestions: { isPending: false, results: [] },
       values,
       error: null,
     };
@@ -67,9 +67,9 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
 
   async fetchEntitySuggestions(query) {
     const { entity, intl, property, usePortal } = this.props;
-
+    this.setState({ entitySuggestions: { isPending: true, results: [] }});
     const suggestions = await this.props.fetchEntitySuggestions({ query, schema: property.getRange() })
-    this.setState({ entitySuggestions: suggestions });
+    this.setState({ entitySuggestions: { isPending: false, results: suggestions }});
   }
 
   render() {
