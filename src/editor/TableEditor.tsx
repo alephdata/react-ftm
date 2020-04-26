@@ -166,7 +166,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   renderValue = ({ entity, property }: { entity: Entity, property: Property }) => {
-    return <PropertyValues values={entity.getProperty(property)} prop={property} entitiesList={new Map()} />;
+    return <PropertyValues values={entity.getProperty(property)} prop={property} resolveEntityReference={this.props.entityManager.resolveEntityReference} />;
   }
 
   renderEditor = ({ cell, onCommit, onChange, onKeyDown }: Datasheet.DataEditorProps<CellData, any>) => {
