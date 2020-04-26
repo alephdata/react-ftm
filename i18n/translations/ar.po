@@ -1,7 +1,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-04-21T12:51:47.893Z\n"
+"POT-Creation-Date: 2020-04-26T19:18:27.669Z\n"
 "Language-Team: Arabic (https://www.transifex.com/aleph/teams/76591/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -183,6 +183,13 @@ msgstr ""
 #. Invalid topic
 #: i18n/messages.json
 msgid "Invalid topic"
+msgstr ""
+
+#. [editor.entity.no_results]
+#. defaultMessage is:
+#. No entities found
+#: i18n/messages.json
+msgid "No entities found"
 msgstr ""
 
 #. [search.results_text.none]

@@ -1,9 +1,10 @@
+# 
 # Translators:
 # jen occrp, 2020
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-04-21T12:51:47.893Z\n"
+"POT-Creation-Date: 2020-04-26T19:18:27.669Z\n"
 "Last-Translator: jen occrp, 2020\n"
 "Language-Team: Russian (https://www.transifex.com/aleph/teams/76591/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -109,7 +110,7 @@ msgstr "Создать"
 #. Date format: yyyy-m-d
 #: i18n/messages.json
 msgid "Date format: yyyy-m-d"
-msgstr ""
+msgstr "Формат даты: гггг-м-д"
 
 #. [tooltip.delete]
 #. defaultMessage is:
@@ -172,20 +173,27 @@ msgstr "Выделить группу"
 #. Invalid URL format
 #: i18n/messages.json
 msgid "Invalid URL format"
-msgstr ""
+msgstr "Неверный формат ссылки"
 
 #. [editor.validation.country_invalid]
 #. defaultMessage is:
 #. Invalid country
 #: i18n/messages.json
 msgid "Invalid country"
-msgstr ""
+msgstr "Неверная страна"
 
 #. [editor.validation.topic_invalid]
 #. defaultMessage is:
 #. Invalid topic
 #: i18n/messages.json
 msgid "Invalid topic"
+msgstr "Некорректная тема"
+
+#. [editor.entity.no_results]
+#. defaultMessage is:
+#. No entities found
+#: i18n/messages.json
+msgid "No entities found"
 msgstr ""
 
 #. [search.results_text.none]
@@ -245,14 +253,14 @@ msgstr "Выбрать тип"
 #. Show sidebar
 #: i18n/messages.json
 msgid "Show sidebar"
-msgstr ""
+msgstr "Показать боковую панель"
 
 #. [tooltip.table_view]
 #. defaultMessage is:
 #. Show table
 #: i18n/messages.json
 msgid "Show table"
-msgstr ""
+msgstr "Показать таблицу"
 
 #. [dialog.edge_create.source_label]
 #. defaultMessage is:

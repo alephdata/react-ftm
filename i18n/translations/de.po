@@ -1,9 +1,10 @@
+# 
 # Translators:
 # pudo <friedrich@pudo.org>, 2020
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-04-21T12:51:47.893Z\n"
+"POT-Creation-Date: 2020-04-26T19:18:27.669Z\n"
 "Last-Translator: pudo <friedrich@pudo.org>, 2020\n"
 "Language-Team: German (https://www.transifex.com/aleph/teams/76591/de/)\n"
 "MIME-Version: 1.0\n"
@@ -186,6 +187,13 @@ msgstr ""
 #. Invalid topic
 #: i18n/messages.json
 msgid "Invalid topic"
+msgstr ""
+
+#. [editor.entity.no_results]
+#. defaultMessage is:
+#. No entities found
+#: i18n/messages.json
+msgid "No entities found"
 msgstr ""
 
 #. [search.results_text.none]
