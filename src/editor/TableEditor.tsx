@@ -75,7 +75,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     this.setState({ visibleProps: this.getVisibleProperties() });
   }
 
-
   componentDidUpdate(prevProps: ITableEditorProps) {
     if (prevProps.entities?.length !== this.props.entities?.length) {
       this.setState({ visibleProps: this.getVisibleProperties() });
@@ -186,8 +185,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
         property={property}
         onChange={(newVal) => onChange(newVal)}
         onSubmit={(ent) => {onChange(ent.getProperty(property)); this.setState({ shouldCommit: true }); }}
-        entitiesList={new Map()}
         usePortal={false}
+        fetchEntitySuggestions={entityManager.getEntitySuggestions}
+        resolveEntityReference={entityManager.resolveEntityReference}
       />
     );
   }

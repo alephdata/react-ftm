@@ -4,7 +4,7 @@ import hoistNonReactStatics from 'hoist-non-react-statics';
 import { Entity } from "@alephdata/followthemoney";
 import { EntityLabel } from './Entity';
 import { Alignment, Button, ControlGroup, FormGroup, MenuItem, Position } from "@blueprintjs/core";
-import { ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
+import { ItemListRenderer, ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
 import { ITypeProps } from "./common";
 import { highlightText, matchText } from "../utils";
 
@@ -16,15 +16,31 @@ const messages = defineMessages({
 });
 
 interface IEntityTypeProps extends ITypeProps, WrappedComponentProps {
-  entities: Map<string, Entity>
+  entitySuggestions: Array<Entity>
+  fetchEntitySuggestions: (query: string) => void
+}
+
+interface IEntityEditState {
+  query: string
 }
 
 const EntityMultiSelect = MultiSelect.ofType<Entity>();
 const EntitySelect = Select.ofType<Entity>();
 
-class EntityEditBase extends React.Component<IEntityTypeProps> {
+class EntityEditBase extends React.Component<IEntityTypeProps, IEntityEditState> {
   static group = new Set(['entity']);
   private inputRef: HTMLElement | null = null;
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      query: ''
+    }
+
+    this.onQueryChange = this.onQueryChange.bind(this);
+    this.itemListRenderer = this.itemListRenderer.bind(this);
+  }
 
   componentDidMount() {
     this.inputRef && this.inputRef.focus();
@@ -45,51 +61,47 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
     );
   }
 
-  getSelectedEntities(): Array<Entity>{
-    return this.props.values.map(e => {
-      if (typeof e === 'string'){
-        return this.props.entities.get(e) as Entity
-      } else return e
-    })
-  }
-
   onRemove = (toRemove: any) => {
     const idToRemove = toRemove?.props?.entity?.id;
-    const nextValues = this.getSelectedEntities()
+    const nextValues = this.props.values
       .filter(e => e.id !== idToRemove);
 
     this.props.onSubmit(nextValues)
   }
 
-  getItemsList() {
-    const { property, entity } = this.props;
-    const selectedIds = this.getSelectedEntities().map(e => e.id);
-    let excludeIds: string[] = [...[entity.id], ...selectedIds];
+  itemListRenderer(rendererProps: IItemListRendererProps<Entity>) {
+    const { filteredItems, itemsParentRef, renderItem } = rendererProps;
+    const { isFetchingSuggestions, isProcessing } = this.state;
 
-    // exclude source and target entities from options (to avoid self-referential edges)
-    if (entity.schema.edge) {
-      const {source, target} = entity.schema.edge
-      const sourceProp = entity.schema.getProperty(source)
-      const targetProp = entity.schema.getProperty(target)
-      const sourceEntity = entity.getFirst(sourceProp) as string
-      const targetEntity = entity.getFirst(targetProp) as string
-      excludeIds = [...excludeIds, ...[sourceEntity], ...[targetEntity]];
-    }
-    return Array.from(this.props.entities.values())
-      .filter(e => e.schema.isA(property.getRange()) && !this.props.values.includes(e.id) && excludeIds.indexOf(e.id) === -1)
-      .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
+    if ((!isFetchingSuggestions && !filteredItems.length) || isProcessing) return;
+
+    const content = isFetchingSuggestions
+      ? <Spinner className="VertexCreateDialog__spinner" size={Spinner.SIZE_SMALL} />
+      : filteredItems.map(renderItem);
+
+    return (
+      <Menu ulRef={itemsParentRef}>
+        {content}
+      </Menu>
+    );
+  }
+
+  onQueryChange(query: string) {
+    this.setState({ query });
+    this.props.fetchEntitySuggestions(query);
   }
 
   render() {
-    const { entity, intl, onSubmit, usePortal } = this.props;
-    const items = this.getItemsList()
-    const selectedEntities = this.getSelectedEntities();
-    const buttonText = selectedEntities && selectedEntities.length
-      ? <EntityLabel entity={selectedEntities[0]} icon />
+    const { entitySuggestions, entity, intl, onSubmit, usePortal, values } = this.props;
+    const { query } = this.state;
+    const buttonText = values.length
+      ? <EntityLabel entity={values[0]} icon />
       : intl.formatMessage(messages.placeholder);
 
     const allowMultiple = !entity.schema.isEdge;
 
+    const filteredSuggestions = entitySuggestions
+      .filter(e => (e.id !== entity.id && !values.find(val => val.id === e.id )))
 
     return <FormGroup>
       <ControlGroup vertical fill >
@@ -97,7 +109,7 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
           <EntitySelect
             onItemSelect={(entity: Entity) => onSubmit([entity])}
             itemRenderer={this.itemRenderer}
-            items={items}
+            items={filteredSuggestions}
             popoverProps={{
               position: Position.BOTTOM_LEFT,
               minimal: true,
@@ -105,7 +117,9 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
               usePortal
             }}
             resetOnSelect
-            filterable={false}
+            filterable
+            query={query}
+            onQueryChange={this.onQueryChange}
           >
             <Button
               text={buttonText}
@@ -119,9 +133,9 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
         {allowMultiple && (
           <EntityMultiSelect
             tagRenderer={entity => <EntityLabel entity={entity} icon />}
-            onItemSelect={(entity: Entity) => onSubmit([...this.getSelectedEntities(), ...[entity]])}
+            onItemSelect={(entity: Entity) => onSubmit([...values, entity])}
             itemRenderer={this.itemRenderer}
-            items={items}
+            items={filteredSuggestions}
             popoverProps={{
               position: Position.BOTTOM_LEFT,
               minimal: true,
@@ -134,13 +148,14 @@ class EntityEditBase extends React.Component<IEntityTypeProps> {
               onRemove: this.onRemove,
               placeholder: '',
             }}
-            selectedItems={selectedEntities}
+            selectedItems={values}
             openOnKeyDown
             resetOnSelect
             fill
+            query={query}
+            onQueryChange={this.onQueryChange}
           />
         )}
-
       </ControlGroup>
     </FormGroup>
   }

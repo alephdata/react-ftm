@@ -7,6 +7,7 @@ export interface IEntityManagerProps {
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
   getEntitySuggestions?: (queryText: string, schema?: Schema) => Promise<Entity[]>,
+  resolveEntityReference?: (entityId: string) => Entity | undefined,
 }
 
 export class EntityManager {
@@ -55,6 +56,12 @@ export class EntityManager {
   deleteEntity(entityId: string) {
     if (this.overload?.deleteEntity) {
       this.overload.deleteEntity(entityId);
+    }
+  }
+
+  resolveEntityReference(entityId: string) {
+    if (this.overload?.resolveEntityReference) {
+      return this.overload.resolveEntityReference(entityId);
     }
   }
 

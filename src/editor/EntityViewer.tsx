@@ -61,6 +61,20 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     }
   }
 
+  fetchEntitySuggestions = ({ query, schema }: { query: string, schema?: Schema }): Promise<Entity[]> => {
+    const { layout } = this.props;
+
+    const entities = layout.getEntities()
+      .filter(e => e.schema.isA(schema))
+      .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
+
+    return new Promise((resolve) => resolve(entities));
+  }
+
+  resolveEntityReference = (entityId: string): Entity | undefined => {
+    return this.props.layout.entities.get(entityId);
+  }
+
   onNewPropertySelected(p:Property){
     this.setState(({visibleProps}) => ({
       visibleProps: [...visibleProps, ...[p]],
@@ -106,8 +120,9 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
                 key={property.name}
                 onSubmit={this.onSubmit}
                 entity={entity}
-                entitiesList={layout.entities}
                 property={property}
+                fetchEntitySuggestions={this.fetchEntitySuggestions}
+                resolveEntityReference={this.resolveEntityReference}
               />
             </div>
           )}

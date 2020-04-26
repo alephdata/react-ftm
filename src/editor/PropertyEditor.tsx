@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { injectIntl, WrappedComponentProps } from 'react-intl';
-import { Entity, Property, Values } from '@alephdata/followthemoney';
+import { Entity, Property, Schema, Values } from '@alephdata/followthemoney';
 import { TextEdit } from '../types/TextEdit';
 import EntityEdit from '../types/EntityEdit';
 import { CountryEdit } from "../types/CountryEdit";
@@ -10,25 +10,37 @@ import { validate } from './utils';
 interface IPropertyEditorProps extends WrappedComponentProps {
   entity: Entity,
   property: Property,
-  entitiesList: Map<string, Entity>,
+  entitySuggestions: Array<Entity>,
   onSubmit: (nextEntity: Entity) => void
   onChange?: (values: Values) => void
+  fetchEntitySuggestions?: ({query, schema}: {query: string, schema?: Schema}) => void
+  resolveEntityReference?: (entityId: string) => Entity | undefined,
   usePortal?: boolean
 }
 
 interface IPropertyEditorState {
   values: Values,
-  error: any | null
+  error: any | null,
+  entitySuggestions: Array<Entity>
 }
 
 class PropertyEditorBase extends React.Component<IPropertyEditorProps, IPropertyEditorState> {
   constructor(props:IPropertyEditorProps) {
     super(props);
+    const { entity, property, resolveEntityReference } = props;
+
+    let values = entity?.getProperty(property) || [];
+    if (property.type.name === 'entity') {
+      values = values.map(val => (typeof val === 'string' ? resolveEntityReference(val) : val));
+    }
 
     this.state = {
-      values: props.entity?.getProperty(props.property) || [],
+      entitySuggestions: [],
+      values,
       error: null,
     };
+
+    this.fetchEntitySuggestions = this.fetchEntitySuggestions.bind(this)
   }
 
   onChange = (values: Values) => {
@@ -53,9 +65,16 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
     }
   }
 
+  async fetchEntitySuggestions(query) {
+    const { entity, intl, property, usePortal } = this.props;
+
+    const suggestions = await this.props.fetchEntitySuggestions({ query, schema: property.getRange() })
+    this.setState({ entitySuggestions: suggestions });
+  }
+
   render() {
-    const { entitiesList, entity, intl, property, usePortal } = this.props;
-    const { error, values } = this.state;
+    const { entity, intl, property, usePortal } = this.props;
+    const { entitySuggestions, error, values } = this.state;
 
     const commonProps = {
       onSubmit: this.onSubmit,
@@ -72,7 +91,7 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
     } else if (TopicEdit.group.has(property.type.name)) {
       content = <TopicEdit {...commonProps} />;
     } else if (EntityEdit.group.has(property.type.name)) {
-      content = <EntityEdit entities={entitiesList} {...commonProps} />
+      content = <EntityEdit entitySuggestions={entitySuggestions} fetchEntitySuggestions={this.fetchEntitySuggestions} {...commonProps} />
     } else {
       content = <TextEdit {...commonProps} />;
     }
