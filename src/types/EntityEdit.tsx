@@ -19,7 +19,8 @@ const messages = defineMessages({
 });
 
 interface IEntityTypeProps extends ITypeProps, WrappedComponentProps {
-  entitySuggestions: any
+  values: Array<Entity>
+  entitySuggestions: { isPending: boolean, results: Array<Entity> }
   fetchEntitySuggestions: (query: string) => void
 }
 
@@ -34,7 +35,7 @@ class EntityEditBase extends React.Component<IEntityTypeProps, IEntityEditState>
   static group = new Set(['entity']);
   private inputRef: HTMLElement | null = null;
 
-  constructor(props) {
+  constructor(props:IEntityTypeProps) {
     super(props);
 
     this.state = {
@@ -69,7 +70,7 @@ class EntityEditBase extends React.Component<IEntityTypeProps, IEntityEditState>
     this.props.onSubmit(nextValues)
   }
 
-  itemListRenderer(rendererProps: IItemListRendererProps<Entity>) {
+  itemListRenderer(rendererProps: any) {
     const { intl, entitySuggestions } = this.props;
     const { filteredItems, itemsParentRef, renderItem } = rendererProps;
 

@@ -10,10 +10,9 @@ import { validate } from './utils';
 interface IPropertyEditorProps extends WrappedComponentProps {
   entity: Entity,
   property: Property,
-  entitySuggestions: Array<Entity>,
   onSubmit: (nextEntity: Entity) => void
   onChange?: (values: Values) => void
-  fetchEntitySuggestions?: ({query, schema}: {query: string, schema?: Schema}) => void
+  fetchEntitySuggestions?: (queryText: string, schema?: Schema) => Promise<Entity[]>
   resolveEntityReference?: (entityId: string) => Entity | undefined,
   usePortal?: boolean
 }
@@ -21,7 +20,7 @@ interface IPropertyEditorProps extends WrappedComponentProps {
 interface IPropertyEditorState {
   values: Values,
   error: any | null,
-  entitySuggestions: Array<Entity>
+  entitySuggestions: { isPending: boolean, results: Array<Entity> }
 }
 
 class PropertyEditorBase extends React.Component<IPropertyEditorProps, IPropertyEditorState> {
@@ -30,8 +29,13 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
     const { entity, property, resolveEntityReference } = props;
 
     let values = entity?.getProperty(property) || [];
-    if (property.type.name === 'entity') {
-      values = values.map(val => (typeof val === 'string' ? resolveEntityReference(val) : val));
+    if (property.type.name === 'entity' && resolveEntityReference) {
+      values = values.map(val => {
+        if (typeof val === 'string') {
+          return resolveEntityReference(val) || '';
+        }
+        return val;
+      });
     }
 
     this.state = {
@@ -65,11 +69,13 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
     }
   }
 
-  async fetchEntitySuggestions(query) {
+  async fetchEntitySuggestions(query: string) {
     const { entity, intl, property, usePortal } = this.props;
-    this.setState({ entitySuggestions: { isPending: true, results: [] }});
-    const suggestions = await this.props.fetchEntitySuggestions({ query, schema: property.getRange() })
-    this.setState({ entitySuggestions: { isPending: false, results: suggestions }});
+    if (this.props.fetchEntitySuggestions) {
+      this.setState({ entitySuggestions: { isPending: true, results: [] }});
+      const suggestions = await this.props.fetchEntitySuggestions(query, property.getRange());
+      this.setState({ entitySuggestions: { isPending: false, results: suggestions }});
+    }
   }
 
   render() {
@@ -91,7 +97,7 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
     } else if (TopicEdit.group.has(property.type.name)) {
       content = <TopicEdit {...commonProps} />;
     } else if (EntityEdit.group.has(property.type.name)) {
-      content = <EntityEdit entitySuggestions={entitySuggestions} fetchEntitySuggestions={this.fetchEntitySuggestions} {...commonProps} />
+      content = <EntityEdit {...commonProps} values={values as Array<Entity>} entitySuggestions={entitySuggestions} fetchEntitySuggestions={this.fetchEntitySuggestions}  />
     } else {
       content = <TextEdit {...commonProps} />;
     }

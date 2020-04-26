@@ -130,7 +130,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     updateLayout(layout, { updated: [entity] }, { modifyHistory: true });
   }
 
-  fetchEntitySuggestions({ query, schema }: { query: string, schema?: Schema }): Promise<Entity[]> {
+  fetchEntitySuggestions(query: string, schema?: Schema): Promise<Entity[]> {
     const { layout } = this.props;
 
     const entities = layout.getEntities()

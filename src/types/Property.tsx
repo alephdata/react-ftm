@@ -23,7 +23,7 @@ interface IValueProps extends IPropertyCommonProps{
 
 export class PropertyValue extends React.PureComponent<IValueProps> {
   render() {
-    const { entitiesList, prop, resolveEntityReference, value } = this.props;
+    const { prop, resolveEntityReference, value } = this.props;
     if (!value) {
       return null;
     }

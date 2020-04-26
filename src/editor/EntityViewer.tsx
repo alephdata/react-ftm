@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {Classes, Divider, H2, UL} from '@blueprintjs/core'
-import {Entity, Property} from '@alephdata/followthemoney';
+import { Entity, Property, Schema } from '@alephdata/followthemoney';
 import {SelectProperty} from './SelectProperty';
 import {PropertyEditor} from './PropertyEditor';
 import { PropertyName, PropertyValues} from '../types';
@@ -43,6 +43,8 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     }
 
     this.onNewPropertySelected = this.onNewPropertySelected.bind(this);
+    this.fetchEntitySuggestions = this.fetchEntitySuggestions.bind(this);
+    this.resolveEntityReference = this.resolveEntityReference.bind(this);
     this.renderProperty = this.renderProperty.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
@@ -62,7 +64,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     }
   }
 
-  fetchEntitySuggestions = ({ query, schema }: { query: string, schema?: Schema }): Promise<Entity[]> => {
+  fetchEntitySuggestions(query: string, schema?: Schema): Promise<Entity[]> {
     const { layout } = this.props;
 
     const entities = layout.getEntities()
@@ -72,7 +74,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     return new Promise((resolve) => resolve(entities));
   }
 
-  resolveEntityReference = (entityId: string): Entity | undefined => {
+  resolveEntityReference(entityId: string): Entity | undefined {
     return this.props.layout.entities.get(entityId);
   }
 
