@@ -52,6 +52,7 @@ interface ITableEditorProps extends WrappedComponentProps {
   entityManager: EntityManager
   writeable: boolean
   isPending?: boolean
+  updateFinishedCallback?: () => void
 }
 
 interface ITableEditorState {
@@ -283,7 +284,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   onCellsChanged = (changeList: Datasheet.CellsChangedArgs<CellData, any>, outOfBounds: Datasheet.CellAdditionsArgs<CellData>) => {
-    const { entities } = this.props;
+    const { entities, updateFinishedCallback } = this.props;
     const entityCount = entities.length;
     const fullChangeList = outOfBounds ? [...changeList, ...outOfBounds] : changeList;
     const changesByRow = _.groupBy(fullChangeList, c => c.row);
@@ -295,6 +296,10 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
         this.handleExistingRow(changes);
       }
     });
+
+    if (updateFinishedCallback) {
+      updateFinishedCallback();
+    }
   }
 
   parsePaste(pastedString: string) {
