@@ -81,7 +81,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   onNewPropertySelected(p:Property){
     this.setState(({visibleProps}) => ({
       visibleProps: [...visibleProps, ...[p]],
-      currEditing: p
+      currEditing: null
     }))
   }
 
