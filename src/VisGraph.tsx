@@ -282,7 +282,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                 {...layoutContext}
               />
             </div>
-            {!tableView && (
+            {showSidebar && (
               <div className="VisGraph__sidebar">
                 <Sidebar {...layoutContext} writeable={writeable} searchText={searchText} isOpen={showSidebar} />
               </div>

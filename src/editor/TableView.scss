@@ -4,10 +4,12 @@ $border-color: rgba(16, 22, 26, 0.15);
 @import "src/variables.scss";
 
 .TableView {
-  padding: $table-editor-padding;
-  position: relative;
-  height: 100% !important;
-  overflow: scroll !important;
+  &.bp3-drawer {
+    padding: $table-editor-padding !important;
+    position: relative;
+    height: 100% !important;
+    overflow: scroll !important;
+  }
 
   &__close {
     position: absolute;
