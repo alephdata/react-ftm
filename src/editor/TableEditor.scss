@@ -38,7 +38,7 @@
       }
     }
 
-    &.header .bp3-button {
+    &.header .bp3-button, &.checkbox .bp3-button {
       justify-content: space-between;
       border-radius: 0 !important;
     }

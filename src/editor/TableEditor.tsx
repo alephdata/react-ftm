@@ -19,11 +19,7 @@ import "./TableEditor.scss"
 const messages = defineMessages({
   add: {
     id: 'table_editor.add_entity',
-    defaultMessage: 'Add {schema}',
-  },
-  delete: {
-    id: 'table_editor.delete_entity',
-    defaultMessage: 'Delete this entity',
+    defaultMessage: 'Create a new {schema}',
   },
 });
 
@@ -105,15 +101,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       .sort(propSort);
   }
 
-  onShowTopAddRow() {
-    this.setState({ showTopAddRow: true });
-  }
-
-  onAddColumn(newColumn: Property) {
-    this.setState(({visibleProps}) => ({
-      visibleProps: [...visibleProps, newColumn],
-    }));
-  }
+  // Table data initialization
 
   getTableHeader = () => {
     const { writeable } = this.props;
@@ -185,6 +173,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     return [[{...checkboxCellProps}, ...placeholderCells]]
   }
 
+  // Table renderers
+
   renderValue = ({ entity, property }: { entity: Entity, property: Property }) => {
     return <PropertyValues values={entity.getProperty(property)} prop={property} resolveEntityReference={this.props.entityManager.resolveEntityReference} />;
   }
@@ -229,8 +219,11 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   renderAddButton = () => {
+    const { intl, schema } = this.props;
     return (
-      <Button icon="new-object" onClick={this.onShowTopAddRow} intent={Intent.PRIMARY} minimal />
+      <Tooltip content={intl.formatMessage(messages.add, { schema: schema.label })}>
+        <Button icon="new-object" onClick={this.onShowTopAddRow} intent={Intent.PRIMARY} minimal />
+      </Tooltip>
     );
   }
 
@@ -259,6 +252,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     );
   }
 
+  // Change handlers
+
   handleNewRow = (changes: any) => {
     const { intl, schema } = this.props;
     const { visibleProps } = this.state;
@@ -280,7 +275,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       showErrorToast(intl.formatMessage(error));
     } else {
       this.props.entityManager.createEntity(entityData);
-      console.log('hiding add row');
       this.setState({ showTopAddRow: false });
     }
   }
@@ -336,6 +330,16 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     return lines.map(line => (
       line.split('\t').map(val => val.split(','))
     ));
+  }
+
+  onAddColumn(newColumn: Property) {
+    this.setState(({visibleProps}) => ({
+      visibleProps: [...visibleProps, newColumn],
+    }));
+  }
+
+  onShowTopAddRow() {
+    this.setState({ showTopAddRow: true });
   }
 
   render() {

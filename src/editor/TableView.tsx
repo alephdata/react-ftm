@@ -36,7 +36,6 @@ interface ITableViewState {
   activeTabId: TabId,
   schemata: Array<Schema>,
   sort: SortType | null
-  batchedChanges: any
 }
 
 export class TableViewBase extends React.Component<ITableViewProps, ITableViewState> {
@@ -109,7 +108,6 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
   }
 
   setActiveTab(newTabId: TabId) {
-    //FIX: clear sort?, clear selection?
     this.setState({ activeTabId: newTabId });
   }
 
@@ -139,15 +137,15 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     this.addChangeToBatch('updated', entity);
   }
 
-  addChangeToBatch(operation, value) {
+  addChangeToBatch(operation: string, entity: Entity | Promise<Entity>) {
     const currValues = this.batchedChanges[operation] || [];
-    this.batchedChanges[operation] = [...currValues, value];
+    this.batchedChanges[operation] = [...currValues, entity];
   }
 
   propagateToHistory() {
     const { layout, updateLayout } = this.props;
     if (!_.isEmpty(this.batchedChanges)) {
-      // wait for entity create promises to resolve before psuhign to history
+      // wait for entity create promises to resolve before pushing to history
       if (this.batchedChanges.created) {
         Promise.all(this.batchedChanges.created).then(created => {
           updateLayout(layout, { created, ...this.batchedChanges}, { modifyHistory: true });
