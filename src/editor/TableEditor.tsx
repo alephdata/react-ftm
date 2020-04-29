@@ -19,11 +19,7 @@ import "./TableEditor.scss"
 const messages = defineMessages({
   add: {
     id: 'table_editor.add_entity',
-    defaultMessage: 'Add {schema}',
-  },
-  delete: {
-    id: 'table_editor.delete_entity',
-    defaultMessage: 'Delete this entity',
+    defaultMessage: 'Create a new {schema}',
   },
 });
 
@@ -52,11 +48,13 @@ interface ITableEditorProps extends WrappedComponentProps {
   entityManager: EntityManager
   writeable: boolean
   isPending?: boolean
+  updateFinishedCallback?: () => void
 }
 
 interface ITableEditorState {
   visibleProps: Array<Property>
   shouldCommit: boolean
+  showTopAddRow: boolean
 }
 
 class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorState> {
@@ -66,8 +64,10 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     this.state = {
       visibleProps: [],
       shouldCommit: false,
+      showTopAddRow: false,
     }
 
+    this.onShowTopAddRow = this.onShowTopAddRow.bind(this);
     this.onAddColumn = this.onAddColumn.bind(this);
   }
 
@@ -101,19 +101,16 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       .sort(propSort);
   }
 
-  onAddColumn(newColumn: Property) {
-    this.setState(({visibleProps}) => ({
-      visibleProps: [...visibleProps, newColumn],
-    }));
-  }
+  // Table data initialization
 
   getTableHeader = () => {
     const { writeable } = this.props;
-    const { visibleProps } = this.state;
+    const { showTopAddRow, visibleProps } = this.state;
 
     const headerCells = visibleProps.map(property => ({ ...headerCellProps, component: this.renderColumnHeader(property) }));
     if (writeable) {
-      return [{ ...checkboxCellProps }, ...headerCells, { ...headerCellProps, component: this.renderPropertySelect() }];
+      const actionComponent = showTopAddRow ? null : this.renderAddButton();
+      return [{ ...checkboxCellProps, component: actionComponent }, ...headerCells, { ...headerCellProps, component: this.renderPropertySelect() }];
     } else {
       return headerCells;
     }
@@ -121,10 +118,21 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   getTableContent = () => {
     const { entities, isPending, writeable } = this.props;
-    const { visibleProps } = this.state;
-    let skeletonRows = [] as any[];
+    const { showTopAddRow, visibleProps } = this.state;
 
-    const content = entities.map(entity => {
+    const topAddRow = writeable && showTopAddRow ? this.getAddRow() : [];
+    const propRows = this.getPropertyRows();
+    const skeletonRows = isPending ? this.getSkeletonRows() : [];
+    const bottomAddRow = writeable ? this.getAddRow() : [];
+
+    return [...topAddRow, ...propRows, ...skeletonRows, ...bottomAddRow];
+  }
+
+  getPropertyRows = () => {
+    const { entities, writeable } = this.props;
+    const { visibleProps } = this.state;
+
+    return entities.map(entity => {
       const propCells = visibleProps.map(property => ({
         ...propertyCellProps,
         readOnly: !writeable,
@@ -141,29 +149,31 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
         return propCells;
       }
     });
-
-    if (isPending) {
-      const skeletonRowCount = 5;
-      skeletonRows = (Array.from(Array(skeletonRowCount).keys())).map(key => {
-        const propCells = visibleProps.map(() => ({ ...skeletonCellProps, component: this.renderSkeleton() }));
-        return [{...checkboxCellProps}, ...propCells];
-      });
-    }
-
-    if (writeable) {
-      const placeholderCells = visibleProps.map(property => ({
-        ...propertyCellProps,
-        displayValue: <span>—</span>,
-        dataEditor: this.renderEditor,
-        data: { entity: null, property }
-      }));
-      const placeholderRow = [{...checkboxCellProps}, ...placeholderCells]
-
-      return [...content, ...skeletonRows, placeholderRow];
-    } else {
-      return [...content, ...skeletonRows];
-    }
   }
+
+  getSkeletonRows = () => {
+    const { visibleProps } = this.state;
+    const skeletonRowCount = 8;
+
+    return (Array.from(Array(skeletonRowCount).keys())).map(key => {
+      const propCells = visibleProps.map(() => ({ ...skeletonCellProps, component: this.renderSkeleton() }));
+      return [{...checkboxCellProps}, ...propCells];
+    });
+  }
+
+  getAddRow = () => {
+    const { visibleProps } = this.state;
+
+    const placeholderCells = visibleProps.map(property => ({
+      ...propertyCellProps,
+      displayValue: <span>—</span>,
+      dataEditor: this.renderEditor,
+      data: { entity: null, property }
+    }));
+    return [[{...checkboxCellProps}, ...placeholderCells]]
+  }
+
+  // Table renderers
 
   renderValue = ({ entity, property }: { entity: Entity, property: Property }) => {
     return <PropertyValues values={entity.getProperty(property)} prop={property} resolveEntityReference={this.props.entityManager.resolveEntityReference} />;
@@ -208,12 +218,21 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     );
   }
 
+  renderAddButton = () => {
+    const { intl, schema } = this.props;
+    return (
+      <Tooltip content={intl.formatMessage(messages.add, { schema: schema.label })}>
+        <Button icon="new-object" onClick={this.onShowTopAddRow} intent={Intent.PRIMARY} minimal />
+      </Tooltip>
+    );
+  }
+
   renderPropertySelect = () => {
     return (
       <SelectProperty
         properties={this.getNonVisibleProperties()}
         onSelected={this.onAddColumn}
-        buttonProps={{minimal: true}}
+        buttonProps={{minimal: true, intent: Intent.PRIMARY }}
       />
     )
   }
@@ -232,6 +251,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       <span className={Classes.SKELETON}>{'-'.repeat(skeletonLength)}</span>
     );
   }
+
+  // Change handlers
 
   handleNewRow = (changes: any) => {
     const { intl, schema } = this.props;
@@ -254,6 +275,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       showErrorToast(intl.formatMessage(error));
     } else {
       this.props.entityManager.createEntity(entityData);
+      this.setState({ showTopAddRow: false });
     }
   }
 
@@ -283,18 +305,24 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   onCellsChanged = (changeList: Datasheet.CellsChangedArgs<CellData, any>, outOfBounds: Datasheet.CellAdditionsArgs<CellData>) => {
-    const { entities } = this.props;
+    const { entities, updateFinishedCallback } = this.props;
+    const { showTopAddRow } = this.state;
     const entityCount = entities.length;
     const fullChangeList = outOfBounds ? [...changeList, ...outOfBounds] : changeList;
     const changesByRow = _.groupBy(fullChangeList, c => c.row);
 
     Object.entries(changesByRow).forEach(([rowIndex, changes]: [string, any]) => {
-      if (+rowIndex > entityCount) {
-        this.handleNewRow(changes);
-      } else {
+      const isExisting = changes[0]?.cell?.data?.entity !== null;
+      if (isExisting) {
         this.handleExistingRow(changes);
+      } else {
+        this.handleNewRow(changes);
       }
     });
+
+    if (updateFinishedCallback) {
+      updateFinishedCallback();
+    }
   }
 
   parsePaste(pastedString: string) {
@@ -302,6 +330,16 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     return lines.map(line => (
       line.split('\t').map(val => val.split(','))
     ));
+  }
+
+  onAddColumn(newColumn: Property) {
+    this.setState(({visibleProps}) => ({
+      visibleProps: [...visibleProps, newColumn],
+    }));
+  }
+
+  onShowTopAddRow() {
+    this.setState({ showTopAddRow: true });
   }
 
   render() {

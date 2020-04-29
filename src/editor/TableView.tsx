@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { GraphLayout } from '../layout';
 import { GraphUpdateHandler } from '../GraphContext';
@@ -39,6 +40,7 @@ interface ITableViewState {
 
 export class TableViewBase extends React.Component<ITableViewProps, ITableViewState> {
   private localEntityManager: EntityManager
+  private batchedChanges: any = {}
 
   constructor(props: ITableViewProps) {
     super(props);
@@ -69,6 +71,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     this.onColumnSort = this.onColumnSort.bind(this);
     this.onEntityUpdate = this.onEntityUpdate.bind(this);
     this.onSelectionUpdate = this.onSelectionUpdate.bind(this);
+    this.propagateToHistory = this.propagateToHistory.bind(this);
   }
 
   getEntities(schema: Schema) {
@@ -105,29 +108,54 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
   }
 
   setActiveTab(newTabId: TabId) {
-    //FIX: clear sort?, clear selection?
     this.setState({ activeTabId: newTabId });
   }
 
   async onEntityCreate(entityData: IEntityDatum) {
     const { layout, updateLayout } = this.props;
-    const entity = await layout.createEntity(entityData);
+    const entity = layout.createEntity(entityData);
+    this.addChangeToBatch('created', entity);
 
-    updateLayout(layout, { created: [entity] }, { modifyHistory: true });
+    await entity;
+    updateLayout(layout, null, { modifyHistory: false });
     return entity;
   }
 
   onEntityDelete(entity: Entity) {
     const { layout, updateLayout } = this.props;
     layout.removeEntity(entity.id, true);
-    updateLayout(layout, { deleted: [entity] }, { modifyHistory: true });
+
+    updateLayout(layout, null, { modifyHistory: false });
+    this.addChangeToBatch('deleted', entity);
   }
 
   onEntityUpdate(entity: Entity) {
     const { layout, updateLayout } = this.props;
 
     layout.updateEntity(entity);
-    updateLayout(layout, { updated: [entity] }, { modifyHistory: true });
+    updateLayout(layout, null, { modifyHistory: false });
+    this.addChangeToBatch('updated', entity);
+  }
+
+  addChangeToBatch(operation: string, entity: Entity | Promise<Entity>) {
+    const currValues = this.batchedChanges[operation] || [];
+    this.batchedChanges[operation] = [...currValues, entity];
+  }
+
+  propagateToHistory() {
+    const { layout, updateLayout } = this.props;
+    if (!_.isEmpty(this.batchedChanges)) {
+      // wait for entity create promises to resolve before pushing to history
+      if (this.batchedChanges.created) {
+        Promise.all(this.batchedChanges.created).then(created => {
+          updateLayout(layout, { created, ...this.batchedChanges}, { modifyHistory: true });
+          this.batchedChanges = {};
+        })
+      } else {
+        updateLayout(layout, this.batchedChanges, { modifyHistory: true });
+        this.batchedChanges = {};
+      }
+    }
   }
 
   fetchEntitySuggestions(query: string, schema?: Schema): Promise<Entity[]> {
@@ -207,6 +235,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
                     updateSelection={this.onSelectionUpdate}
                     writeable={writeable}
                     entityManager={this.localEntityManager}
+                    updateFinishedCallback={this.propagateToHistory}
                   />
                 )}
               />

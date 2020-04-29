@@ -39,12 +39,11 @@ function isValidEnumValue(property: Property, value: string) {
 };
 
 export function validate({ schema, property, values }: { schema: Schema, property: Property, values: Values}) {
-  if (!values || !values.length) {
+  if (!values || !values.length || (values.length === 1 && values[0] === '')) {
     const isPropRequired = schema.required.indexOf(property.name) > -1;
     return isPropRequired ? validationMessages.required : null;
   }
   const propType = property.type.name;
-
   if (propType === 'url') {
     return values.some(val => !isValidUrl(val as string)) ? validationMessages.invalidUrl : null;
   } else if (propType === 'date') {

@@ -2,16 +2,18 @@
 @import "src/themes.scss";
 
 .Sidebar {
-  padding: $sidebar-gutter;
-  min-height: 100%;
-  width: 100% !important;
-  box-sizing: border-box;
-  overflow-y: scroll;
-  box-shadow: $editor-box-shadow;
+  &.bp3-drawer {
+    padding: $sidebar-gutter;
+    min-height: 100%;
+    width: 100% !important;
+    box-sizing: border-box;
+    overflow-y: scroll;
+    box-shadow: $editor-box-shadow;
 
-  @include themify() {
-    background-color: themed('sidebarColor');
-    color: themed('textColor');
+    @include themify() {
+      background-color: themed('sidebarColor');
+      color: themed('textColor');
+    }
   }
 
   &__search-text {
