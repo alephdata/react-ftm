@@ -12,7 +12,7 @@ import { Entity, Property, Schema, Values } from "@alephdata/followthemoney";
 import Datasheet from 'react-datasheet';
 import { SortType } from './SortType';
 import { showErrorToast } from './toaster';
-import { checkEntityRequiredProps, validate } from './utils';
+import { validate } from './utils';
 
 import "./TableEditor.scss"
 
@@ -270,13 +270,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       }
     })
 
-    const error = checkEntityRequiredProps(entityData);
-    if (error) {
-      showErrorToast(intl.formatMessage(error));
-    } else {
-      this.props.entityManager.createEntity(entityData);
-      this.setState({ showTopAddRow: false });
-    }
+
+    this.props.entityManager.createEntity(entityData);
+    this.setState({ showTopAddRow: false });
   }
 
   handleExistingRow = (changes: Datasheet.CellsChangedArgs<CellData, any> | Datasheet.CellAdditionsArgs<CellData>) => {

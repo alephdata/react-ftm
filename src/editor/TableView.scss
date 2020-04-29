@@ -6,7 +6,7 @@ $border-color: rgba(16, 22, 26, 0.15);
 .TableView {
   &.bp3-drawer {
     padding: $table-editor-padding !important;
-    position: relative;
+    position: relative !important;
     height: 100% !important;
     overflow: scroll !important;
   }
@@ -37,9 +37,5 @@ $border-color: rgba(16, 22, 26, 0.15);
   .data-grid-container {
     height: 50%;
     max-height: 350px;
-  }
-
-  .bp3-multi-select-popover .bp3-menu {
-    max-height: 150px;
   }
 }

@@ -28,8 +28,8 @@ export class EntityManager {
 
   async createEntity(entityData: any) {
     if (this.overload?.createEntity) {
-      const entityWithId: IEntityDatum = await this.overload.createEntity(entityData);
-      return new Entity(this.model, entityWithId);
+      const entity = await this.overload.createEntity(entityData);
+      return entity;
     } else {
       const { schema, properties } = entityData;
       const entity = this.model.createEntity(schema);
