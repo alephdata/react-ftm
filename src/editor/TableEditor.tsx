@@ -58,6 +58,7 @@ interface ITableEditorProps extends WrappedComponentProps {
 interface ITableEditorState {
   visibleProps: Array<Property>
   shouldCommit: boolean
+  showTopAddRow: boolean
 }
 
 class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorState> {
@@ -67,8 +68,10 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     this.state = {
       visibleProps: [],
       shouldCommit: false,
+      showTopAddRow: false,
     }
 
+    this.onShowTopAddRow = this.onShowTopAddRow.bind(this);
     this.onAddColumn = this.onAddColumn.bind(this);
   }
 
@@ -102,6 +105,10 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       .sort(propSort);
   }
 
+  onShowTopAddRow() {
+    this.setState({ showTopAddRow: true });
+  }
+
   onAddColumn(newColumn: Property) {
     this.setState(({visibleProps}) => ({
       visibleProps: [...visibleProps, newColumn],
@@ -110,11 +117,12 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   getTableHeader = () => {
     const { writeable } = this.props;
-    const { visibleProps } = this.state;
+    const { showTopAddRow, visibleProps } = this.state;
 
     const headerCells = visibleProps.map(property => ({ ...headerCellProps, component: this.renderColumnHeader(property) }));
     if (writeable) {
-      return [{ ...checkboxCellProps }, ...headerCells, { ...headerCellProps, component: this.renderPropertySelect() }];
+      const actionComponent = showTopAddRow ? null : this.renderAddButton();
+      return [{ ...checkboxCellProps, component: actionComponent }, ...headerCells, { ...headerCellProps, component: this.renderPropertySelect() }];
     } else {
       return headerCells;
     }
@@ -122,10 +130,21 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   getTableContent = () => {
     const { entities, isPending, writeable } = this.props;
-    const { visibleProps } = this.state;
-    let skeletonRows = [] as any[];
+    const { showTopAddRow, visibleProps } = this.state;
 
-    const content = entities.map(entity => {
+    const topAddRow = writeable && showTopAddRow ? this.getAddRow() : [];
+    const propRows = this.getPropertyRows();
+    const skeletonRows = isPending ? this.getSkeletonRows() : [];
+    const bottomAddRow = writeable ? this.getAddRow() : [];
+
+    return [...topAddRow, ...propRows, ...skeletonRows, ...bottomAddRow];
+  }
+
+  getPropertyRows = () => {
+    const { entities, writeable } = this.props;
+    const { visibleProps } = this.state;
+
+    return entities.map(entity => {
       const propCells = visibleProps.map(property => ({
         ...propertyCellProps,
         readOnly: !writeable,
@@ -142,28 +161,28 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
         return propCells;
       }
     });
+  }
 
-    if (isPending) {
-      const skeletonRowCount = 5;
-      skeletonRows = (Array.from(Array(skeletonRowCount).keys())).map(key => {
-        const propCells = visibleProps.map(() => ({ ...skeletonCellProps, component: this.renderSkeleton() }));
-        return [{...checkboxCellProps}, ...propCells];
-      });
-    }
+  getSkeletonRows = () => {
+    const { visibleProps } = this.state;
+    const skeletonRowCount = 8;
 
-    if (writeable) {
-      const placeholderCells = visibleProps.map(property => ({
-        ...propertyCellProps,
-        displayValue: <span>—</span>,
-        dataEditor: this.renderEditor,
-        data: { entity: null, property }
-      }));
-      const placeholderRow = [{...checkboxCellProps}, ...placeholderCells]
+    return (Array.from(Array(skeletonRowCount).keys())).map(key => {
+      const propCells = visibleProps.map(() => ({ ...skeletonCellProps, component: this.renderSkeleton() }));
+      return [{...checkboxCellProps}, ...propCells];
+    });
+  }
 
-      return [...content, ...skeletonRows, placeholderRow];
-    } else {
-      return [...content, ...skeletonRows];
-    }
+  getAddRow = () => {
+    const { visibleProps } = this.state;
+
+    const placeholderCells = visibleProps.map(property => ({
+      ...propertyCellProps,
+      displayValue: <span>—</span>,
+      dataEditor: this.renderEditor,
+      data: { entity: null, property }
+    }));
+    return [[{...checkboxCellProps}, ...placeholderCells]]
   }
 
   renderValue = ({ entity, property }: { entity: Entity, property: Property }) => {
@@ -209,12 +228,18 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     );
   }
 
+  renderAddButton = () => {
+    return (
+      <Button icon="new-object" onClick={this.onShowTopAddRow} intent={Intent.PRIMARY} minimal />
+    );
+  }
+
   renderPropertySelect = () => {
     return (
       <SelectProperty
         properties={this.getNonVisibleProperties()}
         onSelected={this.onAddColumn}
-        buttonProps={{minimal: true}}
+        buttonProps={{minimal: true, intent: Intent.PRIMARY }}
       />
     )
   }
@@ -255,6 +280,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       showErrorToast(intl.formatMessage(error));
     } else {
       this.props.entityManager.createEntity(entityData);
+      console.log('hiding add row');
+      this.setState({ showTopAddRow: false });
     }
   }
 
@@ -285,15 +312,17 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   onCellsChanged = (changeList: Datasheet.CellsChangedArgs<CellData, any>, outOfBounds: Datasheet.CellAdditionsArgs<CellData>) => {
     const { entities, updateFinishedCallback } = this.props;
+    const { showTopAddRow } = this.state;
     const entityCount = entities.length;
     const fullChangeList = outOfBounds ? [...changeList, ...outOfBounds] : changeList;
     const changesByRow = _.groupBy(fullChangeList, c => c.row);
 
     Object.entries(changesByRow).forEach(([rowIndex, changes]: [string, any]) => {
-      if (+rowIndex > entityCount) {
-        this.handleNewRow(changes);
-      } else {
+      const isExisting = changes[0]?.cell?.data?.entity !== null;
+      if (isExisting) {
         this.handleExistingRow(changes);
+      } else {
+        this.handleNewRow(changes);
       }
     });
 
