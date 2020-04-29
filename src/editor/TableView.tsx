@@ -60,6 +60,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     };
 
     this.localEntityManager = new EntityManager({
+      model: layout.entityManager.model,
       createEntity: this.onEntityCreate.bind(this),
       updateEntity: this.onEntityUpdate.bind(this),
       getEntitySuggestions: this.fetchEntitySuggestions.bind(this),
@@ -79,7 +80,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     const { sort } = this.state;
 
     const entities = layout.getEntities()
-      .filter(e => e.schema === schema);
+      .filter(e => e.schema.name === schema.name);
 
     if (sort) {
       const { field, direction } = sort;

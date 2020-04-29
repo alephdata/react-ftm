@@ -88,8 +88,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const featuredProps = schema.getFeaturedProperties();
     const filledProps = entities.reduce((acc, entity: Entity) => [...acc, ...entity.getProperties()], [] as Property[]);
 
-    return Array.from(new Set([...requiredProps, ...featuredProps, ...filledProps]))
-      .filter(prop => (!prop.stub && !prop.hidden));
+    const fullList = _.uniqBy([...requiredProps, ...featuredProps, ...filledProps], 'name');
+
+    return fullList.filter(prop => (!prop.stub && !prop.hidden));
   }
 
   getNonVisibleProperties() {
@@ -136,7 +137,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       const propCells = visibleProps.map(property => ({
         ...propertyCellProps,
         readOnly: !writeable,
-        value: entity.getProperty(property),
+        value: entity.getProperty(property.name),
         displayValue: this.renderValue({ entity, property }),
         dataEditor: this.renderEditor,
         data: { entity, property },
@@ -176,7 +177,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   // Table renderers
 
   renderValue = ({ entity, property }: { entity: Entity, property: Property }) => {
-    return <PropertyValues values={entity.getProperty(property)} prop={property} resolveEntityReference={this.props.entityManager.resolveEntityReference} />;
+    return <PropertyValues values={entity.getProperty(property.name)} prop={property} resolveEntityReference={this.props.entityManager.resolveEntityReference} />;
   }
 
   renderEditor = ({ cell, onCommit, onChange, onKeyDown }: Datasheet.DataEditorProps<CellData, any>) => {
@@ -276,7 +277,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   handleExistingRow = (changes: Datasheet.CellsChangedArgs<CellData, any> | Datasheet.CellAdditionsArgs<CellData>) => {
-    const { intl } = this.props;
+    const { intl, schema } = this.props;
 
     let changedEntity;
     changes.forEach(({ cell, value }: any) => {
@@ -286,10 +287,11 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       if (error) {
         showErrorToast(intl.formatMessage(error));
       } else {
+        console.log('property!', schema.getProperty(property.name), property, schema.getProperty(property.name) === property, entity.schema.getProperty(property.name) === property);
         if (value === "") {
-          entity.properties.set(property, []);
+          entity.properties.set(entity.schema.getProperty(property.name), []);
         } else {
-          entity.properties.set(property, value);
+          entity.properties.set(entity.schema.getProperty(property.name), value);
         }
         changedEntity = entity;
       }

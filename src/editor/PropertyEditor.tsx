@@ -28,7 +28,7 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
     super(props);
     const { entity, property, resolveEntityReference } = props;
 
-    let values = entity?.getProperty(property) || [];
+    let values = entity?.getProperty(property.name) || [];
     if (property.type.name === 'entity' && resolveEntityReference) {
       values = values.map(val => {
         if (typeof val === 'string') {
