@@ -37,5 +37,6 @@ $border-color: rgba(16, 22, 26, 0.15);
   .data-grid-container {
     height: 50%;
     max-height: 350px;
+    min-height: 200px;
   }
 }
