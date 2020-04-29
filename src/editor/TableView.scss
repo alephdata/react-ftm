@@ -33,4 +33,13 @@ $border-color: rgba(16, 22, 26, 0.15);
       fill: $blue2;
     }
   }
+
+  .data-grid-container {
+    height: 50%;
+    max-height: 350px;
+  }
+
+  .bp3-multi-select-popover .bp3-menu {
+    max-height: 150px;
+  }
 }
