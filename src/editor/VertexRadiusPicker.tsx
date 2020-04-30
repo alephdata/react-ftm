@@ -3,7 +3,7 @@ import c from 'classnames';
 import { Slider } from '@blueprintjs/core';
 import { Vertex } from '../layout'
 import { GraphConfig } from '../GraphConfig';
-import { Schema as SchemaObject } from "@alephdata/followthemoney";
+import { Schema as FTMSchema } from "@alephdata/followthemoney";
 import { Schema } from '../types';
 
 
@@ -11,7 +11,7 @@ interface IVertexRadiusPickerProps {
   currSelected?: number
   onChange: (radius: number) => void
   config: GraphConfig
-  schema: SchemaObject
+  schema: FTMSchema
   radius: number
 }
 

@@ -7,7 +7,7 @@ import { VertexSchemaSelect } from './VertexSchemaSelect';
 import { TableEditor } from './TableEditor';
 import { EntityManager } from '../EntityManager';
 import { Button, Classes, Drawer, Icon, Position, Tab, TabId, Tabs, Toaster } from "@blueprintjs/core";
-import { Entity, IEntityDatum, Schema as SchemaObject } from "@alephdata/followthemoney";
+import { Entity, IEntityDatum, Schema as FTMSchema } from "@alephdata/followthemoney";
 import { Schema } from '../types';
 import { SortType } from './SortType';
 import { matchText } from "../utils";
@@ -34,7 +34,7 @@ interface ITableViewProps extends WrappedComponentProps {
 
 interface ITableViewState {
   activeTabId: TabId,
-  schemata: Array<SchemaObject>,
+  schemata: Array<FTMSchema>,
   sort: SortType | null
 }
 
@@ -75,7 +75,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     this.propagateToHistory = this.propagateToHistory.bind(this);
   }
 
-  getEntities(schema: SchemaObject) {
+  getEntities(schema: FTMSchema) {
     const { layout } = this.props;
     const { sort } = this.state;
 
@@ -102,7 +102,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     }
   }
 
-  addSchema(schema: SchemaObject) {
+  addSchema(schema: FTMSchema) {
     const schemata = [...this.state.schemata, ...[schema]]
       .sort((a, b) => a.label.localeCompare(b.label))
     this.setState({ schemata, activeTabId: schema.name });
@@ -159,7 +159,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     }
   }
 
-  fetchEntitySuggestions(query: string, schema?: SchemaObject): Promise<Entity[]> {
+  fetchEntitySuggestions(query: string, schema?: FTMSchema): Promise<Entity[]> {
     const { layout } = this.props;
 
     const entities = layout.getEntities()

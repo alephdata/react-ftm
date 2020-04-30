@@ -1,12 +1,12 @@
 import React from 'react';
-import { Entity as EntityObject} from "@alephdata/followthemoney";
+import { Entity as FTMEntity} from "@alephdata/followthemoney";
 import truncateText from 'truncate';
 import c from 'classnames';
 import Schema from './Schema';
 import './Entity.scss'
 
 interface IEntityLabelProps  {
-  entity: EntityObject
+  entity: FTMEntity
   icon?:boolean
   truncate?:number
 }
@@ -16,7 +16,7 @@ class EntityLabel extends React.Component<IEntityLabelProps> {
     const {
       entity, icon = false, truncate,
     } = this.props;
-    if (!entity || !entity.id || !EntityObject.isEntity(entity)) {
+    if (!entity || !entity.id || !FTMEntity.isEntity(entity)) {
       return null;
     }
 

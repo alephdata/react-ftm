@@ -1,11 +1,11 @@
 import React from 'react';
-import { Schema as SchemaObject, IconRegistry } from '@alephdata/followthemoney';
+import { Schema as FTMSchema, IconRegistry } from '@alephdata/followthemoney';
 import { Icon } from '@blueprintjs/core';
 import c from 'classnames';
 import './Schema.scss';
 
 interface ISchemaCommonProps {
-  schema: SchemaObject,
+  schema: FTMSchema,
   className?: string,
   size?: number
 }

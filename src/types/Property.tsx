@@ -1,5 +1,5 @@
 import React from 'react';
-import { Values, Value, Property, Entity as EntityObject } from "@alephdata/followthemoney";
+import { Values, Value, Property, Entity as FTMEntity } from "@alephdata/followthemoney";
 import { Classes } from "@blueprintjs/core";
 
 import Country from './Country';
@@ -21,7 +21,7 @@ interface IPropertyCommonProps {
 
 interface IValueProps extends IPropertyCommonProps{
   value:Value
-  resolveEntityReference?: (entityId: string) => EntityObject | undefined
+  resolveEntityReference?: (entityId: string) => FTMEntity | undefined
 }
 
 export class PropertyValue extends React.PureComponent<IValueProps> {
@@ -32,7 +32,7 @@ export class PropertyValue extends React.PureComponent<IValueProps> {
     }
     if (prop.type.name === 'entity') {
       const entity = ('string' === typeof value && resolveEntityReference) ? resolveEntityReference(value) : value;
-      return <Entity.Label entity={entity as EntityObject} icon />;
+      return <Entity.Label entity={entity as FTMEntity} icon />;
     } else if (typeof value !== 'string') {
       return value;
     }
@@ -74,7 +74,7 @@ interface IPropertyValuesProps extends IPropertyCommonProps{
   values:Values
   separator?: string
   missing?: string
-  resolveEntityReference?: (entityId: string) => EntityObject | undefined
+  resolveEntityReference?: (entityId: string) => FTMEntity | undefined
 }
 
 export class PropertyValues extends React.PureComponent<IPropertyValuesProps > {

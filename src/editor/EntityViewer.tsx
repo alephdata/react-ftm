@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {Classes, Divider, H2, UL} from '@blueprintjs/core'
-import { Entity, Property, Schema as SchemaObject } from '@alephdata/followthemoney';
+import { Entity, Property, Schema as FTMSchema } from '@alephdata/followthemoney';
 import {SelectProperty} from './SelectProperty';
 import {PropertyEditor} from './PropertyEditor';
 import { PropertyName, PropertyValues} from '../types';
@@ -64,7 +64,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     }
   }
 
-  fetchEntitySuggestions(query: string, schema?: SchemaObject): Promise<Entity[]> {
+  fetchEntitySuggestions(query: string, schema?: FTMSchema): Promise<Entity[]> {
     const { layout } = this.props;
 
     const entities = layout.getEntities()

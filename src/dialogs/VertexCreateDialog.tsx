@@ -2,7 +2,7 @@ import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Alignment, Button, ControlGroup, InputGroup, Intent, Menu, MenuItem, Spinner, Divider } from '@blueprintjs/core'
 import { ItemListRenderer, IItemListRendererProps, Suggest } from '@blueprintjs/select';
-import { Entity as EntityObject, Schema as SchemaObject } from '@alephdata/followthemoney'
+import { Entity as FTMEntity, Schema as FTMSchema } from '@alephdata/followthemoney'
 
 import { EntityManager } from '../EntityManager';
 import { GraphContext, IGraphContext } from '../GraphContext'
@@ -40,8 +40,8 @@ interface IVertexCreateDialogState {
   query: string,
   isProcessing: boolean,
   isFetchingSuggestions: boolean,
-  schema: SchemaObject
-  suggestions: EntityObject[],
+  schema: FTMSchema
+  suggestions: FTMEntity[],
 }
 
 export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogProps, IVertexCreateDialogState> {
@@ -80,12 +80,12 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     this.fetchSuggestions({ query, schema: this.state.schema })
   }
 
-  onSchemaSelect(schema: SchemaObject) {
+  onSchemaSelect(schema: FTMSchema) {
     this.setState({ schema });
     this.fetchSuggestions({ query: this.state.query, schema })
   }
 
-  async fetchSuggestions({ query, schema }:{ query: string, schema: SchemaObject }) {
+  async fetchSuggestions({ query, schema }:{ query: string, schema: FTMSchema }) {
     const { layout } = this.context as IGraphContext
 
     if (query.length === 0) {
@@ -94,17 +94,17 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
       const { entityManager } = this.props;
       this.setState({ isFetchingSuggestions: true });
       const suggestions = await entityManager.getEntitySuggestions(query, schema);
-      const filteredSuggestions = suggestions.filter((entity: EntityObject) => !layout.hasEntity(entity));
+      const filteredSuggestions = suggestions.filter((entity: FTMEntity) => !layout.hasEntity(entity));
       this.setState({ isFetchingSuggestions: false, suggestions: filteredSuggestions });
     }
   }
 
-  getSchema(): SchemaObject {
+  getSchema(): FTMSchema {
     const { layout } = this.context as IGraphContext
     return this.state.schema || layout.entityManager.model.getSchema('Person')
   }
 
-  async onSubmit(entityData: string | EntityObject) {
+  async onSubmit(entityData: string | FTMEntity) {
     if (!entityData) return;
     const { layout, updateLayout, viewport, updateViewport } = this.context as IGraphContext
     const { query } = this.state
@@ -142,7 +142,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     }
   }
 
-  itemListRenderer(rendererProps: IItemListRendererProps<EntityObject>) {
+  itemListRenderer(rendererProps: IItemListRendererProps<FTMEntity>) {
     const { filteredItems, itemsParentRef, renderItem } = rendererProps;
     const { isFetchingSuggestions, isProcessing } = this.state;
 
@@ -203,7 +203,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
                 fill
                 inputValueRenderer={query => typeof query === 'string' ? query : query.getCaption()}
                 items={suggestions}
-                itemListRenderer={this.itemListRenderer as ItemListRenderer<EntityObject>}
+                itemListRenderer={this.itemListRenderer as ItemListRenderer<FTMEntity>}
                 popoverProps={{
                   popoverClassName: "VertexCreateDialog__popover",
                   minimal: true,
