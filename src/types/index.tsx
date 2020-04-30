@@ -1,6 +1,8 @@
+import { withTranslator } from '../Translator';
+
 import Count from './Count';
 import Country from './Country';
-import Date from './Date';
+import DateBase from './Date';
 import Entity from './Entity';
 import FileSize from './FileSize';
 import Language from './Language';
@@ -8,6 +10,8 @@ import Numeric from './Numeric';
 import Schema from './Schema';
 import Topic from './Topic';
 import URL from './URL';
+
+const Date = withTranslator(DateBase);
 
 export * from './Property';
 

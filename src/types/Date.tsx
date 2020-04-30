@@ -1,24 +1,25 @@
 import React from 'react';
 import _ from 'lodash';
-import { FormattedDate, FormattedTime } from 'react-intl';
+import { FormattedDate, FormattedTime, injectIntl, WrappedComponentProps } from 'react-intl';
 
 
-interface IEarliestProps {
+interface IEarliestProps extends WrappedComponentProps {
   values:number[]
 }
 
 class Earliest extends React.PureComponent<IEarliestProps> {
   render() {
-    const earliest = _.min(this.props.values);
+    const { intl, values } = this.props;
+    const earliest = _.min(values);
     if (earliest) {
-      return <Date value={earliest.toString()} />;
+      return <Date value={earliest.toString()} intl={intl} />;
     } else {
       return <span>-</span>
     }
   }
 }
 
-interface IDateProps {
+interface IDateProps extends WrappedComponentProps {
   value:string
   showTime?: boolean
 }
@@ -52,4 +53,4 @@ class Date extends React.PureComponent<IDateProps> {
   }
 }
 
-export default Date;
+export default injectIntl(Date);
