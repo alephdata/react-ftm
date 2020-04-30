@@ -1,10 +1,10 @@
 import * as React from 'react'
 import {Classes, Divider, H2, UL} from '@blueprintjs/core'
-import { Entity, Property, Schema } from '@alephdata/followthemoney';
+import { Entity, Property, Schema as SchemaObject } from '@alephdata/followthemoney';
 import {SelectProperty} from './SelectProperty';
 import {PropertyEditor} from './PropertyEditor';
 import { PropertyName, PropertyValues} from '../types';
-import { SchemaIcon } from '../types';
+import { Schema } from '../types';
 import { GraphLayout, Vertex } from '../layout'
 import {ColorPicker} from './ColorPicker'
 import {VertexRadiusPicker} from './VertexRadiusPicker'
@@ -64,7 +64,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     }
   }
 
-  fetchEntitySuggestions(query: string, schema?: Schema): Promise<Entity[]> {
+  fetchEntitySuggestions(query: string, schema?: SchemaObject): Promise<Entity[]> {
     const { layout } = this.props;
 
     const entities = layout.getEntities()
@@ -147,7 +147,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     return (
       <div className={c('EntityViewer', { writeable: writeable })}>
         <div className='EntityViewer__title'>
-          <SchemaIcon size={60} schema={entity.schema} />
+          <Schema.Icon size={60} schema={entity.schema} />
           <h2 className='EntityViewer__title__text'>{entity.getCaption()}</h2>
           {vertexRef &&
             <div className='EntityViewer__title__settings'>

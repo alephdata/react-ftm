@@ -1,44 +1,38 @@
 import React from 'react';
-import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
-import {Entity} from "@alephdata/followthemoney";
-import {Classes} from '@blueprintjs/core'
-/// <reference path="../moduleTypes.d.ts"/>
+import { Entity as EntityObject} from "@alephdata/followthemoney";
 import truncateText from 'truncate';
-import { SchemaIcon } from './Schema';
+import c from 'classnames';
+import Schema from './Schema';
 import './Entity.scss'
 
-const messages = defineMessages({
-  unknown: {
-    id: 'editor.entity.unknown',
-    defaultMessage: 'Untitled',
-  },
-});
-
-interface IEntityLabel extends WrappedComponentProps {
-  entity: Entity
+interface IEntityLabelProps  {
+  entity: EntityObject
   icon?:boolean
   truncate?:number
 }
 
-export class EntityLabelBase extends React.Component<IEntityLabel> {
+class EntityLabel extends React.Component<IEntityLabelProps> {
   render() {
     const {
-      entity, icon = false, intl, truncate,
+      entity, icon = false, truncate,
     } = this.props;
-    if (!entity) return null;
+    if (!entity || !entity.id || !EntityObject.isEntity(entity)) {
+      return null;
+    }
 
-    const title = entity.getFirst('title') || entity.getCaption();
-    const caption = title.toString();
-    const fullLabel = caption;
-    const label = truncate ? truncateText(fullLabel, truncate) : fullLabel;
+    const caption = entity.getCaption();
+    const label = truncate ? truncateText(caption, truncate) : caption;
     return (
-      <span className="EntityLabel" title={caption}>
-        {icon && <SchemaIcon schema={entity.schema} />}
-        <span>{!label && intl.formatMessage(messages.unknown)}</span>
+      <span className={c('EntityLabel', { 'bp3-text-muted': !label })} title={caption}>
+        {icon && <Schema.Icon schema={entity.schema} className="left-icon" />}
         <span>{label}</span>
       </span>
     );
   }
 }
 
-export const EntityLabel = injectIntl(EntityLabelBase);
+class Entity extends React.Component {
+  static Label = EntityLabel;
+}
+
+export default Entity;

@@ -1,12 +1,25 @@
-export * from './Count';
-export * from './CountryEdit';
-export * from './Numeric';
-export * from './Date';
-export * from './Entity';
-export * from './EntityEdit';
-export * from './EnumValue';
-export * from './Language';
+import Count from './Count';
+import Country from './Country';
+import Date from './Date';
+import Entity from './Entity';
+import FileSize from './FileSize';
+import Language from './Language';
+import Numeric from './Numeric';
+import Schema from './Schema';
+import Topic from './Topic';
+import URL from './URL';
+
 export * from './Property';
-export * from './Schema';
-export * from './TextEdit';
-export * from './URL';
+
+export {
+  Count,
+  Country,
+  Date,
+  Entity,
+  FileSize,
+  Language,
+  Numeric,
+  Schema,
+  Topic,
+  URL,
+};

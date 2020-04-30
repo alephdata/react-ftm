@@ -3,15 +3,15 @@ import c from 'classnames';
 import { Slider } from '@blueprintjs/core';
 import { Vertex } from '../layout'
 import { GraphConfig } from '../GraphConfig';
-import { Schema } from "@alephdata/followthemoney";
-import { SchemaIcon } from '../types';
+import { Schema as SchemaObject } from "@alephdata/followthemoney";
+import { Schema } from '../types';
 
 
 interface IVertexRadiusPickerProps {
   currSelected?: number
   onChange: (radius: number) => void
   config: GraphConfig
-  schema: Schema
+  schema: SchemaObject
   radius: number
 }
 
@@ -26,7 +26,7 @@ export class VertexRadiusPicker extends React.PureComponent<IVertexRadiusPickerP
     return (
       <div className='VertexRadiusPicker'>
         <div className='VertexRadiusPicker__icon'>
-          <SchemaIcon
+          <Schema.Icon
             size={10}
             schema={schema}
           />
@@ -42,7 +42,7 @@ export class VertexRadiusPicker extends React.PureComponent<IVertexRadiusPickerP
           className='VertexRadiusPicker__slider'
         />
         <div className='VertexRadiusPicker__icon'>
-          <SchemaIcon
+          <Schema.Icon
             size={20}
             schema={schema}
           />

@@ -1,40 +1,40 @@
 import React from 'react';
-import {Schema, IconRegistry} from '@alephdata/followthemoney';
-
+import { Schema as SchemaObject, IconRegistry } from '@alephdata/followthemoney';
+import { Icon } from '@blueprintjs/core';
+import c from 'classnames';
 import './Schema.scss';
 
 interface ISchemaCommonProps {
-  schema: Schema,
+  schema: SchemaObject,
+  className?: string,
   size?: number
 }
 
-export class SchemaIcon extends React.Component<ISchemaCommonProps>{
-  static get(schema: Schema, size: number = 16) {
+class SchemaIcon extends React.Component<ISchemaCommonProps>{
+  render() {
+    const { className, schema, size = 16 } = this.props;
     const iconPaths = IconRegistry.getSchemaIcon(schema);
     return (
-      <svg className="SchemaIcon" viewBox={'0 0 24 24'} height={size} width={size}>
+      <svg className={c("SchemaIcon", className)} viewBox={'0 0 24 24'} height={size} width={size}>
         {iconPaths.map((d, i) => <path key={i} d={d}/>)}/>
       </svg>
     );
   }
-  render() {
-    return SchemaIcon.get(this.props.schema, this.props.size)
-  }
 }
 
-interface ISchemaLabelProps extends ISchemaCommonProps{
+interface ISchemaLabelProps extends ISchemaCommonProps {
   plural?:boolean
   icon?:boolean
 }
 
-export class SchemaLabel extends React.Component<ISchemaLabelProps> {
+class SchemaLabel extends React.Component<ISchemaLabelProps> {
   render() {
     const { schema, plural = false, icon } = this.props;
     const label = plural ? schema.plural : schema.label;
     if (icon) {
       return (
         <span className="SchemaLabel">
-          <SchemaIcon schema={schema} />
+          <Schema.Icon schema={schema} className="left-icon" />
           {label}
         </span>
       );
@@ -43,21 +43,15 @@ export class SchemaLabel extends React.Component<ISchemaLabelProps> {
   }
 }
 
-interface ISchemaLinkProps extends ISchemaCommonProps{
+interface ISchemaLinkProps extends ISchemaCommonProps {
   plural?:boolean
   url:string
 }
 
-export class SchemaLink extends React.Component<ISchemaLinkProps>{
-  render() {
-    const {schema, plural, url} = this.props;
-    return (
-      <React.Fragment>
-        <SchemaIcon schema={schema}/>
-        <a href={url}>
-          <SchemaLabel schema={schema} icon={false} plural={plural}/>
-        </a>
-      </React.Fragment>
-    );
-  }
+class Schema extends React.Component {
+  static Label = SchemaLabel;
+
+  static Icon = SchemaIcon;
 }
+
+export default Schema;

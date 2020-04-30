@@ -7,8 +7,8 @@ import { VertexSchemaSelect } from './VertexSchemaSelect';
 import { TableEditor } from './TableEditor';
 import { EntityManager } from '../EntityManager';
 import { Button, Classes, Drawer, Icon, Position, Tab, TabId, Tabs, Toaster } from "@blueprintjs/core";
-import { Entity, IEntityDatum, Schema } from "@alephdata/followthemoney";
-import { SchemaLabel } from '../types';
+import { Entity, IEntityDatum, Schema as SchemaObject } from "@alephdata/followthemoney";
+import { Schema } from '../types';
 import { SortType } from './SortType';
 import { matchText } from "../utils";
 
@@ -34,7 +34,7 @@ interface ITableViewProps extends WrappedComponentProps {
 
 interface ITableViewState {
   activeTabId: TabId,
-  schemata: Array<Schema>,
+  schemata: Array<SchemaObject>,
   sort: SortType | null
 }
 
@@ -75,7 +75,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     this.propagateToHistory = this.propagateToHistory.bind(this);
   }
 
-  getEntities(schema: Schema) {
+  getEntities(schema: SchemaObject) {
     const { layout } = this.props;
     const { sort } = this.state;
 
@@ -102,7 +102,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     }
   }
 
-  addSchema(schema: Schema) {
+  addSchema(schema: SchemaObject) {
     const schemata = [...this.state.schemata, ...[schema]]
       .sort((a, b) => a.label.localeCompare(b.label))
     this.setState({ schemata, activeTabId: schema.name });
@@ -159,7 +159,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     }
   }
 
-  fetchEntitySuggestions(query: string, schema?: Schema): Promise<Entity[]> {
+  fetchEntitySuggestions(query: string, schema?: SchemaObject): Promise<Entity[]> {
     const { layout } = this.props;
 
     const entities = layout.getEntities()
@@ -225,7 +225,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
               <Tab
                 id={schema.name}
                 key={schema.name}
-                title={<SchemaLabel schema={schema} icon />}
+                title={<Schema.Label schema={schema} icon />}
                 panel={(
                   <TableEditor
                     entities={this.getEntities(schema)}

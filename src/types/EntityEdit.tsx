@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import hoistNonReactStatics from 'hoist-non-react-statics';
-import { Entity } from "@alephdata/followthemoney";
-import { EntityLabel } from './Entity';
+import { Entity as EntityObject } from "@alephdata/followthemoney";
+import Entity from './Entity';
 import { Alignment, Button, ControlGroup, FormGroup, Menu, MenuItem, Position, Spinner } from "@blueprintjs/core";
 import { ItemListRenderer, ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
 import { ITypeProps } from "./common";
@@ -19,8 +19,8 @@ const messages = defineMessages({
 });
 
 interface IEntityTypeProps extends ITypeProps, WrappedComponentProps {
-  values: Array<Entity>
-  entitySuggestions: { isPending: boolean, results: Array<Entity> }
+  values: Array<EntityObject>
+  entitySuggestions: { isPending: boolean, results: Array<EntityObject> }
   fetchEntitySuggestions: (query: string) => void
 }
 
@@ -28,8 +28,8 @@ interface IEntityEditState {
   query: string
 }
 
-const EntityMultiSelect = MultiSelect.ofType<Entity>();
-const EntitySelect = Select.ofType<Entity>();
+const EntityMultiSelect = MultiSelect.ofType<EntityObject>();
+const EntitySelect = Select.ofType<EntityObject>();
 
 class EntityEditBase extends React.Component<IEntityTypeProps, IEntityEditState> {
   static group = new Set(['entity']);
@@ -50,14 +50,14 @@ class EntityEditBase extends React.Component<IEntityTypeProps, IEntityEditState>
     this.inputRef && this.inputRef.focus();
   }
 
-  itemRenderer: ItemRenderer<Entity> = (entity, {handleClick, modifiers, query}) => {
+  itemRenderer: ItemRenderer<EntityObject> = (entity, {handleClick, modifiers, query}) => {
     return (
       <MenuItem
         active={modifiers.active}
         disabled={modifiers.disabled}
         key={entity.id}
         onClick={handleClick}
-        text={<EntityLabel entity={entity} icon />}
+        text={<Entity.Label entity={entity} icon />}
       />
     );
   }
@@ -99,7 +99,7 @@ class EntityEditBase extends React.Component<IEntityTypeProps, IEntityEditState>
     const { entitySuggestions, entity, intl, onSubmit, usePortal, values } = this.props;
     const { query } = this.state;
     const buttonText = values.length
-      ? <EntityLabel entity={values[0]} icon />
+      ? <Entity.Label entity={values[0]} icon />
       : intl.formatMessage(messages.placeholder);
 
     const allowMultiple = !entity.schema.isEdge;
@@ -111,7 +111,7 @@ class EntityEditBase extends React.Component<IEntityTypeProps, IEntityEditState>
       <ControlGroup vertical fill >
         {!allowMultiple && (
           <EntitySelect
-            onItemSelect={(entity: Entity) => onSubmit([entity])}
+            onItemSelect={(entity: EntityObject) => onSubmit([entity])}
             itemRenderer={this.itemRenderer}
             itemListRenderer={this.itemListRenderer}
             items={filteredSuggestions}
@@ -137,8 +137,8 @@ class EntityEditBase extends React.Component<IEntityTypeProps, IEntityEditState>
         )}
         {allowMultiple && (
           <EntityMultiSelect
-            tagRenderer={entity => <EntityLabel entity={entity} icon />}
-            onItemSelect={(entity: Entity) => onSubmit([...values, entity])}
+            tagRenderer={entity => <Entity.Label entity={entity} icon />}
+            onItemSelect={(entity: EntityObject) => onSubmit([...values, entity])}
             itemRenderer={this.itemRenderer}
             itemListRenderer={this.itemListRenderer}
             items={filteredSuggestions}

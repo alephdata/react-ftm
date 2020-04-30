@@ -1,12 +1,12 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
 import _ from 'lodash';
-import { Menu, MenuItem, FormGroup, Intent, Button, Alignment, Position } from '@blueprintjs/core'
+import { Menu, MenuItem, FormGroup, Icon, Intent, Button, Alignment, Position } from '@blueprintjs/core'
 import { Select, IItemListRendererProps, IItemRendererProps } from '@blueprintjs/select';
 import { IGraphContext } from '../GraphContext'
 import { EdgeType, VertexSelect } from '../editor/'
 import { Vertex,Edge } from '../layout';
-import { SchemaIcon } from '../types';
+import { Schema } from '../types';
 
 import Dialog from './Dialog';
 
@@ -66,14 +66,9 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     this.onChangeType = this.onChangeType.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.onReverse = this.onReverse.bind(this)
+    this.renderEdgeType = this.renderEdgeType.bind(this)
   }
 
-  static getEdgeTypeIcon(type?: EdgeType) {
-    if (type && type.schema) {
-      return SchemaIcon.get(type.schema)
-    }
-    return 'link'
-  }
 
   componentDidMount() {
     const { layout, source, target } = this.props
@@ -214,6 +209,14 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     }
   }
 
+  getEdgeTypeIcon(type?: EdgeType) {
+    if (type?.schema) {
+      return <Schema.Icon schema={type.schema} />
+    } else {
+      return <Icon icon="link" />
+    }
+  }
+
   renderEdgeTypeList(props: IItemListRendererProps<EdgeType>) {
     const { items, itemsParentRef, renderItem } = props;
     const [propertyEdgeTypes, entityEdgeTypes] = _.partition(
@@ -234,7 +237,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
       active={modifiers.active}
       key={type.key}
       text={type.label}
-      icon={EdgeCreateDialog.getEdgeTypeIcon(type)}
+      icon={this.getEdgeTypeIcon(type)}
       onClick={handleClick}
     />
   }
@@ -283,7 +286,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                       disabled={!types.length}
                       text={type ? type.label : intl.formatMessage(messages.type_select)}
                       alignText={Alignment.LEFT}
-                      icon={EdgeCreateDialog.getEdgeTypeIcon(type)}
+                      icon={this.getEdgeTypeIcon(type)}
                       rightIcon='double-caret-vertical'
                     />
                   </EdgeTypeSelect>
