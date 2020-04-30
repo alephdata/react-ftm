@@ -3,7 +3,7 @@ import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Button, MenuItem, Alignment, Position } from '@blueprintjs/core'
 import {Select, IItemRendererProps, ItemPredicate} from '@blueprintjs/select'
 import { Vertex } from '../layout/Vertex'
-import { SchemaIcon } from '../types'
+import { Schema } from '../types'
 import {matchText} from "../utils";
 
 const messages = defineMessages({
@@ -27,8 +27,13 @@ const TypedSelect = Select.ofType<Vertex>();
 
 export class VertexSelectBase extends React.PureComponent<IVertexSelectProps> {
   getVertexIcon = (vertex: Vertex) => {
-    const entity = vertex.getEntity()
-    return vertex.isEntity() && entity ? SchemaIcon.get(entity.schema) : undefined;
+    if (vertex.isEntity()) {
+      const entity = vertex.getEntity()
+      if (entity) {
+        return <Schema.Icon schema={entity.schema} />
+      }
+    }
+    return undefined; 
   }
 
   itemPredicate: ItemPredicate<Vertex> = (query: string, vertex: Vertex) => {

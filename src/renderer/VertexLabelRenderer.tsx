@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {
-  DateComponent, Numeric, URL,
+  Date, Numeric, URL,
 } from '../types';
 import { Point } from '../layout/Point'
 
@@ -17,10 +17,10 @@ export class VertexLabelRenderer extends React.PureComponent<IVertexLabelRendere
     const { label, type } = this.props;
 
     if (type === 'url') {
-      return <URL value={label} />;
+      return <URL value={label} onClick={(e: React.MouseEvent) => e.stopPropagation()} />;
     }
     if (type === 'date') {
-      return <DateComponent value={label} />;
+      return <Date value={label} />;
     }
     if (type === 'number') {
       return <Numeric num={Number(label)} />;

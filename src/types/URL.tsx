@@ -5,14 +5,11 @@ import { getHost } from "../utils";
 import './URL.scss';
 
 interface IURLProps {
-  value:string
+  value: string
+  onClick?: (e: React.MouseEvent) => void
 }
 
-export class URL extends React.PureComponent<IURLProps> {
-  onClick(e: React.MouseEvent) {
-    e.stopPropagation()
-  }
-
+class URL extends React.PureComponent<IURLProps> {
   render() {
     const { value, ...restProps } = this.props;
     if (!value) {
@@ -21,10 +18,12 @@ export class URL extends React.PureComponent<IURLProps> {
     const href = /^https?:\/\//i.test(value) ? value : `//${value}`;
 
     return (
-      <a {...restProps} href={href} className="URL" rel="noopener noreferrer" target="_blank" title={value} onClick={this.onClick}>
+      <a {...restProps} href={href} className="URL" rel="noopener noreferrer" target="_blank" title={value}>
         <Icon icon="link" iconSize={14} />
         {getHost(value)}
       </a>
     );
   }
 }
+
+export default URL

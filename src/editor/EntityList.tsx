@@ -1,7 +1,7 @@
 import React from 'react';
 import { Entity } from '@alephdata/followthemoney';
 import { Button, Menu, MenuItem, Icon } from '@blueprintjs/core'
-import { SchemaIcon } from '../types';
+import { Schema } from '../types';
 import _ from 'lodash'
 import './EntityList.scss';
 
@@ -28,7 +28,7 @@ export class EntityList extends React.PureComponent<IEntityListProps>{
           className="EntityList__item__left bp3-menu-item"
           onClick={() => onEntitySelected && onEntitySelected(entity)}
         >
-            <Icon icon={SchemaIcon.get(entity.schema)} />
+            <Schema.Icon schema={entity.schema} />
             <div className="bp3-fill">
               {entity.getCaption()}
             </div>
