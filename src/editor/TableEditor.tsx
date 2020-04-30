@@ -3,12 +3,12 @@ import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import _ from 'lodash';
 import { GraphUpdateHandler } from '../GraphContext';
 import { PropertyEditor } from './PropertyEditor';
-import { PropertyValues } from '../types';
+import { Property } from '../types';
 import { EntityManager } from '../EntityManager';
 import { SelectProperty } from './SelectProperty';
 import { TruncatedFormat } from "@blueprintjs/table";
 import { Button, Checkbox, Classes, Icon, Intent, Popover, Position, Tooltip } from "@blueprintjs/core";
-import { Entity, Property, Schema, Values } from "@alephdata/followthemoney";
+import { Entity, Property as FTMProperty, Schema, Values } from "@alephdata/followthemoney";
 import Datasheet from 'react-datasheet';
 import { SortType } from './SortType';
 import { showErrorToast } from './toaster';
@@ -29,7 +29,7 @@ const checkboxCellProps = { className: "checkbox", ...readOnlyCellProps };
 const skeletonCellProps = { className: "skeleton", ...readOnlyCellProps };
 const propertyCellProps = { className: "property" };
 
-const propSort = (a:Property, b:Property) => (a.label > b.label ? 1 : -1);
+const propSort = (a:FTMProperty, b:FTMProperty) => (a.label > b.label ? 1 : -1);
 
 export interface CellData extends Datasheet.Cell<CellData, any> {
   className: string
@@ -52,7 +52,7 @@ interface ITableEditorProps extends WrappedComponentProps {
 }
 
 interface ITableEditorState {
-  visibleProps: Array<Property>
+  visibleProps: Array<FTMProperty>
   shouldCommit: boolean
   showTopAddRow: boolean
 }
@@ -86,7 +86,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     const requiredProps = schema.required.map(name => schema.getProperty(name));
     const featuredProps = schema.getFeaturedProperties();
-    const filledProps = entities.reduce((acc, entity: Entity) => [...acc, ...entity.getProperties()], [] as Property[]);
+    const filledProps = entities.reduce((acc, entity: Entity) => [...acc, ...entity.getProperties()], [] as FTMProperty[]);
 
     const fullList = _.uniqBy([...requiredProps, ...featuredProps, ...filledProps], 'name');
 
@@ -176,8 +176,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   // Table renderers
 
-  renderValue = ({ entity, property }: { entity: Entity, property: Property }) => {
-    return <PropertyValues values={entity.getProperty(property.name)} prop={property} resolveEntityReference={this.props.entityManager.resolveEntityReference} />;
+  renderValue = ({ entity, property }: { entity: Entity, property: FTMProperty }) => {
+    return <Property.Values values={entity.getProperty(property.name)} prop={property} resolveEntityReference={this.props.entityManager.resolveEntityReference} />;
   }
 
   renderEditor = ({ cell, onCommit, onChange, onKeyDown }: Datasheet.DataEditorProps<CellData, any>) => {
@@ -203,7 +203,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     );
   }
 
-  renderColumnHeader = (property: Property) => {
+  renderColumnHeader = (property: FTMProperty) => {
     const { sort, sortColumn } = this.props;
 
     const isSorted = sort && sort.field === property.name;
@@ -330,7 +330,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     ));
   }
 
-  onAddColumn(newColumn: Property) {
+  onAddColumn(newColumn: FTMProperty) {
     this.setState(({visibleProps}) => ({
       visibleProps: [...visibleProps, newColumn],
     }));

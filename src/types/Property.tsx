@@ -1,5 +1,6 @@
 import React from 'react';
-import { Values, Value, Property, Entity as FTMEntity } from "@alephdata/followthemoney";
+import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
+import { Values, Value, Property as FTMProperty, Entity as FTMEntity } from "@alephdata/followthemoney";
 import { Classes } from "@blueprintjs/core";
 
 import Country from './Country';
@@ -11,20 +12,46 @@ import Numeric from './Numeric';
 import Topic from './Topic';
 import URL from './URL';
 import { ensureArray, wordList } from "../utils";
+import { withTranslator } from '../Translator';
+
 
 import './Property.scss';
 
 
 interface IPropertyCommonProps {
-  prop:Property
+  prop: FTMProperty
 }
 
-interface IValueProps extends IPropertyCommonProps{
+class PropertyName extends React.PureComponent<IPropertyCommonProps> {
+  render() {
+    const { prop } = this.props;
+    return prop.label;
+  }
+}
+
+// ----------
+
+interface IPropertyReverseProps extends IPropertyCommonProps, WrappedComponentProps {}
+
+class PropertyReverse extends React.PureComponent<IPropertyReverseProps> {
+  render() {
+    const { prop } = this.props;
+    if (!prop.hasReverse) {
+      return <FormattedMessage id="property.inverse" defaultMessage="'{label}' of …" values={prop} />;
+    }
+    const reverseProp = prop.getReverse();
+    return reverseProp.label;
+  }
+}
+
+// ----------
+
+interface IPropertyValueProps extends IPropertyCommonProps{
   value:Value
   resolveEntityReference?: (entityId: string) => FTMEntity | undefined
 }
 
-export class PropertyValue extends React.PureComponent<IValueProps> {
+class PropertyValue extends React.PureComponent<IPropertyValueProps> {
   render() {
     const { prop, resolveEntityReference, value } = this.props;
     if (!value) {
@@ -62,13 +89,7 @@ export class PropertyValue extends React.PureComponent<IValueProps> {
   }
 }
 
-
-export class PropertyName extends React.PureComponent<IPropertyCommonProps > {
-  render() {
-    const { prop } = this.props;
-    return prop.label;
-  }
-}
+// ----------
 
 interface IPropertyValuesProps extends IPropertyCommonProps{
   values:Values
@@ -77,7 +98,7 @@ interface IPropertyValuesProps extends IPropertyCommonProps{
   resolveEntityReference?: (entityId: string) => FTMEntity | undefined
 }
 
-export class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
+class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
   render() {
     const { prop, resolveEntityReference, values, separator = ' · ', missing = '—' } = this.props;
     const vals = ensureArray(values).map(value => (
@@ -96,3 +117,15 @@ export class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
     return <span className="PropertyValues">{content}</span>;
   }
 }
+
+class Property extends React.Component {
+  static Name = PropertyName;
+
+  static Reverse = withTranslator(injectIntl(PropertyReverse));
+
+  static Value = PropertyValue;
+
+  static Values = PropertyValues;
+}
+
+export default Property;
