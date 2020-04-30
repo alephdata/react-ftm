@@ -6,8 +6,10 @@ import { EntityLabel } from './Entity';
 import { DateComponent } from './Date';
 import { EnumValue } from './EnumValue';
 import { LanguageName } from './Language';
+import { Numeric } from './Numeric';
+import { FileSize } from './FileSize';
 import { URL } from './URL';
-import { wordList } from "../utils";
+import { ensureArray, wordList } from "../utils";
 
 import './Property.scss';
 
@@ -27,7 +29,9 @@ export class PropertyValue extends React.PureComponent<IValueProps> {
     if (!value) {
       return null;
     }
-
+    if (prop.name === 'fileSize') {
+      return <FileSize value={value} />;
+    }
     if (prop.type.name === 'country' || prop.type.name === 'topic') {
       return <EnumValue code={value as string} fullList={prop.type.values}/>;
     }
@@ -44,6 +48,9 @@ export class PropertyValue extends React.PureComponent<IValueProps> {
     if (prop.type.name === 'date') {
       return <DateComponent value={value as string} />;
     }
+    if (prop.type.name === 'number') {
+      return <Numeric num={value} />;
+    }
     return value;
   }
 }
@@ -56,17 +63,6 @@ export class PropertyName extends React.PureComponent<IPropertyCommonProps > {
   }
 }
 
-export class PropertyReverse extends React.PureComponent<IPropertyCommonProps> {
-  render() {
-    const { prop } = this.props;
-    if (!prop.hasReverse) {
-      return `${prop.label} of ...`
-    }
-    const reverseProp = prop.getReverse();
-    return reverseProp.label;
-  }
-}
-
 interface IPropertyValuesProps extends IPropertyCommonProps{
   values:Values
   resolveEntityReference: (entityId: string) => Entity | undefined
@@ -74,18 +70,18 @@ interface IPropertyValuesProps extends IPropertyCommonProps{
 
 export class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
   render() {
-    const { prop, resolveEntityReference, values } = this.props;
-    const vals = values.map(value => (
-      <PropertyValue key={value.toString()} prop={prop} value={value} resolveEntityReference={resolveEntityReference} />
+    const { prop, resolveEntityReference, values, separator = ' · ', missing = '—' } = this.props;
+    const vals = ensureArray(values).map(value => (
+      <PropertyValue key={value.id || value} prop={prop} value={value} resolveEntityReference={resolveEntityReference} />
     ));
     let content;
     if (!vals.length) {
-      content = (<span>—</span>);
+      content = (<span className="no-value">{missing}</span>);
     // display urls separated by newline
     } else if (prop.type.name === 'url') {
       content = vals.map(val => <span style={{ display: 'block' }}>{val}</span>);
     } else {
-      content = (<span>{ wordList(vals, ' · ') }</span>);
+      content = (<span>{ wordList(vals, separator) }</span>);
     }
 
     return <span className="PropertyValues">{content}</span>;

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import _ from 'lodash'
 
 
 export function highlightText(text: string, query: string) {
@@ -47,6 +48,13 @@ export function wordList(arr:Array<any>, sep:string) {
   }
 
   return arr.slice(1).reduce((xs, x) => xs.concat([sep, x]), [arr[0]]);
+}
+
+export function ensureArray(value) {
+  if (_.isNil(value)) {
+    return [];
+  }
+  return _.castArray(value);
 }
 
 export function getHost(url:string) {
