@@ -6,12 +6,13 @@ import DateBase from './Date';
 import Entity from './Entity';
 import FileSize from './FileSize';
 import Language from './Language';
-import Numeric from './Numeric';
+import NumericBase from './Numeric';
 import Schema from './Schema';
 import Topic from './Topic';
 import URL from './URL';
 
 const Date = withTranslator(DateBase);
+const Numeric = withTranslator(NumericBase);
 
 export * from './Property';
 
