@@ -1,8 +1,12 @@
 import * as React from 'react'
+import truncateText from 'truncate';
+
 import {
   Date, Numeric, URL,
 } from '../types';
 import { Point } from '../layout/Point'
+
+const labelTruncate = 30;
 
 interface IVertexLabelRendererProps {
   label: string,
@@ -17,7 +21,7 @@ export class VertexLabelRenderer extends React.PureComponent<IVertexLabelRendere
     const { label, type } = this.props;
 
     if (type === 'url') {
-      return <URL value={label} onClick={(e: React.MouseEvent) => e.stopPropagation()} />;
+      return <URL value={label} onClick={(e: React.MouseEvent) => e.stopPropagation()} truncate={labelTruncate} />;
     }
     if (type === 'date') {
       return <Date value={label} />;
@@ -26,7 +30,7 @@ export class VertexLabelRenderer extends React.PureComponent<IVertexLabelRendere
       return <Numeric num={Number(label)} />;
     }
 
-    return label;
+    return truncateText(label, labelTruncate);
   }
 
   render() {
