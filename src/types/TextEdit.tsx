@@ -64,11 +64,11 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
   handleClickOutside(e: MouseEvent) {
     const { onSubmit, values } = this.props;
     const { currMultiInputValue } = this.state;
-    e.preventDefault();
-    e.stopPropagation();
 
     const target = e.target as Element;
     if (target && this.containerRef && !this.containerRef.contains(target)) {
+      e.preventDefault();
+      e.stopPropagation();
       if (currMultiInputValue) {
         onSubmit([...values, ...[currMultiInputValue]]);
       } else {
