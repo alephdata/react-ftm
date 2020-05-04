@@ -12,7 +12,7 @@ interface IPropertyEditorProps extends WrappedComponentProps {
   property: Property,
   onSubmit: (nextEntity: Entity) => void
   onChange?: (values: Values) => void
-  fetchEntitySuggestions?: (queryText: string, schema?: Schema) => Promise<Entity[]>
+  fetchEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>
   resolveEntityReference?: (entityId: string) => Entity | undefined,
   usePortal?: boolean
 }
@@ -73,7 +73,7 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
     const { entity, intl, property, usePortal } = this.props;
     if (this.props.fetchEntitySuggestions) {
       this.setState({ entitySuggestions: { isPending: true, results: [] }});
-      const suggestions = await this.props.fetchEntitySuggestions(query, property.getRange());
+      const suggestions = await this.props.fetchEntitySuggestions(query, [property.getRange()]);
       this.setState({ entitySuggestions: { isPending: false, results: suggestions }});
     }
   }

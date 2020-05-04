@@ -77,15 +77,15 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
 
   onQueryChange(query: string) {
     this.setState({ query });
-    this.fetchSuggestions({ query, schema: this.state.schema })
+    this.fetchSuggestions({ query, schemata: [this.state.schema] })
   }
 
   onSchemaSelect(schema: FTMSchema) {
     this.setState({ schema });
-    this.fetchSuggestions({ query: this.state.query, schema })
+    this.fetchSuggestions({ query: this.state.query, schemata: [schema] })
   }
 
-  async fetchSuggestions({ query, schema }:{ query: string, schema: FTMSchema }) {
+  async fetchSuggestions({ query, schemata }:{ query: string, schemata: Array<FTMSchema> }) {
     const { layout } = this.context as IGraphContext
 
     if (query.length === 0) {
@@ -93,7 +93,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     } else {
       const { entityManager } = this.props;
       this.setState({ isFetchingSuggestions: true });
-      const suggestions = await entityManager.getEntitySuggestions(query, schema);
+      const suggestions = await entityManager.getEntitySuggestions(query, schemata);
       const filteredSuggestions = suggestions.filter((entity: FTMEntity) => !layout.hasEntity(entity));
       this.setState({ isFetchingSuggestions: false, suggestions: filteredSuggestions });
     }

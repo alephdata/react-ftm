@@ -159,11 +159,15 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     }
   }
 
-  fetchEntitySuggestions(query: string, schema?: FTMSchema): Promise<Entity[]> {
+  fetchEntitySuggestions(query: string, schemata?: Array<FTMSchema>): Promise<Entity[]> {
     const { layout } = this.props;
 
     const entities = layout.getEntities()
-      .filter(e => e.schema.isA(schema) && matchText(e.getCaption() || '', query))
+      .filter(e => {
+        const schemaMatch = !schemata || e.schema.isAny(schemata);
+        const textMatch = matchText(e.getCaption() || '', query);
+        return schemaMatch && textMatch;
+      })
       .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
 
     return new Promise((resolve) => resolve(entities));
