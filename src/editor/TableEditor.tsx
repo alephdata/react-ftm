@@ -53,6 +53,7 @@ interface ITableEditorProps extends WrappedComponentProps {
 
 interface ITableEditorState {
   visibleProps: Array<FTMProperty>
+  shouldCommit: boolean
   tableData?: CellData[][]
 }
 
@@ -62,6 +63,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     this.state = {
       visibleProps: this.getVisibleProperties(),
+      shouldCommit: false
     }
 
     this.onShowTopAddRow = this.onShowTopAddRow.bind(this);
@@ -210,16 +212,22 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   renderEditor = ({ cell, onCommit, onChange, onKeyDown }: Datasheet.DataEditorProps<CellData, any>) => {
     const { entityManager, schema } = this.props;
+    const { shouldCommit } = this.state;
     const { entity, property } = cell.data;
 
     if (!property) return null;
+
+    if (shouldCommit) {
+      this.setState({ shouldCommit: false });
+      onCommit(null);
+    }
 
     return (
       <PropertyEditor
         entity={entity || new Entity(entityManager.model, { schema, id: `${Math.random()}` })}
         property={property}
         onChange={(newVal) => onChange(newVal)}
-        onSubmit={(ent) => {onChange(ent.getProperty(property)); onCommit(null); }}
+        onSubmit={(ent) => { onChange(ent.getProperty(property)); this.setState({ shouldCommit: true }); }}
         usePortal={false}
         fetchEntitySuggestions={entityManager.getEntitySuggestions}
         resolveEntityReference={entityManager.resolveEntityReference}
