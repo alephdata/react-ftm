@@ -177,7 +177,15 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   // Table renderers
 
   renderValue = ({ entity, property }: { entity: Entity, property: FTMProperty }) => {
-    return <Property.Values values={entity.getProperty(property.name)} prop={property} resolveEntityReference={this.props.entityManager.resolveEntityReference} />;
+    return (
+      <div className="TableEditor__overflow-container">
+        <Property.Values
+          values={entity.getProperty(property.name)}
+          prop={property}
+          resolveEntityReference={this.props.entityManager.resolveEntityReference}
+        />
+      </div>
+    );
   }
 
   renderEditor = ({ cell, onCommit, onChange, onKeyDown }: Datasheet.DataEditorProps<CellData, any>) => {
@@ -191,15 +199,17 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     }
 
     return (
-      <PropertyEditor
-        entity={entity || new Entity(entityManager.model, { schema, id: `${Math.random()}` })}
-        property={property}
-        onChange={(newVal) => onChange(newVal)}
-        onSubmit={(ent) => {onChange(ent.getProperty(property)); this.setState({ shouldCommit: true }); }}
-        usePortal={false}
-        fetchEntitySuggestions={entityManager.getEntitySuggestions}
-        resolveEntityReference={entityManager.resolveEntityReference}
-      />
+      <div className="TableEditor__overflow-container">
+        <PropertyEditor
+          entity={entity || new Entity(entityManager.model, { schema, id: `${Math.random()}` })}
+          property={property}
+          onChange={(newVal) => onChange(newVal)}
+          onSubmit={(ent) => {onChange(ent.getProperty(property)); this.setState({ shouldCommit: true }); }}
+          usePortal={false}
+          fetchEntitySuggestions={entityManager.getEntitySuggestions}
+          resolveEntityReference={entityManager.resolveEntityReference}
+        />
+      </div>
     );
   }
 

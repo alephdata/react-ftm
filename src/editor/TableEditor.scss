@@ -71,4 +71,9 @@
   .bp3-multi-select-popover .bp3-menu {
     max-height: 150px;
   }
+
+  &__overflow-container {
+    max-height: 110px;
+    overflow-y: scroll;
+  }
 }
