@@ -53,8 +53,7 @@ interface ITableEditorProps extends WrappedComponentProps {
 
 interface ITableEditorState {
   visibleProps: Array<FTMProperty>
-  shouldCommit: boolean
-  showTopAddRow: boolean
+  tableData?: CellData[][]
 }
 
 class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorState> {
@@ -62,9 +61,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     super(props);
 
     this.state = {
-      visibleProps: [],
-      shouldCommit: false,
-      showTopAddRow: false,
+      visibleProps: this.getVisibleProperties(),
     }
 
     this.onShowTopAddRow = this.onShowTopAddRow.bind(this);
@@ -72,12 +69,24 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   componentDidMount() {
-    this.setState({ visibleProps: this.getVisibleProperties() });
+    this.setState({
+      tableData: this.getTableData(),
+    });
   }
 
-  componentDidUpdate(prevProps: ITableEditorProps) {
-    if (prevProps.entities?.length !== this.props.entities?.length) {
-      this.setState({ visibleProps: this.getVisibleProperties() });
+  componentDidUpdate(prevProps: ITableEditorProps, prevState: ITableEditorState) {
+    const { entities, isPending, sort } = this.props;
+    const { visibleProps } = this.state;
+
+    const shouldRegenerate = prevProps.isPending && !isPending
+      || prevProps.entities.length > entities.length
+      || prevProps.sort !== sort
+      || prevState.visibleProps !== visibleProps;
+
+    if (shouldRegenerate) {
+      this.setState({
+        tableData: this.getTableData(),
+      })
     }
   }
 
@@ -104,14 +113,17 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   // Table data initialization
 
+  getTableData = () => {
+    return [this.getTableHeader(), ...this.getTableContent()]
+  }
+
   getTableHeader = () => {
     const { writeable } = this.props;
-    const { showTopAddRow, visibleProps } = this.state;
+    const { visibleProps } = this.state;
 
     const headerCells = visibleProps.map(property => ({ ...headerCellProps, component: this.renderColumnHeader(property) }));
     if (writeable) {
-      const actionComponent = showTopAddRow ? null : this.renderAddButton();
-      return [{ ...checkboxCellProps, component: actionComponent }, ...headerCells, { ...headerCellProps, component: this.renderPropertySelect() }];
+      return [{ ...checkboxCellProps, component: this.renderAddButton() }, ...headerCells, { ...headerCellProps, component: this.renderPropertySelect() }];
     } else {
       return headerCells;
     }
@@ -119,37 +131,33 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   getTableContent = () => {
     const { entities, isPending, writeable } = this.props;
-    const { showTopAddRow, visibleProps } = this.state;
-
-    const topAddRow = writeable && showTopAddRow ? this.getAddRow() : [];
-    const propRows = this.getPropertyRows();
-    const skeletonRows = isPending ? this.getSkeletonRows() : [];
-    const bottomAddRow = writeable ? this.getAddRow() : [];
-
-    return [...topAddRow, ...propRows, ...skeletonRows, ...bottomAddRow];
-  }
-
-  getPropertyRows = () => {
-    const { entities, writeable } = this.props;
     const { visibleProps } = this.state;
 
-    return entities.map(entity => {
-      const propCells = visibleProps.map(property => ({
-        ...propertyCellProps,
-        readOnly: !writeable,
-        value: entity.getProperty(property.name),
-        displayValue: this.renderValue({ entity, property }),
-        dataEditor: this.renderEditor,
-        data: { entity, property },
-      }));
+    const entityRows = entities.map(this.getEntityRow);
+    const skeletonRows = isPending ? this.getSkeletonRows() : [];
+    const bottomAddRow = writeable ? [this.getAddRow()] : [];
 
-      if (writeable) {
-        const checkbox = { ...checkboxCellProps, component: this.renderCheckbox(entity) };
-        return [checkbox, ...propCells];
-      } else {
-        return propCells;
-      }
-    });
+    return [...entityRows, ...skeletonRows, ...bottomAddRow];
+  }
+
+  getEntityRow = (entity: Entity) => {
+    const { selection, writeable } = this.props;
+    const { visibleProps } = this.state;
+    const isSelected = selection.some(e => e.id === entity.id);
+
+    const propCells = visibleProps.map(property => ({
+      ...propertyCellProps,
+      readOnly: !writeable,
+      value: entity.getProperty(property.name),
+      data: { entity, property },
+    }));
+
+    if (writeable) {
+      const checkbox = { ...checkboxCellProps, data: { entity, isSelected }};
+      return [checkbox, ...propCells];
+    } else {
+      return propCells;
+    }
   }
 
   getSkeletonRows = () => {
@@ -167,49 +175,55 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     const placeholderCells = visibleProps.map(property => ({
       ...propertyCellProps,
-      displayValue: <span>—</span>,
-      dataEditor: this.renderEditor,
       data: { entity: null, property }
     }));
-    return [[{...checkboxCellProps}, ...placeholderCells]]
+    return [{...checkboxCellProps}, ...placeholderCells]
   }
 
   // Table renderers
 
-  renderValue = ({ entity, property }: { entity: Entity, property: FTMProperty }) => {
-    return (
-      <div className="TableEditor__overflow-container">
-        <Property.Values
-          values={entity.getProperty(property.name)}
-          prop={property}
-          resolveEntityReference={this.props.entityManager.resolveEntityReference}
-        />
-      </div>
-    );
+  renderValue = ({ cell, row }: Datasheet.ValueViewerProps<CellData, any>) => {
+    if (!cell.data) return null;
+    const { entity, property } = cell.data;
+
+    if (entity && property) {
+      return this.renderPropValue(cell.data)
+    }
+    if (entity) {
+      return this.renderCheckbox(cell.data, row)
+    }
+    if (property) {
+      return <span>—</span>
+    }
+    return null;
   }
+
+  renderPropValue = ({entity, property}: {entity: Entity, property: FTMProperty}) => (
+    <div className="TableEditor__overflow-container">
+      <Property.Values
+        values={entity.getProperty(property.name)}
+        prop={property}
+        resolveEntityReference={this.props.entityManager.resolveEntityReference}
+      />
+    </div>
+  );
 
   renderEditor = ({ cell, onCommit, onChange, onKeyDown }: Datasheet.DataEditorProps<CellData, any>) => {
     const { entityManager, schema } = this.props;
-    const { shouldCommit } = this.state;
     const { entity, property } = cell.data;
 
-    if (shouldCommit) {
-      this.setState({ shouldCommit: false });
-      onCommit(null);
-    }
+    if (!property) return null;
 
     return (
-      <div className="TableEditor__overflow-container">
-        <PropertyEditor
-          entity={entity || new Entity(entityManager.model, { schema, id: `${Math.random()}` })}
-          property={property}
-          onChange={(newVal) => onChange(newVal)}
-          onSubmit={(ent) => {onChange(ent.getProperty(property)); this.setState({ shouldCommit: true }); }}
-          usePortal={false}
-          fetchEntitySuggestions={entityManager.getEntitySuggestions}
-          resolveEntityReference={entityManager.resolveEntityReference}
-        />
-      </div>
+      <PropertyEditor
+        entity={entity || new Entity(entityManager.model, { schema, id: `${Math.random()}` })}
+        property={property}
+        onChange={(newVal) => onChange(newVal)}
+        onSubmit={(ent) => {onChange(ent.getProperty(property)); onCommit(null); }}
+        usePortal={false}
+        fetchEntitySuggestions={entityManager.getEntitySuggestions}
+        resolveEntityReference={entityManager.resolveEntityReference}
+      />
     );
   }
 
@@ -248,11 +262,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     )
   }
 
-  renderCheckbox = (entity: Entity) => {
-    const { selection, updateSelection } = this.props;
-    const isSelected = selection.some(e => e.id === entity.id);
+  renderCheckbox = ({ entity, isSelected }: {entity: Entity, isSelected: boolean}, row: number) => {
     return (
-      <Checkbox checked={isSelected} onChange={() => updateSelection(entity)} />
+      <Checkbox checked={isSelected} onChange={() => this.updateSelection(entity, row, !isSelected)} />
     );
   }
 
@@ -265,7 +277,18 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   // Change handlers
 
-  handleNewRow = (changes: any) => {
+  updateSelection = (entity: Entity, row: number, newValue: boolean) => {
+    this.props.updateSelection(entity);
+
+    this.setState(({ tableData }) => {
+      if (tableData && tableData[row][0]?.data) {
+        tableData[row][0].data.isSelected = newValue;
+      }
+      return { tableData };
+    });
+  }
+
+  handleNewRow = async (row: number, changes: any) => {
     const { intl, schema } = this.props;
     const { visibleProps } = this.state;
 
@@ -281,23 +304,30 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       }
     })
 
+    const entity = await this.props.entityManager.createEntity(entityData);
+    const newRow = this.getEntityRow(entity);
 
-    this.props.entityManager.createEntity(entityData);
-    this.setState({ showTopAddRow: false });
+    this.setState(({ tableData }) => {
+      if (tableData) {
+        const replacePlaceholder = row === (tableData.length - 1) ? 0 : 1;
+        tableData.splice(row, replacePlaceholder, newRow);
+      }
+
+      return { tableData };
+    });
   }
 
   handleExistingRow = (changes: Datasheet.CellsChangedArgs<CellData, any> | Datasheet.CellAdditionsArgs<CellData>) => {
     const { intl, schema } = this.props;
 
     let changedEntity;
-    changes.forEach(({ cell, value }: any) => {
+    changes.forEach(({ cell, value, row, col }: any) => {
       const { entity, property } = cell.data;
       const error = validate({ schema: entity.schema, property, values: value});
 
       if (error) {
         showErrorToast(intl.formatMessage(error));
       } else {
-        console.log('property!', schema.getProperty(property.name), property, schema.getProperty(property.name) === property, entity.schema.getProperty(property.name) === property);
         if (value === "") {
           entity.properties.set(entity.schema.getProperty(property.name), []);
         } else {
@@ -314,7 +344,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   onCellsChanged = (changeList: Datasheet.CellsChangedArgs<CellData, any>, outOfBounds: Datasheet.CellAdditionsArgs<CellData>) => {
     const { entities, updateFinishedCallback } = this.props;
-    const { showTopAddRow } = this.state;
     const entityCount = entities.length;
     const fullChangeList = outOfBounds ? [...changeList, ...outOfBounds] : changeList;
     const changesByRow = _.groupBy(fullChangeList, c => c.row);
@@ -324,7 +353,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       if (isExisting) {
         this.handleExistingRow(changes);
       } else {
-        this.handleNewRow(changes);
+        this.handleNewRow(+rowIndex, changes);
       }
     });
 
@@ -347,19 +376,28 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   onShowTopAddRow() {
-    this.setState({ showTopAddRow: true });
+    const newRow = this.getAddRow();
+
+    this.setState(({ tableData }) => {
+      if (tableData) {
+        tableData.splice(1, 0, newRow);
+      }
+      return { tableData };
+    });
   }
 
   render() {
-    const { entities, intl, schema } = this.props;
-    const entityCount = entities.length;
+    const { tableData } = this.state
+
+    if (!tableData) return null;
 
     return (
       <div className="TableEditor">
         <Datasheet
-          data={[this.getTableHeader(), ...this.getTableContent()] as CellData[][]}
+          data={tableData}
           valueRenderer={cell => cell.value}
-          valueViewer={({ cell }) => cell.displayValue || null}
+          valueViewer={this.renderValue}
+          dataEditor={this.renderEditor}
           onCellsChanged={this.onCellsChanged as Datasheet.CellsChangedHandler<CellData, CellData>}
           parsePaste={this.parsePaste as any}
         />
