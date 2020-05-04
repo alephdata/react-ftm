@@ -23,7 +23,7 @@ interface ISelectPropertyProps extends WrappedComponentProps  {
 class SelectPropertyBase extends React.PureComponent<ISelectPropertyProps> {
 
   itemPredicate: ItemPredicate<Property> = (query: string, property: Property) => {
-    return matchText(`${property.name + property.description}`,query)
+    return matchText(property.label, query)
   }
 
   itemRenderer: ItemRenderer<Property> = (property, {handleClick, modifiers, query}) => {
@@ -53,7 +53,7 @@ class SelectPropertyBase extends React.PureComponent<ISelectPropertyProps> {
       }}
       itemPredicate={this.itemPredicate}
       itemRenderer={this.itemRenderer}
-      filterable={false}
+      filterable={true}
       resetOnSelect={true}
       onItemSelect={this.props.onSelected}
       items={this.props.properties}>
