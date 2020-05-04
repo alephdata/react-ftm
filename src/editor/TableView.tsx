@@ -7,8 +7,8 @@ import { VertexSchemaSelect } from './VertexSchemaSelect';
 import { TableEditor } from './TableEditor';
 import { EntityManager } from '../EntityManager';
 import { Button, Classes, Drawer, Icon, Position, Tab, TabId, Tabs, Toaster } from "@blueprintjs/core";
-import { Entity, IEntityDatum, Schema as FTMSchema } from "@alephdata/followthemoney";
-import { Schema } from '../types';
+import { Entity, IEntityDatum, Schema as FTMSchema, Property as FTMProperty } from "@alephdata/followthemoney";
+import { Property, Schema } from '../types';
 import { SortType } from './SortType';
 import { matchText } from "../utils";
 
@@ -84,21 +84,28 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
 
     if (sort) {
       const { field, direction } = sort;
-      return entities.sort((a, b) => {
-        const aVal = a?.getFirst(field) as string;
-        const bVal = b?.getFirst(field) as string;
-
-        if (!aVal) return 1;
-        if (!bVal) return -1;
-
-        if (direction === 'asc') {
-          return aVal.toLowerCase() < bVal.toLowerCase() ? -1 : 1;
-        } else {
-          return aVal.toLowerCase() < bVal.toLowerCase() ? 1 : -1;
-        }
-      });
+      const property = schema.getProperty(field);
+      return entities.sort((a, b) => this.sortEntities(a, b, property, direction));
     } else {
       return entities;
+    }
+  }
+
+  sortEntities = (a:Entity, b:Entity, prop: FTMProperty, direction: string) => {
+    const { resolveEntityReference } = this;
+    let aRaw = a?.getFirst(prop);
+    let bRaw = b?.getFirst(prop);
+
+    if (!aRaw) return 1;
+    if (!bRaw) return -1;
+
+    const aVal = Property.getSortValue({prop, value: aRaw, resolveEntityReference})
+    const bVal = Property.getSortValue({prop, value: bRaw, resolveEntityReference})
+
+    if (direction === 'asc') {
+      return aVal < bVal ? -1 : 1;
+    } else {
+      return aVal < bVal ? 1 : -1;
     }
   }
 

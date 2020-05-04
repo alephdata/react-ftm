@@ -51,6 +51,19 @@ interface IPropertyValueProps extends IPropertyCommonProps{
   resolveEntityReference?: (entityId: string) => FTMEntity | undefined
 }
 
+const getSortValue = ({ prop, resolveEntityReference, value }:IPropertyValueProps) => {
+  if (prop.type.name === 'entity') {
+    const entity = ('string' === typeof value && resolveEntityReference) ? resolveEntityReference(value) : value as FTMEntity;
+    return entity ? entity.getCaption().toLowerCase() : value;
+  } else if (prop.type.name === 'number' || prop.type.name === 'fileSize') {
+    return +value;
+  } else if (prop.type.name === 'country' || prop.type.name === 'topic' || prop.type.name === 'language') {
+    const resolved = prop.type.values.get(value as string);
+    return resolved ? resolved.toLowerCase() : value;
+  }
+  return (value as string).toLowerCase();
+}
+
 class PropertyValue extends React.PureComponent<IPropertyValueProps> {
   render() {
     const { prop, resolveEntityReference, value } = this.props;
@@ -122,6 +135,8 @@ class Property extends React.Component {
   static Name = PropertyName;
 
   static Reverse = withTranslator(injectIntl(PropertyReverse));
+
+  static getSortValue = getSortValue;
 
   static Value = PropertyValue;
 
