@@ -54,7 +54,6 @@ interface ITableEditorProps extends WrappedComponentProps {
 interface ITableEditorState {
   addedProps: Array<FTMProperty>
   shouldCommit: boolean
-  entityCount: number
   tableData?: CellData[][]
 }
 
@@ -64,7 +63,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     this.state = {
       addedProps: [],
-      entityCount: 0,
       shouldCommit: false
     }
 
@@ -80,12 +78,12 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   componentDidUpdate(prevProps: ITableEditorProps, prevState: ITableEditorState) {
     const { entities, isPending, selection, sort } = this.props;
-    const { addedProps, entityCount } = this.state;
+    const { addedProps } = this.state;
 
     const emptyInitialLoad = entities.length === 0 && prevProps.isPending && !isPending
 
     const shouldRegenerate = emptyInitialLoad
-      || entities.length !== entityCount
+      || prevProps.entities.length !== entities.length
       || prevProps.sort?.field !== sort?.field
       || prevProps.sort?.direction !== sort?.direction
       || prevState.addedProps !== addedProps;
@@ -93,7 +91,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     if (shouldRegenerate) {
       this.setState({
         tableData: this.getTableData(),
-        entityCount: entities.length
       })
     } else if (prevProps.selection !== selection) {
       this.reflectUpdatedSelection();
@@ -329,15 +326,12 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const entity = await this.props.entityManager.createEntity(entityData);
     const newRow = this.getEntityRow(entity, visibleProps);
 
-    this.setState(({ entityCount, tableData }) => {
-      let newEntityCount = entityCount;
+    this.setState(({ tableData }) => {
       if (tableData) {
         const shouldReplacePlaceholder = row === (tableData.length - 1) ? 0 : 1;
         tableData.splice(row, shouldReplacePlaceholder, newRow);
-        newEntityCount += 1;
       }
-
-      return { tableData, entityCount: newEntityCount };
+      return { tableData };
     });
   }
 
