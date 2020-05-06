@@ -8,7 +8,7 @@ import { EntityManager } from '../EntityManager';
 import { SelectProperty } from './SelectProperty';
 import { TruncatedFormat } from "@blueprintjs/table";
 import { Button, Checkbox, Classes, Icon, Intent, Popover, Position, Tooltip } from "@blueprintjs/core";
-import { Entity, Property as FTMProperty, Schema, Values } from "@alephdata/followthemoney";
+import { Entity, Property as FTMProperty, Schema, Value, Values } from "@alephdata/followthemoney";
 import Datasheet from 'react-datasheet';
 import { SortType } from './SortType';
 import { showErrorToast } from './toaster';
@@ -163,7 +163,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const propCells = visibleProps.map(property => ({
       ...propertyCellProps,
       readOnly: !writeable,
-      value: entity.getProperty(property.name),
       data: { entity, property },
     }));
 
@@ -321,8 +320,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     this.setState(({ tableData }) => {
       if (tableData) {
-        const replacePlaceholder = row === (tableData.length - 1) ? 0 : 1;
-        tableData.splice(row, replacePlaceholder, newRow);
+        const shouldReplacePlaceholder = row === (tableData.length - 1) ? 0 : 1;
+        tableData.splice(row, shouldReplacePlaceholder, newRow);
       }
 
       return { tableData };
@@ -408,7 +407,16 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       <div className="TableEditor">
         <Datasheet
           data={tableData}
-          valueRenderer={cell => cell.value}
+          // gets cell's underlying value for copy/paste
+          valueRenderer={cell => {
+            if (cell.data) {
+              const { entity, property } = cell.data;
+              const values = entity && property ? entity.getProperty(property.name) : null;
+              if (values) {
+                return property.type.name === 'entity' ? values.map((v: Value) => typeof v === 'string' ? v : v.id) : values;
+              }
+            }
+          }}
           valueViewer={this.renderValue}
           dataEditor={this.renderEditor}
           onCellsChanged={this.onCellsChanged as Datasheet.CellsChangedHandler<CellData, CellData>}

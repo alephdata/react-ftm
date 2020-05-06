@@ -24,6 +24,7 @@ export class EntityManager {
     }
 
     this.getEntitySuggestions = this.getEntitySuggestions.bind(this);
+    this.resolveEntityReference = this.resolveEntityReference.bind(this);
   }
 
   async createEntity(entityData: any) {
