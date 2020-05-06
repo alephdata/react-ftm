@@ -80,9 +80,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const { entities, isPending, sort } = this.props;
     const { visibleProps } = this.state;
 
-    const shouldRegenerate = prevProps.isPending && !isPending
+    const initialLoad = !prevProps.entities.length && prevProps.isPending
+      && entities.length && !isPending;
+
+    const shouldRegenerate = initialLoad
       || prevProps.entities.length > entities.length
-      || prevProps.sort !== sort
+      || prevProps.sort?.field !== sort?.field
+      || prevProps.sort?.direction !== sort?.direction
       || prevState.visibleProps !== visibleProps;
 
     if (shouldRegenerate) {
