@@ -160,11 +160,19 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   getEntityRow = (entity: Entity, visibleProps: Array<FTMProperty>) => {
     const { writeable } = this.props;
 
-    const propCells = visibleProps.map(property => ({
-      ...propertyCellProps,
-      readOnly: !writeable,
-      data: { entity, property },
-    }));
+    const propCells = visibleProps.map(property => {
+      let values = entity.getProperty(property.name);
+      if (property.type.name === 'entity') {
+        values = values.map((v:Value) => typeof v === 'string' ? v : v.id);
+      }
+
+      return ({
+        ...propertyCellProps,
+        readOnly: !writeable,
+        value: values,
+        data: { entity, property },
+      })
+    });
 
     if (writeable) {
       const checkbox = this.getCheckboxCell(entity);
@@ -341,8 +349,10 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       } else {
         if (value === "") {
           entity.properties.set(entity.schema.getProperty(property.name), []);
+          cell.value = "";
         } else {
           entity.properties.set(entity.schema.getProperty(property.name), value);
+          cell.value = value.map((v:Value) => typeof v === 'string' ? v : v.id);
         }
         changedEntity = entity;
       }
@@ -407,16 +417,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       <div className="TableEditor">
         <Datasheet
           data={tableData}
-          // gets cell's underlying value for copy/paste
-          valueRenderer={cell => {
-            if (cell.data) {
-              const { entity, property } = cell.data;
-              const values = entity && property ? entity.getProperty(property.name) : null;
-              if (values) {
-                return property.type.name === 'entity' ? values.map((v: Value) => typeof v === 'string' ? v : v.id) : values;
-              }
-            }
-          }}
+          valueRenderer={cell => cell.value}
           valueViewer={this.renderValue}
           dataEditor={this.renderEditor}
           onCellsChanged={this.onCellsChanged as Datasheet.CellsChangedHandler<CellData, CellData>}
