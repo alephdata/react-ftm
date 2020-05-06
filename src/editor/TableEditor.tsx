@@ -374,7 +374,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const changesByRow = _.groupBy(fullChangeList, c => c.row);
 
     Object.entries(changesByRow).forEach(([rowIndex, changes]: [string, any]) => {
-      const isExisting = changes[0]?.cell?.data?.entity !== null;
+      const isExisting = changes[0]?.cell?.data?.entity != null;
       if (isExisting) {
         this.handleExistingRow(changes);
       } else {
