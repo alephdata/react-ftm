@@ -77,10 +77,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   componentDidUpdate(prevProps: ITableEditorProps, prevState: ITableEditorState) {
-    const { entities, selection, sort } = this.props;
+    const { entities, isPending, selection, sort } = this.props;
     const { addedProps } = this.state;
 
-    const shouldRegenerate = prevProps.entities.length !== entities.length
+    const emptyInitialLoad = entities.length === 0 && prevProps.isPending && !isPending
+
+    const shouldRegenerate = emptyInitialLoad
+      || prevProps.entities.length !== entities.length
       || prevProps.sort?.field !== sort?.field
       || prevProps.sort?.direction !== sort?.direction
       || prevState.addedProps !== addedProps;
