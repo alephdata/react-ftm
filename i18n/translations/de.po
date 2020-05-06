@@ -19,203 +19,203 @@ msgstr ""
 #. Add a property
 #: i18n/messages.json
 msgid "Add a property"
-msgstr ""
+msgstr "Eigenschaft hinzufügen"
 
 #. [editor.text.additional]
 #. defaultMessage is:
 #. Add additional values
 #: i18n/messages.json
 msgid "Add additional values"
-msgstr ""
+msgstr "Zusätzliche Werte hinzufügen"
 
 #. [table_editor.add_schema]
 #. defaultMessage is:
 #. Add an entity type
 #: i18n/messages.json
 msgid "Add an entity type"
-msgstr ""
+msgstr "Type hinzufügen"
 
 #. [tooltip.add_edges]
 #. defaultMessage is:
 #. Add edges
 #: i18n/messages.json
 msgid "Add edges"
-msgstr ""
+msgstr "Verbindungen hinzufügen"
 
 #. [tooltip.add_entities]
 #. defaultMessage is:
 #. Add entities
 #: i18n/messages.json
 msgid "Add entities"
-msgstr ""
+msgstr "Entitäten hinzufügen"
 
 #. [dialog.vertex_create.title]
 #. defaultMessage is:
 #. Add entity
 #: i18n/messages.json
 msgid "Add entity"
-msgstr ""
+msgstr "Entität hinzufügen"
 
 #. [dialog.edge_create.title]
 #. defaultMessage is:
 #. Add link
 #: i18n/messages.json
 msgid "Add link"
-msgstr ""
+msgstr "Verbindung hinzufügen"
 
 #. [table_editor.add_entity]
 #. defaultMessage is:
 #. Add {schema}
 #: i18n/messages.json
 msgid "Add {schema}"
-msgstr ""
+msgstr "{schema} hinzufügen"
 
 #. [tooltip.layout_horizontal]
 #. defaultMessage is:
 #. Align horizontal
 #: i18n/messages.json
 msgid "Align horizontal"
-msgstr ""
+msgstr "Horizontal ausrichten"
 
 #. [tooltip.layout_vertical]
 #. defaultMessage is:
 #. Align vertical
 #: i18n/messages.json
 msgid "Align vertical"
-msgstr ""
+msgstr "Vertikal ausrichten"
 
 #. [tooltip.layout_circle]
 #. defaultMessage is:
 #. Arrange as circle
 #: i18n/messages.json
 msgid "Arrange as circle"
-msgstr ""
+msgstr "Als Kreis ausrichten"
 
 #. [tooltip.layout_hierarchy]
 #. defaultMessage is:
 #. Arrange as hierarchy
 #: i18n/messages.json
 msgid "Arrange as hierarchy"
-msgstr ""
+msgstr "Als Hierarchie ausrichten"
 
 #. [dialog.edge_create.submit]
 #. defaultMessage is:
 #. Create
 #: i18n/messages.json
 msgid "Create"
-msgstr ""
+msgstr "Speichern"
 
 #. [editor.validation.date_invalid]
 #. defaultMessage is:
 #. Date format: yyyy-m-d
 #: i18n/messages.json
 msgid "Date format: yyyy-m-d"
-msgstr ""
+msgstr "Datumsformat: JJJJ-MM-TT"
 
 #. [tooltip.delete]
 #. defaultMessage is:
 #. Delete selection
 #: i18n/messages.json
 msgid "Delete selection"
-msgstr ""
+msgstr "Auswahl entfernen"
 
 #. [table_editor.delete_entity]
 #. defaultMessage is:
 #. Delete this entity
 #: i18n/messages.json
 msgid "Delete this entity"
-msgstr ""
+msgstr "Objekt entfernen"
 
 #. [tooltip.export_svg]
 #. defaultMessage is:
 #. Export as SVG
 #: i18n/messages.json
 msgid "Export as SVG"
-msgstr ""
+msgstr "SVG exportieren"
 
 #. [tooltips.fit_to_selection]
 #. defaultMessage is:
 #. Fit view to selection
 #: i18n/messages.json
 msgid "Fit view to selection"
-msgstr ""
+msgstr "Ansicht der Auswahl "
 
 #. [search.results_text.one]
 #. defaultMessage is:
 #. Found 1 result
 #: i18n/messages.json
 msgid "Found 1 result"
-msgstr ""
+msgstr "1 Resultat gefunden"
 
 #. [search.results_text.multiple]
 #. defaultMessage is:
 #. Found {count} results
 #: i18n/messages.json
 msgid "Found {count} results"
-msgstr ""
+msgstr "{count} Resultate gefunden"
 
 #. [dialog.grouping_create.title]
 #. defaultMessage is:
 #. Group items
 #: i18n/messages.json
 msgid "Group items"
-msgstr ""
+msgstr "Gruppieren"
 
 #. [tooltip.group]
 #. defaultMessage is:
 #. Group selection
 #: i18n/messages.json
 msgid "Group selection"
-msgstr ""
+msgstr "Gruppenauswahl"
 
 #. [editor.validation.url_invalid]
 #. defaultMessage is:
 #. Invalid URL format
 #: i18n/messages.json
 msgid "Invalid URL format"
-msgstr ""
+msgstr "Ungültiger Link"
 
 #. [editor.validation.country_invalid]
 #. defaultMessage is:
 #. Invalid country
 #: i18n/messages.json
 msgid "Invalid country"
-msgstr ""
+msgstr "Ungültiges Land"
 
 #. [editor.validation.topic_invalid]
 #. defaultMessage is:
 #. Invalid topic
 #: i18n/messages.json
 msgid "Invalid topic"
-msgstr ""
+msgstr "Ungültiges Thema"
 
 #. [editor.entity.no_results]
 #. defaultMessage is:
 #. No entities found
 #: i18n/messages.json
 msgid "No entities found"
-msgstr ""
+msgstr "Keine Entitäten gefunden"
 
 #. [search.results_text.none]
 #. defaultMessage is:
 #. No results found
 #: i18n/messages.json
 msgid "No results found"
-msgstr ""
+msgstr "Keine Resultate gefunden"
 
 #. [editor.vertex_select.disabled]
 #. defaultMessage is:
 #. No vertices
 #: i18n/messages.json
 msgid "No vertices"
-msgstr ""
+msgstr "Keine Verbindungen"
 
 #. [dialog.vertex_create.type_placeholder]
 #. defaultMessage is:
 #. Pick a type
 #: i18n/messages.json
 msgid "Pick a type"
-msgstr ""
+msgstr "Typ auswählen"
 
 #. [tooltip.redo]
 #. defaultMessage is:
@@ -229,7 +229,7 @@ msgstr "Wiederholen"
 #. Select a label for the grouping
 #: i18n/messages.json
 msgid "Select a label for the grouping"
-msgstr ""
+msgstr "Wählen sie einen Titel für diese Gruppierung"
 
 #. [editor.vertex_select.placeholder]
 #. defaultMessage is:
@@ -253,14 +253,14 @@ msgstr "Typ auswählen"
 #. Show sidebar
 #: i18n/messages.json
 msgid "Show sidebar"
-msgstr ""
+msgstr "Seitenleiste zeigen"
 
 #. [tooltip.table_view]
 #. defaultMessage is:
 #. Show table
 #: i18n/messages.json
 msgid "Show table"
-msgstr ""
+msgstr "Tabelle zeigen"
 
 #. [dialog.edge_create.source_label]
 #. defaultMessage is:
@@ -281,28 +281,28 @@ msgstr "Ziel"
 #. This property is required
 #: i18n/messages.json
 msgid "This property is required"
-msgstr ""
+msgstr "Diese Eigenschaft ist erforderlich"
 
 #. [tooltip.pan_mode]
 #. defaultMessage is:
 #. Toggle pan mode
 #: i18n/messages.json
 msgid "Toggle pan mode"
-msgstr ""
+msgstr "Erforschmodus"
 
 #. [tooltip.select_mode]
 #. defaultMessage is:
 #. Toggle select mode
 #: i18n/messages.json
 msgid "Toggle select mode"
-msgstr ""
+msgstr "Auswahlmodus "
 
 #. [dialog.edge_create.type_label]
 #. defaultMessage is:
 #. Type
 #: i18n/messages.json
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #. [tooltip.undo]
 #. defaultMessage is:
@@ -337,4 +337,4 @@ msgstr "Unbenannt"
 #. {schema} name
 #: i18n/messages.json
 msgid "{schema} name"
-msgstr ""
+msgstr "{schema}-Name"

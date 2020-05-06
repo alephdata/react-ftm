@@ -194,7 +194,7 @@ msgstr "Некорректная тема"
 #. No entities found
 #: i18n/messages.json
 msgid "No entities found"
-msgstr ""
+msgstr "Сущности не найдены"
 
 #. [search.results_text.none]
 #. defaultMessage is:
