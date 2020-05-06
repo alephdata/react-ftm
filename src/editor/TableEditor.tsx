@@ -54,6 +54,7 @@ interface ITableEditorProps extends WrappedComponentProps {
 interface ITableEditorState {
   addedProps: Array<FTMProperty>
   shouldCommit: boolean
+  entityCount: number
   tableData?: CellData[][]
 }
 
@@ -63,6 +64,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     this.state = {
       addedProps: [],
+      entityCount: 0,
       shouldCommit: false
     }
 
@@ -78,12 +80,12 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   componentDidUpdate(prevProps: ITableEditorProps, prevState: ITableEditorState) {
     const { entities, isPending, selection, sort } = this.props;
-    const { addedProps } = this.state;
+    const { addedProps, entityCount } = this.state;
 
     const emptyInitialLoad = entities.length === 0 && prevProps.isPending && !isPending
 
     const shouldRegenerate = emptyInitialLoad
-      || prevProps.entities.length !== entities.length
+      || entities.length !== entityCount
       || prevProps.sort?.field !== sort?.field
       || prevProps.sort?.direction !== sort?.direction
       || prevState.addedProps !== addedProps;
@@ -91,6 +93,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     if (shouldRegenerate) {
       this.setState({
         tableData: this.getTableData(),
+        entityCount: entities.length
       })
     } else if (prevProps.selection !== selection) {
       this.reflectUpdatedSelection();
@@ -326,13 +329,15 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const entity = await this.props.entityManager.createEntity(entityData);
     const newRow = this.getEntityRow(entity, visibleProps);
 
-    this.setState(({ tableData }) => {
+    this.setState(({ entityCount, tableData }) => {
+      let newEntityCount = entityCount;
       if (tableData) {
         const shouldReplacePlaceholder = row === (tableData.length - 1) ? 0 : 1;
         tableData.splice(row, shouldReplacePlaceholder, newRow);
+        newEntityCount += 1;
       }
 
-      return { tableData };
+      return { tableData, entityCount: newEntityCount };
     });
   }
 
@@ -365,7 +370,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   onCellsChanged = (changeList: Datasheet.CellsChangedArgs<CellData, any>, outOfBounds: Datasheet.CellAdditionsArgs<CellData>) => {
     const { entities, updateFinishedCallback } = this.props;
-    const entityCount = entities.length;
     const fullChangeList = outOfBounds ? [...changeList, ...outOfBounds] : changeList;
     const changesByRow = _.groupBy(fullChangeList, c => c.row);
 
