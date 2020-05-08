@@ -24,10 +24,11 @@ const messages = defineMessages({
 });
 
 const readOnlyCellProps = { readOnly: true, disableEvents: true, forceComponent: true };
-const getCellBase = (type: string) => ({
-  className: type,
-  ...(type !== 'property' ? readOnlyCellProps : {})
-})
+const headerCellProps = { className: "header", ...readOnlyCellProps };
+const checkboxCellProps = { className: "checkbox", ...readOnlyCellProps };
+const entityLinkCellProps = { className: "link", ...readOnlyCellProps };
+const skeletonCellProps = { className: "skeleton", ...readOnlyCellProps };
+const propertyCellProps = { className: "property" };
 
 const propSort = (a:FTMProperty, b:FTMProperty) => (a.label > b.label ? 1 : -1);
 
@@ -49,7 +50,7 @@ interface ITableEditorProps extends WrappedComponentProps {
   writeable: boolean
   isPending?: boolean
   updateFinishedCallback?: () => void
-  visitEntity: (entity: Entity) => void
+  visitEntity?: (entity: Entity) => void
 }
 
 interface ITableEditorState {
@@ -101,9 +102,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   reflectUpdatedSelection() {
     this.setState(({ tableData }) => ({
       tableData: tableData?.map(row => {
-        const [firstCell, checkboxCell, ...rest] = row;
-        const newCheckboxCell = checkboxCell?.data?.entity ? this.getCheckboxCell(checkboxCell.data.entity) : checkboxCell;
-        return [firstCell, newCheckboxCell, ...rest];
+        const [firstCell, ...rest] = row;
+        const newFirstCell = firstCell?.data?.entity ? this.getCheckboxCell(firstCell.data.entity) : firstCell;
+        return [newFirstCell, ...rest];
       })
     }));
   }
@@ -140,15 +141,11 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   getTableHeader = (visibleProps: Array<FTMProperty>) => {
     const { writeable } = this.props;
 
-    const headerCells = visibleProps.map(property => this.getHeaderCell(property));
-    const entityLinkCell = this.getEntityLinkCell();
-
+    const headerCells = visibleProps.map(property => ({ ...headerCellProps, component: this.renderColumnHeader(property) }));
     if (writeable) {
-      const addEntityCell = this.getAddEntityCell();
-      const propSelectCell = this.getPropSelectCell();
-      return [entityLinkCell, addEntityCell, ...headerCells, propSelectCell];
+      return [{ ...checkboxCellProps, component: this.renderAddButton() }, ...headerCells, { ...headerCellProps, component: this.renderPropertySelect() }];
     } else {
-      return [entityLinkCell, ...headerCells];
+      return headerCells;
     }
   }
 
@@ -172,63 +169,43 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       }
 
       return ({
-        ...getCellBase('property'),
+        ...propertyCellProps,
         readOnly: !writeable,
         value: values,
         data: { entity, property },
       })
     });
 
-    const entityLinkCell = this.getEntityLinkCell(entity);
-
     if (writeable) {
       const checkbox = this.getCheckboxCell(entity);
-      return [entityLinkCell, checkbox, ...propCells];
+      const entityLink = { ...checkboxCellProps, data: { entity, isSelected }};
+      return [checkbox, entityLink, ...propCells];
     } else {
-      return [entityLinkCell, ...propCells];
+      return propCells;
     }
   }
 
   getCheckboxCell = (entity: Entity) => {
     const { selection } = this.props;
     const isSelected = selection.some(e => e.id === entity.id);
-    return { ...getCellBase('checkbox'), data: { entity, isSelected }}
-  }
-
-  getEntityLinkCell = (entity?: Entity) => {
-    return ({
-      ...getCellBase('entity-link'),
-      ...(entity ? {component: this.renderEntityLinkButton({ entity })} : {})
-    })
-  }
-
-  getHeaderCell = (property: FTMProperty) => {
-    return { ...getCellBase('header'), component: this.renderColumnHeader(property) };
-  }
-
-  getAddEntityCell = () => {
-    return { ...getCellBase('add-button'), component: this.renderAddButton() };
-  }
-
-  getPropSelectCell = () => {
-    return { ...getCellBase('prop-select'), component: this.renderPropertySelect() };
+    return { ...checkboxCellProps, data: { entity, isSelected }}
   }
 
   getSkeletonRows = (visibleProps: Array<FTMProperty>) => {
     const skeletonRowCount = 8;
 
     return (Array.from(Array(skeletonRowCount).keys())).map(key => {
-      const propCells = visibleProps.map(() => ({ ...getCellBase('skeleton'), component: this.renderSkeleton() }));
-      return [this.getEntityLinkCell(), {...getCellBase('checkbox')}, ...propCells];
+      const propCells = visibleProps.map(() => ({ ...skeletonCellProps, component: this.renderSkeleton() }));
+      return [{...checkboxCellProps}, ...propCells];
     });
   }
 
   getAddRow = (visibleProps: Array<FTMProperty>) => {
     const placeholderCells = visibleProps.map(property => ({
-      ...getCellBase('property'),
+      ...propertyCellProps,
       data: { entity: null, property }
     }));
-    return [this.getEntityLinkCell(), {...getCellBase('checkbox')}, ...placeholderCells]
+    return [{...checkboxCellProps}, ...placeholderCells]
   }
 
   // Table renderers
@@ -325,9 +302,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     );
   }
 
-  renderEntityLinkButton = ({ entity }: {entity: Entity}) => {
+  renderEntityLink = ({ entity }: { entity: Entity }) => {
     return (
-      <Button minimal small icon="fullscreen" onClick={() => this.props.visitEntity(entity)} />
+      <Button icon="fullscreen" onClick={() => this.props.visitEntity(entity)} />
     );
   }
 
