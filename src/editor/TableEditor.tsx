@@ -83,7 +83,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const emptyInitialLoad = entities.length === 0 && prevProps.isPending && !isPending
 
     const shouldRegenerate = emptyInitialLoad
-      || prevProps.entities.length !== entities.length
+      || prevProps.entities.length > entities.length
       || prevProps.sort?.field !== sort?.field
       || prevProps.sort?.direction !== sort?.direction
       || prevState.addedProps !== addedProps;
@@ -92,9 +92,25 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       this.setState({
         tableData: this.getTableData(),
       })
+    } else if (prevProps.entities.length < entities.length){
+      this.appendAdditionalEntities(prevProps.entities);
     } else if (prevProps.selection !== selection) {
       this.reflectUpdatedSelection();
     }
+  }
+
+  appendAdditionalEntities(prevEntities: Array<Entity>) {
+    const { entities } = this.props;
+    const newEntities = _.differenceBy(entities, prevEntities, e => e.id);
+
+    console.log('in appendAdditionalEntities', newEntities);
+
+    this.setState(({ tableData }) => {
+      return {
+        tableData,
+      }
+    });
+
   }
 
   reflectUpdatedSelection() {
@@ -323,16 +339,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       }
     })
 
-    const entity = await this.props.entityManager.createEntity(entityData);
-    const newRow = this.getEntityRow(entity, visibleProps);
-
-    this.setState(({ tableData }) => {
-      if (tableData) {
-        const shouldReplacePlaceholder = row === (tableData.length - 1) ? 0 : 1;
-        tableData.splice(row, shouldReplacePlaceholder, newRow);
-      }
-      return { tableData };
-    });
+    this.props.entityManager.createEntity(entityData);
   }
 
   handleExistingRow = (changes: Datasheet.CellsChangedArgs<CellData, any> | Datasheet.CellAdditionsArgs<CellData>) => {
