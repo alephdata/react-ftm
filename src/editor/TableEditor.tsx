@@ -55,9 +55,12 @@ interface ITableEditorProps extends WrappedComponentProps {
 }
 
 interface ITableEditorState {
-  addedProps: Array<FTMProperty>
+  addedColumns: Array<FTMProperty>
   shouldCommit: boolean
-  tableData?: CellData[][]
+  headerRow: CellData[]
+  topAddRows: CellData[][]
+  entityRows: CellData[][]
+  skeletonRows: CellData[][]
 }
 
 class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorState> {
@@ -67,7 +70,11 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     super(props);
 
     this.state = {
-      addedProps: [],
+      addedColumns: [],
+      headerRow: [],
+      topAddRows: [],
+      entityRows: [],
+      skeletonRows: [],
       shouldCommit: false
     }
 
@@ -76,51 +83,56 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   componentDidMount() {
-    this.setState({
-      tableData: this.getTableData(),
-    });
+    this.regenerateTable();
   }
 
   componentDidUpdate(prevProps: ITableEditorProps, prevState: ITableEditorState) {
     const { entities, isPending, selection, sort } = this.props;
-    const { addedProps } = this.state;
+    const { addedColumns } = this.state;
 
-    const emptyInitialLoad = entities.length === 0 && prevProps.isPending && !isPending
+    const emptyInitialLoad = entities.length === 0 && prevProps.isPending && !isPending;
+    const entitiesDeleted = prevProps.entities.length > entities.length;
+    const entitiesAdded = prevProps.entities.length < entities.length;
+    const sortChanged = prevProps.sort?.field !== sort?.field || prevProps.sort?.direction !== sort?.direction;
+    const selectionChanged = prevProps.selection !== selection;
 
-    const shouldRegenerate = emptyInitialLoad
-      || prevProps.entities.length > entities.length
-      || prevProps.sort?.field !== sort?.field
-      || prevProps.sort?.direction !== sort?.direction
-      || prevState.addedProps !== addedProps;
-
-    if (shouldRegenerate) {
+    if (prevState.addedColumns !== addedColumns || sortChanged) {
+      this.regenerateTable();
+    } else if (emptyInitialLoad || entitiesDeleted) {
       this.setState({
-        tableData: this.getTableData(),
+        entityRows: this.getEntityRows(),
+        skeletonRows: this.getSkeletonRows(),
       })
-    } else if (prevProps.entities.length < entities.length){
+    } else if (entitiesAdded) {
       this.appendAdditionalEntities(prevProps.entities);
-    } else if (prevProps.selection !== selection) {
+    } else if (selectionChanged) {
       this.reflectUpdatedSelection();
     }
+  }
+
+  regenerateTable = () => {
+    this.setState({
+      topAddRows: [],
+      headerRow: this.getHeaderRow(),
+      entityRows: this.getEntityRows(),
+      skeletonRows: this.getSkeletonRows(),
+    });
   }
 
   appendAdditionalEntities(prevEntities: Array<Entity>) {
     const { entities } = this.props;
     const newEntities = _.differenceBy(entities, prevEntities, e => e.id);
+    const visibleProps = this.getVisibleProperties();
 
-    console.log('in appendAdditionalEntities', newEntities);
-
-    this.setState(({ tableData }) => {
-      return {
-        tableData,
-      }
-    });
+    this.setState(({ entityRows }) => ({
+      entityRows: [...entityRows, ...newEntities.map(e => this.getEntityRow(e, visibleProps))]
+    }));
 
   }
 
   reflectUpdatedSelection() {
-    this.setState(({ tableData }) => ({
-      tableData: tableData?.map(row => {
+    this.setState(({ entityRows }) => ({
+      entityRows: entityRows?.map(row => {
         const [firstCell, checkboxCell, ...rest] = row;
         const newCheckboxCell = checkboxCell?.data?.entity ? this.getCheckboxCell(checkboxCell.data.entity) : checkboxCell;
         return [firstCell, newCheckboxCell, ...rest];
@@ -130,13 +142,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   getVisibleProperties() {
     const { entities, schema } = this.props;
-    const { addedProps } = this.state;
+    const { addedColumns } = this.state;
 
     const requiredProps = schema.required.map(name => schema.getProperty(name));
     const featuredProps = schema.getFeaturedProperties();
     const filledProps = entities.reduce((acc, entity: Entity) => [...acc, ...entity.getProperties()], [] as FTMProperty[]);
 
-    const fullList = _.uniqBy([...requiredProps, ...featuredProps, ...filledProps, ...addedProps], 'name');
+    const fullList = _.uniqBy([...requiredProps, ...featuredProps, ...filledProps, ...addedColumns], 'name');
 
     return fullList.filter(prop => (!prop.stub && !prop.hidden));
   }
@@ -152,13 +164,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   // Table data initialization
 
-  getTableData = () => {
-    const visibleProps = this.getVisibleProperties()
-    return [this.getTableHeader(visibleProps), ...this.getTableContent(visibleProps)]
-  }
-
-  getTableHeader = (visibleProps: Array<FTMProperty>) => {
+  getHeaderRow = () => {
     const { writeable } = this.props;
+    const visibleProps = this.getVisibleProperties();
 
     const headerCells = visibleProps.map(property => this.getHeaderCell(property));
     const entityLinkCell = this.getEntityLinkCell();
@@ -172,14 +180,11 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     }
   }
 
-  getTableContent = (visibleProps: Array<FTMProperty>) => {
-    const { entities, isPending, writeable } = this.props;
+  getEntityRows = () => {
+    const { entities, writeable } = this.props;
+    const visibleProps = this.getVisibleProperties();
 
-    const entityRows = entities.map((e) => this.getEntityRow(e, visibleProps));
-    const skeletonRows = isPending ? this.getSkeletonRows(visibleProps) : [];
-    const bottomAddRow = writeable ? [this.getAddRow(visibleProps)] : [];
-
-    return [...entityRows, ...skeletonRows, ...bottomAddRow];
+    return entities.map(e => this.getEntityRow(e, visibleProps));
   }
 
   getEntityRow = (entity: Entity, visibleProps: Array<FTMProperty>) => {
@@ -234,7 +239,10 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     return { ...getCellBase('prop-select'), component: this.renderPropertySelect() };
   }
 
-  getSkeletonRows = (visibleProps: Array<FTMProperty>) => {
+  getSkeletonRows = () => {
+    if (!this.props.isPending) return [];
+
+    const visibleProps = this.getVisibleProperties();
     const skeletonRowCount = 8;
 
     return (Array.from(Array(skeletonRowCount).keys())).map(key => {
@@ -243,7 +251,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     });
   }
 
-  getAddRow = (visibleProps: Array<FTMProperty>) => {
+  getAddRow = () => {
+    const visibleProps = this.getVisibleProperties();
     const placeholderCells = visibleProps.map(property => ({
       ...getCellBase('property'),
       data: { entity: null, property }
@@ -441,27 +450,22 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   onAddColumn(newColumn: FTMProperty) {
-    this.setState(({addedProps}) => ({
-      addedProps: [...addedProps, newColumn],
+    this.setState(({addedColumns}) => ({
+      addedColumns: [...addedColumns, newColumn],
     }));
   }
 
   onShowTopAddRow() {
-    const visibleProps = this.getVisibleProperties();
-    const newRow = this.getAddRow(visibleProps);
-
-    this.setState(({ tableData }) => {
-      if (tableData) {
-        tableData.splice(1, 0, newRow);
-      }
-      return { tableData };
-    });
+    this.setState(({ topAddRows }) => ({
+      topAddRows: [...topAddRows, this.getAddRow()]
+    }));
   }
 
   render() {
-    const { tableData } = this.state
-
-    if (!tableData) return null;
+    const { writeable } = this.props;
+    const { headerRow, topAddRows, entityRows, skeletonRows} = this.state
+    const bottomAddRow = writeable ? [this.getAddRow()] : [];
+    const tableData = [headerRow, ...topAddRows, ...entityRows, ...skeletonRows, ...bottomAddRow]
 
     return (
       <div className="TableEditor">
