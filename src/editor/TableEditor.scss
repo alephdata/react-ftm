@@ -65,6 +65,7 @@
       }
       .bp3-control-indicator {
         @include center;
+        outline: none !important;
       }
     }
 
