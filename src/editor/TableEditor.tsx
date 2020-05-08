@@ -23,6 +23,8 @@ const messages = defineMessages({
   },
 });
 
+const ESC_KEY = 27;
+
 const readOnlyCellProps = { readOnly: true, disableEvents: true, forceComponent: true };
 const getCellBase = (type: string) => ({
   className: type,
@@ -261,7 +263,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     </div>
   );
 
-  renderEditor = ({ cell, onCommit, onChange, onKeyDown }: Datasheet.DataEditorProps<CellData, any>) => {
+  renderEditor = ({ cell, onCommit, onChange, onKeyDown, onRevert }: Datasheet.DataEditorProps<CellData, any>) => {
     const { entityManager, schema } = this.props;
     const { shouldCommit } = this.state;
     const { entity, property } = cell.data;
@@ -278,7 +280,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     }
 
     if (!this.keyDownListener) {
-      this.keyDownListener = (e:any) => onKeyDown(e);
+      this.keyDownListener = (e:any) => { if (e.which === ESC_KEY) onRevert() };
       document.addEventListener('keydown', this.keyDownListener);
     }
 
