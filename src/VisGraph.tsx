@@ -292,10 +292,10 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                 <TableView
                   isOpen={tableView}
                   toggleTableView={this.toggleTableView}
+                  fitToSelection={this.fitToSelection}
                   layout={layout}
                   updateLayout={this.updateLayout}
                   writeable={writeable}
-                  actions={actions}
                 />
               </div>
             )}

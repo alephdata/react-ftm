@@ -28,8 +28,8 @@ interface ITableViewProps extends WrappedComponentProps {
   layout: GraphLayout,
   updateLayout: GraphUpdateHandler,
   writeable: boolean,
-  actions: any,
   toggleTableView: () => void
+  fitToSelection: () => void
 }
 
 interface ITableViewState {
@@ -73,6 +73,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     this.onEntityUpdate = this.onEntityUpdate.bind(this);
     this.onSelectionUpdate = this.onSelectionUpdate.bind(this);
     this.propagateToHistory = this.propagateToHistory.bind(this);
+    this.visitEntity = this.visitEntity.bind(this);
   }
 
   getEntities(schema: FTMSchema) {
@@ -150,6 +151,13 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     this.batchedChanges[operation] = [...currValues, entity];
   }
 
+  visitEntity(entity: Entity) {
+    const { layout, fitToSelection, toggleTableView, updateLayout } = this.props;
+    this.onSelectionUpdate(entity, false, false);
+    toggleTableView();
+    fitToSelection();
+  }
+
   propagateToHistory() {
     const { layout, updateLayout } = this.props;
     if (!_.isEmpty(this.batchedChanges)) {
@@ -199,16 +207,16 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     });
   }
 
-  onSelectionUpdate(entity: Entity) {
+  onSelectionUpdate(entity: Entity, additional = true, allowUnselect = true) {
     const { layout, updateLayout } = this.props;
 
     // select graphElement by entityId
-    layout.selectVerticesByFilter((v) => v.entityId === entity.id, true, true);
+    layout.selectVerticesByFilter((v) => v.entityId === entity.id, additional, allowUnselect);
     updateLayout(layout, null, { clearSearch: true });
   }
 
   render() {
-    const { actions, intl, isOpen, layout, toggleTableView, updateLayout, writeable } = this.props;
+    const { intl, isOpen, layout, toggleTableView, updateLayout, writeable } = this.props;
     const { activeTabId, sort, schemata } = this.state;
 
     return (
@@ -248,6 +256,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
                     writeable={writeable}
                     entityManager={this.localEntityManager}
                     updateFinishedCallback={this.propagateToHistory}
+                    visitEntity={this.visitEntity}
                   />
                 )}
               />
