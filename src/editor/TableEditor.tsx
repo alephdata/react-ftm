@@ -59,6 +59,8 @@ interface ITableEditorState {
 }
 
 class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorState> {
+  private keyDownListener: any;
+
   constructor(props:ITableEditorProps) {
     super(props);
 
@@ -268,7 +270,16 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     if (shouldCommit) {
       this.setState({ shouldCommit: false });
+      if (this.keyDownListener) {
+        document.removeEventListener('keydown', this.keyDownListener);
+        this.keyDownListener = null;
+      }
       onCommit(null);
+    }
+
+    if (!this.keyDownListener) {
+      this.keyDownListener = (e:any) => onKeyDown(e);
+      document.addEventListener('keydown', this.keyDownListener);
     }
 
     return (
