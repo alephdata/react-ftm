@@ -1,16 +1,13 @@
 import React from 'react';
-import _ from 'lodash';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { GraphLayout } from '../layout';
 import { GraphUpdateHandler } from '../GraphContext';
 import { VertexSchemaSelect } from './VertexSchemaSelect';
-import { TableEditor } from './TableEditor';
-import { EntityManager } from '../EntityManager';
-import { Button, Classes, Drawer, Icon, Position, Tab, TabId, Tabs, Toaster } from "@blueprintjs/core";
-import { Entity, IEntityDatum, Schema as FTMSchema, Property as FTMProperty } from "@alephdata/followthemoney";
-import { Property, Schema } from '../types';
-import { SortType } from './SortType';
-import { matchText } from "../utils";
+import { TableViewPanel } from './TableViewPanel';
+import { Button, Drawer, Position, TabId, Tab, Tabs } from "@blueprintjs/core";
+import { Schema as FTMSchema } from "@alephdata/followthemoney";
+import { Schema } from '../types';
+
 
 import c from 'classnames';
 
@@ -35,13 +32,9 @@ interface ITableViewProps extends WrappedComponentProps {
 interface ITableViewState {
   activeTabId: TabId,
   schemata: Array<FTMSchema>,
-  sort: SortType | null
 }
 
 export class TableViewBase extends React.Component<ITableViewProps, ITableViewState> {
-  private localEntityManager: EntityManager
-  private batchedChanges: any = {}
-
   constructor(props: ITableViewProps) {
     super(props);
 
@@ -56,58 +49,9 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     this.state = {
       schemata,
       activeTabId,
-      sort: null,
     };
 
-    this.localEntityManager = new EntityManager({
-      model: layout.entityManager.model,
-      createEntity: this.onEntityCreate.bind(this),
-      updateEntity: this.onEntityUpdate.bind(this),
-      getEntitySuggestions: this.fetchEntitySuggestions.bind(this),
-      resolveEntityReference: this.resolveEntityReference.bind(this),
-    });
-
-    this.getEntities = this.getEntities.bind(this);
     this.setActiveTab = this.setActiveTab.bind(this);
-    this.onColumnSort = this.onColumnSort.bind(this);
-    this.onEntityUpdate = this.onEntityUpdate.bind(this);
-    this.onSelectionUpdate = this.onSelectionUpdate.bind(this);
-    this.propagateToHistory = this.propagateToHistory.bind(this);
-    this.visitEntity = this.visitEntity.bind(this);
-  }
-
-  getEntities(schema: FTMSchema) {
-    const { layout } = this.props;
-    const { sort } = this.state;
-
-    const entities = layout.getEntities()
-      .filter(e => e.schema.name === schema.name);
-
-    if (sort) {
-      const { field, direction } = sort;
-      const property = schema.getProperty(field);
-      return entities.sort((a, b) => this.sortEntities(a, b, property, direction));
-    } else {
-      return entities;
-    }
-  }
-
-  sortEntities = (a:Entity, b:Entity, prop: FTMProperty, direction: string) => {
-    const { resolveEntityReference } = this;
-    let aRaw = a?.getFirst(prop);
-    let bRaw = b?.getFirst(prop);
-
-    if (!aRaw) return 1;
-    if (!bRaw) return -1;
-
-    const aVal = Property.getSortValue({prop, value: aRaw, resolveEntityReference})
-    const bVal = Property.getSortValue({prop, value: bRaw, resolveEntityReference})
-
-    if (direction === 'asc') {
-      return aVal < bVal ? -1 : 1;
-    } else {
-      return aVal < bVal ? 1 : -1;
-    }
   }
 
   addSchema(schema: FTMSchema) {
@@ -120,104 +64,9 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     this.setState({ activeTabId: newTabId });
   }
 
-  async onEntityCreate(entityData: IEntityDatum) {
-    const { layout, updateLayout } = this.props;
-    const entity = layout.createEntity(entityData);
-    this.addChangeToBatch('created', entity);
-
-    await entity;
-    updateLayout(layout, null, { modifyHistory: false });
-    return entity;
-  }
-
-  onEntityDelete(entity: Entity) {
-    const { layout, updateLayout } = this.props;
-    layout.removeEntity(entity.id, true);
-
-    updateLayout(layout, null, { modifyHistory: false });
-    this.addChangeToBatch('deleted', entity);
-  }
-
-  onEntityUpdate(entity: Entity) {
-    const { layout, updateLayout } = this.props;
-
-    layout.updateEntity(entity);
-    updateLayout(layout, null, { modifyHistory: false });
-    this.addChangeToBatch('updated', entity);
-  }
-
-  addChangeToBatch(operation: string, entity: Entity | Promise<Entity>) {
-    const currValues = this.batchedChanges[operation] || [];
-    this.batchedChanges[operation] = [...currValues, entity];
-  }
-
-  visitEntity(entity: Entity) {
-    const { layout, fitToSelection, toggleTableView, updateLayout } = this.props;
-    this.onSelectionUpdate(entity, false, false);
-    toggleTableView();
-    fitToSelection();
-  }
-
-  propagateToHistory() {
-    const { layout, updateLayout } = this.props;
-    if (!_.isEmpty(this.batchedChanges)) {
-      // wait for entity create promises to resolve before pushing to history
-      if (this.batchedChanges.created) {
-        Promise.all(this.batchedChanges.created).then(created => {
-          updateLayout(layout, { created, ...this.batchedChanges}, { modifyHistory: true });
-          this.batchedChanges = {};
-        })
-      } else {
-        updateLayout(layout, this.batchedChanges, { modifyHistory: true });
-        this.batchedChanges = {};
-      }
-    }
-  }
-
-  fetchEntitySuggestions(query: string, schemata?: Array<FTMSchema>): Promise<Entity[]> {
-    const { layout } = this.props;
-
-    const entities = layout.getEntities()
-      .filter(e => {
-        const schemaMatch = !schemata || e.schema.isAny(schemata);
-        const textMatch = matchText(e.getCaption() || '', query);
-        return schemaMatch && textMatch;
-      })
-      .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
-
-    return new Promise((resolve) => resolve(entities));
-  }
-
-  resolveEntityReference(entityId: string): Entity | undefined {
-    const { layout } = this.props;
-
-    return layout.entities.get(entityId);
-  }
-
-  onColumnSort(newField: string) {
-    this.setState(({ sort }) => {
-      if (sort?.field !== newField) {
-        return {sort: { field: newField, direction: 'asc'}};
-      }
-      if (sort?.direction === 'asc') {
-        return {sort: { field: sort.field, direction: 'desc'}};
-      } else {
-        return {sort: null};
-      }
-    });
-  }
-
-  onSelectionUpdate(entity: Entity, additional = true, allowUnselect = true) {
-    const { layout, updateLayout } = this.props;
-
-    // select graphElement by entityId
-    layout.selectVerticesByFilter((v) => v.entityId === entity.id, additional, allowUnselect);
-    updateLayout(layout, null, { clearSearch: true });
-  }
-
   render() {
-    const { intl, isOpen, layout, toggleTableView, updateLayout, writeable } = this.props;
-    const { activeTabId, sort, schemata } = this.state;
+    const { intl, isOpen, layout, toggleTableView, writeable, ...rest } = this.props;
+    const { activeTabId, schemata } = this.state;
 
     return (
       <Drawer
@@ -241,25 +90,20 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
           onChange={this.setActiveTab}
         >
           {schemata.map(schema => (
-              <Tab
-                id={schema.name}
-                key={schema.name}
-                title={<Schema.Label schema={schema} icon />}
-                panel={(
-                  <TableEditor
-                    entities={this.getEntities(schema)}
-                    schema={schema}
-                    sort={sort}
-                    sortColumn={this.onColumnSort}
-                    selection={layout.getSelectedEntities()}
-                    updateSelection={this.onSelectionUpdate}
-                    writeable={writeable}
-                    entityManager={this.localEntityManager}
-                    updateFinishedCallback={this.propagateToHistory}
-                    visitEntity={this.visitEntity}
-                  />
-                )}
-              />
+            <Tab
+              id={schema.name}
+              key={schema.name}
+              title={<Schema.Label schema={schema} icon />}
+              panel={(
+                <TableViewPanel
+                  layout={layout}
+                  schema={schema}
+                  writeable={writeable}
+                  toggleTableView={toggleTableView}
+                  {...rest}
+                />
+              )}
+            />
           ))}
           {writeable && (
             <div className="TableView__schemaAdd">

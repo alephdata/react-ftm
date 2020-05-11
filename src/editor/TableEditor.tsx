@@ -131,8 +131,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     }
     const visibleProps = this.getVisibleProperties();
 
-    console.log('in append addtl', newEntities);
-
     this.setState(({ entityRows }) => ({
       entityRows: [...entityRows, ...newEntities.map(e => this.getEntityRow(e, visibleProps))]
     }));
@@ -394,11 +392,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const entityData = { schema, properties: {} };
     const shouldPrepend = row <= topAddRows.length;
 
-    console.log('changes', row, changes);
 
     changes.forEach(({ cell, value, col }: any) => {
       const property = cell?.data?.property || visibleProps[col-2];
-      console.log(property, value);
       const error = validate({ schema, property, values: value });
 
       if (error) {
@@ -408,11 +404,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       }
     })
 
-    console.log('creating new', entityData);
 
     this.props.entityManager.createEntity(entityData).then(entity => {
       if (shouldPrepend) {
-        console.log('adding to prepend', entity)
         const visibleProps = this.getVisibleProperties();
         const entityId = entity.id;
         this.setState(({ entityRows, prependedIds, topAddRows }) => {
@@ -499,8 +493,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const { headerRow, topAddRows, entityRows, skeletonRows} = this.state
     const bottomAddRow = writeable ? [this.getAddRow()] : [];
     const tableData = [headerRow, ...topAddRows, ...entityRows, ...skeletonRows, ...bottomAddRow]
-
-    console.log('rendering table editor for', this.props.schema)
 
     return (
       <div className="TableEditor">
