@@ -92,19 +92,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const { entities, isPending, selection, sort } = this.props;
     const { addedColumns } = this.state;
 
-    const emptyInitialLoad = entities.length === 0 && prevProps.isPending && !isPending;
     const entitiesDeleted = prevProps.entities.length > entities.length;
     const entitiesAdded = prevProps.entities.length < entities.length;
     const sortChanged = prevProps.sort?.field !== sort?.field || prevProps.sort?.direction !== sort?.direction;
     const selectionChanged = prevProps.selection !== selection;
 
-    if (prevState.addedColumns !== addedColumns || sortChanged) {
+    if (prevState.addedColumns !== addedColumns || sortChanged || entitiesDeleted) {
       this.regenerateTable();
-    } else if (emptyInitialLoad || entitiesDeleted) {
-      this.setState({
-        entityRows: this.getEntityRows(),
-        skeletonRows: this.getSkeletonRows(),
-      })
     } else if (entitiesAdded) {
       this.appendAdditionalEntities(prevProps.entities);
     } else if (selectionChanged) {
