@@ -61,6 +61,7 @@ interface ITableEditorState {
   topAddRows: CellData[][]
   entityRows: CellData[][]
   skeletonRows: CellData[][]
+  prependedIds: string[]
 }
 
 class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorState> {
@@ -75,7 +76,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       topAddRows: [],
       entityRows: [],
       skeletonRows: [],
-      shouldCommit: false
+      shouldCommit: false,
+      prependedIds: [],
     }
 
     this.onShowTopAddRow = this.onShowTopAddRow.bind(this);
@@ -116,13 +118,20 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       headerRow: this.getHeaderRow(),
       entityRows: this.getEntityRows(),
       skeletonRows: this.getSkeletonRows(),
+      prependedIds: [],
     });
   }
 
   appendAdditionalEntities(prevEntities: Array<Entity>) {
     const { entities } = this.props;
-    const newEntities = _.differenceBy(entities, prevEntities, e => e.id);
+    const { prependedIds } = this.state;
+    let newEntities = _.differenceBy(entities, prevEntities, e => e.id);
+    if (prependedIds.length) {
+      newEntities = newEntities.filter(e => (prependedIds.indexOf(e.id) < 0));
+    }
     const visibleProps = this.getVisibleProperties();
+
+    console.log('in append addtl', newEntities);
 
     this.setState(({ entityRows }) => ({
       entityRows: [...entityRows, ...newEntities.map(e => this.getEntityRow(e, visibleProps))]
@@ -378,14 +387,20 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   // Change handlers
 
-  handleNewRow = async (row: number, changes: any) => {
+  handleNewRow = (row: number, changes: any) => {
     const { intl, schema } = this.props;
+    const { topAddRows } = this.state;
     const visibleProps = this.getVisibleProperties();
     const entityData = { schema, properties: {} };
+    const shouldPrepend = row <= topAddRows.length;
+
+    console.log('changes', row, changes);
 
     changes.forEach(({ cell, value, col }: any) => {
-      const property = cell?.data?.property || visibleProps[col-1];
+      const property = cell?.data?.property || visibleProps[col-2];
+      console.log(property, value);
       const error = validate({ schema, property, values: value });
+
       if (error) {
         showErrorToast(intl.formatMessage(error));
       } else {
@@ -393,7 +408,25 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       }
     })
 
-    this.props.entityManager.createEntity(entityData);
+    console.log('creating new', entityData);
+
+    this.props.entityManager.createEntity(entityData).then(entity => {
+      if (shouldPrepend) {
+        console.log('adding to prepend', entity)
+        const visibleProps = this.getVisibleProperties();
+        const entityId = entity.id;
+        this.setState(({ entityRows, prependedIds, topAddRows }) => {
+          topAddRows.pop();
+          return ({
+            entityRows: [this.getEntityRow(entity, visibleProps), ...(entityRows.filter((entityRow) => {
+              return entityRow[1]?.data?.entity?.id !== entityId
+            }))],
+            prependedIds: [...prependedIds, entityId],
+            topAddRows
+          })
+        });
+      }
+    });
   }
 
   handleExistingRow = (changes: Datasheet.CellsChangedArgs<CellData, any> | Datasheet.CellAdditionsArgs<CellData>) => {
@@ -466,6 +499,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const { headerRow, topAddRows, entityRows, skeletonRows} = this.state
     const bottomAddRow = writeable ? [this.getAddRow()] : [];
     const tableData = [headerRow, ...topAddRows, ...entityRows, ...skeletonRows, ...bottomAddRow]
+
+    console.log('rendering table editor for', this.props.schema)
 
     return (
       <div className="TableEditor">
