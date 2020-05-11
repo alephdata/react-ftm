@@ -53,7 +53,6 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
   }
 
   getEntities(schema: Schema) {
-    console.log('calling getEntities for', schema);
     const { layout } = this.props;
     const { sort } = this.state;
 
@@ -62,9 +61,7 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
 
     if (sort) {
       const { field, direction } = sort;
-      // console.log('in sort', field, schema);
       const property = schema.getProperty(field);
-      // console.log('property is', property)
       return entities.sort((a, b) => this.sortEntities(a, b, property, direction));
     } else {
       return entities;
