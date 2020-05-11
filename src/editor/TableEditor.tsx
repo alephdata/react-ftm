@@ -60,7 +60,6 @@ interface ITableEditorState {
   headerRow: CellData[]
   topAddRows: CellData[][]
   entityRows: CellData[][]
-  skeletonRows: CellData[][]
   prependedIds: string[]
 }
 
@@ -75,7 +74,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       headerRow: [],
       topAddRows: [],
       entityRows: [],
-      skeletonRows: [],
       shouldCommit: false,
       prependedIds: [],
     }
@@ -91,7 +89,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   componentDidUpdate(prevProps: ITableEditorProps, prevState: ITableEditorState) {
-    const { entities, isPending, selection, sort } = this.props;
+    const { entities, isPending, selection, sort, writeable } = this.props;
     const { addedColumns } = this.state;
 
     const entitiesDeleted = prevProps.entities.length > entities.length;
@@ -103,7 +101,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       this.regenerateTable();
     } else if (entitiesAdded) {
       this.appendAdditionalEntities(prevProps.entities);
-    } else if (selectionChanged) {
+    } else if (writeable && selectionChanged) {
       this.reflectUpdatedSelection();
     }
   }
@@ -113,7 +111,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       topAddRows: [],
       headerRow: this.getHeaderRow(),
       entityRows: this.getEntityRows(),
-      skeletonRows: this.getSkeletonRows(),
       prependedIds: [],
     });
   }
@@ -128,6 +125,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const visibleProps = this.getVisibleProperties();
 
     this.setState(({ entityRows }) => ({
+      headerRow: this.getHeaderRow(),
       entityRows: [...entityRows, ...newEntities.map(e => this.getEntityRow(e, visibleProps))]
     }));
 
@@ -243,15 +241,16 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   getSkeletonRows = () => {
-    if (!this.props.isPending) return [];
-
+    const { writeable } = this.props;
     const visibleProps = this.getVisibleProperties();
     const skeletonRowCount = 8;
+    const actionsCellPlaceholders = writeable ? [this.getEntityLinkCell(), {...getCellBase('checkbox')}] : [this.getEntityLinkCell()]
+    const skeletonRow = [
+      ...actionsCellPlaceholders,
+      ...(visibleProps.map(() => ({ ...getCellBase('skeleton'), component: this.renderSkeleton() })))
+    ];
 
-    return (Array.from(Array(skeletonRowCount).keys())).map(key => {
-      const propCells = visibleProps.map(() => ({ ...getCellBase('skeleton'), component: this.renderSkeleton() }));
-      return [this.getEntityLinkCell(), {...getCellBase('checkbox')}, ...propCells];
-    });
+    return (Array.from(Array(skeletonRowCount).keys())).map(() => skeletonRow);
   }
 
   getAddRow = () => {
@@ -485,9 +484,10 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   render() {
-    const { writeable } = this.props;
-    const { headerRow, topAddRows, entityRows, skeletonRows} = this.state
+    const { isPending, writeable } = this.props;
+    const { headerRow, topAddRows, entityRows} = this.state
     const bottomAddRow = writeable ? [this.getAddRow()] : [];
+    const skeletonRows = isPending ? this.getSkeletonRows() : [];
     const tableData = [headerRow, ...topAddRows, ...entityRows, ...skeletonRows, ...bottomAddRow]
 
     return (
