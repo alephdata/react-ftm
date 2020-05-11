@@ -82,6 +82,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     this.onShowTopAddRow = this.onShowTopAddRow.bind(this);
     this.onAddColumn = this.onAddColumn.bind(this);
+    this.getVisibleProperties = this.getVisibleProperties.bind(this);
+    this.getNonVisibleProperties = this.getNonVisibleProperties.bind(this);
   }
 
   componentDidMount() {
