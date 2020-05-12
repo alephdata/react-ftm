@@ -1,25 +1,25 @@
 import React from 'react';
 import _ from 'lodash';
-import { FormattedDate, FormattedTime, injectIntl, WrappedComponentProps } from 'react-intl';
+import moment from 'moment';
 
 
-interface IEarliestProps extends WrappedComponentProps {
+interface IEarliestProps {
   values:number[]
 }
 
 class Earliest extends React.PureComponent<IEarliestProps> {
   render() {
-    const { intl, values } = this.props;
+    const { values } = this.props;
     const earliest = _.min(values);
     if (earliest) {
-      return <Date value={earliest.toString()} intl={intl} />;
+      return <Date value={earliest.toString()} />;
     } else {
       return <span>-</span>
     }
   }
 }
 
-interface IDateProps extends WrappedComponentProps {
+interface IDateProps {
   value:string
   showTime?: boolean
 }
@@ -32,25 +32,13 @@ class Date extends React.PureComponent<IDateProps> {
     if (!dateString) {
       return null;
     }
-    const availableChunks = dateString.split(/-/);
-    const dateObject = Reflect.construct(window.Date, [dateString]);
-    return (
-      <>
-        <FormattedDate
-          value={dateObject}
-          year="numeric"
-          month={availableChunks[1] && '2-digit'}
-          day={availableChunks[2] && '2-digit'}
-        />
-        {showTime && (
-          <>
-            <span>-</span>
-            <FormattedTime value={dateObject} />
-          </>
-        )}
-      </>
-    );
+    const dateObj = moment(dateString);
+    if (!dateObj.isValid()) {
+      return dateString;
+    }
+    const formatString = showTime ? "YYYY-M-D H:m" : "YYYY-M-D";
+    return dateObj.format(formatString);
   }
 }
 
-export default injectIntl(Date);
+export default Date;
