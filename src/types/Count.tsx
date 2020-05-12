@@ -28,4 +28,4 @@ class Count extends React.PureComponent<ICountProps> {
   }
 }
 
-export default Count;
+export default injectIntl(Count);

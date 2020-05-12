@@ -1,6 +1,6 @@
 import { withTranslator } from '../Translator';
 
-import Count from './Count';
+import CountBase from './Count';
 import Country from './Country';
 import DateBase from './Date';
 import Entity from './Entity';
@@ -12,6 +12,7 @@ import Schema from './Schema';
 import Topic from './Topic';
 import URL from './URL';
 
+const Count = withTranslator(CountBase);
 const Date = withTranslator(DateBase);
 const Numeric = withTranslator(NumericBase);
 
