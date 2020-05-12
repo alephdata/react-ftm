@@ -95,7 +95,7 @@ class PropertyValue extends React.PureComponent<IPropertyValueProps> {
     if (prop.type.name === 'date') {
       return <Date value={value as string} />;
     }
-    if (prop.type.name === 'number') {
+    if (prop.type.name === 'number' && !isNaN(+value)) {
       return <Numeric num={+value} />;
     }
     return value;
