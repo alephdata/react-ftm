@@ -51,7 +51,7 @@ interface ITableEditorProps extends WrappedComponentProps {
   writeable: boolean
   isPending?: boolean
   updateFinishedCallback?: () => void
-  visitEntity: (entity: Entity) => void
+  visitEntity?: (entity: Entity) => void
 }
 
 interface ITableEditorState {
@@ -132,11 +132,14 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   reflectUpdatedSelection() {
+    const { visitEntity } = this.props;
+    const checkboxCellIndex = visitEntity ? 1 : 0;
     this.setState(({ entityRows }) => ({
       entityRows: entityRows?.map(row => {
-        const [firstCell, checkboxCell, ...rest] = row;
+        const checkboxCell = row[checkboxCellIndex];
         const newCheckboxCell = checkboxCell?.data?.entity ? this.getCheckboxCell(checkboxCell.data.entity) : checkboxCell;
-        return [firstCell, newCheckboxCell, ...rest];
+        row.splice(checkboxCellIndex, 1, newCheckboxCell);
+        return row;
       })
     }));
   }
@@ -166,18 +169,18 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   // Table data initialization
 
   getHeaderRow = () => {
-    const { writeable } = this.props;
+    const { visitEntity, writeable } = this.props;
     const visibleProps = this.getVisibleProperties();
 
     const headerCells = visibleProps.map(property => this.getHeaderCell(property));
-    const entityLinkCell = this.getEntityLinkCell();
+    const entityLinkPlaceholder = visitEntity != undefined ? [this.getEntityLinkCell()] : [];
 
     if (writeable) {
       const addEntityCell = this.getAddEntityCell();
       const propSelectCell = this.getPropSelectCell();
-      return [entityLinkCell, addEntityCell, ...headerCells, propSelectCell];
+      return [...entityLinkPlaceholder, addEntityCell, ...headerCells, propSelectCell];
     } else {
-      return [entityLinkCell, ...headerCells];
+      return [...entityLinkPlaceholder, ...headerCells];
     }
   }
 
@@ -189,7 +192,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   getEntityRow = (entity: Entity, visibleProps: Array<FTMProperty>) => {
-    const { writeable } = this.props;
+    const { visitEntity, writeable } = this.props;
 
     const propCells = visibleProps.map(property => {
       let values = entity.getProperty(property.name);
@@ -205,13 +208,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       })
     });
 
-    const entityLinkCell = this.getEntityLinkCell(entity);
+    const entityLinkCell = visitEntity != undefined ? [this.getEntityLinkCell(entity)] : [];
 
     if (writeable) {
       const checkbox = this.getCheckboxCell(entity);
-      return [entityLinkCell, checkbox, ...propCells];
+      return [...entityLinkCell, checkbox, ...propCells];
     } else {
-      return [entityLinkCell, ...propCells];
+      return [...entityLinkCell, ...propCells];
     }
   }
 
@@ -241,12 +244,14 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   getSkeletonRows = () => {
-    const { writeable } = this.props;
+    const { visitEntity, writeable } = this.props;
     const visibleProps = this.getVisibleProperties();
     const skeletonRowCount = 8;
-    const actionsCellPlaceholders = writeable ? [this.getEntityLinkCell(), {...getCellBase('checkbox')}] : [this.getEntityLinkCell()]
+    const entityLinkPlaceholder = visitEntity != undefined ? [this.getEntityLinkCell()] : [];
+    const actionCellPlaceholder = writeable ? [{...getCellBase('checkbox')}] : [];
     const skeletonRow = [
-      ...actionsCellPlaceholders,
+      ...entityLinkPlaceholder,
+      ...actionCellPlaceholder,
       ...(visibleProps.map(() => ({ ...getCellBase('skeleton'), component: this.renderSkeleton() })))
     ];
 
@@ -254,12 +259,16 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   getAddRow = () => {
+    const { visitEntity } = this.props;
+    const entityLinkPlaceholder = visitEntity != undefined ? [this.getEntityLinkCell()] : [];
     const visibleProps = this.getVisibleProperties();
-    const placeholderCells = visibleProps.map(property => ({
+
+    const addRowCells = visibleProps.map(property => ({
       ...getCellBase('property'),
       data: { entity: null, property }
     }));
-    return [this.getEntityLinkCell(), {...getCellBase('checkbox')}, ...placeholderCells]
+
+    return [...entityLinkPlaceholder, {...getCellBase('checkbox')}, ...addRowCells]
   }
 
   // Table renderers
@@ -366,8 +375,11 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   renderEntityLinkButton = ({ entity }: {entity: Entity}) => {
+    const { visitEntity } = this.props;
+    if (visitEntity == undefined) return null;
+
     return (
-      <Button minimal small icon="fullscreen" onClick={() => this.props.visitEntity(entity)} />
+      <Button minimal small icon="fullscreen" onClick={() => visitEntity(entity)} />
     );
   }
 
@@ -382,14 +394,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   handleNewRow = (row: number, changes: any) => {
     const { intl, schema } = this.props;
-    const { topAddRows } = this.state;
+    const { entityRows, topAddRows } = this.state;
     const visibleProps = this.getVisibleProperties();
     const entityData = { schema, properties: {} };
     const shouldPrepend = row <= topAddRows.length;
 
-
     changes.forEach(({ cell, value, col }: any) => {
-      const property = cell?.data?.property || visibleProps[col-2];
+      const property = cell?.data?.property || entityRows[0][col]?.data?.property;
       const error = validate({ schema, property, values: value });
 
       if (error) {
@@ -398,7 +409,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
         entityData.properties[property.name] = value;
       }
     })
-
 
     this.props.entityManager.createEntity(entityData).then(entity => {
       if (shouldPrepend) {
@@ -485,7 +495,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   render() {
     const { isPending, writeable } = this.props;
-    const { headerRow, topAddRows, entityRows} = this.state
+    const { headerRow, topAddRows, entityRows } = this.state
     const bottomAddRow = writeable ? [this.getAddRow()] : [];
     const skeletonRows = isPending ? this.getSkeletonRows() : [];
     const tableData = [headerRow, ...topAddRows, ...entityRows, ...skeletonRows, ...bottomAddRow]
