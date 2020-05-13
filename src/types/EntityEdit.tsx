@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
-import hoistNonReactStatics from 'hoist-non-react-statics';
 import { Entity as FTMEntity } from "@alephdata/followthemoney";
 import Entity from './Entity';
 import { Alignment, Button, ControlGroup, FormGroup, Menu, MenuItem, Position, Spinner } from "@blueprintjs/core";
@@ -32,8 +31,7 @@ interface IEntityEditState {
 const EntityMultiSelect = MultiSelect.ofType<FTMEntity>();
 const EntitySelect = Select.ofType<FTMEntity>();
 
-class EntityEditBase extends React.Component<IEntityTypeProps, IEntityEditState> {
-  static group = new Set(['entity']);
+class EntityEdit extends React.Component<IEntityTypeProps, IEntityEditState> {
   private inputRef: HTMLElement | null = null;
 
   constructor(props:IEntityTypeProps) {
@@ -168,8 +166,4 @@ class EntityEditBase extends React.Component<IEntityTypeProps, IEntityEditState>
   }
 }
 
-const EntityEdit = injectIntl(EntityEditBase) as any;
-// InjectIntl doesn't hoist component statics: https://github.com/formatjs/react-intl/issues/196
-hoistNonReactStatics(EntityEdit, EntityEditBase);
-
-export default EntityEdit;
+export default injectIntl(EntityEdit);

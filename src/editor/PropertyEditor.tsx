@@ -1,10 +1,7 @@
 import * as React from 'react'
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity, Property, Schema, Values } from '@alephdata/followthemoney';
-import { TextEdit } from '../types/TextEdit';
-import EntityEdit from '../types/EntityEdit';
-import { CountryEdit } from "../types/CountryEdit";
-import { TopicEdit } from "../types/TopicEdit";
+import { CountryEdit, TopicEdit, EntityEdit, TextEdit } from '../types';
 import { validate } from './utils';
 
 interface IPropertyEditorProps extends WrappedComponentProps {
@@ -81,6 +78,7 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
   render() {
     const { entity, intl, property, usePortal } = this.props;
     const { entitySuggestions, error, values } = this.state;
+    const propType = property.type;
 
     const commonProps = {
       onSubmit: this.onSubmit,
@@ -90,11 +88,11 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
     };
     let content;
 
-    if (CountryEdit.group.has(property.type.name)) {
-      content = <CountryEdit fullList={property.type.values} {...commonProps} />;
-    } else if (TopicEdit.group.has(property.type.name)) {
-      content = <TopicEdit fullList={property.type.values} {...commonProps} />;
-    } else if (EntityEdit.group.has(property.type.name)) {
+    if (propType.name === 'country') {
+      content = <CountryEdit fullList={propType.values} {...commonProps} />;
+    } else if (propType.name === 'topic') {
+      content = <TopicEdit fullList={propType.values} {...commonProps} />;
+    } else if (propType.name === 'entity') {
       content = <EntityEdit {...commonProps} entity={entity} values={values as Array<Entity>} entitySuggestions={entitySuggestions} fetchEntitySuggestions={this.fetchEntitySuggestions}  />
     } else {
       content = <TextEdit {...commonProps} />;

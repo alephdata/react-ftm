@@ -3,14 +3,16 @@ import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl'
 import { Values, Value, Property as FTMProperty, Entity as FTMEntity } from "@alephdata/followthemoney";
 import { Classes } from "@blueprintjs/core";
 
-import Country from './Country';
-import Date from './Date';
-import Entity from './Entity';
-import FileSize from './FileSize';
-import Language from './Language';
-import Numeric from './Numeric';
-import Topic from './Topic';
-import URL from './URL';
+import {
+  Country,
+  Date,
+  Entity,
+  FileSize,
+  Language,
+  Numeric,
+  Topic,
+  URL
+} from '.';
 import { ensureArray, wordList } from "../utils";
 import { withTranslator } from '../Translator';
 

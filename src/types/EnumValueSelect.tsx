@@ -1,18 +1,25 @@
 import * as React from 'react'
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import {Value, Values} from "@alephdata/followthemoney";
 import {ControlGroup, FormGroup, MenuItem, Position, TagInput} from "@blueprintjs/core";
 import {ItemRenderer, MultiSelect} from "@blueprintjs/select";
 import {ITypeEditorProps} from "./common";
 import {highlightText} from "../utils";
-import {lab} from "d3-color";
+
+const messages = defineMessages({
+  no_results: {
+    id: 'enum_value_select.no_results',
+    defaultMessage: 'No results found',
+  },
+});
 
 const AbstractMultiSelect = MultiSelect.ofType<[string, string]>()
 
-interface IEnumValueSelectProps extends ITypeEditorProps {
+interface IEnumValueSelectProps extends ITypeEditorProps, WrappedComponentProps {
   fullList:Map<string, string>
 }
 
-export class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
+class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
   private inputRef: HTMLInputElement | null = null;
 
   constructor(props: any) {
@@ -63,7 +70,7 @@ export class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> 
   }
 
   render() {
-    const { usePortal } = this.props;
+    const { intl, usePortal } = this.props;
 
     const availableOptions = this.getAvailableOptions();
     const selectedOptions = this.getIdLabelPairs();
@@ -95,6 +102,9 @@ export class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> 
             return items.filter(([key, label]) => label.toLowerCase().includes(queryProcessed));
           }}
           selectedItems={selectedOptions}
+          noResults={
+            <MenuItem disabled text={intl.formatMessage(messages.no_results)} />
+          }
           openOnKeyDown
           resetOnSelect
           fill
@@ -103,3 +113,5 @@ export class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> 
     </FormGroup>
   }
 }
+
+export default injectIntl(EnumValueSelect);

@@ -20,7 +20,7 @@ interface ITextEditState {
   currMultiInputValue: string,
 }
 
-class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
+class TextEdit extends React.PureComponent<ITextEditProps, ITextEditState> {
   static group = new Set(['date', 'text', 'string'])
   private containerRef: any | null = null;
   private multiInputRef: HTMLInputElement | null = null;
@@ -160,4 +160,4 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
   }
 }
 
-export const TextEdit = injectIntl(TextEditBase);
+export default injectIntl(TextEdit);
