@@ -5,7 +5,7 @@ import { Entity as FTMEntity } from "@alephdata/followthemoney";
 import Entity from './Entity';
 import { Alignment, Button, ControlGroup, FormGroup, Menu, MenuItem, Position, Spinner } from "@blueprintjs/core";
 import { ItemListRenderer, ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
-import { ITypeProps } from "./common";
+import { ITypeEditorProps } from "./common";
 
 const messages = defineMessages({
   no_results: {
@@ -18,7 +18,8 @@ const messages = defineMessages({
   },
 });
 
-interface IEntityTypeProps extends ITypeProps, WrappedComponentProps {
+interface IEntityTypeProps extends ITypeEditorProps, WrappedComponentProps {
+  entity: FTMEntity
   values: Array<FTMEntity>
   entitySuggestions: { isPending: boolean, results: Array<FTMEntity> }
   fetchEntitySuggestions: (query: string) => void

@@ -1,6 +1,5 @@
 import { PureComponent } from 'react';
 import filesize from 'filesize';
-import { ITypeProps } from "./common";
 
 interface IFileSizeProps {
   value: number

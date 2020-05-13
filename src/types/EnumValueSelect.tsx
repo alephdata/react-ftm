@@ -1,14 +1,18 @@
 import * as React from 'react'
-import {Value, Values, Property, Entity} from "@alephdata/followthemoney";
+import {Value, Values} from "@alephdata/followthemoney";
 import {ControlGroup, FormGroup, MenuItem, Position, TagInput} from "@blueprintjs/core";
 import {ItemRenderer, MultiSelect} from "@blueprintjs/select";
-import {ITypeProps} from "./common";
+import {ITypeEditorProps} from "./common";
 import {highlightText} from "../utils";
 import {lab} from "d3-color";
 
 const AbstractMultiSelect = MultiSelect.ofType<[string, string]>()
 
-export class EnumValueSelect extends React.PureComponent<ITypeProps> {
+interface IEnumValueSelectProps extends ITypeEditorProps {
+  fullList:Map<string, string>
+}
+
+export class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
   private inputRef: HTMLInputElement | null = null;
 
   constructor(props: any) {
@@ -27,9 +31,9 @@ export class EnumValueSelect extends React.PureComponent<ITypeProps> {
   }
 
   getAvailableOptions() {
-    const { values, property } = this.props;
+    const { fullList, values } = this.props;
 
-    const optionsMap = new Map(property.type.values)
+    const optionsMap = new Map(fullList)
     values.forEach((valKey: any) => optionsMap.delete(valKey))
 
     return Array.from(optionsMap.entries())
@@ -37,22 +41,19 @@ export class EnumValueSelect extends React.PureComponent<ITypeProps> {
   }
 
   getIdLabelPairs() {
-    const { property, values } = this.props;
-
-    const fullCountriesMap = property.type.values
+    const { fullList, values } = this.props;
 
     return values.map((valKey: any) => {
-      const countryLabel = fullCountriesMap.get(valKey)
+      const countryLabel = fullList.get(valKey)
       return [valKey, countryLabel] as [string, string]
     })
   }
 
   // blueprint function returns the tag label instead of the tag id
   onRemove(valToRemove: Value) {
-    const { property, values } = this.props;
+    const { fullList, values } = this.props;
 
-    const fullCountriesMap = property.type.values
-    const toRemove = Array.from(fullCountriesMap.entries())
+    const toRemove = Array.from(fullList.entries())
       .find(([key, val]) => val == valToRemove)
 
     if (toRemove) {
@@ -62,7 +63,7 @@ export class EnumValueSelect extends React.PureComponent<ITypeProps> {
   }
 
   render() {
-    const { property, usePortal } = this.props;
+    const { usePortal } = this.props;
 
     const availableOptions = this.getAvailableOptions();
     const selectedOptions = this.getIdLabelPairs();

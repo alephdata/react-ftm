@@ -2,7 +2,7 @@ import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Values } from "@alephdata/followthemoney";
 import { Button, ControlGroup, FormGroup, InputGroup, TagInput, TextArea, Tooltip } from "@blueprintjs/core";
-import { ITypeProps } from "./common";
+import { ITypeEditorProps } from "./common";
 
 import "./TextEdit.scss";
 
@@ -13,7 +13,7 @@ const messages = defineMessages({
   },
 });
 
-interface ITextEditProps extends ITypeProps, WrappedComponentProps {}
+interface ITextEditProps extends ITypeEditorProps, WrappedComponentProps {}
 
 interface ITextEditState {
   forceMultiEdit: boolean,
@@ -92,7 +92,7 @@ class TextEditBase extends React.PureComponent<ITextEditProps, ITextEditState> {
   }
 
   render() {
-    const { intl, onSubmit, property, values } = this.props;
+    const { intl, onSubmit, values } = this.props;
     const { currMultiInputValue, forceMultiEdit } = this.state;
     const numVals = values.length;
     // don't show multi button if there is no existing input

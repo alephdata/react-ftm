@@ -86,18 +86,16 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
       onSubmit: this.onSubmit,
       onChange: this.onChange,
       values,
-      property,
-      entity,
       usePortal: usePortal === undefined ? true : usePortal,
     };
     let content;
 
     if (CountryEdit.group.has(property.type.name)) {
-      content = <CountryEdit {...commonProps} />;
+      content = <CountryEdit fullList={property.type.values} {...commonProps} />;
     } else if (TopicEdit.group.has(property.type.name)) {
-      content = <TopicEdit {...commonProps} />;
+      content = <TopicEdit fullList={property.type.values} {...commonProps} />;
     } else if (EntityEdit.group.has(property.type.name)) {
-      content = <EntityEdit {...commonProps} values={values as Array<Entity>} entitySuggestions={entitySuggestions} fetchEntitySuggestions={this.fetchEntitySuggestions}  />
+      content = <EntityEdit {...commonProps} entity={entity} values={values as Array<Entity>} entitySuggestions={entitySuggestions} fetchEntitySuggestions={this.fetchEntitySuggestions}  />
     } else {
       content = <TextEdit {...commonProps} />;
     }
