@@ -21,12 +21,8 @@ export class IconRenderer extends React.PureComponent<IIconRendererProps>{
     const iconPaths = IconRegistry.getSchemaIcon(entity.schema)
     return iconPaths && (
       <g transform={scale + translate} fill={Colors.WHITE} pointerEvents="none">
-        {iconPaths.map((d, i) => <path key={i} d={d}/>)}/>
+        {iconPaths.map((d, i) => <path key={i} d={d}/>)}
       </g>
     );
   }
 }
-//
-// .5 = .3
-// 1 = .5
-// 1.5 = .8

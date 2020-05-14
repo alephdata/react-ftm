@@ -37,6 +37,7 @@ export interface CellData extends Datasheet.Cell<CellData, any> {
   value?: any,
   displayValue?: any,
   data?: any,
+  component?: any
 }
 
 interface ITableEditorProps extends WrappedComponentProps {
