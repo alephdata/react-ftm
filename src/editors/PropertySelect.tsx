@@ -45,20 +45,23 @@ class PropertySelect extends React.PureComponent<IPropertySelectProps> {
     const { buttonProps, intl, properties } = this.props;
     const items = properties
       .sort((a, b) => a.label > b.label ? 1 : -1);
-    return <TypedSelect
-      popoverProps={{
-        position: Position.BOTTOM_LEFT,
-        minimal: true,
-        targetProps: {style: {width: '100%'}}
-      }}
-      itemPredicate={this.itemPredicate}
-      itemRenderer={this.itemRenderer}
-      filterable={true}
-      resetOnSelect={true}
-      onItemSelect={this.props.onSelected}
-      items={this.props.properties}>
-      <Button icon='plus' text={intl.formatMessage(messages.add)} fill alignText={Alignment.LEFT} {...buttonProps} />
-    </TypedSelect>
+    return (
+      <TypedSelect
+        popoverProps={{
+          position: Position.BOTTOM_LEFT,
+          minimal: true,
+          targetProps: {style: {width: '100%'}}
+        }}
+        itemPredicate={this.itemPredicate}
+        itemRenderer={this.itemRenderer}
+        filterable={true}
+        resetOnSelect={true}
+        onItemSelect={this.props.onSelected}
+        items={this.props.properties}
+      >
+        <Button icon='plus' text={intl.formatMessage(messages.add)} fill alignText={Alignment.LEFT} {...buttonProps} />
+      </TypedSelect>
+    );
   }
 }
 
