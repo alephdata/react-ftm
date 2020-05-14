@@ -3,7 +3,7 @@
 
 .EntityViewer {
   padding: 0;
-  
+
   @include themify() {
     color: themed('textColor');
   }
@@ -119,6 +119,7 @@
         padding-left: 0 !important;
 
         @include themify() {
+          color: themed('textColor') !important;
           border-color: themed('textColor') !important;
         }
       }
