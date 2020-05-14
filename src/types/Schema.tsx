@@ -43,11 +43,6 @@ class SchemaLabel extends React.Component<ISchemaLabelProps> {
   }
 }
 
-interface ISchemaLinkProps extends ISchemaCommonProps {
-  plural?:boolean
-  url:string
-}
-
 class Schema extends React.Component {
   static Label = SchemaLabel;
 

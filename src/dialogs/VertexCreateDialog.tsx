@@ -187,8 +187,8 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
             <ControlGroup fill>
               <SchemaSelect
                 model={layout.entityManager.model}
-                schema={schema}
                 onSelect={this.onSchemaSelect}
+                optionsFilter={schema => schema.isThing()}
               >
                 <Button
                   large

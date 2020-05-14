@@ -6,53 +6,40 @@ import { Schema } from '../types';
 
 interface ISelectSchemaProps {
   model: Model,
-  placeholder?:string,
-  schema?: FTMSchema,
   onSelect: (schema: FTMSchema) => void
   optionsFilter?: (schema: FTMSchema) => boolean
 }
 
 const TypedSelect = Select.ofType<FTMSchema>();
 
+const itemRenderer = (schema: FTMSchema, { handleClick }: { handleClick: any }) => (
+  <MenuItem
+    key={schema.label}
+    text={<Schema.Label schema={schema} icon />}
+    onClick={handleClick}
+  />
+);
+
 class SchemaSelect extends React.PureComponent<ISelectSchemaProps> {
-  getSchemata(): FTMSchema[] {
-    const { model, optionsFilter } = this.props
-    const schemata = model.getSchemata()
-    const filtered = schemata.filter((schema) => {
-      if (!optionsFilter || optionsFilter(schema)) {
-        return !schema.abstract && !schema.isEdge;
-      }
-      return false;
-    })
-    return filtered.sort((a, b) => a.label.localeCompare(b.label))
-  }
-
-  renderSchema(schema: FTMSchema, { handleClick, modifiers }: IItemRendererProps) {
-    if (!modifiers.matchesPredicate) {
-        return null;
-    }
-    return <MenuItem
-      active={modifiers.active}
-      key={schema.name}
-      icon={<Schema.Icon schema={schema} />}
-      onClick={handleClick}
-      text={schema.label}
-    />
-  }
-
   render() {
-    const { schema } = this.props
+    const { model, onSelect, optionsFilter } = this.props;
+
+    const schemaSelectOptions = model.getSchemata()
+      .filter(schema => !schema.generated && !schema.abstract && (!optionsFilter || optionsFilter(schema)))
+      .sort((a, b) => a.label.localeCompare(b.label));
 
     return (
-      <TypedSelect
-        popoverProps={{boundary:"viewport", position: Position.BOTTOM_LEFT, minimal: true}}
-        filterable={false}
-        items={this.getSchemata()}
-        itemRenderer={this.renderSchema}
-        onItemSelect={this.props.onSelect}
-      >
-        {this.props.children}
-      </TypedSelect>
+      <div className="SchemaSelect">
+        <TypedSelect
+          items={schemaSelectOptions}
+          filterable={false}
+          itemRenderer={itemRenderer}
+          onItemSelect={onSelect}
+          popoverProps={{ minimal: true}}
+        >
+          {this.props.children}
+        </TypedSelect>
+      </div>
     );
   }
 }
