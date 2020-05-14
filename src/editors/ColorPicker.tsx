@@ -15,8 +15,7 @@ interface IColorPickerProps {
   swatchShape?: string
 }
 
-
-export class ColorPicker extends React.PureComponent<IColorPickerProps> {
+class ColorPicker extends React.PureComponent<IColorPickerProps> {
   constructor(props: IColorPickerProps) {
     super(props);
 
@@ -48,3 +47,5 @@ export class ColorPicker extends React.PureComponent<IColorPickerProps> {
     )
   }
 }
+
+export default ColorPicker;

@@ -25,7 +25,7 @@ interface IVertexSelectProps extends WrappedComponentProps {
 
 const TypedSelect = Select.ofType<Vertex>();
 
-export class VertexSelectBase extends React.PureComponent<IVertexSelectProps> {
+class VertexSelect extends React.PureComponent<IVertexSelectProps> {
   getVertexIcon = (vertex: Vertex) => {
     if (vertex.isEntity()) {
       const entity = vertex.getEntity()
@@ -33,7 +33,7 @@ export class VertexSelectBase extends React.PureComponent<IVertexSelectProps> {
         return <Schema.Icon schema={entity.schema} />
       }
     }
-    return undefined; 
+    return undefined;
   }
 
   itemPredicate: ItemPredicate<Vertex> = (query: string, vertex: Vertex) => {
@@ -88,4 +88,4 @@ export class VertexSelectBase extends React.PureComponent<IVertexSelectProps> {
   }
 }
 
-export const VertexSelect = injectIntl(VertexSelectBase);
+export default injectIntl(VertexSelect);

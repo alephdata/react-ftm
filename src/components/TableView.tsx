@@ -2,13 +2,11 @@ import React from 'react';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { GraphLayout } from '../layout';
 import { GraphUpdateHandler } from '../GraphContext';
-import { VertexSchemaSelect } from './VertexSchemaSelect';
+import { SchemaSelect } from '../editors';
 import { TableViewPanel } from './TableViewPanel';
 import { Button, Drawer, Position, TabId, Tab, Tabs } from "@blueprintjs/core";
 import { Schema as FTMSchema } from "@alephdata/followthemoney";
 import { Schema } from '../types';
-
-
 import c from 'classnames';
 
 import "./TableView.scss"
@@ -107,7 +105,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
           ))}
           {writeable && (
             <div className="TableView__schemaAdd">
-              <VertexSchemaSelect
+              <SchemaSelect
                 model={layout.entityManager.model}
                 onSelect={schema => this.addSchema(schema)}
                 optionsFilter={(schema => !schemata.includes(schema))}
@@ -116,7 +114,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
                   text={intl.formatMessage(messages.add)}
                   icon="plus"
                 />
-              </VertexSchemaSelect>
+              </SchemaSelect>
             </div>
           )}
         </Tabs>

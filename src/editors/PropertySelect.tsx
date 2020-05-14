@@ -12,15 +12,15 @@ const messages = defineMessages({
   },
 });
 
-const PropertySelect = Select.ofType<Property>()
+const TypedSelect = Select.ofType<Property>()
 
-interface ISelectPropertyProps extends WrappedComponentProps  {
+interface IPropertySelectProps extends WrappedComponentProps  {
   properties: Property[]
   onSelected: (property: Property) => void
   buttonProps?: any
 }
 
-class SelectPropertyBase extends React.PureComponent<ISelectPropertyProps> {
+class PropertySelect extends React.PureComponent<IPropertySelectProps> {
 
   itemPredicate: ItemPredicate<Property> = (query: string, property: Property) => {
     return matchText(property.label, query)
@@ -45,7 +45,7 @@ class SelectPropertyBase extends React.PureComponent<ISelectPropertyProps> {
     const { buttonProps, intl, properties } = this.props;
     const items = properties
       .sort((a, b) => a.label > b.label ? 1 : -1);
-    return <PropertySelect
+    return <TypedSelect
       popoverProps={{
         position: Position.BOTTOM_LEFT,
         minimal: true,
@@ -58,8 +58,8 @@ class SelectPropertyBase extends React.PureComponent<ISelectPropertyProps> {
       onItemSelect={this.props.onSelected}
       items={this.props.properties}>
       <Button icon='plus' text={intl.formatMessage(messages.add)} fill alignText={Alignment.LEFT} {...buttonProps} />
-    </PropertySelect>
+    </TypedSelect>
   }
 }
 
-export const SelectProperty = injectIntl(SelectPropertyBase);
+export default injectIntl(PropertySelect);

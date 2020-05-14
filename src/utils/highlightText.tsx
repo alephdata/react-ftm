@@ -1,7 +1,4 @@
-import * as React from 'react'
-import _ from 'lodash'
-import { Values } from '@alephdata/followthemoney';
-
+import React from 'react';
 
 export function highlightText(text: string, query: string) {
   let lastIndex = 0;
@@ -34,34 +31,4 @@ export function highlightText(text: string, query: string) {
     tokens.push(rest);
   }
   return tokens;
-}
-
-export function matchText(term: string, query: string): boolean {
-  return term.trim().toLowerCase().indexOf(query.trim().toLowerCase()) !== -1
-}
-
-/*
- * https://stackoverflow.com/questions/23618744/rendering-comma-separated-list-of-links
- */
-export function wordList(arr:Array<any>, sep:string) {
-  if (arr.length === 0) {
-    return [];
-  }
-
-  return arr.slice(1).reduce((xs, x) => xs.concat([sep, x]), [arr[0]]);
-}
-
-export function ensureArray(values: Values) {
-  if (_.isNil(values)) {
-    return [];
-  }
-  return _.castArray(values);
-}
-
-export function getHost(url:string) {
-  try {
-    return new URL(url).hostname;
-  } catch (e) {
-    return url;
-  }
 }

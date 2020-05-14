@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity as FTMEntity } from "@alephdata/followthemoney";
-import Entity from './Entity';
+import { Entity } from '../types';
 import { Alignment, Button, ControlGroup, FormGroup, Menu, MenuItem, Position, Spinner } from "@blueprintjs/core";
 import { ItemListRenderer, ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
 import { ITypeEditorProps } from "./common";
@@ -24,14 +24,14 @@ interface IEntityTypeProps extends ITypeEditorProps, WrappedComponentProps {
   fetchEntitySuggestions: (query: string) => void
 }
 
-interface IEntityEditState {
+interface IEntitySelectState {
   query: string
 }
 
-const EntityMultiSelect = MultiSelect.ofType<FTMEntity>();
-const EntitySelect = Select.ofType<FTMEntity>();
+const TypedMultiSelect = MultiSelect.ofType<FTMEntity>();
+const TypedSelect = Select.ofType<FTMEntity>();
 
-class EntityEdit extends React.Component<IEntityTypeProps, IEntityEditState> {
+class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState> {
   private inputRef: HTMLElement | null = null;
 
   constructor(props:IEntityTypeProps) {
@@ -109,7 +109,7 @@ class EntityEdit extends React.Component<IEntityTypeProps, IEntityEditState> {
     return <FormGroup>
       <ControlGroup vertical fill >
         {!allowMultiple && (
-          <EntitySelect
+          <TypedSelect
             onItemSelect={(entity: FTMEntity) => onSubmit([entity])}
             itemRenderer={this.itemRenderer}
             itemListRenderer={this.itemListRenderer}
@@ -132,10 +132,10 @@ class EntityEdit extends React.Component<IEntityTypeProps, IEntityEditState> {
               elementRef={(ref) => this.inputRef = ref }
               fill
             />
-          </EntitySelect>
+          </TypedSelect>
         )}
         {allowMultiple && (
-          <EntityMultiSelect
+          <TypedMultiSelect
             tagRenderer={entity => <Entity.Label entity={entity} icon />}
             onItemSelect={(entity: FTMEntity) => onSubmit([...values, entity])}
             itemRenderer={this.itemRenderer}
@@ -166,4 +166,4 @@ class EntityEdit extends React.Component<IEntityTypeProps, IEntityEditState> {
   }
 }
 
-export default injectIntl(EntityEdit);
+export default injectIntl(EntitySelect);

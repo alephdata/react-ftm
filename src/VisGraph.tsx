@@ -8,14 +8,11 @@ import { GraphRenderer } from './renderer/GraphRenderer'
 import { GraphLayout, Rectangle, Point } from './layout';
 import { Viewport } from './Viewport';
 import { IGraphContext, GraphContext } from './GraphContext'
-import { Toolbar } from './Toolbar';
-import { Sidebar } from './Sidebar';
+import { Sidebar, TableView, Toolbar } from './components';
 import { History } from './History';
-import { EdgeCreateDialog, GroupingCreateDialog, VertexCreateDialog } from "./dialogs";
-import { TableView } from "./editor";
+import { EdgeCreateDialog, GroupingCreateDialog, VertexCreateDialog } from './dialogs';
 
-import { modes } from './interactionModes'
-import { filterVerticesByText } from './filters';
+import { filterVerticesByText, modes } from './utils'
 
 import './VisGraph.scss';
 

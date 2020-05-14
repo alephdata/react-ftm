@@ -7,7 +7,7 @@ import { Vertex } from '../layout/Vertex'
 import { getRefMatrix, applyMatrix } from './utils';
 import { VertexLabelRenderer } from './VertexLabelRenderer';
 import {IconRenderer} from "./IconRenderer";
-import { modes } from '../interactionModes'
+import { modes } from '../utils/interactionModes'
 
 
 interface IVertexRendererProps {

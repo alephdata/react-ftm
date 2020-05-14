@@ -1,13 +1,9 @@
 import * as React from 'react'
 import {Classes, Divider, H2, UL} from '@blueprintjs/core'
 import { Entity, Property as FTMProperty, Schema as FTMSchema } from '@alephdata/followthemoney';
-import {SelectProperty} from './SelectProperty';
-import {PropertyEditor} from './PropertyEditor';
-import { Property} from '../types';
-import { Schema } from '../types';
+import { ColorPicker, PropertyEditor, PropertySelect, RadiusPicker } from '../editors';
+import { Property, Schema } from '../types';
 import { GraphLayout, Vertex } from '../layout'
-import {ColorPicker} from './ColorPicker'
-import {VertexRadiusPicker} from './VertexRadiusPicker'
 import { matchText } from "../utils";
 
 import c from 'classnames';
@@ -159,7 +155,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
                 currSelected={vertexRef.color}
                 onSelect={(color: string) => this.props.onVertexColorSelected(vertexRef, color)}
               />
-              <VertexRadiusPicker
+              <RadiusPicker
                 radius={vertexRef.radius}
                 onChange={(radius: number) => this.props.onVertexRadiusSelected(vertexRef, radius)}
                 config={layout.config}
@@ -174,7 +170,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
         </UL>
         {writeable && !!availableProperties.length && (<>
           <Divider/>
-          <SelectProperty
+          <PropertySelect
             properties={availableProperties}
             onSelected={this.onNewPropertySelected}
           />

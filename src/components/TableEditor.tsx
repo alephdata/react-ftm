@@ -2,17 +2,16 @@ import React from 'react';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import _ from 'lodash';
 import { GraphUpdateHandler } from '../GraphContext';
-import { PropertyEditor } from './PropertyEditor';
+import { PropertyEditor } from '../editors';
 import { Property } from '../types';
 import { EntityManager } from '../EntityManager';
-import { SelectProperty } from './SelectProperty';
+import { PropertySelect } from '../editors';
 import { TruncatedFormat } from "@blueprintjs/table";
 import { Button, Checkbox, Classes, Icon, Intent, Popover, Position, Tooltip } from "@blueprintjs/core";
 import { Entity, Property as FTMProperty, Schema, Value, Values } from "@alephdata/followthemoney";
 import Datasheet from 'react-datasheet';
 import { SortType } from './SortType';
-import { showErrorToast } from './toaster';
-import { validate } from './utils';
+import { showErrorToast, validate } from '../utils';
 
 import "./TableEditor.scss"
 
@@ -324,8 +323,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       <PropertyEditor
         entity={entity || new Entity(entityManager.model, { schema, id: `${Math.random()}` })}
         property={property}
-        onChange={(newVal) => onChange(newVal)}
-        onSubmit={(ent) => { onChange(ent.getProperty(property)); this.setState({ shouldCommit: true }); }}
+        onChange={onChange}
+        onSubmit={(entity:Entity) => { onChange(entity.getProperty(property)); this.setState({ shouldCommit: true }); }}
         usePortal={false}
         fetchEntitySuggestions={entityManager.getEntitySuggestions}
         resolveEntityReference={entityManager.resolveEntityReference}
@@ -360,7 +359,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   renderPropertySelect = () => {
     return (
-      <SelectProperty
+      <PropertySelect
         properties={this.getNonVisibleProperties()}
         onSelected={this.onAddColumn}
         buttonProps={{minimal: true, intent: Intent.PRIMARY }}

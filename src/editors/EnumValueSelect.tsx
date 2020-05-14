@@ -13,7 +13,7 @@ const messages = defineMessages({
   },
 });
 
-const AbstractMultiSelect = MultiSelect.ofType<[string, string]>()
+const TypedMultiSelect = MultiSelect.ofType<[string, string]>()
 
 interface IEnumValueSelectProps extends ITypeEditorProps, WrappedComponentProps {
   fullList:Map<string, string>
@@ -77,7 +77,7 @@ class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
 
     return <FormGroup>
       <ControlGroup vertical fill >
-        <AbstractMultiSelect
+        <TypedMultiSelect
           tagRenderer={i => i[1]}
           onItemSelect={this.onChange}
           itemRenderer={([key, label], {handleClick, modifiers, query}) => (

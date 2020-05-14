@@ -3,7 +3,7 @@ import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
 import { GraphConfig } from '../GraphConfig';
 import { GraphElement, Grouping, Point, Rectangle, Vertex } from '../layout'
 import { getRefMatrix, applyMatrix } from './utils';
-import { modes } from '../interactionModes'
+import { modes } from '../utils/interactionModes'
 
 interface IGroupingRendererProps {
   grouping: Grouping

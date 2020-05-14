@@ -6,7 +6,7 @@ import { Entity as FTMEntity, Schema as FTMSchema } from '@alephdata/followthemo
 
 import { EntityManager } from '../EntityManager';
 import { GraphContext, IGraphContext } from '../GraphContext'
-import { VertexSchemaSelect } from '../editor'
+import { SchemaSelect } from '../editors'
 import { Entity, Schema } from '../types';
 import { Point } from '../layout'
 import Dialog from './Dialog'
@@ -185,7 +185,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
         }}>
           <div className="bp3-dialog-body">
             <ControlGroup fill>
-              <VertexSchemaSelect
+              <SchemaSelect
                 model={layout.entityManager.model}
                 schema={schema}
                 onSelect={this.onSchemaSelect}
@@ -198,7 +198,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
                   rightIcon="caret-down"
                   className="VertexCreateDialog__schema-select"
                 />
-              </VertexSchemaSelect>
+              </SchemaSelect>
               <Suggest
                 fill
                 inputValueRenderer={query => typeof query === 'string' ? query : query.getCaption()}

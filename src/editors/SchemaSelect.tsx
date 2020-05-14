@@ -12,9 +12,9 @@ interface ISelectSchemaProps {
   optionsFilter?: (schema: FTMSchema) => boolean
 }
 
-const SchemaSelect = Select.ofType<FTMSchema>();
+const TypedSelect = Select.ofType<FTMSchema>();
 
-export class VertexSchemaSelect extends React.PureComponent<ISelectSchemaProps> {
+class SchemaSelect extends React.PureComponent<ISelectSchemaProps> {
   getSchemata(): FTMSchema[] {
     const { model, optionsFilter } = this.props
     const schemata = model.getSchemata()
@@ -44,7 +44,7 @@ export class VertexSchemaSelect extends React.PureComponent<ISelectSchemaProps> 
     const { schema } = this.props
 
     return (
-      <SchemaSelect
+      <TypedSelect
         popoverProps={{boundary:"viewport", position: Position.BOTTOM_LEFT, minimal: true}}
         filterable={false}
         items={this.getSchemata()}
@@ -52,7 +52,9 @@ export class VertexSchemaSelect extends React.PureComponent<ISelectSchemaProps> 
         onItemSelect={this.props.onSelect}
       >
         {this.props.children}
-      </SchemaSelect>
+      </TypedSelect>
     );
   }
 }
+
+export default SchemaSelect;

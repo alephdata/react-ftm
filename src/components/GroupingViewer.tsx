@@ -1,9 +1,8 @@
 import * as React from 'react'
 import {Classes, Divider, Icon, H2, UL} from '@blueprintjs/core'
 import {Entity, Property} from '@alephdata/followthemoney';
-import {SelectProperty} from './SelectProperty';
+import { ColorPicker, PropertySelect } from '../editors';
 import { Vertex, Grouping } from '../layout'
-import {ColorPicker} from './ColorPicker'
 import {EntityList} from "./EntityList";
 import c from 'classnames';
 

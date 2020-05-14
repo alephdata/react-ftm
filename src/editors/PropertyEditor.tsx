@@ -1,13 +1,13 @@
 import * as React from 'react'
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity, Property, Schema, Values } from '@alephdata/followthemoney';
-import { CountryEdit, TopicEdit, EntityEdit, TextEdit } from '../types';
-import { validate } from './utils';
+import { CountryEdit, TopicEdit, EntitySelect, TextEdit } from './';
+import { validate } from '../utils';
 
 interface IPropertyEditorProps extends WrappedComponentProps {
   entity: Entity,
   property: Property,
-  onSubmit: (nextEntity: Entity) => void
+  onSubmit: (entity: Entity) => void
   onChange?: (values: Values) => void
   fetchEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>
   resolveEntityReference?: (entityId: string) => Entity | undefined,
@@ -20,7 +20,7 @@ interface IPropertyEditorState {
   entitySuggestions: { isPending: boolean, results: Array<Entity> }
 }
 
-class PropertyEditorBase extends React.Component<IPropertyEditorProps, IPropertyEditorState> {
+class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEditorState> {
   constructor(props:IPropertyEditorProps) {
     super(props);
     const { entity, property, resolveEntityReference } = props;
@@ -93,7 +93,7 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
     } else if (propType.name === 'topic') {
       content = <TopicEdit fullList={propType.values} {...commonProps} />;
     } else if (propType.name === 'entity') {
-      content = <EntityEdit {...commonProps} entity={entity} values={values as Array<Entity>} entitySuggestions={entitySuggestions} fetchEntitySuggestions={this.fetchEntitySuggestions}  />
+      content = <EntitySelect {...commonProps} entity={entity} values={values as Array<Entity>} entitySuggestions={entitySuggestions} fetchEntitySuggestions={this.fetchEntitySuggestions}  />
     } else {
       content = <TextEdit {...commonProps} />;
     }
@@ -109,4 +109,4 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
   }
 }
 
-export const PropertyEditor = injectIntl(PropertyEditorBase);
+export default injectIntl(PropertyEditor);

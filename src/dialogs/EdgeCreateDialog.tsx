@@ -4,7 +4,8 @@ import _ from 'lodash';
 import { Menu, MenuItem, FormGroup, Icon, Intent, Button, Alignment, Position } from '@blueprintjs/core'
 import { Select, IItemListRendererProps, IItemRendererProps } from '@blueprintjs/select';
 import { IGraphContext } from '../GraphContext'
-import { EdgeType, VertexSelect } from '../editor/'
+import { EdgeType } from '../components'
+import { VertexSelect } from '../editors'
 import { Vertex,Edge } from '../layout';
 import { Schema } from '../types';
 
