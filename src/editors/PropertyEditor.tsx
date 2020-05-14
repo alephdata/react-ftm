@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity, Property, Schema, Values } from '@alephdata/followthemoney';
-import { CountryEdit, TopicEdit, EntitySelect, TextEdit } from './';
+import { CountrySelect, TopicSelect, EntitySelect, TextEdit } from './';
 import { validate } from '../utils';
 
 interface IPropertyEditorProps extends WrappedComponentProps {
@@ -89,9 +89,9 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
     let content;
 
     if (propType.name === 'country') {
-      content = <CountryEdit fullList={propType.values} {...commonProps} />;
+      content = <CountrySelect fullList={propType.values} {...commonProps} />;
     } else if (propType.name === 'topic') {
-      content = <TopicEdit fullList={propType.values} {...commonProps} />;
+      content = <TopicSelect fullList={propType.values} {...commonProps} />;
     } else if (propType.name === 'entity') {
       content = <EntitySelect {...commonProps} entity={entity} values={values as Array<Entity>} entitySuggestions={entitySuggestions} fetchEntitySuggestions={this.fetchEntitySuggestions}  />
     } else {

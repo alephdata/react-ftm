@@ -19,9 +19,9 @@ const TextEdit = withTranslator(TextEditBase);
 export {
   ColorPicker,
   EntitySelect,
-  EnumValueSelect as CountryEdit,
-  EnumValueSelect as LanguageEdit,
-  EnumValueSelect as TopicEdit,
+  EnumValueSelect as CountrySelect,
+  EnumValueSelect as LanguageSelect,
+  EnumValueSelect as TopicSelect,
   PropertyEditor,
   PropertySelect,
   RadiusPicker,
