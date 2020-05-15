@@ -32,12 +32,12 @@ class Date extends React.PureComponent<IDateProps> {
     if (!dateString) {
       return null;
     }
-    const dateObj = moment(dateString);
-    if (!dateObj.isValid()) {
-      return dateString;
+    const [date, time] = dateString.split("T");
+    if (showTime && time) {
+      const formattedTime = moment(dateString).format("H:mm");
+      return `${date} ${formattedTime}`;
     }
-    const formatString = showTime ? "YYYY-M-D H:m" : "YYYY-M-D";
-    return dateObj.format(formatString);
+    return date;
   }
 }
 
