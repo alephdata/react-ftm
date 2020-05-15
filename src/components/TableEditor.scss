@@ -1,5 +1,13 @@
 @import "src/variables.scss";
 
+@mixin center {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  margin: 0;
+}
+
 .TableEditor {
   height: 100%;
   width: 100%;
@@ -24,7 +32,7 @@
       box-shadow: none;
     }
 
-    &.property, &.header {
+    &.property, &.header, &.prop-select {
       min-width: 200px;
       max-width: 200px;
     }
@@ -38,7 +46,7 @@
       }
     }
 
-    &.header .bp3-button, &.checkbox .bp3-button {
+    .bp3-button {
       border-radius: 0 !important;
     }
 
@@ -46,8 +54,8 @@
       justify-content: space-between;
     }
 
-    &.checkbox {
-      min-width: 26px;
+    &.checkbox, &.entity-link, &.add-button {
+      min-width: 30px;
 
       .bp3-control {
         margin: 0;
@@ -56,11 +64,19 @@
         position: relative;
       }
       .bp3-control-indicator {
-        position: absolute;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        left: 50%;
-        margin: 0;
+        @include center;
+        outline: none !important;
+      }
+    }
+
+    &.entity-link {
+      position: relative;
+      .bp3-button {
+        @include center;
+      }
+      svg {
+        width: 14px;
+        height: 14px;
       }
     }
   }
@@ -70,5 +86,10 @@
 
   .bp3-multi-select-popover .bp3-menu {
     max-height: 150px;
+  }
+
+  &__overflow-container {
+    max-height: 110px;
+    overflow-y: scroll;
   }
 }

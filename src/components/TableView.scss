@@ -2,6 +2,7 @@ $table-editor-padding: 20px;
 $border-color: rgba(16, 22, 26, 0.15);
 
 @import "src/variables.scss";
+@import "src/themes.scss";
 
 .TableView {
   &.bp3-drawer {

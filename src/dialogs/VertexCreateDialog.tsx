@@ -6,7 +6,7 @@ import { Entity as FTMEntity, Schema as FTMSchema } from '@alephdata/followthemo
 
 import { EntityManager } from '../EntityManager';
 import { GraphContext, IGraphContext } from '../GraphContext'
-import { VertexSchemaSelect } from '../editor'
+import { SchemaSelect } from '../editors'
 import { Entity, Schema } from '../types';
 import { Point } from '../layout'
 import Dialog from './Dialog'
@@ -77,15 +77,15 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
 
   onQueryChange(query: string) {
     this.setState({ query });
-    this.fetchSuggestions({ query, schema: this.state.schema })
+    this.fetchSuggestions({ query, schemata: [this.state.schema] })
   }
 
   onSchemaSelect(schema: FTMSchema) {
     this.setState({ schema });
-    this.fetchSuggestions({ query: this.state.query, schema })
+    this.fetchSuggestions({ query: this.state.query, schemata: [schema] })
   }
 
-  async fetchSuggestions({ query, schema }:{ query: string, schema: FTMSchema }) {
+  async fetchSuggestions({ query, schemata }:{ query: string, schemata: Array<FTMSchema> }) {
     const { layout } = this.context as IGraphContext
 
     if (query.length === 0) {
@@ -93,7 +93,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     } else {
       const { entityManager } = this.props;
       this.setState({ isFetchingSuggestions: true });
-      const suggestions = await entityManager.getEntitySuggestions(query, schema);
+      const suggestions = await entityManager.getEntitySuggestions(query, schemata);
       const filteredSuggestions = suggestions.filter((entity: FTMEntity) => !layout.hasEntity(entity));
       this.setState({ isFetchingSuggestions: false, suggestions: filteredSuggestions });
     }
@@ -185,10 +185,10 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
         }}>
           <div className="bp3-dialog-body">
             <ControlGroup fill>
-              <VertexSchemaSelect
+              <SchemaSelect
                 model={layout.entityManager.model}
-                schema={schema}
                 onSelect={this.onSchemaSelect}
+                optionsFilter={schema => schema.isThing()}
               >
                 <Button
                   large
@@ -198,7 +198,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
                   rightIcon="caret-down"
                   className="VertexCreateDialog__schema-select"
                 />
-              </VertexSchemaSelect>
+              </SchemaSelect>
               <Suggest
                 fill
                 inputValueRenderer={query => typeof query === 'string' ? query : query.getCaption()}

@@ -1,14 +1,25 @@
 import * as React from 'react'
-import {Value, Values, Property, Entity} from "@alephdata/followthemoney";
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
+import {Value, Values} from "@alephdata/followthemoney";
 import {ControlGroup, FormGroup, MenuItem, Position, TagInput} from "@blueprintjs/core";
 import {ItemRenderer, MultiSelect} from "@blueprintjs/select";
-import {ITypeProps} from "./common";
+import {ITypeEditorProps} from "./common";
 import {highlightText} from "../utils";
-import {lab} from "d3-color";
 
-const AbstractMultiSelect = MultiSelect.ofType<[string, string]>()
+const messages = defineMessages({
+  no_results: {
+    id: 'enum_value_select.no_results',
+    defaultMessage: 'No results found',
+  },
+});
 
-export class EnumValueSelect extends React.PureComponent<ITypeProps> {
+const TypedMultiSelect = MultiSelect.ofType<[string, string]>()
+
+interface IEnumValueSelectProps extends ITypeEditorProps, WrappedComponentProps {
+  fullList:Map<string, string>
+}
+
+class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
   private inputRef: HTMLInputElement | null = null;
 
   constructor(props: any) {
@@ -27,9 +38,9 @@ export class EnumValueSelect extends React.PureComponent<ITypeProps> {
   }
 
   getAvailableOptions() {
-    const { values, property } = this.props;
+    const { fullList, values } = this.props;
 
-    const optionsMap = new Map(property.type.values)
+    const optionsMap = new Map(fullList)
     values.forEach((valKey: any) => optionsMap.delete(valKey))
 
     return Array.from(optionsMap.entries())
@@ -37,22 +48,19 @@ export class EnumValueSelect extends React.PureComponent<ITypeProps> {
   }
 
   getIdLabelPairs() {
-    const { property, values } = this.props;
-
-    const fullCountriesMap = property.type.values
+    const { fullList, values } = this.props;
 
     return values.map((valKey: any) => {
-      const countryLabel = fullCountriesMap.get(valKey)
+      const countryLabel = fullList.get(valKey)
       return [valKey, countryLabel] as [string, string]
     })
   }
 
   // blueprint function returns the tag label instead of the tag id
   onRemove(valToRemove: Value) {
-    const { property, values } = this.props;
+    const { fullList, values } = this.props;
 
-    const fullCountriesMap = property.type.values
-    const toRemove = Array.from(fullCountriesMap.entries())
+    const toRemove = Array.from(fullList.entries())
       .find(([key, val]) => val == valToRemove)
 
     if (toRemove) {
@@ -62,14 +70,14 @@ export class EnumValueSelect extends React.PureComponent<ITypeProps> {
   }
 
   render() {
-    const { property, usePortal } = this.props;
+    const { intl, usePortal } = this.props;
 
     const availableOptions = this.getAvailableOptions();
     const selectedOptions = this.getIdLabelPairs();
 
     return <FormGroup>
       <ControlGroup vertical fill >
-        <AbstractMultiSelect
+        <TypedMultiSelect
           tagRenderer={i => i[1]}
           onItemSelect={this.onChange}
           itemRenderer={([key, label], {handleClick, modifiers, query}) => (
@@ -94,6 +102,9 @@ export class EnumValueSelect extends React.PureComponent<ITypeProps> {
             return items.filter(([key, label]) => label.toLowerCase().includes(queryProcessed));
           }}
           selectedItems={selectedOptions}
+          noResults={
+            <MenuItem disabled text={intl.formatMessage(messages.no_results)} />
+          }
           openOnKeyDown
           resetOnSelect
           fill
@@ -102,3 +113,5 @@ export class EnumValueSelect extends React.PureComponent<ITypeProps> {
     </FormGroup>
   }
 }
+
+export default injectIntl(EnumValueSelect);

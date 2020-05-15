@@ -1,18 +1,15 @@
 import * as React from 'react'
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity, Property, Schema, Values } from '@alephdata/followthemoney';
-import { TextEdit } from '../types/TextEdit';
-import EntityEdit from '../types/EntityEdit';
-import { CountryEdit } from "../types/CountryEdit";
-import { TopicEdit } from "../types/TopicEdit";
-import { validate } from './utils';
+import { CountrySelect, TopicSelect, EntitySelect, TextEdit } from './';
+import { validate } from '../utils';
 
 interface IPropertyEditorProps extends WrappedComponentProps {
   entity: Entity,
   property: Property,
-  onSubmit: (nextEntity: Entity) => void
+  onSubmit: (entity: Entity) => void
   onChange?: (values: Values) => void
-  fetchEntitySuggestions?: (queryText: string, schema?: Schema) => Promise<Entity[]>
+  fetchEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>
   resolveEntityReference?: (entityId: string) => Entity | undefined,
   usePortal?: boolean
 }
@@ -23,7 +20,7 @@ interface IPropertyEditorState {
   entitySuggestions: { isPending: boolean, results: Array<Entity> }
 }
 
-class PropertyEditorBase extends React.Component<IPropertyEditorProps, IPropertyEditorState> {
+class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEditorState> {
   constructor(props:IPropertyEditorProps) {
     super(props);
     const { entity, property, resolveEntityReference } = props;
@@ -73,7 +70,7 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
     const { entity, intl, property, usePortal } = this.props;
     if (this.props.fetchEntitySuggestions) {
       this.setState({ entitySuggestions: { isPending: true, results: [] }});
-      const suggestions = await this.props.fetchEntitySuggestions(query, property.getRange());
+      const suggestions = await this.props.fetchEntitySuggestions(query, [property.getRange()]);
       this.setState({ entitySuggestions: { isPending: false, results: suggestions }});
     }
   }
@@ -81,23 +78,22 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
   render() {
     const { entity, intl, property, usePortal } = this.props;
     const { entitySuggestions, error, values } = this.state;
+    const propType = property.type;
 
     const commonProps = {
       onSubmit: this.onSubmit,
       onChange: this.onChange,
       values,
-      property,
-      entity,
       usePortal: usePortal === undefined ? true : usePortal,
     };
     let content;
 
-    if (CountryEdit.group.has(property.type.name)) {
-      content = <CountryEdit {...commonProps} />;
-    } else if (TopicEdit.group.has(property.type.name)) {
-      content = <TopicEdit {...commonProps} />;
-    } else if (EntityEdit.group.has(property.type.name)) {
-      content = <EntityEdit {...commonProps} values={values as Array<Entity>} entitySuggestions={entitySuggestions} fetchEntitySuggestions={this.fetchEntitySuggestions}  />
+    if (propType.name === 'country') {
+      content = <CountrySelect fullList={propType.values} {...commonProps} />;
+    } else if (propType.name === 'topic') {
+      content = <TopicSelect fullList={propType.values} {...commonProps} />;
+    } else if (propType.name === 'entity') {
+      content = <EntitySelect {...commonProps} entity={entity} values={values as Array<Entity>} entitySuggestions={entitySuggestions} fetchEntitySuggestions={this.fetchEntitySuggestions}  />
     } else {
       content = <TextEdit {...commonProps} />;
     }
@@ -113,4 +109,4 @@ class PropertyEditorBase extends React.Component<IPropertyEditorProps, IProperty
   }
 }
 
-export const PropertyEditor = injectIntl(PropertyEditorBase);
+export default injectIntl(PropertyEditor);

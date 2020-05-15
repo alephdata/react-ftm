@@ -7,7 +7,7 @@ import { Schema as FTMSchema } from "@alephdata/followthemoney";
 import { Schema } from '../types';
 
 
-interface IVertexRadiusPickerProps {
+interface IRadiusPickerProps {
   currSelected?: number
   onChange: (radius: number) => void
   config: GraphConfig
@@ -15,17 +15,16 @@ interface IVertexRadiusPickerProps {
   radius: number
 }
 
-import './VertexRadiusPicker.scss'
+import './RadiusPicker.scss'
 
-
-export class VertexRadiusPicker extends React.PureComponent<IVertexRadiusPickerProps> {
+class RadiusPicker extends React.PureComponent<IRadiusPickerProps> {
   render() {
     const { config, onChange, radius, schema } = this.props;
     const defaultRadius = config.DEFAULT_VERTEX_RADIUS;
     const radiusRange = [defaultRadius*.5, defaultRadius*1.5];
     return (
-      <div className='VertexRadiusPicker'>
-        <div className='VertexRadiusPicker__icon'>
+      <div className='RadiusPicker'>
+        <div className='RadiusPicker__icon'>
           <Schema.Icon
             size={10}
             schema={schema}
@@ -39,9 +38,9 @@ export class VertexRadiusPicker extends React.PureComponent<IVertexRadiusPickerP
           showTrackFill={false}
           stepSize={.1}
           labelRenderer={false}
-          className='VertexRadiusPicker__slider'
+          className='RadiusPicker__slider'
         />
-        <div className='VertexRadiusPicker__icon'>
+        <div className='RadiusPicker__icon'>
           <Schema.Icon
             size={20}
             schema={schema}
@@ -51,3 +50,5 @@ export class VertexRadiusPicker extends React.PureComponent<IVertexRadiusPickerP
     )
   }
 }
+
+export default RadiusPicker;

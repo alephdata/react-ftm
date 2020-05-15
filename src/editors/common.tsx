@@ -1,9 +1,7 @@
 import {Entity, Property, Values} from "@alephdata/followthemoney";
 
-export interface ITypeProps {
+export interface ITypeEditorProps {
   values: Values
-  property: Property
-  entity: Entity
   onChange: (values: Values) => void
   onSubmit: (values: Values) => void
   usePortal?: boolean

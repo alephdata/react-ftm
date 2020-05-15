@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { FormattedDate, FormattedTime } from 'react-intl';
+import moment from 'moment';
 
 
 interface IEarliestProps {
@@ -9,7 +9,8 @@ interface IEarliestProps {
 
 class Earliest extends React.PureComponent<IEarliestProps> {
   render() {
-    const earliest = _.min(this.props.values);
+    const { values } = this.props;
+    const earliest = _.min(values);
     if (earliest) {
       return <Date value={earliest.toString()} />;
     } else {
@@ -31,24 +32,12 @@ class Date extends React.PureComponent<IDateProps> {
     if (!dateString) {
       return null;
     }
-    const availableChunks = dateString.split(/-/);
-    const dateObject = Reflect.construct(window.Date, [dateString]);
-    return (
-      <>
-        <FormattedDate
-          value={dateObject}
-          year="numeric"
-          month={availableChunks[1] && '2-digit'}
-          day={availableChunks[2] && '2-digit'}
-        />
-        {showTime && (
-          <>
-            <span>-</span>
-            <FormattedTime value={dateObject} />
-          </>
-        )}
-      </>
-    );
+    const [date, time] = dateString.split("T");
+    if (showTime && time) {
+      const formattedTime = moment(dateString).format("H:mm");
+      return `${date} ${formattedTime}`;
+    }
+    return date;
   }
 }
 

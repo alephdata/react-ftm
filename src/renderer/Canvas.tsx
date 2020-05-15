@@ -7,7 +7,7 @@ import { Point } from '../layout/Point';
 import { Rectangle } from '../layout/Rectangle';
 import { getRefMatrix, applyMatrix } from './utils';
 import { GraphLayout } from '../layout/GraphLayout';
-import { modes } from '../interactionModes'
+import { modes } from '../utils/interactionModes'
 
 
 interface ICanvasProps {

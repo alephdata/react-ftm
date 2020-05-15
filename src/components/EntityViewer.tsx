@@ -1,13 +1,9 @@
 import * as React from 'react'
 import {Classes, Divider, H2, UL} from '@blueprintjs/core'
-import { Entity, Property, Schema as FTMSchema } from '@alephdata/followthemoney';
-import {SelectProperty} from './SelectProperty';
-import {PropertyEditor} from './PropertyEditor';
-import { PropertyName, PropertyValues} from '../types';
-import { Schema } from '../types';
+import { Entity, Property as FTMProperty, Schema as FTMSchema } from '@alephdata/followthemoney';
+import { ColorPicker, PropertyEditor, PropertySelect, RadiusPicker } from '../editors';
+import { Property, Schema } from '../types';
 import { GraphLayout, Vertex } from '../layout'
-import {ColorPicker} from './ColorPicker'
-import {VertexRadiusPicker} from './VertexRadiusPicker'
 import { matchText } from "../utils";
 
 import c from 'classnames';
@@ -26,12 +22,12 @@ interface IEntityViewerProps {
 }
 
 interface IEntityViewerState {
-  visibleProps: Property[],
-  currEditing: Property | null
+  visibleProps: FTMProperty[],
+  currEditing: FTMProperty | null
 }
 
 export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntityViewerState> {
-  private schemaProperties: Property[];
+  private schemaProperties: FTMProperty[];
 
   constructor(props: IEntityViewerProps) {
     super(props);
@@ -64,11 +60,15 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     }
   }
 
-  fetchEntitySuggestions(query: string, schema?: FTMSchema): Promise<Entity[]> {
+  fetchEntitySuggestions(query: string, schemata?: Array<FTMSchema>): Promise<Entity[]> {
     const { layout } = this.props;
 
     const entities = layout.getEntities()
-      .filter(e => e.schema.isA(schema) && matchText(e.getCaption() || '', query))
+      .filter(e => {
+        const schemaMatch = !schemata || e.schema.isAny(schemata);
+        const textMatch = matchText(e.getCaption() || '', query);
+        return schemaMatch && textMatch;
+      })
       .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
 
     return new Promise((resolve) => resolve(entities));
@@ -78,14 +78,14 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     return this.props.layout.entities.get(entityId);
   }
 
-  onNewPropertySelected(p:Property){
+  onNewPropertySelected(p:FTMProperty){
     this.setState(({visibleProps}) => ({
       visibleProps: [...visibleProps, ...[p]],
       currEditing: null
     }))
   }
 
-  onEditPropertyClick(e:React.MouseEvent, property:Property){
+  onEditPropertyClick(e:React.MouseEvent, property:FTMProperty){
     e.preventDefault()
     e.stopPropagation()
     this.setState({
@@ -101,7 +101,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     })
   }
 
-  renderProperty(property:Property){
+  renderProperty(property:FTMProperty){
     const { entity, layout } = this.props;
     const { currEditing } = this.state;
     const isEditable = property?.name === currEditing?.name;
@@ -113,7 +113,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
       >
         <div className='EntityViewer__property-list-item__label'>
           <span>
-            <PropertyName prop={property}/>
+            <Property.Name prop={property}/>
           </span>
         </div>
         <div className='EntityViewer__property-list-item__value'>
@@ -131,7 +131,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
           )}
           {!isEditable && (
             <div>
-              <PropertyValues prop={property} values={entity.getProperty(property.name)} resolveEntityReference={this.resolveEntityReference} />
+              <Property.Values prop={property} values={entity.getProperty(property.name)} resolveEntityReference={this.resolveEntityReference} />
             </div>
           )}
         </div>
@@ -155,7 +155,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
                 currSelected={vertexRef.color}
                 onSelect={(color: string) => this.props.onVertexColorSelected(vertexRef, color)}
               />
-              <VertexRadiusPicker
+              <RadiusPicker
                 radius={vertexRef.radius}
                 onChange={(radius: number) => this.props.onVertexRadiusSelected(vertexRef, radius)}
                 config={layout.config}
@@ -170,7 +170,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
         </UL>
         {writeable && !!availableProperties.length && (<>
           <Divider/>
-          <SelectProperty
+          <PropertySelect
             properties={availableProperties}
             onSelected={this.onNewPropertySelected}
           />

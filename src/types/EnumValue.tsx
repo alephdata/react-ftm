@@ -2,13 +2,13 @@ import React from 'react';
 import {wordList} from "../utils";
 
 
-interface IEnumValueProps {
+interface ILabelProps {
   code:string
   fullList:Map<string, string>
   short?:boolean
 }
 
-export class EnumValue extends React.PureComponent<IEnumValueProps> {
+export class Label extends React.PureComponent<ILabelProps> {
   render() {
     const { code, fullList, short = false } = this.props;
     const codeLabel = code ? code.toUpperCase() : '-';
@@ -19,19 +19,19 @@ export class EnumValue extends React.PureComponent<IEnumValueProps> {
   }
 }
 
-interface IEnumValueListProps {
+interface IListProps {
   codes:string[],
   truncate: number
   fullList:Map<string, string>
 }
 
-export class EnumValueList extends React.Component<IEnumValueListProps> {
+class List extends React.Component<IListProps> {
   render() {
     const { codes, truncate = Infinity, ...props } = this.props;
     if (!codes) return null;
 
     let names:Array<any> = codes.map(code => (
-      <EnumValue code={code} key={code} {...props} />
+      <Label code={code} key={code} {...props} />
     ));
 
     // Truncate if too long
@@ -42,3 +42,11 @@ export class EnumValueList extends React.Component<IEnumValueListProps> {
     return wordList(names, ', ');
   }
 }
+
+class EnumValue extends React.Component {
+  static Label = Label;
+
+  static List = List;
+}
+
+export default EnumValue;

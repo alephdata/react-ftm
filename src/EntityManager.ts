@@ -6,7 +6,7 @@ export interface IEntityManagerProps {
   createEntity?: (entityData: IEntityDatum) => Promise<Entity>,
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
-  getEntitySuggestions?: (queryText: string, schema?: Schema) => Promise<Entity[]>,
+  getEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>,
   resolveEntityReference?: (entityId: string) => Entity | undefined,
 }
 
@@ -24,6 +24,7 @@ export class EntityManager {
     }
 
     this.getEntitySuggestions = this.getEntitySuggestions.bind(this);
+    this.resolveEntityReference = this.resolveEntityReference.bind(this);
   }
 
   async createEntity(entityData: any) {
@@ -65,9 +66,9 @@ export class EntityManager {
     }
   }
 
-  async getEntitySuggestions(queryText: string, schema?: Schema) {
+  async getEntitySuggestions(queryText: string, schemata?: Array<Schema>) {
     if (this.overload?.getEntitySuggestions) {
-      const suggestions = await this.overload.getEntitySuggestions(queryText, schema);
+      const suggestions = await this.overload.getEntitySuggestions(queryText, schemata);
       return suggestions;
     }
     return [];

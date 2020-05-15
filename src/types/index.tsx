@@ -1,25 +1,28 @@
-import Count from './Count';
-import Country from './Country';
+import { withTranslator } from '../Translator';
+
+import CountBase from './Count';
 import Date from './Date';
 import Entity from './Entity';
+import EnumValue from './EnumValue';
 import FileSize from './FileSize';
-import Language from './Language';
-import Numeric from './Numeric';
+import NumericBase from './Numeric';
+import Property from './Property';
 import Schema from './Schema';
-import Topic from './Topic';
 import URL from './URL';
 
-export * from './Property';
+const Count = withTranslator(CountBase);
+const Numeric = withTranslator(NumericBase);
 
 export {
   Count,
-  Country,
   Date,
   Entity,
+  EnumValue as Country,
+  EnumValue as Language,
+  EnumValue as Topic,
   FileSize,
-  Language,
   Numeric,
+  Property,
   Schema,
-  Topic,
   URL,
 };

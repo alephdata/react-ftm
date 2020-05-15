@@ -2,7 +2,7 @@ import * as React from 'react'
 import { defineMessages } from 'react-intl';
 import { Intent, ControlGroup, InputGroup, Colors } from '@blueprintjs/core'
 import { GraphContext, IGraphContext } from '../GraphContext'
-import { ColorPicker } from '../editor/ColorPicker'
+import { ColorPicker } from '../editors'
 import Dialog from './Dialog';
 
 import { Point, Grouping } from '../layout'

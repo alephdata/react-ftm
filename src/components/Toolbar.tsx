@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
-import { modes } from './interactionModes'
+import { modes } from '../utils'
 import {
   AnchorButton,
   Boundary,
@@ -16,13 +16,13 @@ import {
   Popover,
   Tooltip,
 } from "@blueprintjs/core"
-import { IGraphContext } from './GraphContext';
-import { GraphLogo } from './GraphLogo';
-import { SearchBox } from './SearchBox';
+import { IGraphContext } from '../GraphContext';
+import { GraphLogo } from '../GraphLogo';
+import { SearchBox } from '.';
+import { filterVerticesByText } from '../utils';
+import { GraphLayout, Rectangle, alignCircle, alignHorizontal, alignVertical, arrangeTree } from "../layout";
+import { History } from '../History';
 
-import { filterVerticesByText } from './filters';
-import { GraphLayout, Rectangle, alignCircle, alignHorizontal, alignVertical, arrangeTree } from "./layout";
-import { History } from './History';
 import './Toolbar.scss';
 
 const messages = defineMessages({

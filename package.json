@@ -1,6 +1,6 @@
 {
   "name": "@alephdata/vislib",
-  "version": "1.7.0-alpha",
+  "version": "1.8.0",
   "description": "Graph network visualisation tool for aleph/followthemoney ",
   "keywords": [],
   "files": [
@@ -78,7 +78,6 @@
     "bezier-js": "^2.5.1",
     "classnames": "^2.2.6",
     "coveralls": "^3.0.11",
-    "hoist-non-react-statics": "^3.3.2",
     "jest": "^25.2.2",
     "jest-config": "^25.1.0",
     "node-sass": "^4.13.0",

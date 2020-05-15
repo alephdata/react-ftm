@@ -1,3 +1,6 @@
-.SchemaIcon.left-icon {
-  margin-right: 5px;
+.SchemaIcon {
+  color: inherit !important;
+  &.left-icon {
+    margin-right: 5px;
+  }
 }

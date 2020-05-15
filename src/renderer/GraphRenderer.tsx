@@ -7,7 +7,7 @@ import { EdgeRenderer } from './EdgeRenderer'
 import { EdgeDrawer } from './EdgeDrawer'
 import { VertexRenderer } from './VertexRenderer'
 import { GroupingRenderer } from './GroupingRenderer'
-import { modes } from '../interactionModes'
+import { modes } from '../utils/interactionModes'
 
 
 interface IGraphRendererProps extends IGraphContext {

@@ -2,11 +2,9 @@ import * as React from 'react'
 import { defineMessages } from 'react-intl';
 import { Entity } from '@alephdata/followthemoney';
 import { Drawer, Icon, Position } from "@blueprintjs/core";
-import { IGraphContext } from './GraphContext'
-import { GroupingViewer } from "./editor/GroupingViewer";
-import { EntityViewer } from "./editor/EntityViewer";
-import { EntityList } from "./editor/EntityList";
-import { Grouping, Vertex } from './layout'
+import { IGraphContext } from '../GraphContext'
+import { EntityList, EntityViewer, GroupingViewer } from "./";
+import { Grouping, Vertex } from '../layout'
 import c from 'classnames';
 
 import './Sidebar.scss';

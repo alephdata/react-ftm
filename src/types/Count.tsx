@@ -1,10 +1,11 @@
 import React from 'react';
+import {injectIntl, WrappedComponentProps } from 'react-intl';
 import Numeric from './Numeric';
 import c from 'classnames';
 
 import './Count.scss';
 
-interface ICountProps {
+interface ICountProps extends WrappedComponentProps {
   count: number
   full?: boolean
   className?: string
@@ -28,4 +29,4 @@ class Count extends React.PureComponent<ICountProps> {
   }
 }
 
-export default Count;
+export default injectIntl(Count);

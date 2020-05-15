@@ -12,7 +12,8 @@ const VisGraph = withTranslator(VisGraphBase);
 export { VisGraph, IVisGraphProps };
 
 export * from './layout'
-export * from './editor'
+export * from './editors'
+export * from './components'
 export * from './renderer'
 export * from './types'
 export * from './EntityManager'

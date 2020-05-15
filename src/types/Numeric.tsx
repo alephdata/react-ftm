@@ -1,10 +1,10 @@
 import React from 'react';
 import numeral from 'numeral';
-import { FormattedNumber } from 'react-intl';
+import { FormattedNumber, injectIntl, WrappedComponentProps } from 'react-intl';
 
 import './Numeric.scss';
 
-interface INumericProps {
+interface INumericProps extends WrappedComponentProps {
   num?:number,
   abbr?:boolean
 }
@@ -27,4 +27,4 @@ class Numeric extends React.PureComponent<INumericProps> {
   }
 }
 
-export default Numeric;
+export default injectIntl(Numeric);
