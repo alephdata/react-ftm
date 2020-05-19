@@ -51,7 +51,7 @@ class PropertyReverse extends React.PureComponent<IPropertyReverseProps> {
 interface IPropertyValueProps extends IPropertyCommonProps{
   value:Value
   resolveEntityReference?: (entityId: string) => FTMEntity | undefined
-  getEntityLink?: (entity: Entity) => any
+  getEntityLink?: (entity: FTMEntity) => any
 }
 
 const getSortValue = ({ prop, resolveEntityReference, value }:IPropertyValueProps) => {
@@ -76,7 +76,7 @@ class PropertyValue extends React.PureComponent<IPropertyValueProps> {
     if (prop.type.name === 'entity') {
       const entity = ('string' === typeof value && resolveEntityReference) ? resolveEntityReference(value) : value;
       if (getEntityLink) {
-        return getEntityLink(entity);
+        return getEntityLink(entity as FTMEntity);
       }
       return <Entity.Label entity={entity as FTMEntity} icon />;
     } else if (typeof value !== 'string') {
@@ -115,7 +115,7 @@ interface IPropertyValuesProps extends IPropertyCommonProps{
   separator?: string
   missing?: string
   resolveEntityReference?: (entityId: string) => FTMEntity | undefined
-  getEntityLink?: (entity: Entity) => any
+  getEntityLink?: (entity: FTMEntity) => any
 }
 
 class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
