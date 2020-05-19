@@ -162,7 +162,7 @@ export class GraphLayout {
   }
 
   getGroupings(): Grouping[] {
-    return Array.from(this.groupings.values())
+    return Array.from(this.groupings.values());
   }
 
   getVertexByEntity(entity: Entity): Vertex | undefined {
@@ -320,7 +320,7 @@ export class GraphLayout {
 
   removeSubgroups() {
     const selectedGroupings = this.getSelectedGroupings();
-    const allGroupings = this.getGroupings()
+    const allGroupings = this.getGroupings().filter(grouping => grouping.id !== 'selectedArea');
 
     selectedGroupings.forEach(selected => {
       const selectedVertList = Array.from(selected.vertices);
