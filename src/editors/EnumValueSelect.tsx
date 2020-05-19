@@ -32,9 +32,14 @@ class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
     this.inputRef && this.inputRef.focus();
   }
 
-  onChange([countryId, label]: [string, string]) {
+  onChange(item?: any) {
     const { values } = this.props;
-    this.props.onSubmit([...values, ...[countryId]]);
+    if (item) {
+      const [countryId, label] = item;
+      this.props.onSubmit([...values, ...[countryId]]);
+    } else {
+      this.props.onSubmit(values);
+    }
   }
 
   getAvailableOptions() {
@@ -75,7 +80,7 @@ class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
     const availableOptions = this.getAvailableOptions();
     const selectedOptions = this.getIdLabelPairs();
 
-    return <FormGroup>
+    return (
       <ControlGroup vertical fill >
         <TypedMultiSelect
           tagRenderer={i => i[1]}
@@ -110,7 +115,7 @@ class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
           fill
         />
       </ControlGroup>
-    </FormGroup>
+    )
   }
 }
 

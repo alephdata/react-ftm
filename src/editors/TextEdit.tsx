@@ -6,6 +6,9 @@ import { ITypeEditorProps } from "./common";
 
 import "./TextEdit.scss";
 
+const ENTER_KEY = 13;
+const TAB_KEY = 9;
+
 const messages = defineMessages({
   add_additional: {
     id: 'editor.text.additional',
@@ -119,7 +122,7 @@ class TextEdit extends React.PureComponent<ITextEditProps, ITextEditState> {
                   }}
                   onKeyDown={(e:any) => {
                     // override textarea Enter to submit input
-                    if (e.keyCode == 13) {
+                    if (e.keyCode === ENTER_KEY || e.keyCode === TAB_KEY) {
                       e.preventDefault();
                       e.stopPropagation();
                       onSubmit(values);
