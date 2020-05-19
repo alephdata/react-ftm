@@ -18,10 +18,11 @@ const messages = defineMessages({
 });
 
 interface IEntityTypeProps extends ITypeEditorProps, WrappedComponentProps {
-  entity: FTMEntity
+  allowMultiple: boolean
   values: Array<FTMEntity>
-  entitySuggestions: { isPending: boolean, results: Array<FTMEntity> }
-  fetchEntitySuggestions: (query: string) => void
+  entitySuggestions: Array<FTMEntity>
+  isFetching: boolean
+  onQueryChange: (query: string) => void
 }
 
 interface IEntitySelectState {
@@ -70,11 +71,11 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
   }
 
   itemListRenderer(rendererProps: any) {
-    const { intl, entitySuggestions } = this.props;
+    const { intl, isFetching } = this.props;
     const { filteredItems, itemsParentRef, renderItem } = rendererProps;
 
     let content;
-    if (entitySuggestions.isPending) {
+    if (isFetching) {
       content = <Spinner className="VertexCreateDialog__spinner" size={Spinner.SIZE_SMALL} />
     } else if (filteredItems.length === 0) {
       content = <span className="EntityViewer__property-list-item__error">{intl.formatMessage(messages.no_results)}</span>
@@ -91,23 +92,18 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
 
   onQueryChange(query: string) {
     this.setState({ query });
-    this.props.fetchEntitySuggestions(query);
+    this.props.onQueryChange(query);
   }
 
   render() {
-    const { entitySuggestions, entity, intl, onSubmit, usePortal, values } = this.props;
+    const { allowMultiple, entitySuggestions, intl, onSubmit, inputProps = {}, popoverProps = {}, values } = this.props;
     const { query } = this.state;
     const buttonText = values.length
       ? <Entity.Label entity={values[0]} icon />
       : intl.formatMessage(messages.placeholder);
 
-    const allowMultiple = !entity.schema.isEdge;
-
-    const filteredSuggestions = entitySuggestions.results
-      .filter(e => (e.id !== entity.id && !values.find(val => val.id === e.id )))
-
-    return <FormGroup>
-      <ControlGroup vertical fill >
+    const filteredSuggestions = entitySuggestions.filter(e => (!values.find(val => val.id === e.id )))
+    return <ControlGroup className="EntitySelect" vertical fill>
         {!allowMultiple && (
           <TypedSelect
             onItemSelect={(entity: FTMEntity) => onSubmit([entity])}
@@ -118,7 +114,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
               position: Position.BOTTOM_LEFT,
               minimal: true,
               targetProps: {style: {width: '100%'}},
-              usePortal
+              ...popoverProps
             }}
             resetOnSelect
             filterable
@@ -145,13 +141,14 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
               position: Position.BOTTOM_LEFT,
               minimal: true,
               targetProps: {style: {width: '100%'}},
-              usePortal
+              ...popoverProps
             }}
             tagInputProps={{
               inputRef: (ref) => this.inputRef = ref,
               tagProps: {interactive: false, minimal: true},
               onRemove: this.onRemove,
               placeholder: '',
+              ...inputProps
             }}
             selectedItems={values}
             openOnKeyDown
@@ -162,7 +159,6 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
           />
         )}
       </ControlGroup>
-    </FormGroup>
   }
 }
 

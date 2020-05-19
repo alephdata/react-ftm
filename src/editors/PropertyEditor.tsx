@@ -13,7 +13,7 @@ interface IPropertyEditorProps extends WrappedComponentProps {
   onChange?: (values: Values) => void
   fetchEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>
   resolveEntityReference?: (entityId: string) => Entity | undefined,
-  usePortal?: boolean
+  popoverProps?: any
 }
 
 interface IPropertyEditorState {
@@ -69,7 +69,7 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
   }
 
   async fetchEntitySuggestions(query: string) {
-    const { entity, intl, property, usePortal } = this.props;
+    const { entity, intl, property } = this.props;
     if (this.props.fetchEntitySuggestions) {
       this.setState({ entitySuggestions: { isPending: true, results: [] }});
       const suggestions = await this.props.fetchEntitySuggestions(query, [property.getRange()]);
@@ -78,7 +78,7 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
   }
 
   render() {
-    const { entity, intl, property, usePortal } = this.props;
+    const { entity, intl, property, popoverProps } = this.props;
     const { entitySuggestions, error, values } = this.state;
     const propType = property.type;
 
@@ -86,7 +86,7 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
       onSubmit: this.onSubmit,
       onChange: this.onChange,
       values,
-      usePortal: usePortal === undefined ? true : usePortal,
+      popoverProps,
     };
     let content;
 
@@ -95,7 +95,20 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
     } else if (propType.name === 'topic') {
       content = <TopicSelect fullList={propType.values} {...commonProps} />;
     } else if (propType.name === 'entity') {
-      content = <EntitySelect {...commonProps} entity={entity} values={values as Array<Entity>} entitySuggestions={entitySuggestions} fetchEntitySuggestions={this.fetchEntitySuggestions}  />
+      const filteredSuggestions = entitySuggestions.results
+        ? entitySuggestions.results.filter(e => (e.id !== entity.id))
+        : [];
+
+      content = (
+        <EntitySelect
+          {...commonProps}
+          allowMultiple={!entity.schema.isEdge}
+          values={values as Array<Entity>}
+          isFetching={entitySuggestions.isPending}
+          entitySuggestions={filteredSuggestions}
+          onQueryChange={this.fetchEntitySuggestions}
+        />
+      );
     } else {
       content = <TextEdit {...commonProps} />;
     }
@@ -103,7 +116,7 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
     return (
       <>
         <form
-          onSubmit={(e:any) => { e.preventDefault(); e.stopPropagation(); }}
+          onSubmit={(e:any) => { e.preventDefault(); }}
           onKeyDown={(e:any) => e.keyCode === TAB_KEY ? this.onSubmit() : null}
         >
           {content}

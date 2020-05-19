@@ -75,7 +75,7 @@ class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
   }
 
   render() {
-    const { intl, usePortal } = this.props;
+    const { inputProps = {}, intl, popoverProps = {} } = this.props;
 
     const availableOptions = this.getAvailableOptions();
     const selectedOptions = this.getIdLabelPairs();
@@ -95,12 +95,13 @@ class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
             />
           )}
           items={availableOptions}
-          popoverProps={{ minimal: true, position: Position.BOTTOM_LEFT, usePortal }}
+          popoverProps={{ minimal: true, position: Position.BOTTOM_LEFT, ...popoverProps }}
           tagInputProps={{
             inputRef: (ref) => this.inputRef = ref,
             tagProps: {interactive: false, minimal: true},
             onRemove: this.onRemove,
-            placeholder: ''
+            placeholder: '',
+            ...inputProps
           }}
           itemListPredicate={(query, items) => {
             const queryProcessed = query.toLowerCase();

@@ -29,17 +29,16 @@ class SchemaSelect extends React.PureComponent<ISelectSchemaProps> {
       .sort((a, b) => a.label.localeCompare(b.label));
 
     return (
-      <div className="SchemaSelect">
-        <TypedSelect
-          items={schemaSelectOptions}
-          filterable={false}
-          itemRenderer={itemRenderer}
-          onItemSelect={onSelect}
-          popoverProps={{ minimal: true}}
-        >
-          {this.props.children}
-        </TypedSelect>
-      </div>
+      <TypedSelect
+        items={schemaSelectOptions}
+        filterable={false}
+        itemRenderer={itemRenderer}
+        onItemSelect={onSelect}
+        popoverProps={{ minimal: true}}
+        className="SchemaSelect"
+      >
+        {this.props.children}
+      </TypedSelect>
     );
   }
 }
