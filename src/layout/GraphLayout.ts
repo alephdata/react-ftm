@@ -159,6 +159,7 @@ export class GraphLayout {
 
   addGrouping(grouping: Grouping) {
     this.groupings.set(grouping.id, grouping)
+    this.removeSubgroups()
   }
 
   getGroupings(): Grouping[] {
