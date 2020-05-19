@@ -62,7 +62,7 @@
   "devDependencies": {
     "@alephdata/followthemoney": "^1.30.0",
     "@blueprintjs/core": "^3.20.0",
-    "@blueprintjs/select": "^3.11.2",
+    "@blueprintjs/select": "^3.12.3",
     "@blueprintjs/table": "^3.8.2",
     "@formatjs/cli": "^1.3.1",
     "@rollup/plugin-json": "^4.0.2",
@@ -103,7 +103,7 @@
   },
   "peerDependencies": {
     "@blueprintjs/core": "^3.23.1",
-    "@blueprintjs/select": "^3.11.2",
+    "@blueprintjs/select": "^3.12.3",
     "@blueprintjs/table": "^3.8.3",
     "react": "^16.13.1",
     "react-dom": "^16.8.6"
