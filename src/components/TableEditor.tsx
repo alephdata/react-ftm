@@ -326,7 +326,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
         property={property}
         onChange={onChange}
         onSubmit={(entity:Entity) => { onChange(entity.getProperty(property)); this.setState({ shouldCommit: true }); }}
-        usePortal={false}
+        popoverProps={{ usePortal: false }}
         fetchEntitySuggestions={entityManager.getEntitySuggestions}
         resolveEntityReference={entityManager.resolveEntityReference}
       />

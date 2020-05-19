@@ -1,12 +1,11 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Alignment, Button, ControlGroup, InputGroup, Intent, Menu, MenuItem, Spinner, Divider } from '@blueprintjs/core'
-import { ItemListRenderer, IItemListRendererProps, Suggest } from '@blueprintjs/select';
-import { Entity as FTMEntity, Schema as FTMSchema } from '@alephdata/followthemoney'
+import { Entity as FTMEntity, Schema as FTMSchema, Values } from '@alephdata/followthemoney'
 
 import { EntityManager } from '../EntityManager';
 import { GraphContext, IGraphContext } from '../GraphContext'
-import { SchemaSelect } from '../editors'
+import { EntitySelect, SchemaSelect } from '../editors'
 import { Entity, Schema } from '../types';
 import { Point } from '../layout'
 import Dialog from './Dialog'
@@ -55,7 +54,6 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     this.onQueryChange = this.onQueryChange.bind(this);
     this.onSchemaSelect = this.onSchemaSelect.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    this.itemListRenderer = this.itemListRenderer.bind(this);
 
     this.state = {
       query: '',
@@ -76,16 +74,18 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
   }
 
   onQueryChange(query: string) {
-    this.setState({ query });
-    this.fetchSuggestions({ query, schemata: [this.state.schema] })
+    if (!this.state.isProcessing) {
+      this.setState({ query });
+      this.fetchSuggestions(query, [this.state.schema])
+    }
   }
 
   onSchemaSelect(schema: FTMSchema) {
     this.setState({ schema });
-    this.fetchSuggestions({ query: this.state.query, schemata: [schema] })
+    this.fetchSuggestions(this.state.query, [schema])
   }
 
-  async fetchSuggestions({ query, schemata }:{ query: string, schemata: Array<FTMSchema> }) {
+  async fetchSuggestions(query: string, schemata: Array<FTMSchema>) {
     const { layout } = this.context as IGraphContext
 
     if (query.length === 0) {
@@ -104,8 +104,9 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     return this.state.schema || layout.entityManager.model.getSchema('Person')
   }
 
-  async onSubmit(entityData: string | FTMEntity) {
-    if (!entityData) return;
+  async onSubmit(values: Values) {
+    if (!values || !values.length) return;
+    const entityData = values[0];
     const { layout, updateLayout, viewport, updateViewport } = this.context as IGraphContext
     const { query } = this.state
     const schema = this.getSchema();
@@ -130,6 +131,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
       return;
     }
 
+
     const vertex = layout.getVertexByEntity(entity)
     const position = this.props.vertexCreateOptions?.initialPosition || viewport.center;
 
@@ -140,23 +142,6 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
       this.setState({query: '', isProcessing: false, suggestions: []})
       this.props.toggleDialog()
     }
-  }
-
-  itemListRenderer(rendererProps: IItemListRendererProps<FTMEntity>) {
-    const { filteredItems, itemsParentRef, renderItem } = rendererProps;
-    const { isFetchingSuggestions, isProcessing } = this.state;
-
-    if ((!isFetchingSuggestions && !filteredItems.length) || isProcessing) return;
-
-    const content = isFetchingSuggestions
-      ? <Spinner className="VertexCreateDialog__spinner" size={Spinner.SIZE_SMALL} />
-      : filteredItems.map(renderItem);
-
-    return (
-      <Menu ulRef={itemsParentRef}>
-        {content}
-      </Menu>
-    );
   }
 
   render() {
@@ -181,7 +166,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
           e.preventDefault();
           e.stopPropagation();
           // only allow submit of input on enter when no suggestions are present
-          !suggestions.length && query.length && this.onSubmit(query)
+          !suggestions.length && query.length && this.onSubmit([query])
         }}>
           <div className="bp3-dialog-body">
             <ControlGroup fill>
@@ -192,6 +177,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
               >
                 <Button
                   large
+                  fill
                   text={vertexSelectText}
                   alignText={Alignment.LEFT}
                   icon={vertexSelectIcon}
@@ -199,42 +185,23 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
                   className="VertexCreateDialog__schema-select"
                 />
               </SchemaSelect>
-              <Suggest
-                fill
-                inputValueRenderer={query => typeof query === 'string' ? query : query.getCaption()}
-                items={suggestions}
-                itemListRenderer={this.itemListRenderer as ItemListRenderer<FTMEntity>}
-                popoverProps={{
-                  popoverClassName: "VertexCreateDialog__popover",
-                  minimal: true,
-                  position: 'bottom-left',
-                }}
-                inputProps={{
-                  className: "VertexCreateDialog__input",
-                  large: true,
-                  round: false,
-                  placeholder: placeholder,
-                }}
-                itemRenderer={(entity, { handleClick, modifiers }) => (
-                  <MenuItem
-                    active={modifiers.active}
-                    disabled={modifiers.disabled}
-                    key={entity.id}
-                    onClick={handleClick}
-                    text={<Entity.Label entity={entity} icon />}
-                    style={modifiers.active ? { fill: 'white' } : {}}
-                  />
-                )}
+              <EntitySelect
+                onSubmit={this.onSubmit}
+                onChange={this.onSubmit}
+                values={[]}
+                allowMultiple={true}
+                isFetching={isFetchingSuggestions}
+                entitySuggestions={suggestions}
                 onQueryChange={this.onQueryChange}
-                onItemSelect={this.onSubmit}
-                query={query}
+                popoverProps={{ usePortal: false }}
+                inputProps={{ large: true }}
               />
               <Button
                 large
                 icon="arrow-right"
                 disabled={!query.length}
-                onClick={() => this.onSubmit(query)}
-                className="VertexCreateDial"
+                onClick={() => this.onSubmit([query])}
+                className="VertexCreateDialog__submit"
               />
             </ControlGroup>
           </div>
