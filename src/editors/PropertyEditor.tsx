@@ -4,6 +4,8 @@ import { Entity, Property, Schema, Values } from '@alephdata/followthemoney';
 import { CountrySelect, TopicSelect, EntitySelect, TextEdit } from './';
 import { validate } from '../utils';
 
+const TAB_KEY = 9;
+
 interface IPropertyEditorProps extends WrappedComponentProps {
   entity: Entity,
   property: Property,
@@ -100,7 +102,12 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
 
     return (
       <>
-        {content}
+        <form
+          onSubmit={(e:any) => { e.preventDefault(); e.stopPropagation(); }}
+          onKeyDown={(e:any) => e.keyCode === TAB_KEY ? this.onSubmit() : null}
+        >
+          {content}
+        </form>
         {error && (
           <div className="EntityViewer__property-list-item__error">{intl.formatMessage(error)}</div>
         )}
