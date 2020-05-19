@@ -51,6 +51,7 @@ class PropertyReverse extends React.PureComponent<IPropertyReverseProps> {
 interface IPropertyValueProps extends IPropertyCommonProps{
   value:Value
   resolveEntityReference?: (entityId: string) => FTMEntity | undefined
+  getEntityLink?: (entity: Entity) => any
 }
 
 const getSortValue = ({ prop, resolveEntityReference, value }:IPropertyValueProps) => {
@@ -68,12 +69,15 @@ const getSortValue = ({ prop, resolveEntityReference, value }:IPropertyValueProp
 
 class PropertyValue extends React.PureComponent<IPropertyValueProps> {
   render() {
-    const { prop, resolveEntityReference, value } = this.props;
+    const { getEntityLink, prop, resolveEntityReference, value } = this.props;
     if (!value) {
       return null;
     }
     if (prop.type.name === 'entity') {
       const entity = ('string' === typeof value && resolveEntityReference) ? resolveEntityReference(value) : value;
+      if (getEntityLink) {
+        return getEntityLink(entity);
+      }
       return <Entity.Label entity={entity as FTMEntity} icon />;
     } else if (typeof value !== 'string') {
       return value;
@@ -111,13 +115,20 @@ interface IPropertyValuesProps extends IPropertyCommonProps{
   separator?: string
   missing?: string
   resolveEntityReference?: (entityId: string) => FTMEntity | undefined
+  getEntityLink?: (entity: Entity) => any
 }
 
 class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
   render() {
-    const { prop, resolveEntityReference, values, separator = ' · ', missing = '—' } = this.props;
+    const { getEntityLink, prop, resolveEntityReference, values, separator = ' · ', missing = '—' } = this.props;
     const vals = ensureArray(values).map(value => (
-      <PropertyValue key={typeof value === 'string' ? value : value.id} prop={prop} value={value} resolveEntityReference={resolveEntityReference} />
+      <PropertyValue
+        key={typeof value === 'string' ? value : value.id}
+        prop={prop}
+        value={value}
+        resolveEntityReference={resolveEntityReference}
+        getEntityLink={getEntityLink}
+      />
     ));
     let content;
     if (!vals.length) {
