@@ -126,7 +126,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
         updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
       }
       if (type.schema && type.schema.edge && sourceEntity && targetEntity) {
-        const entity = await layout.createEntity({
+        const entity = layout.createEntity({
           schema: type.schema,
           properties: {
             [type.schema.edge.source]: sourceEntity.id,

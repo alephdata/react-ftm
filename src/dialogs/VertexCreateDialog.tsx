@@ -117,9 +117,9 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
       if (typeof entityData === 'string') {
         const captionProperty = schema?.caption[0];
         if (captionProperty) {
-          entity = await layout.createEntity({ schema, properties: { [captionProperty]: query } });
+          entity = layout.createEntity({ schema, properties: { [captionProperty]: query } });
         } else {
-          entity = await layout.createEntity({ schema });
+          entity = layout.createEntity({ schema });
         }
       } else {
         entity = entityData;

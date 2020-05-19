@@ -410,22 +410,22 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       }
     })
 
-    this.props.entityManager.createEntity(entityData).then(entity => {
-      if (shouldPrepend) {
-        const visibleProps = this.getVisibleProperties();
-        const entityId = entity.id;
-        this.setState(({ entityRows, prependedIds, topAddRows }) => {
-          topAddRows.pop();
-          return ({
-            entityRows: [this.getEntityRow(entity, visibleProps), ...(entityRows.filter((entityRow) => {
-              return entityRow[1]?.data?.entity?.id !== entityId
-            }))],
-            prependedIds: [...prependedIds, entityId],
-            topAddRows
-          })
-        });
-      }
-    });
+    const entity = this.props.entityManager.createEntity(entityData);
+
+    if (shouldPrepend) {
+      const visibleProps = this.getVisibleProperties();
+      const entityId = entity.id;
+      this.setState(({ entityRows, prependedIds, topAddRows }) => {
+        topAddRows.pop();
+        return ({
+          entityRows: [this.getEntityRow(entity, visibleProps), ...(entityRows.filter((entityRow) => {
+            return entityRow[1]?.data?.entity?.id !== entityId
+          }))],
+          prependedIds: [...prependedIds, entityId],
+          topAddRows
+        })
+      });
+    }
   }
 
   handleExistingRow = (changes: Datasheet.CellsChangedArgs<CellData, any> | Datasheet.CellAdditionsArgs<CellData>) => {

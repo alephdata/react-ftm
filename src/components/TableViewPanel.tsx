@@ -86,13 +86,12 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
     }
   }
 
-  async onEntityCreate(entityData: IEntityDatum) {
+  onEntityCreate(entityData: IEntityDatum) {
     const { layout, updateLayout } = this.props;
     const entity = layout.createEntity(entityData);
+    updateLayout(layout, null, { modifyHistory: false });
     this.addChangeToBatch('created', entity);
 
-    await entity;
-    updateLayout(layout, null, { modifyHistory: false });
     return entity;
   }
 
@@ -127,16 +126,8 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
   propagateToHistory() {
     const { layout, updateLayout } = this.props;
     if (!_.isEmpty(this.batchedChanges)) {
-      // wait for entity create promises to resolve before pushing to history
-      if (this.batchedChanges.created) {
-        Promise.all(this.batchedChanges.created).then(created => {
-          updateLayout(layout, { created, ...this.batchedChanges}, { modifyHistory: true });
-          this.batchedChanges = {};
-        })
-      } else {
-        updateLayout(layout, this.batchedChanges, { modifyHistory: true });
-        this.batchedChanges = {};
-      }
+      updateLayout(layout, this.batchedChanges, { modifyHistory: true });
+      this.batchedChanges = {};
     }
   }
 
