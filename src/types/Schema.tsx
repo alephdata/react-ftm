@@ -1,6 +1,5 @@
 import React from 'react';
 import { Schema as FTMSchema, IconRegistry } from '@alephdata/followthemoney';
-import { Icon } from '@blueprintjs/core';
 import c from 'classnames';
 import './Schema.scss';
 
@@ -17,7 +16,7 @@ class SchemaIcon extends React.Component<ISchemaCommonProps>{
     return (
       <span className={c("SchemaIcon bp3-icon", className)}>
         <svg viewBox={'0 0 25 25'} height={size} width={size}>
-          {iconPaths.map((d, i) => <path key={i} d={d}/>)}/>
+          {iconPaths.map((d, i) => <path key={i} d={d}/>)}
         </svg>
       </span>
     );
