@@ -167,22 +167,24 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   private onMouseZoom(event: MouseWheelEvent) {
+    const zoomFactor = 2
     event.preventDefault()
     event.stopPropagation()
     const { viewport } = this.props
-    const direction = event.deltaY < 0 ? -.5 : .5
+    const direction = event.deltaY < 0 ? -zoomFactor : zoomFactor
     const matrix = getRefMatrix(this.props.svgRef)
     const target = applyMatrix(matrix, event.clientX, event.clientY)
     const gridTarget = viewport.config.pixelToGrid(target)
     const newViewport = viewport.zoomToPoint(gridTarget, direction)
-    this.props.updateViewport(newViewport)
+    this.props.updateViewport(newViewport, {animate: true})
   }
 
   private onKeyZoom(event: KeyboardEvent, direction: string) {
+    const zoomFactor = 3
     event.preventDefault()
     event.stopPropagation()
     const { viewport } = this.props
-    const newViewport = viewport.zoomToPoint(viewport.center, direction === 'in' ? -3 : 3)
+    const newViewport = viewport.zoomToPoint(viewport.center, direction === 'in' ? -zoomFactor : zoomFactor)
     this.props.updateViewport(newViewport, {animate: true})
   }
 
@@ -208,7 +210,8 @@ export class Canvas extends React.Component <ICanvasProps> {
     }
   }
 
-  _animateTransition(oldViewBox:string, viewBox:string, userDuration?:number) {
+  _animateTransition(oldViewBox:string, viewBox:string, duration:number = .1) {
+    // console.log('calling animate transition');
     let start = this._now();
     let that = this;
     let domNode = ReactDOM.findDOMNode(that);
@@ -216,20 +219,7 @@ export class Canvas extends React.Component <ICanvasProps> {
 
     let oldVb = oldViewBox.split(" ").map(n => parseInt(n, 10));
     let newVb = viewBox.split(" ").map(n => parseInt(n, 10));
-    let duration:number = userDuration as number;
-    // if duration not supplied, calculate based on change of size and center
-    if (!userDuration) {
-      let wRatio = newVb[2]/oldVb[2];
-      let hRatio = newVb[3]/oldVb[3];
-      let oldCenterX = oldVb[0] + oldVb[2]/2;
-      let oldCenterY = oldVb[1] + oldVb[3]/2;
-      let newCenterX = newVb[0] + newVb[2]/2;
-      let newCenterY = newVb[1] + newVb[3]/2;
-      let ratio = Math.max(wRatio, 1/wRatio, hRatio, 1/hRatio);
-      let dist = Math.floor(Math.sqrt(Math.pow(newCenterX - oldCenterX, 2) + Math.pow(newCenterY - oldCenterY, 2)));
-      duration = 1 - 1/(ratio + Math.log(dist + 1));
-      duration = Math.max(0.4, duration);
-    }
+
     const draw = () => {
       req = requestAnimationFrame(draw);
 
