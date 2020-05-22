@@ -2,7 +2,7 @@ import { Point, Vertex } from "../";
 
 const STEP = 4;
 
-const alignVertical = (vertices: Array<Vertex>): any => {
+const alignVertical = ({ vertices }: { vertices: Array<Vertex> }): any => {
   const averageX = vertices
       .reduce((_r, v)=> _r + v.position.x, 0)
     / vertices.length

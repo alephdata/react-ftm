@@ -19,7 +19,7 @@ const positioning = {
 const positionSelection = (layout: GraphLayout, type: string) => {
   const vertices = layout.getSelectedVertices().filter(v=>!v.isHidden());
   const edges = layout.getSelectionAdjacentEdges();
-  const positioningFunc = positioning[type](vertices, edges);
+  const positioningFunc = positioning[type]({vertices, edges});
 
   return layout.applyPositioning(positioningFunc, vertices);
 }

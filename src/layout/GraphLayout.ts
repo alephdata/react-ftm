@@ -247,7 +247,8 @@ export class GraphLayout {
     return this.getAdjacentEdges(this.selection)
   }
 
-  getAdjacentEdges(vertexIds: Array<string>): Edge[] {
+  getAdjacentEdges(vertices: Array<Vertex> | Array<string>): Edge[] {
+    const vertexIds = vertices.map(v => v.id || v);
     return this.getEdges().filter(e => this.isEdgeAdjacent(e, vertexIds))
   }
 

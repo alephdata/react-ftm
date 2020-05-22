@@ -14,7 +14,7 @@ const centerAround = (layout: GraphLayout): any => {
   );
   const radius = Math.max(centerBBox.width, centerBBox.height)/2 + RADIUS_SPACING;
 
-  const positioningFunc = alignCircle(rest, centerBBox.getCenter(), radius);
+  const positioningFunc = alignCircle({ vertices: rest, center: centerBBox.getCenter(), radius });
 
   return layout.applyPositioning(positioningFunc, rest);
 }

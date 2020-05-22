@@ -2,7 +2,7 @@
 import * as dagre from 'dagre'
 import { Edge, Point, Rectangle, Vertex } from "../";
 
-const arrangeTree = (vertices: Array<Vertex>, edges: Array<Edge>):any => {
+const arrangeTree = ({ vertices, edges }: { vertices: Array<Vertex>, edges: Array<Edge> }):any => {
   const nodes = vertices.map((vertex) => ({
     id: vertex.id,
     width: vertex.radius*2,
