@@ -1,20 +1,15 @@
-import {GraphLayout} from "../GraphLayout";
-import {Point} from "../Point";
+import { Point, Vertex } from "../";
 
-export function alignHorizontal(layout:GraphLayout, step = 4): GraphLayout{
-  const selectedVertices = layout.getSelectedVertices();
-  const adjacentEdges = layout.getSelectionAdjacentEdges()
+const STEP = 4;
 
-  const averageY =  selectedVertices.map(v => v.position.y)
+const alignHorizontal = (vertices: Array<Vertex>): any => {
+  const averageY = vertices.map(v => v.position.y)
       .reduce((_r, p)=> _r + p, 0)
-    / selectedVertices.length
+    / vertices.length;
 
-  const leftVertex = Math.min(...selectedVertices.map(v => v.position.x))
+  const leftVertex = Math.min(...vertices.map(v => v.position.x))
 
-  selectedVertices
-    .forEach((v, i) =>  layout.vertices.set(v.id, v.snapPosition(new Point(leftVertex + (i * step), averageY))))
-  adjacentEdges.forEach((edge) => {
-    layout.edges.set(edge.id, edge.setLabelPosition(undefined))
-  })
-  return layout
+  return (v, i) => new Point(leftVertex + (i * STEP), averageY);
 }
+
+export default alignHorizontal;

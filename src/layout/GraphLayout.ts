@@ -72,6 +72,7 @@ export class GraphLayout {
   }
 
   private generate(): void {
+    console.log('GENERATE');
     this.edges.forEach(edge => edge.garbage = true);
     this.vertices.forEach(vertex => vertex.garbage = true);
     this.entities.forEach((entity) => {
@@ -243,8 +244,11 @@ export class GraphLayout {
   }
 
   getSelectionAdjacentEdges(): Edge[] {
-    return this.getEdges()
-      .filter(edge => this.isEdgeSelectionAdjacent(edge))
+    return this.getAdjacentEdges(this.selection)
+  }
+
+  getAdjacentEdges(vertexIds: Array<string>): Edge[] {
+    return this.getEdges().filter(e => this.isEdgeAdjacent(e, vertexIds))
   }
 
   hasSelection(): boolean {
@@ -256,7 +260,7 @@ export class GraphLayout {
     this.groupings.delete('selectedArea');
   }
 
-  isElementSelected(element: GraphElement | Array<GraphElement>) {
+  isElementSelected = (element: GraphElement | Array<GraphElement>) => {
     if (Array.isArray(element)) {
       return element.every(elem => this.selection.includes(elem.id));
     } else {
@@ -281,12 +285,27 @@ export class GraphLayout {
   }
 
   isEdgeHighlighted(edge: Edge): boolean {
-    return this.isElementSelected(edge) || this.isEdgeSelectionAdjacent(edge)
+    return this.isElementSelected(edge) || this.isEdgeAdjacent(edge, this.selection)
   }
 
-  isEdgeSelectionAdjacent(edge: Edge): boolean {
-    return this.selection.indexOf(edge.sourceId) !== -1 ||
-      this.selection.indexOf(edge.targetId) !== -1;
+  isEdgeAdjacent(edge: Edge, vIds:Array<string>): boolean {
+    return vIds.indexOf(edge.sourceId) !== -1 ||
+      vIds.indexOf(edge.targetId) !== -1;
+  }
+
+  applyPositioning(positioningFunc: any, vertices?: Array<Vertex>) {
+    const vList = vertices || this.getVertices();
+    vertices.forEach((v, i) => {
+      const position = positioningFunc(v, i);
+      if (position) {
+        this.vertices.set(v.id, v.snapPosition(position));
+      }
+    });
+
+    this.getAdjacentEdges(vertices).forEach((edge) => {
+      this.edges.set(edge.id, edge.setLabelPosition(undefined))
+    });
+    return this;
   }
 
   dragSelection(offset: Point, initialPosition?: Point) {
@@ -421,6 +440,7 @@ export class GraphLayout {
   }
 
   layoutPositions() {
+    console.log("LAYOUT POSITIONS")
     const nodes = this.getVertices()
       .filter((vertex) => !vertex.isHidden())
       .map((vertex) => {
@@ -447,6 +467,7 @@ export class GraphLayout {
 
     nodes.forEach((node) => {
       if (!node.fixed) {
+        console.log('setting position of non-fixed node');
         const vertex = this.vertices.get(node.id) as Vertex
         const position = new Point(node.x, node.y)
         this.vertices.set(vertex.id, vertex.snapPosition(position))
@@ -459,6 +480,7 @@ export class GraphLayout {
   }
 
   update(withData:IGraphLayoutData):GraphLayout{
+    console.log("UPDATE");
     return GraphLayout.fromJSON(this.config, this.entityManager, withData)
   }
 

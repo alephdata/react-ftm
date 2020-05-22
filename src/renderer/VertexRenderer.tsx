@@ -61,6 +61,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   private onDragMove(e: DraggableEvent, data: DraggableData) {
+    console.log('calling onDragmove');
     const { config } = this.props
     const matrix = getRefMatrix(this.gRef)
     const current = applyMatrix(matrix, data.x, data.y)

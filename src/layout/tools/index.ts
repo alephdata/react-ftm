@@ -1,5 +1,7 @@
-export * from './alignCircle';
-export * from './alignHorizontal';
-export * from './alignVertical';
-export * from './arrangeTree';
-export * from './forceLayout';
+import centerAround from './centerAround';
+import positionSelection from './positionSelection';
+
+export {
+  centerAround,
+  positionSelection
+}

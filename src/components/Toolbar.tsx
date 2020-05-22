@@ -20,7 +20,12 @@ import { IGraphContext } from '../GraphContext';
 import { GraphLogo } from '../GraphLogo';
 import { SearchBox } from '.';
 import { filterVerticesByText } from '../utils';
-import { GraphLayout, Rectangle, alignCircle, alignHorizontal, alignVertical, arrangeTree } from "../layout";
+import {
+  GraphLayout,
+  Rectangle,
+  centerAround,
+  positionSelection,
+} from "../layout";
 import { History } from '../History';
 
 import './Toolbar.scss';
@@ -247,25 +252,36 @@ export class Toolbar extends React.Component<IToolbarProps> {
           helpText: intl.formatMessage(messages.tooltip_layout_horizontal),
           icon: "drag-handle-horizontal",
           disabled: disableLayoutButtons,
-          onClick: () => updateLayout(alignHorizontal(layout), null, { modifyHistory:true }),
+          onClick: () => updateLayout(positionSelection(layout, 'alignHorizontal'), null, { modifyHistory:true }),
         },
         {
           helpText: intl.formatMessage(messages.tooltip_layout_vertical),
           icon: "drag-handle-vertical",
           disabled: disableLayoutButtons,
-          onClick: () => updateLayout(alignVertical(layout), null, { modifyHistory:true }),
+          onClick: () => updateLayout(positionSelection(layout, 'alignVertical'), null, { modifyHistory:true }),
         },
         {
           helpText: intl.formatMessage(messages.tooltip_layout_circle),
           icon: "layout-circle",
           disabled: disableLayoutButtons,
-          onClick: () => updateLayout(alignCircle(layout), null, { modifyHistory:true }),
+          onClick: () => updateLayout(positionSelection(layout, 'alignCircle'), null, { modifyHistory:true }),
         },
         {
           helpText: intl.formatMessage(messages.tooltip_layout_hierarchy),
           icon: "layout-hierarchy",
           disabled: disableLayoutButtons,
-          onClick: () => updateLayout(arrangeTree(layout), null, { modifyHistory:true }),
+          onClick: () => updateLayout(positionSelection(layout, 'arrangeTree'), null, { modifyHistory:true }),
+        },
+        // {
+        //   helpText: 'force layout',
+        //   icon: "layout",
+        //   disabled: disableLayoutButtons,
+        //   onClick: () => updateLayout(positionSelection(layout, 'forceLayout'), null, { modifyHistory:true }),
+        // },
+        {
+          helpText: 'center',
+          icon: "layout-auto",
+          onClick: () => updateLayout(centerAround(layout), null, { modifyHistory:true }),
         }
       ],
       [
