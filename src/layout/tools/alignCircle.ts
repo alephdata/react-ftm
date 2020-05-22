@@ -7,11 +7,8 @@ const alignCircle = ({vertices, center, radius}:{ vertices: Array<Vertex>, cente
   ).getCenter();
   const step = (2*Math.PI) / vertices.length;
 
-  console.log(radius * Math.cos(step));
-
   return (v, i) => {
     const angle = step * i;
-    console.log(Math.round(center.x + radius * Math.cos(angle)), Math.round(center.y + radius * Math.sin(angle)))
     return new Point(
       Math.round(center.x + radius * Math.cos(angle)),
       Math.round(center.y + radius * Math.sin(angle))

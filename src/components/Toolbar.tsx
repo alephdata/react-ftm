@@ -24,6 +24,7 @@ import {
   GraphLayout,
   Rectangle,
   centerAround,
+  disperse,
   positionSelection,
 } from "../layout";
 import { History } from '../History';
@@ -272,12 +273,11 @@ export class Toolbar extends React.Component<IToolbarProps> {
           disabled: disableLayoutButtons,
           onClick: () => updateLayout(positionSelection(layout, 'arrangeTree'), null, { modifyHistory:true }),
         },
-        // {
-        //   helpText: 'force layout',
-        //   icon: "layout",
-        //   disabled: disableLayoutButtons,
-        //   onClick: () => updateLayout(positionSelection(layout, 'forceLayout'), null, { modifyHistory:true }),
-        // },
+        {
+          helpText: 'disperse',
+          icon: "layout",
+          onClick: () => updateLayout(disperse(layout), null, { modifyHistory:true }),
+        },
         {
           helpText: 'center',
           icon: "layout-auto",
