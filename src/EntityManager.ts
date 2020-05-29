@@ -38,6 +38,7 @@ export class EntityManager {
       const { properties, schema } = entityData;
 
       entity = this.model.createEntity(schema, this.namespace);
+
       if (properties) {
         Object.entries(properties).forEach(([prop, value]: [string, any]) => {
           if (Array.isArray(value)) {
