@@ -4,7 +4,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-04-26T19:18:27.669Z\n"
+"POT-Creation-Date: 2020-05-29T08:42:30.984Z\n"
 "Last-Translator: jen occrp, 2020\n"
 "Language-Team: Russian (https://www.transifex.com/aleph/teams/76591/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -13,6 +13,13 @@ msgstr ""
 "Language: ru\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 "X-Generator: react-intl-po\n"
+
+#. [property.inverse]
+#. defaultMessage is:
+#. '{label}' of …
+#: i18n/messages.json
+msgid "'{label}' of …"
+msgstr ""
 
 #. [editor.property_add]
 #. defaultMessage is:
@@ -63,13 +70,6 @@ msgstr "Добавить сущность"
 msgid "Add link"
 msgstr "Добавить связь"
 
-#. [table_editor.add_entity]
-#. defaultMessage is:
-#. Add {schema}
-#: i18n/messages.json
-msgid "Add {schema}"
-msgstr "Добавить {schema}"
-
 #. [tooltip.layout_horizontal]
 #. defaultMessage is:
 #. Align horizontal
@@ -105,6 +105,13 @@ msgstr "Расположить в виде иерархии"
 msgid "Create"
 msgstr "Создать"
 
+#. [table_editor.add_entity]
+#. defaultMessage is:
+#. Create a new {schema}
+#: i18n/messages.json
+msgid "Create a new {schema}"
+msgstr ""
+
 #. [editor.validation.date_invalid]
 #. defaultMessage is:
 #. Date format: yyyy-m-d
@@ -118,13 +125,6 @@ msgstr "Формат даты: гггг-м-д"
 #: i18n/messages.json
 msgid "Delete selection"
 msgstr "Удалить выбранное"
-
-#. [table_editor.delete_entity]
-#. defaultMessage is:
-#. Delete this entity
-#: i18n/messages.json
-msgid "Delete this entity"
-msgstr "Удалить эту сущность"
 
 #. [tooltip.export_svg]
 #. defaultMessage is:
@@ -199,7 +199,10 @@ msgstr "Сущности не найдены"
 #. [search.results_text.none]
 #. defaultMessage is:
 #. No results found
-#: i18n/messages.json
+#. [enum_value_select.no_results]
+#. defaultMessage is:
+#. No results found
+#: i18n/messages.json i18n/messages.json
 msgid "No results found"
 msgstr "Ничего не найдено"
 
@@ -231,10 +234,10 @@ msgstr "Повторить действие"
 msgid "Select a label for the grouping"
 msgstr "Выбрать метку"
 
-#. [editor.vertex_select.placeholder]
+#. [editor.entity.placeholder]
 #. defaultMessage is:
 #. Select an entity
-#. [editor.entity.placeholder]
+#. [editor.vertex_select.placeholder]
 #. defaultMessage is:
 #. Select an entity
 #: i18n/messages.json i18n/messages.json
@@ -317,20 +320,6 @@ msgstr "Отменить"
 #: i18n/messages.json
 msgid "Ungroup selection"
 msgstr "Разгруппировать"
-
-#. [editor.language.unknown]
-#. defaultMessage is:
-#. Unknown
-#: i18n/messages.json
-msgid "Unknown"
-msgstr "Неизвестно"
-
-#. [editor.entity.unknown]
-#. defaultMessage is:
-#. Untitled
-#: i18n/messages.json
-msgid "Untitled"
-msgstr "Без имени"
 
 #. [dialog.vertex_create.name_placeholder]
 #. defaultMessage is:

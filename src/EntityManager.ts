@@ -1,8 +1,9 @@
-import { defaultModel, Entity, Model, Schema, IEntityDatum } from '@alephdata/followthemoney'
+import { defaultModel, Entity, Model, Namespace, Schema, IEntityDatum } from '@alephdata/followthemoney'
 
 
 export interface IEntityManagerProps {
   model?: Model,
+  namespace?: Namespace,
   createEntity?: (entity: IEntityDatum) => Entity,
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
@@ -12,12 +13,14 @@ export interface IEntityManagerProps {
 
 export class EntityManager {
   public readonly model: Model
+  public readonly namespace?: Namespace
   private overload: any
 
   constructor(props?: IEntityManagerProps) {
     if (props) {
-      const { model, ...rest } = props;
+      const { model, namespace, ...rest } = props;
       this.model = model || new Model(defaultModel)
+      this.namespace = namespace
       this.overload = rest;
     } else {
       this.model = new Model(defaultModel);
@@ -34,7 +37,8 @@ export class EntityManager {
     } else {
       const { properties, schema } = entityData;
 
-      entity = this.model.createEntity(schema);
+      entity = this.model.createEntity(schema, this.namespace);
+
       if (properties) {
         Object.entries(properties).forEach(([prop, value]: [string, any]) => {
           if (Array.isArray(value)) {
