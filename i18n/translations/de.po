@@ -4,7 +4,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-04-26T19:18:27.669Z\n"
+"POT-Creation-Date: 2020-05-29T08:42:30.984Z\n"
 "Last-Translator: pudo <friedrich@pudo.org>, 2020\n"
 "Language-Team: German (https://www.transifex.com/aleph/teams/76591/de/)\n"
 "MIME-Version: 1.0\n"
@@ -13,6 +13,13 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: react-intl-po\n"
+
+#. [property.inverse]
+#. defaultMessage is:
+#. '{label}' of …
+#: i18n/messages.json
+msgid "'{label}' of …"
+msgstr ""
 
 #. [editor.property_add]
 #. defaultMessage is:
@@ -63,13 +70,6 @@ msgstr "Entität hinzufügen"
 msgid "Add link"
 msgstr "Verbindung hinzufügen"
 
-#. [table_editor.add_entity]
-#. defaultMessage is:
-#. Add {schema}
-#: i18n/messages.json
-msgid "Add {schema}"
-msgstr "{schema} hinzufügen"
-
 #. [tooltip.layout_horizontal]
 #. defaultMessage is:
 #. Align horizontal
@@ -105,6 +105,13 @@ msgstr "Als Hierarchie ausrichten"
 msgid "Create"
 msgstr "Speichern"
 
+#. [table_editor.add_entity]
+#. defaultMessage is:
+#. Create a new {schema}
+#: i18n/messages.json
+msgid "Create a new {schema}"
+msgstr ""
+
 #. [editor.validation.date_invalid]
 #. defaultMessage is:
 #. Date format: yyyy-m-d
@@ -118,13 +125,6 @@ msgstr "Datumsformat: JJJJ-MM-TT"
 #: i18n/messages.json
 msgid "Delete selection"
 msgstr "Auswahl entfernen"
-
-#. [table_editor.delete_entity]
-#. defaultMessage is:
-#. Delete this entity
-#: i18n/messages.json
-msgid "Delete this entity"
-msgstr "Objekt entfernen"
 
 #. [tooltip.export_svg]
 #. defaultMessage is:
@@ -199,7 +199,10 @@ msgstr "Keine Entitäten gefunden"
 #. [search.results_text.none]
 #. defaultMessage is:
 #. No results found
-#: i18n/messages.json
+#. [enum_value_select.no_results]
+#. defaultMessage is:
+#. No results found
+#: i18n/messages.json i18n/messages.json
 msgid "No results found"
 msgstr "Keine Resultate gefunden"
 
@@ -231,10 +234,10 @@ msgstr "Wiederholen"
 msgid "Select a label for the grouping"
 msgstr "Wählen sie einen Titel für diese Gruppierung"
 
-#. [editor.vertex_select.placeholder]
+#. [editor.entity.placeholder]
 #. defaultMessage is:
 #. Select an entity
-#. [editor.entity.placeholder]
+#. [editor.vertex_select.placeholder]
 #. defaultMessage is:
 #. Select an entity
 #: i18n/messages.json i18n/messages.json
@@ -317,20 +320,6 @@ msgstr "Rückgängig"
 #: i18n/messages.json
 msgid "Ungroup selection"
 msgstr "Gruppe auflösen"
-
-#. [editor.language.unknown]
-#. defaultMessage is:
-#. Unknown
-#: i18n/messages.json
-msgid "Unknown"
-msgstr "Unbekannt"
-
-#. [editor.entity.unknown]
-#. defaultMessage is:
-#. Untitled
-#: i18n/messages.json
-msgid "Untitled"
-msgstr "Unbenannt"
 
 #. [dialog.vertex_create.name_placeholder]
 #. defaultMessage is:
