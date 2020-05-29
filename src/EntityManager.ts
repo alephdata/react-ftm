@@ -13,7 +13,7 @@ export interface IEntityManagerProps {
 
 export class EntityManager {
   public readonly model: Model
-  public readonly namespace: Namespace
+  public readonly namespace?: Namespace
   private overload: any
 
   constructor(props?: IEntityManagerProps) {
