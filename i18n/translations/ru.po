@@ -4,7 +4,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-05-29T08:42:30.984Z\n"
+"POT-Creation-Date: 2020-06-02T11:13:05.575Z\n"
 "Last-Translator: jen occrp, 2020\n"
 "Language-Team: Russian (https://www.transifex.com/aleph/teams/76591/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 #. '{label}' of …
 #: i18n/messages.json
 msgid "'{label}' of …"
-msgstr ""
+msgstr "'{label}'"
 
 #. [editor.property_add]
 #. defaultMessage is:
@@ -110,7 +110,7 @@ msgstr "Создать"
 #. Create a new {schema}
 #: i18n/messages.json
 msgid "Create a new {schema}"
-msgstr ""
+msgstr "Создать {schema}"
 
 #. [editor.validation.date_invalid]
 #. defaultMessage is:
@@ -326,4 +326,4 @@ msgstr "Разгруппировать"
 #. {schema} name
 #: i18n/messages.json
 msgid "{schema} name"
-msgstr "название {schema}"
+msgstr "Название"

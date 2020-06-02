@@ -4,7 +4,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-05-29T08:42:30.984Z\n"
+"POT-Creation-Date: 2020-06-02T11:13:05.575Z\n"
 "Last-Translator: Eman Alqaisi <eman@arij.net>, 2020\n"
 "Language-Team: Arabic (https://www.transifex.com/aleph/teams/76591/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -110,7 +110,7 @@ msgstr "إنشاء"
 #. Create a new {schema}
 #: i18n/messages.json
 msgid "Create a new {schema}"
-msgstr ""
+msgstr "إنشاء {مخطط} جديد"
 
 #. [editor.validation.date_invalid]
 #. defaultMessage is:
