@@ -7,6 +7,7 @@ export interface IEntityManagerProps {
   createEntity?: (entity: IEntityDatum) => Entity,
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
+  expandEntity?: (entity: Entity) => Promise<any>
   getEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>,
   resolveEntityReference?: (entityId: string) => Entity | undefined,
 }
@@ -65,6 +66,13 @@ export class EntityManager {
   deleteEntity(entityId: string) {
     if (this.overload?.deleteEntity) {
       this.overload.deleteEntity(entityId);
+    }
+  }
+
+  async expandEntity(entity: Entity) {
+    if (this.overload?.expandEntity) {
+      const expandResults = await this.overload.expandEntity(entityId);
+      return expandResults;
     }
   }
 
