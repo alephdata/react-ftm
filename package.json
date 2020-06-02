@@ -83,7 +83,7 @@
     "jest-config": "^26.0.1",
     "node-sass": "^4.13.0",
     "react": "^16.13.1",
-    "react-dom": "^16.11.0",
+    "react-dom": "^16.13.1",
     "react-intl-po": "^2.2.2",
     "rimraf": "^3.0.2",
     "rollup": "^1.32.1",
