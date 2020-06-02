@@ -60,7 +60,7 @@ interface ITableEditorState {
   headerRow: CellData[]
   topAddRows: CellData[][]
   entityRows: CellData[][]
-  prependedIds: string[]
+  createdEntityIds: string[]
 }
 
 class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorState> {
@@ -75,7 +75,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       topAddRows: [],
       entityRows: [],
       shouldCommit: false,
-      prependedIds: [],
+      createdEntityIds: [],
     }
 
     this.onShowTopAddRow = this.onShowTopAddRow.bind(this);
@@ -111,24 +111,25 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       topAddRows: [],
       headerRow: this.getHeaderRow(),
       entityRows: this.getEntityRows(),
-      prependedIds: [],
+      createdEntityIds: [],
     });
   }
 
   appendAdditionalEntities(prevEntities: Array<Entity>) {
     const { entities } = this.props;
-    const { prependedIds } = this.state;
+    const { createdEntityIds } = this.state;
     let newEntities = _.differenceBy(entities, prevEntities, e => e.id);
-    if (prependedIds.length) {
-      newEntities = newEntities.filter(e => (prependedIds.indexOf(e.id) < 0));
+    if (createdEntityIds.length) {
+      newEntities = newEntities.filter(e => (createdEntityIds.indexOf(e.id) < 0));
     }
-    const visibleProps = this.getVisibleProperties();
+    if (newEntities.length) {
+      const visibleProps = this.getVisibleProperties();
 
-    this.setState(({ entityRows }) => ({
-      headerRow: this.getHeaderRow(),
-      entityRows: [...entityRows, ...newEntities.map(e => this.getEntityRow(e, visibleProps))]
-    }));
-
+      this.setState(({ entityRows }) => ({
+        headerRow: this.getHeaderRow(),
+        entityRows: [...entityRows, ...newEntities.map(e => this.getEntityRow(e, visibleProps))]
+      }));
+    }
   }
 
   reflectUpdatedSelection() {
@@ -411,21 +412,18 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     })
 
     const entity = this.props.entityManager.createEntity(entityData);
+    const newEntityRow = this.getEntityRow(entity, visibleProps);
 
-    if (shouldPrepend) {
-      const visibleProps = this.getVisibleProperties();
-      const entityId = entity.id;
-      this.setState(({ entityRows, prependedIds, topAddRows }) => {
+    this.setState(({ entityRows, createdEntityIds, topAddRows }) => {
+      if (shouldPrepend) {
         topAddRows.pop();
-        return ({
-          entityRows: [this.getEntityRow(entity, visibleProps), ...(entityRows.filter((entityRow) => {
-            return entityRow[1]?.data?.entity?.id !== entityId
-          }))],
-          prependedIds: [...prependedIds, entityId],
-          topAddRows
-        })
-      });
-    }
+      }
+      return ({
+        entityRows: shouldPrepend ? [newEntityRow, ...entityRows] : [...entityRows, newEntityRow],
+        createdEntityIds: [...createdEntityIds, entity.id],
+        topAddRows
+      })
+    });
   }
 
   handleExistingRow = (changes: Datasheet.CellsChangedArgs<CellData, any> | Datasheet.CellAdditionsArgs<CellData>) => {
