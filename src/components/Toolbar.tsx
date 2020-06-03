@@ -40,7 +40,7 @@ const messages = defineMessages({
   },
   tooltip_add_edges: {
     id: 'tooltip.add_edges',
-    defaultMessage: 'Add edges',
+    defaultMessage: 'Add link',
   },
   tooltip_delete: {
     id: 'tooltip.delete',

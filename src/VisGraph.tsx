@@ -8,9 +8,10 @@ import { GraphRenderer } from './renderer/GraphRenderer'
 import { GraphLayout, Rectangle, Point } from './layout';
 import { Viewport } from './Viewport';
 import { IGraphContext, GraphContext } from './GraphContext'
-import { Sidebar, TableView, Toolbar } from './components';
+import { Sidebar, TableView, Toolbar, VertexMenu } from './components';
 import { History } from './History';
 import { EdgeCreateDialog, GroupingCreateDialog, VertexCreateDialog } from './dialogs';
+import { modes } from './utils/interactionModes'
 
 import { filterVerticesByText, modes } from './utils'
 
@@ -42,6 +43,7 @@ interface IVisGraphState {
   searchText: string
   tableView: boolean
   vertexCreateOptions?: any
+  vertexMenuContents: any,
 }
 
 class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
@@ -65,6 +67,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
       interactionMode: writeable ? modes.SELECT : modes.PAN,
       tableView: false,
       searchText: externalFilterText || '',
+      vertexMenuContents: null,
     };
 
     this.addVertex = this.addVertex.bind(this)
@@ -80,6 +83,8 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     this.ungroupSelection = this.ungroupSelection.bind(this)
     this.updateLayout = this.updateLayout.bind(this);
     this.updateViewport = this.updateViewport.bind(this);
+    this.showVertexMenu = this.showVertexMenu.bind(this);
+    this.expandVertex = this.expandVertex.bind(this);
   }
 
   componentDidMount() {
@@ -168,6 +173,31 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     })
   }
 
+  async showVertexMenu(vertex: Vertex, position: Point) {
+    const { entityManager } = this.props;
+
+    this.setState({
+      vertexMenuContents: { vertex, position },
+    })
+    const expandResults = await entityManager.expandEntity(vertex.entityId);
+    this.setState({
+      vertexMenuContents: { vertex, expandResults, position },
+    })
+  }
+
+  async expandVertex(vertex: Vertex, properties: Array<string>) {
+    const { entityManager, layout } = this.props;
+
+    const expandResults = await entityManager.expandEntity(vertex.entityId, properties);
+    console.log('expand results are', expandResults);
+    const entities = expandResults.reduce((entities, expandObj) => ([...entities, ...expandObj.entities]), []);
+    console.log('entities are', entities);
+
+    layout.addEntities(entities);
+
+    this.setState({ vertexMenuContents: null });
+  }
+
   setInteractionMode(newMode?: string) {
     this.setState({ interactionMode: newMode || modes.SELECT, vertexCreateOptions: null })
   }
@@ -218,7 +248,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
 
   render() {
     const { config, entityManager, intl, layout, locale, viewport, writeable } = this.props;
-    const { animateTransition, interactionMode, searchText, tableView } = this.state;
+    const { animateTransition, interactionMode, searchText, tableView, vertexMenuContents } = this.state;
     const vertices = layout.getSelectedVertices()
     const [sourceVertex, targetVertex] = vertices;
 
@@ -240,6 +270,8 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
       ungroupSelection: this.ungroupSelection,
       onChangeSearch: this.onChangeSearch,
       onSubmitSearch: this.onSubmitSearch,
+      showVertexMenu: this.showVertexMenu,
+      expandVertex: this.expandVertex,
     };
 
     const showSidebar = layout.vertices && layout.vertices.size > 0 && !tableView;
@@ -277,6 +309,13 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                 interactionMode={interactionMode}
                 writeable={writeable}
                 {...layoutContext}
+              />
+              <VertexMenu
+                config={config}
+                isOpen={vertexMenuContents !== null && interactionMode !== modes.EDGE_DRAW}
+                contents={vertexMenuContents}
+                actions={actions}
+                intl={intl}
               />
             </div>
             {showSidebar && (

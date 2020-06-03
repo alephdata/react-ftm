@@ -106,7 +106,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     e.preventDefault()
     e.stopPropagation()
     if (vertex.isEntity()) {
-      actions.setInteractionMode(modes.EDGE_DRAW)
+      actions.showVertexMenu(vertex, new Point(e.clientX, e.clientY));
     }
   }
 
