@@ -4,7 +4,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-06-02T11:13:05.575Z\n"
+"POT-Creation-Date: 2020-06-04T15:52:17.612Z\n"
 "Last-Translator: jen occrp, 2020\n"
 "Language-Team: Russian (https://www.transifex.com/aleph/teams/76591/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -42,13 +42,6 @@ msgstr "Добавить дополнительные значения"
 msgid "Add an entity type"
 msgstr "Добавить тип сущности"
 
-#. [tooltip.add_edges]
-#. defaultMessage is:
-#. Add edges
-#: i18n/messages.json
-msgid "Add edges"
-msgstr "Добавить ветвь"
-
 #. [tooltip.add_entities]
 #. defaultMessage is:
 #. Add entities
@@ -63,10 +56,16 @@ msgstr "Добавить сущности"
 msgid "Add entity"
 msgstr "Добавить сущность"
 
+#. [tooltip.add_edges]
+#. defaultMessage is:
+#. Add link
+#. [vertex_menu.add_link]
+#. defaultMessage is:
+#. Add link
 #. [dialog.edge_create.title]
 #. defaultMessage is:
 #. Add link
-#: i18n/messages.json
+#: i18n/messages.json i18n/messages.json i18n/messages.json
 msgid "Add link"
 msgstr "Добавить связь"
 
@@ -83,6 +82,13 @@ msgstr "Выровнять горизонтально"
 #: i18n/messages.json
 msgid "Align vertical"
 msgstr "Выровнять вертикально"
+
+#. [vertex_menu.expand_all]
+#. defaultMessage is:
+#. All
+#: i18n/messages.json
+msgid "All"
+msgstr ""
 
 #. [tooltip.layout_circle]
 #. defaultMessage is:
@@ -125,6 +131,20 @@ msgstr "Формат даты: гггг-м-д"
 #: i18n/messages.json
 msgid "Delete selection"
 msgstr "Удалить выбранное"
+
+#. [tooltip.expand]
+#. defaultMessage is:
+#. Expand entity
+#: i18n/messages.json
+msgid "Expand entity"
+msgstr ""
+
+#. [vertex_menu.expand]
+#. defaultMessage is:
+#. Expand {property}
+#: i18n/messages.json
+msgid "Expand {property}"
+msgstr ""
 
 #. [tooltip.export_svg]
 #. defaultMessage is:

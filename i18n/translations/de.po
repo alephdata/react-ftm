@@ -4,7 +4,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-06-02T11:13:05.575Z\n"
+"POT-Creation-Date: 2020-06-04T15:52:17.612Z\n"
 "Last-Translator: pudo <friedrich@pudo.org>, 2020\n"
 "Language-Team: German (https://www.transifex.com/aleph/teams/76591/de/)\n"
 "MIME-Version: 1.0\n"
@@ -42,13 +42,6 @@ msgstr "Zusätzliche Werte hinzufügen"
 msgid "Add an entity type"
 msgstr "Type hinzufügen"
 
-#. [tooltip.add_edges]
-#. defaultMessage is:
-#. Add edges
-#: i18n/messages.json
-msgid "Add edges"
-msgstr "Verbindungen hinzufügen"
-
 #. [tooltip.add_entities]
 #. defaultMessage is:
 #. Add entities
@@ -63,10 +56,16 @@ msgstr "Entitäten hinzufügen"
 msgid "Add entity"
 msgstr "Entität hinzufügen"
 
+#. [tooltip.add_edges]
+#. defaultMessage is:
+#. Add link
+#. [vertex_menu.add_link]
+#. defaultMessage is:
+#. Add link
 #. [dialog.edge_create.title]
 #. defaultMessage is:
 #. Add link
-#: i18n/messages.json
+#: i18n/messages.json i18n/messages.json i18n/messages.json
 msgid "Add link"
 msgstr "Verbindung hinzufügen"
 
@@ -83,6 +82,13 @@ msgstr "Horizontal ausrichten"
 #: i18n/messages.json
 msgid "Align vertical"
 msgstr "Vertikal ausrichten"
+
+#. [vertex_menu.expand_all]
+#. defaultMessage is:
+#. All
+#: i18n/messages.json
+msgid "All"
+msgstr ""
 
 #. [tooltip.layout_circle]
 #. defaultMessage is:
@@ -125,6 +131,20 @@ msgstr "Datumsformat: JJJJ-MM-TT"
 #: i18n/messages.json
 msgid "Delete selection"
 msgstr "Auswahl entfernen"
+
+#. [tooltip.expand]
+#. defaultMessage is:
+#. Expand entity
+#: i18n/messages.json
+msgid "Expand entity"
+msgstr ""
+
+#. [vertex_menu.expand]
+#. defaultMessage is:
+#. Expand {property}
+#: i18n/messages.json
+msgid "Expand {property}"
+msgstr ""
 
 #. [tooltip.export_svg]
 #. defaultMessage is:

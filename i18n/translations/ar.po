@@ -4,7 +4,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-06-02T11:13:05.575Z\n"
+"POT-Creation-Date: 2020-06-04T15:52:17.612Z\n"
 "Last-Translator: Eman Alqaisi <eman@arij.net>, 2020\n"
 "Language-Team: Arabic (https://www.transifex.com/aleph/teams/76591/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -42,13 +42,6 @@ msgstr "أضف قيماً إضافية"
 msgid "Add an entity type"
 msgstr "أضف نوع الملكية"
 
-#. [tooltip.add_edges]
-#. defaultMessage is:
-#. Add edges
-#: i18n/messages.json
-msgid "Add edges"
-msgstr "أضف نهاية"
-
 #. [tooltip.add_entities]
 #. defaultMessage is:
 #. Add entities
@@ -63,10 +56,16 @@ msgstr "أضف كيانات"
 msgid "Add entity"
 msgstr "أضف كيان"
 
+#. [tooltip.add_edges]
+#. defaultMessage is:
+#. Add link
+#. [vertex_menu.add_link]
+#. defaultMessage is:
+#. Add link
 #. [dialog.edge_create.title]
 #. defaultMessage is:
 #. Add link
-#: i18n/messages.json
+#: i18n/messages.json i18n/messages.json i18n/messages.json
 msgid "Add link"
 msgstr "إضافة رابط"
 
@@ -83,6 +82,13 @@ msgstr "محاذاة أفقية"
 #: i18n/messages.json
 msgid "Align vertical"
 msgstr "محاذاة عمودية "
+
+#. [vertex_menu.expand_all]
+#. defaultMessage is:
+#. All
+#: i18n/messages.json
+msgid "All"
+msgstr ""
 
 #. [tooltip.layout_circle]
 #. defaultMessage is:
@@ -125,6 +131,20 @@ msgstr "تنسيق التاريخ: yyyy-m-d"
 #: i18n/messages.json
 msgid "Delete selection"
 msgstr "حذف التحديد"
+
+#. [tooltip.expand]
+#. defaultMessage is:
+#. Expand entity
+#: i18n/messages.json
+msgid "Expand entity"
+msgstr ""
+
+#. [vertex_menu.expand]
+#. defaultMessage is:
+#. Expand {property}
+#: i18n/messages.json
+msgid "Expand {property}"
+msgstr ""
 
 #. [tooltip.export_svg]
 #. defaultMessage is:
