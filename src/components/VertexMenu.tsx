@@ -3,7 +3,6 @@ import { defineMessages, WrappedComponentProps } from 'react-intl';
 import { Menu, MenuDivider, MenuItem, Spinner } from "@blueprintjs/core"
 import c from 'classnames';
 import { modes } from '../utils/interactionModes'
-import { GraphConfig } from '../GraphConfig';
 import { Count } from '../types';
 
 
@@ -25,7 +24,6 @@ const messages = defineMessages({
 });
 
 interface IVertexMenuProps extends WrappedComponentProps {
-  config: GraphConfig
   isOpen: boolean
   contents: any
   actions: any
@@ -69,7 +67,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
     }
   }
 
-  renderExpandOption = ({ count, property }) => {
+  renderExpandOption = ({ count, property }: {count: number, property: string}) => {
     const { actions, contents, intl } = this.props;
 
     const propLabel = this.getExpandOptionLabel(property);
@@ -92,7 +90,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
       return <Spinner size={Spinner.SIZE_SMALL} />;
     }
 
-    const totalCount = expandResults.reduce(((totalCount, obj) => totalCount + obj.count), 0);
+    const totalCount = expandResults.reduce(((totalCount: number, obj: any) => totalCount + obj.count), 0);
     const allOption = { count: totalCount, property: null};
 
     return [allOption, ...expandResults].map(this.renderExpandOption);

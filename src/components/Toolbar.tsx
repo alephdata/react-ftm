@@ -219,7 +219,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
         {
           helpText: intl.formatMessage(messages.tooltip_expand),
           icon: "search-around",
-          onClick: (e) => {
+          onClick: (e: React.MouseEvent) => {
             const selectedVertex = vertices[0];
 
             if (selectedVertex.isEntity()) {
