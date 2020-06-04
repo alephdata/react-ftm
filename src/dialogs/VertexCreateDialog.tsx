@@ -124,7 +124,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
         }
       } else {
         entity = entityData;
-        layout.addEntity(entity);
+        layout.addEntities([entity]);
       }
     } catch {
       this.setState({ isProcessing: false })

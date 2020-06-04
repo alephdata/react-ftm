@@ -21,6 +21,7 @@ interface IVertexRendererProps {
   interactionMode: string
   actions: any
   writeable: boolean
+  hasExpand: boolean
 }
 
 interface IVertexRendererState {
@@ -102,11 +103,15 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   onDoubleClick(e: MouseEvent) {
-    const { actions, vertex } = this.props;
+    const { actions, hasExpand, vertex } = this.props;
     e.preventDefault()
     e.stopPropagation()
     if (vertex.isEntity()) {
-      actions.setInteractionMode(modes.EDGE_DRAW)
+      if (hasExpand) {
+        actions.showVertexMenu(vertex, new Point(e.clientX, e.clientY));
+      } else {
+        actions.setInteractionMode(modes.EDGE_DRAW);
+      }
     }
   }
 

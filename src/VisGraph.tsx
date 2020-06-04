@@ -1,17 +1,17 @@
 import * as React from 'react'
 import c from 'classnames';
+import { Entity } from "@alephdata/followthemoney";
 import { Button, ButtonGroup, Classes, Position, Tooltip } from '@blueprintjs/core';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { EntityManager } from './EntityManager';
 import { GraphConfig } from './GraphConfig';
 import { GraphRenderer } from './renderer/GraphRenderer'
-import { GraphLayout, Rectangle, Point } from './layout';
+import { GraphLayout, Rectangle, Point, Vertex } from './layout';
 import { Viewport } from './Viewport';
 import { IGraphContext, GraphContext } from './GraphContext'
-import { Sidebar, TableView, Toolbar } from './components';
+import { Sidebar, TableView, Toolbar, VertexMenu } from './components';
 import { History } from './History';
 import { EdgeCreateDialog, GroupingCreateDialog, VertexCreateDialog } from './dialogs';
-
 import { filterVerticesByText, modes } from './utils'
 
 import './VisGraph.scss';
@@ -42,6 +42,7 @@ interface IVisGraphState {
   searchText: string
   tableView: boolean
   vertexCreateOptions?: any
+  vertexMenuSettings: any,
 }
 
 class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
@@ -65,6 +66,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
       interactionMode: writeable ? modes.SELECT : modes.PAN,
       tableView: false,
       searchText: externalFilterText || '',
+      vertexMenuSettings: null,
     };
 
     this.addVertex = this.addVertex.bind(this)
@@ -80,6 +82,9 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     this.ungroupSelection = this.ungroupSelection.bind(this)
     this.updateLayout = this.updateLayout.bind(this);
     this.updateViewport = this.updateViewport.bind(this);
+    this.hideVertexMenu = this.hideVertexMenu.bind(this);
+    this.showVertexMenu = this.showVertexMenu.bind(this);
+    this.expandVertex = this.expandVertex.bind(this);
   }
 
   componentDidMount() {
@@ -168,6 +173,41 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     })
   }
 
+  async showVertexMenu(vertex: Vertex, position: Point, onlyShowExpand: boolean = false) {
+    const { entityManager } = this.props;
+
+    const menuSettings = { vertex, position, onlyShowExpand };
+
+    this.setState({
+      vertexMenuSettings: menuSettings,
+    })
+    if (vertex.entityId) {
+      const expandResults = await entityManager.expandEntity(vertex.entityId);
+      this.setState(({vertexMenuSettings}) => ({
+        vertexMenuSettings: vertexMenuSettings ? { ...menuSettings, expandResults } : null,
+      }))
+    }
+  }
+
+  hideVertexMenu() {
+    this.setState({ vertexMenuSettings: null });
+  }
+
+  async expandVertex(vertex: Vertex, properties: Array<string>) {
+    if (!vertex.entityId) return;
+    const { entityManager, layout } = this.props;
+
+    this.setState({ vertexMenuSettings: null });
+
+    const expandResults = await entityManager.expandEntity(vertex.entityId, properties);
+    if (expandResults) {
+      const entities = expandResults.reduce((entities: Array<Entity>, expandObj: any) => ([...entities, ...expandObj.entities]), []);
+
+      layout.addEntities(entities as Array<Entity>);
+      this.updateLayout(layout, {}, { modifyHistory: true })
+    }
+  }
+
   setInteractionMode(newMode?: string) {
     this.setState({ interactionMode: newMode || modes.SELECT, vertexCreateOptions: null })
   }
@@ -218,7 +258,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
 
   render() {
     const { config, entityManager, intl, layout, locale, viewport, writeable } = this.props;
-    const { animateTransition, interactionMode, searchText, tableView } = this.state;
+    const { animateTransition, interactionMode, searchText, tableView, vertexMenuSettings } = this.state;
     const vertices = layout.getSelectedVertices()
     const [sourceVertex, targetVertex] = vertices;
 
@@ -240,6 +280,8 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
       ungroupSelection: this.ungroupSelection,
       onChangeSearch: this.onChangeSearch,
       onSubmitSearch: this.onSubmitSearch,
+      showVertexMenu: this.showVertexMenu,
+      expandVertex: this.expandVertex,
     };
 
     const showSidebar = layout.vertices && layout.vertices.size > 0 && !tableView;
@@ -277,6 +319,13 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                 interactionMode={interactionMode}
                 writeable={writeable}
                 {...layoutContext}
+              />
+              <VertexMenu
+                isOpen={vertexMenuSettings !== null && interactionMode !== modes.EDGE_DRAW}
+                contents={vertexMenuSettings}
+                actions={actions}
+                hideMenu={this.hideVertexMenu}
+                intl={intl}
               />
             </div>
             {showSidebar && (
