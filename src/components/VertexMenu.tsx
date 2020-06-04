@@ -29,19 +29,15 @@ interface IVertexMenuProps extends WrappedComponentProps {
   isOpen: boolean
   contents: any
   actions: any
+  hideMenu: any
 }
 
-interface IVertexMenuState {
-  mobileExpanded: boolean
-}
-
-export class VertexMenu extends React.Component<IVertexMenuProps, IVertexMenuState> {
+export class VertexMenu extends React.Component<IVertexMenuProps> {
   private menuRef: any | null = null;
 
   constructor(props: Readonly<IVertexMenuProps>) {
     super(props);
     this.handleClickOutside = this.handleClickOutside.bind(this);
-
   }
 
   componentDidMount() {
@@ -52,20 +48,32 @@ export class VertexMenu extends React.Component<IVertexMenuProps, IVertexMenuSta
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
+  getExpandOptionLabel(propString: string | undefined) {
+    const { contents, intl } = this.props;
+
+    if (!propString) {
+      return intl.formatMessage(messages.expand_all);
+    }
+    const { vertex } = contents;
+    const property = vertex.getEntity()?.schema?.getProperty(propString);
+    return property?.label;
+  }
+
   handleClickOutside(e: MouseEvent) {
-    const { toggleMenu } = this.props;
+    const { hideMenu } = this.props;
     const target = e.target as Element;
-    console.log(this.menuRef);
     if (target && this.menuRef && !this.menuRef.contains(target)) {
       e.preventDefault();
       e.stopPropagation();
-      toggleMenu();
+      hideMenu();
     }
   }
 
   renderExpandOption = ({ count, property }) => {
     const { actions, contents, intl } = this.props;
-    const propLabel = property || intl.formatMessage(messages.expand_all);
+
+    const propLabel = this.getExpandOptionLabel(property);
+    if (!propLabel) return null;
 
     return (
       <MenuItem

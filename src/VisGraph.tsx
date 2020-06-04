@@ -1,18 +1,17 @@
 import * as React from 'react'
 import c from 'classnames';
+import { Entity } from "@alephdata/followthemoney";
 import { Button, ButtonGroup, Classes, Position, Tooltip } from '@blueprintjs/core';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { EntityManager } from './EntityManager';
 import { GraphConfig } from './GraphConfig';
 import { GraphRenderer } from './renderer/GraphRenderer'
-import { GraphLayout, Rectangle, Point } from './layout';
+import { GraphLayout, Rectangle, Point, Vertex } from './layout';
 import { Viewport } from './Viewport';
 import { IGraphContext, GraphContext } from './GraphContext'
 import { Sidebar, TableView, Toolbar, VertexMenu } from './components';
 import { History } from './History';
 import { EdgeCreateDialog, GroupingCreateDialog, VertexCreateDialog } from './dialogs';
-import { modes } from './utils/interactionModes'
-
 import { filterVerticesByText, modes } from './utils'
 
 import './VisGraph.scss';
@@ -182,29 +181,31 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     this.setState({
       vertexMenuSettings: menuSettings,
     })
-    const expandResults = await entityManager.expandEntity(vertex.entityId);
-    this.setState(({vertexMenuSettings}) => ({
-      vertexMenuSettings: vertexMenuSettings ? { ...menuSettings, expandResults } : null,
-    }))
+    if (vertex.entityId) {
+      const expandResults = await entityManager.expandEntity(vertex.entityId);
+      this.setState(({vertexMenuSettings}) => ({
+        vertexMenuSettings: vertexMenuSettings ? { ...menuSettings, expandResults } : null,
+      }))
+    }
   }
 
   hideVertexMenu() {
-    this.setState({
-      vertexMenuSettings: null,
-    })
+    this.setState({ vertexMenuSettings: null });
   }
 
   async expandVertex(vertex: Vertex, properties: Array<string>) {
+    if (!vertex.entityId) return;
     const { entityManager, layout } = this.props;
 
-    const expandResults = await entityManager.expandEntity(vertex.entityId, properties);
-    console.log('expand results are', expandResults);
-    const entities = expandResults.reduce((entities, expandObj) => ([...entities, ...expandObj.entities]), []);
-    console.log('entities are', entities);
-
-    layout.addEntities(entities);
-
     this.setState({ vertexMenuSettings: null });
+
+    const expandResults = await entityManager.expandEntity(vertex.entityId, properties);
+    if (expandResults) {
+      const entities = expandResults.reduce((entities: Array<Entity>, expandObj: any) => ([...entities, ...expandObj.entities]), []);
+
+      layout.addEntities(entities as Array<Entity>);
+      this.updateLayout(layout, {}, { modifyHistory: true })
+    }
   }
 
   setInteractionMode(newMode?: string) {
@@ -323,7 +324,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                 isOpen={vertexMenuSettings !== null && interactionMode !== modes.EDGE_DRAW}
                 contents={vertexMenuSettings}
                 actions={actions}
-                toggleMenu={this.hideVertexMenu}
+                hideMenu={this.hideVertexMenu}
                 intl={intl}
               />
             </div>

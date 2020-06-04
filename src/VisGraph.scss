@@ -45,6 +45,10 @@
     overflow: hidden;
     display: flex;
     outline: none !important;
+
+    svg {
+      outline: none !important;
+    }
   }
 
   &__sidebar {
