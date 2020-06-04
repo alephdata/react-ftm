@@ -7,6 +7,7 @@ export interface IEntityManagerProps {
   createEntity?: (entity: IEntityDatum) => Entity,
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
+  expandEntity?: (entityId: string, properties?: Array<string>) => Promise<any>
   getEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>,
   resolveEntityReference?: (entityId: string) => Entity | undefined,
 }
@@ -14,6 +15,7 @@ export interface IEntityManagerProps {
 export class EntityManager {
   public readonly model: Model
   public readonly namespace?: Namespace
+  public readonly hasExpand: boolean = false
   private overload: any
 
   constructor(props?: IEntityManagerProps) {
@@ -22,6 +24,7 @@ export class EntityManager {
       this.model = model || new Model(defaultModel)
       this.namespace = namespace
       this.overload = rest;
+      this.hasExpand = this.overload.expandEntity !== undefined;
     } else {
       this.model = new Model(defaultModel);
     }
@@ -65,6 +68,13 @@ export class EntityManager {
   deleteEntity(entityId: string) {
     if (this.overload?.deleteEntity) {
       this.overload.deleteEntity(entityId);
+    }
+  }
+
+  async expandEntity(entityId: string, properties?: Array<string>) {
+    if (this.overload?.expandEntity) {
+      const expandResults = await this.overload.expandEntity(entityId, properties);
+      return expandResults;
     }
   }
 
