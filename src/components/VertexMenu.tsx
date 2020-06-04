@@ -5,7 +5,6 @@ import c from 'classnames';
 import { modes } from '../utils/interactionModes'
 import { Count } from '../types';
 
-
 import './VertexMenu.scss';
 
 const messages = defineMessages({
