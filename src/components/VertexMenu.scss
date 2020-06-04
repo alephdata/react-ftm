@@ -3,4 +3,8 @@
 .VertexMenu {
   position: absolute;
   box-shadow: $editor-box-shadow;
+
+  .bp3-spinner {
+    padding: 10px 0;
+  }
 }

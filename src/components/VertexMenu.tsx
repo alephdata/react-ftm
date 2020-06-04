@@ -69,6 +69,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps, IVertexMenuSta
 
     return (
       <MenuItem
+        icon="search-around"
         onClick={() => actions.expandVertex(contents.vertex, property)}
         text={intl.formatMessage(messages.expand, { property: propLabel })}
         labelElement={<Count count={count} />}
@@ -80,7 +81,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps, IVertexMenuSta
     const { expandResults } = this.props.contents;
 
     if (!expandResults) {
-      return <Spinner />;
+      return <Spinner size={Spinner.SIZE_SMALL} />;
     }
 
     const totalCount = expandResults.reduce(((totalCount, obj) => totalCount + obj.count), 0);

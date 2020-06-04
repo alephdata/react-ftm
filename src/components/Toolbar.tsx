@@ -45,7 +45,7 @@ const messages = defineMessages({
   },
   tooltip_expand: {
     id: 'tooltip.expand',
-    defaultMessage: 'Expand selected entity',
+    defaultMessage: 'Expand entity',
   },
   tooltip_delete: {
     id: 'tooltip.delete',
