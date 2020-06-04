@@ -18,6 +18,7 @@ import {
 } from "@blueprintjs/core"
 import { IGraphContext } from '../GraphContext';
 import { GraphLogo } from '../GraphLogo';
+import { Point } from '../layout/Point'
 import { SearchBox } from '.';
 import { filterVerticesByText } from '../utils';
 import { GraphLayout, Rectangle, alignCircle, alignHorizontal, alignVertical, arrangeTree } from "../layout";
@@ -41,6 +42,10 @@ const messages = defineMessages({
   tooltip_add_edges: {
     id: 'tooltip.add_edges',
     defaultMessage: 'Add link',
+  },
+  tooltip_expand: {
+    id: 'tooltip.expand',
+    defaultMessage: 'Expand selected entity',
   },
   tooltip_delete: {
     id: 'tooltip.delete',
@@ -172,6 +177,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
     const vertices = this.props.layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
+    const canExpandSelection = layout.entityManager.hasExpand && layout.getSelectedVertices().length === 1
     const canGroupSelection = layout.getSelectedVertices().length > 1
     const canUngroupSelection = layout.getSelectedGroupings().length >= 1
     const disableLayoutButtons = layout.selection && layout.selection.length <= 1;
@@ -209,6 +215,22 @@ export class Toolbar extends React.Component<IToolbarProps> {
           icon: "graph-remove",
           onClick: () => actions.removeSelection(),
           disabled: !hasSelection,
+        },
+        {
+          helpText: intl.formatMessage(messages.tooltip_expand),
+          icon: "search-around",
+          onClick: (e) => {
+            const selectedVertex = vertices[0];
+
+            if (selectedVertex.isEntity()) {
+              const isTopToolbar = layout.config.toolbarPosition === 'top';
+              const posX = isTopToolbar ? e.clientX - 10 : 70;
+              const posY = isTopToolbar ? 40 : e.clientY - 10;
+
+              actions.showVertexMenu(selectedVertex, new Point(posX, posY), true);
+            }
+          },
+          disabled: !canExpandSelection,
         }
       ],
       [

@@ -15,6 +15,7 @@ export interface IEntityManagerProps {
 export class EntityManager {
   public readonly model: Model
   public readonly namespace?: Namespace
+  public readonly hasExpand: boolean = false
   private overload: any
 
   constructor(props?: IEntityManagerProps) {
@@ -23,6 +24,7 @@ export class EntityManager {
       this.model = model || new Model(defaultModel)
       this.namespace = namespace
       this.overload = rest;
+      this.hasExpand = this.overload.expandEntity !== undefined;
     } else {
       this.model = new Model(defaultModel);
     }
