@@ -96,7 +96,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
   }
 
   renderFull = () => {
-    const { actions, config, contents, intl } = this.props;
+    const { actions, contents, intl } = this.props;
     const { expandResults } = contents;
 
     return (
@@ -113,7 +113,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
   }
 
   render() {
-    const { actions, config, contents, intl, isOpen } = this.props;
+    const { actions, contents, intl, isOpen } = this.props;
     if (!isOpen) return null;
     const { expandResults, position, onlyShowExpand } = contents;
 
