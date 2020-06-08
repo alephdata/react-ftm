@@ -115,9 +115,9 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
   render() {
     const { actions, contents, intl, isOpen } = this.props;
     if (!isOpen) return null;
-    const { expandResults, position, onlyShowExpand } = contents;
+    const { anchor, expandResults, position, onlyShowExpand } = contents;
 
-    const style = { top: `${position.y}px`, left: `${position.x}px` };
+    const style = { [anchor]: `${position.y}px`, left: `${position.x}px` };
 
     return (
       <div className="VertexMenu" style={style} ref={(ref) => { this.menuRef = ref }}>

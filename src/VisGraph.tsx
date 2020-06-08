@@ -175,8 +175,17 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
 
   async showVertexMenu(vertex: Vertex, position: Point, onlyShowExpand: boolean = false) {
     const { entityManager } = this.props;
+    let anchor = 'top';
 
-    const menuSettings = { vertex, position, onlyShowExpand };
+    if (this.svgRef.current) {
+      const { height, width } = this.svgRef.current.getBoundingClientRect();
+      if (position.y > height/2) {
+        anchor = "bottom";
+        position.y = height - position.y;
+      }
+    }
+
+    const menuSettings = { vertex, position, anchor, onlyShowExpand };
 
     this.setState({
       vertexMenuSettings: menuSettings,
@@ -322,13 +331,6 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                 writeable={writeable}
                 {...layoutContext}
               />
-              <VertexMenu
-                isOpen={vertexMenuSettings !== null && interactionMode !== modes.EDGE_DRAW}
-                contents={vertexMenuSettings}
-                actions={actions}
-                hideMenu={this.hideVertexMenu}
-                intl={intl}
-              />
             </div>
             {showSidebar && (
               <div className="VisGraph__sidebar">
@@ -347,6 +349,13 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                 />
               </div>
             )}
+            <VertexMenu
+              isOpen={vertexMenuSettings !== null && interactionMode !== modes.EDGE_DRAW}
+              contents={vertexMenuSettings}
+              actions={actions}
+              hideMenu={this.hideVertexMenu}
+              intl={intl}
+            />
           </div>
         </div>
         {writeable && (
