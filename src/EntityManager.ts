@@ -1,24 +1,30 @@
-import { defaultModel, Entity, Model, Schema, IEntityDatum } from '@alephdata/followthemoney'
+import { defaultModel, Entity, Model, Namespace, Schema, IEntityDatum } from '@alephdata/followthemoney'
 
 
 export interface IEntityManagerProps {
   model?: Model,
+  namespace?: Namespace,
   createEntity?: (entity: IEntityDatum) => Entity,
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
+  expandEntity?: (entityId: string, properties?: Array<string>, limit?: number) => Promise<any>
   getEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>,
   resolveEntityReference?: (entityId: string) => Entity | undefined,
 }
 
 export class EntityManager {
   public readonly model: Model
+  public readonly namespace?: Namespace
+  public readonly hasExpand: boolean = false
   private overload: any
 
   constructor(props?: IEntityManagerProps) {
     if (props) {
-      const { model, ...rest } = props;
+      const { model, namespace, ...rest } = props;
       this.model = model || new Model(defaultModel)
+      this.namespace = namespace
       this.overload = rest;
+      this.hasExpand = this.overload.expandEntity !== undefined;
     } else {
       this.model = new Model(defaultModel);
     }
@@ -34,7 +40,8 @@ export class EntityManager {
     } else {
       const { properties, schema } = entityData;
 
-      entity = this.model.createEntity(schema);
+      entity = this.model.createEntity(schema, this.namespace);
+
       if (properties) {
         Object.entries(properties).forEach(([prop, value]: [string, any]) => {
           if (Array.isArray(value)) {
@@ -61,6 +68,13 @@ export class EntityManager {
   deleteEntity(entityId: string) {
     if (this.overload?.deleteEntity) {
       this.overload.deleteEntity(entityId);
+    }
+  }
+
+  async expandEntity(entityId: string, properties?: Array<string>, limit?: number) {
+    if (this.overload?.expandEntity) {
+      const expandResults = await this.overload.expandEntity(entityId, properties, limit);
+      return expandResults;
     }
   }
 

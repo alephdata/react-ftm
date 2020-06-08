@@ -122,6 +122,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
         interactionMode={interactionMode}
         actions={actions}
         writeable={writeable}
+        hasExpand={layout.entityManager.hasExpand}
       />
     )
   }

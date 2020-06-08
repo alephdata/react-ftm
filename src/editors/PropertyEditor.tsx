@@ -115,14 +115,13 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
 
     return (
       <>
-        <form
-          onSubmit={(e:any) => { e.preventDefault(); }}
+        <div
           onKeyDown={(e:any) => e.keyCode === TAB_KEY ? this.onSubmit() : null}
         >
           {content}
-        </form>
+        </div>
         {error && (
-          <div className="EntityViewer__property-list-item__error">{intl.formatMessage(error)}</div>
+          <div className="error-text">{intl.formatMessage(error)}</div>
         )}
       </>
     )

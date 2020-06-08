@@ -36,6 +36,13 @@ $disabled-color: $black-60;
   color: $black-80 !important;
 }
 
+.error-text {
+  font-style: italic;
+  font-size: 12px;
+  color: $red1;
+  padding: 5px;
+}
+
 $small: 500px;
 $medium: 850px;
 $large: 110px;

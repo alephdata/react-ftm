@@ -1,7 +1,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-04-26T19:18:27.669Z\n"
+"POT-Creation-Date: 2020-06-04T15:52:17.612Z\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/aleph/teams/76591/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9,6 +9,13 @@ msgstr ""
 "Language: pt_BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: react-intl-po\n"
+
+#. [property.inverse]
+#. defaultMessage is:
+#. '{label}' of …
+#: i18n/messages.json
+msgid "'{label}' of …"
+msgstr ""
 
 #. [editor.property_add]
 #. defaultMessage is:
@@ -31,13 +38,6 @@ msgstr ""
 msgid "Add an entity type"
 msgstr ""
 
-#. [tooltip.add_edges]
-#. defaultMessage is:
-#. Add edges
-#: i18n/messages.json
-msgid "Add edges"
-msgstr ""
-
 #. [tooltip.add_entities]
 #. defaultMessage is:
 #. Add entities
@@ -52,18 +52,17 @@ msgstr ""
 msgid "Add entity"
 msgstr ""
 
+#. [tooltip.add_edges]
+#. defaultMessage is:
+#. Add link
+#. [vertex_menu.add_link]
+#. defaultMessage is:
+#. Add link
 #. [dialog.edge_create.title]
 #. defaultMessage is:
 #. Add link
-#: i18n/messages.json
+#: i18n/messages.json i18n/messages.json i18n/messages.json
 msgid "Add link"
-msgstr ""
-
-#. [table_editor.add_entity]
-#. defaultMessage is:
-#. Add {schema}
-#: i18n/messages.json
-msgid "Add {schema}"
 msgstr ""
 
 #. [tooltip.layout_horizontal]
@@ -78,6 +77,13 @@ msgstr ""
 #. Align vertical
 #: i18n/messages.json
 msgid "Align vertical"
+msgstr ""
+
+#. [vertex_menu.expand_all]
+#. defaultMessage is:
+#. All
+#: i18n/messages.json
+msgid "All"
 msgstr ""
 
 #. [tooltip.layout_circle]
@@ -101,6 +107,13 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
+#. [table_editor.add_entity]
+#. defaultMessage is:
+#. Create a new {schema}
+#: i18n/messages.json
+msgid "Create a new {schema}"
+msgstr ""
+
 #. [editor.validation.date_invalid]
 #. defaultMessage is:
 #. Date format: yyyy-m-d
@@ -115,11 +128,18 @@ msgstr ""
 msgid "Delete selection"
 msgstr ""
 
-#. [table_editor.delete_entity]
+#. [tooltip.expand]
 #. defaultMessage is:
-#. Delete this entity
+#. Expand entity
 #: i18n/messages.json
-msgid "Delete this entity"
+msgid "Expand entity"
+msgstr ""
+
+#. [vertex_menu.expand]
+#. defaultMessage is:
+#. Expand {property}
+#: i18n/messages.json
+msgid "Expand {property}"
 msgstr ""
 
 #. [tooltip.export_svg]
@@ -195,7 +215,10 @@ msgstr ""
 #. [search.results_text.none]
 #. defaultMessage is:
 #. No results found
-#: i18n/messages.json
+#. [enum_value_select.no_results]
+#. defaultMessage is:
+#. No results found
+#: i18n/messages.json i18n/messages.json
 msgid "No results found"
 msgstr ""
 
@@ -227,10 +250,10 @@ msgstr ""
 msgid "Select a label for the grouping"
 msgstr ""
 
-#. [editor.vertex_select.placeholder]
+#. [editor.entity.placeholder]
 #. defaultMessage is:
 #. Select an entity
-#. [editor.entity.placeholder]
+#. [editor.vertex_select.placeholder]
 #. defaultMessage is:
 #. Select an entity
 #: i18n/messages.json i18n/messages.json
@@ -312,20 +335,6 @@ msgstr ""
 #. Ungroup selection
 #: i18n/messages.json
 msgid "Ungroup selection"
-msgstr ""
-
-#. [editor.language.unknown]
-#. defaultMessage is:
-#. Unknown
-#: i18n/messages.json
-msgid "Unknown"
-msgstr ""
-
-#. [editor.entity.unknown]
-#. defaultMessage is:
-#. Untitled
-#: i18n/messages.json
-msgid "Untitled"
 msgstr ""
 
 #. [dialog.vertex_create.name_placeholder]

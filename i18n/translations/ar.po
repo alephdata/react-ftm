@@ -1,7 +1,11 @@
 # 
+# Translators:
+# Eman Alqaisi <eman@arij.net>, 2020
+# 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-04-26T19:18:27.669Z\n"
+"POT-Creation-Date: 2020-06-04T15:52:17.612Z\n"
+"Last-Translator: Eman Alqaisi <eman@arij.net>, 2020\n"
 "Language-Team: Arabic (https://www.transifex.com/aleph/teams/76591/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -10,74 +14,80 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 "X-Generator: react-intl-po\n"
 
+#. [property.inverse]
+#. defaultMessage is:
+#. '{label}' of …
+#: i18n/messages.json
+msgid "'{label}' of …"
+msgstr ""
+
 #. [editor.property_add]
 #. defaultMessage is:
 #. Add a property
 #: i18n/messages.json
 msgid "Add a property"
-msgstr ""
+msgstr "أضف ملكية"
 
 #. [editor.text.additional]
 #. defaultMessage is:
 #. Add additional values
 #: i18n/messages.json
 msgid "Add additional values"
-msgstr ""
+msgstr "أضف قيماً إضافية"
 
 #. [table_editor.add_schema]
 #. defaultMessage is:
 #. Add an entity type
 #: i18n/messages.json
 msgid "Add an entity type"
-msgstr ""
-
-#. [tooltip.add_edges]
-#. defaultMessage is:
-#. Add edges
-#: i18n/messages.json
-msgid "Add edges"
-msgstr ""
+msgstr "أضف نوع الملكية"
 
 #. [tooltip.add_entities]
 #. defaultMessage is:
 #. Add entities
 #: i18n/messages.json
 msgid "Add entities"
-msgstr ""
+msgstr "أضف كيانات"
 
 #. [dialog.vertex_create.title]
 #. defaultMessage is:
 #. Add entity
 #: i18n/messages.json
 msgid "Add entity"
-msgstr ""
+msgstr "أضف كيان"
 
+#. [tooltip.add_edges]
+#. defaultMessage is:
+#. Add link
+#. [vertex_menu.add_link]
+#. defaultMessage is:
+#. Add link
 #. [dialog.edge_create.title]
 #. defaultMessage is:
 #. Add link
-#: i18n/messages.json
+#: i18n/messages.json i18n/messages.json i18n/messages.json
 msgid "Add link"
-msgstr ""
-
-#. [table_editor.add_entity]
-#. defaultMessage is:
-#. Add {schema}
-#: i18n/messages.json
-msgid "Add {schema}"
-msgstr ""
+msgstr "إضافة رابط"
 
 #. [tooltip.layout_horizontal]
 #. defaultMessage is:
 #. Align horizontal
 #: i18n/messages.json
 msgid "Align horizontal"
-msgstr ""
+msgstr "محاذاة أفقية"
 
 #. [tooltip.layout_vertical]
 #. defaultMessage is:
 #. Align vertical
 #: i18n/messages.json
 msgid "Align vertical"
+msgstr "محاذاة عمودية "
+
+#. [vertex_menu.expand_all]
+#. defaultMessage is:
+#. All
+#: i18n/messages.json
+msgid "All"
 msgstr ""
 
 #. [tooltip.layout_circle]
@@ -85,41 +95,55 @@ msgstr ""
 #. Arrange as circle
 #: i18n/messages.json
 msgid "Arrange as circle"
-msgstr ""
+msgstr "رتب كدائرة"
 
 #. [tooltip.layout_hierarchy]
 #. defaultMessage is:
 #. Arrange as hierarchy
 #: i18n/messages.json
 msgid "Arrange as hierarchy"
-msgstr ""
+msgstr "رتب كهرم"
 
 #. [dialog.edge_create.submit]
 #. defaultMessage is:
 #. Create
 #: i18n/messages.json
 msgid "Create"
-msgstr ""
+msgstr "إنشاء"
+
+#. [table_editor.add_entity]
+#. defaultMessage is:
+#. Create a new {schema}
+#: i18n/messages.json
+msgid "Create a new {schema}"
+msgstr "إنشاء {مخطط} جديد"
 
 #. [editor.validation.date_invalid]
 #. defaultMessage is:
 #. Date format: yyyy-m-d
 #: i18n/messages.json
 msgid "Date format: yyyy-m-d"
-msgstr ""
+msgstr "تنسيق التاريخ: yyyy-m-d"
 
 #. [tooltip.delete]
 #. defaultMessage is:
 #. Delete selection
 #: i18n/messages.json
 msgid "Delete selection"
+msgstr "حذف التحديد"
+
+#. [tooltip.expand]
+#. defaultMessage is:
+#. Expand entity
+#: i18n/messages.json
+msgid "Expand entity"
 msgstr ""
 
-#. [table_editor.delete_entity]
+#. [vertex_menu.expand]
 #. defaultMessage is:
-#. Delete this entity
+#. Expand {property}
 #: i18n/messages.json
-msgid "Delete this entity"
+msgid "Expand {property}"
 msgstr ""
 
 #. [tooltip.export_svg]
@@ -127,210 +151,199 @@ msgstr ""
 #. Export as SVG
 #: i18n/messages.json
 msgid "Export as SVG"
-msgstr ""
+msgstr "تصدير بتنسيق SVG"
 
 #. [tooltips.fit_to_selection]
 #. defaultMessage is:
 #. Fit view to selection
 #: i18n/messages.json
 msgid "Fit view to selection"
-msgstr ""
+msgstr "تناسب العرض مع التحديد"
 
 #. [search.results_text.one]
 #. defaultMessage is:
 #. Found 1 result
 #: i18n/messages.json
 msgid "Found 1 result"
-msgstr ""
+msgstr "تم العثور على 1 نتيجة"
 
 #. [search.results_text.multiple]
 #. defaultMessage is:
 #. Found {count} results
 #: i18n/messages.json
 msgid "Found {count} results"
-msgstr ""
+msgstr "تم العثور على  {عدد} نتيجة "
 
 #. [dialog.grouping_create.title]
 #. defaultMessage is:
 #. Group items
 #: i18n/messages.json
 msgid "Group items"
-msgstr ""
+msgstr "عناصر المجموعة"
 
 #. [tooltip.group]
 #. defaultMessage is:
 #. Group selection
 #: i18n/messages.json
 msgid "Group selection"
-msgstr ""
+msgstr "تجميع التحديد"
 
 #. [editor.validation.url_invalid]
 #. defaultMessage is:
 #. Invalid URL format
 #: i18n/messages.json
 msgid "Invalid URL format"
-msgstr ""
+msgstr "تنسيق URL غير صحيح"
 
 #. [editor.validation.country_invalid]
 #. defaultMessage is:
 #. Invalid country
 #: i18n/messages.json
 msgid "Invalid country"
-msgstr ""
+msgstr "دولة غير متاحة"
 
 #. [editor.validation.topic_invalid]
 #. defaultMessage is:
 #. Invalid topic
 #: i18n/messages.json
 msgid "Invalid topic"
-msgstr ""
+msgstr "الموضوع غير متاح"
 
 #. [editor.entity.no_results]
 #. defaultMessage is:
 #. No entities found
 #: i18n/messages.json
 msgid "No entities found"
-msgstr ""
+msgstr "لم يتم العثور على كيانات "
 
 #. [search.results_text.none]
 #. defaultMessage is:
 #. No results found
-#: i18n/messages.json
+#. [enum_value_select.no_results]
+#. defaultMessage is:
+#. No results found
+#: i18n/messages.json i18n/messages.json
 msgid "No results found"
-msgstr ""
+msgstr "لم يتم العثور على نتائج"
 
 #. [editor.vertex_select.disabled]
 #. defaultMessage is:
 #. No vertices
 #: i18n/messages.json
 msgid "No vertices"
-msgstr ""
+msgstr "لا يوجد رأس"
 
 #. [dialog.vertex_create.type_placeholder]
 #. defaultMessage is:
 #. Pick a type
 #: i18n/messages.json
 msgid "Pick a type"
-msgstr ""
+msgstr "اختر نوع"
 
 #. [tooltip.redo]
 #. defaultMessage is:
 #. Redo
 #: i18n/messages.json
 msgid "Redo"
-msgstr ""
+msgstr "إعادة"
 
 #. [dialog.grouping_create.placeholder]
 #. defaultMessage is:
 #. Select a label for the grouping
 #: i18n/messages.json
 msgid "Select a label for the grouping"
-msgstr ""
+msgstr "حدد تسمية للمجموعة"
 
-#. [editor.vertex_select.placeholder]
+#. [editor.entity.placeholder]
 #. defaultMessage is:
 #. Select an entity
-#. [editor.entity.placeholder]
+#. [editor.vertex_select.placeholder]
 #. defaultMessage is:
 #. Select an entity
 #: i18n/messages.json i18n/messages.json
 msgid "Select an entity"
-msgstr ""
+msgstr "حدد كيان"
 
 #. [dialog.edge_create.type_placeholder]
 #. defaultMessage is:
 #. Select type
 #: i18n/messages.json
 msgid "Select type"
-msgstr ""
+msgstr "اختر نوع"
 
 #. [tooltip.sidebar_view]
 #. defaultMessage is:
 #. Show sidebar
 #: i18n/messages.json
 msgid "Show sidebar"
-msgstr ""
+msgstr "عرض الشريط الجانبي"
 
 #. [tooltip.table_view]
 #. defaultMessage is:
 #. Show table
 #: i18n/messages.json
 msgid "Show table"
-msgstr ""
+msgstr "عرض الجدول"
 
 #. [dialog.edge_create.source_label]
 #. defaultMessage is:
 #. Source
 #: i18n/messages.json
 msgid "Source"
-msgstr ""
+msgstr "المصدر"
 
 #. [dialog.edge_create.target_label]
 #. defaultMessage is:
 #. Target
 #: i18n/messages.json
 msgid "Target"
-msgstr ""
+msgstr "الهدف"
 
 #. [editor.validation.required]
 #. defaultMessage is:
 #. This property is required
 #: i18n/messages.json
 msgid "This property is required"
-msgstr ""
+msgstr "هذه الملكية مطلوبة"
 
 #. [tooltip.pan_mode]
 #. defaultMessage is:
 #. Toggle pan mode
 #: i18n/messages.json
 msgid "Toggle pan mode"
-msgstr ""
+msgstr "تبديل وضع التدوير"
 
 #. [tooltip.select_mode]
 #. defaultMessage is:
 #. Toggle select mode
 #: i18n/messages.json
 msgid "Toggle select mode"
-msgstr ""
+msgstr "تبديل وضع التحديد"
 
 #. [dialog.edge_create.type_label]
 #. defaultMessage is:
 #. Type
 #: i18n/messages.json
 msgid "Type"
-msgstr ""
+msgstr "النوع"
 
 #. [tooltip.undo]
 #. defaultMessage is:
 #. Undo
 #: i18n/messages.json
 msgid "Undo"
-msgstr ""
+msgstr "تراجع"
 
 #. [tooltip.ungroup]
 #. defaultMessage is:
 #. Ungroup selection
 #: i18n/messages.json
 msgid "Ungroup selection"
-msgstr ""
-
-#. [editor.language.unknown]
-#. defaultMessage is:
-#. Unknown
-#: i18n/messages.json
-msgid "Unknown"
-msgstr ""
-
-#. [editor.entity.unknown]
-#. defaultMessage is:
-#. Untitled
-#: i18n/messages.json
-msgid "Untitled"
-msgstr ""
+msgstr "فك تجميع البيانات"
 
 #. [dialog.vertex_create.name_placeholder]
 #. defaultMessage is:
 #. {schema} name
 #: i18n/messages.json
 msgid "{schema} name"
-msgstr ""
+msgstr "اسم {المخطط}"
