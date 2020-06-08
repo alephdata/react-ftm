@@ -182,7 +182,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
       vertexMenuSettings: menuSettings,
     })
     if (vertex.entityId) {
-      const expandResults = await entityManager.expandEntity(vertex.entityId);
+      const expandResults = await entityManager.expandEntity(vertex.entityId, null, 0);
       this.setState(({vertexMenuSettings}) => ({
         vertexMenuSettings: vertexMenuSettings ? { ...menuSettings, expandResults } : null,
       }))
@@ -201,7 +201,9 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
 
     const expandResults = await entityManager.expandEntity(vertex.entityId, properties);
     if (expandResults) {
-      const entities = expandResults.reduce((entities: Array<Entity>, expandObj: any) => ([...entities, ...expandObj.entities]), []);
+      const entities = expandResults
+        .reduce((entities: Array<Entity>, expandObj: any) => ([...entities, ...expandObj.entities]), [])
+        .map((entityData: IEntityDatum) => new Entity(entityManager.model, entityData));
 
       layout.addEntities(entities as Array<Entity>);
       this.updateLayout(layout, {}, { modifyHistory: true })
