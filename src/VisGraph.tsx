@@ -1,6 +1,6 @@
 import * as React from 'react'
 import c from 'classnames';
-import { Entity } from "@alephdata/followthemoney";
+import { Entity, IEntityDatum } from "@alephdata/followthemoney";
 import { Button, ButtonGroup, Classes, Position, Tooltip } from '@blueprintjs/core';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { EntityManager } from './EntityManager';
@@ -175,23 +175,21 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
 
   async showVertexMenu(vertex: Vertex, position: Point, onlyShowExpand: boolean = false) {
     const { entityManager } = this.props;
-    let anchor = 'top';
+    const menuSettings = { vertex, position, anchor: 'top', onlyShowExpand };
 
     if (this.svgRef.current) {
       const { height, width } = this.svgRef.current.getBoundingClientRect();
       if (position.y > height/2) {
-        anchor = "bottom";
-        position.y = height - position.y;
+        menuSettings.anchor = "bottom";
+        menuSettings.position = new Point(position.x, height - position.y);
       }
     }
-
-    const menuSettings = { vertex, position, anchor, onlyShowExpand };
 
     this.setState({
       vertexMenuSettings: menuSettings,
     })
     if (vertex.entityId) {
-      const expandResults = await entityManager.expandEntity(vertex.entityId, null, 0);
+      const expandResults = await entityManager.expandEntity(vertex.entityId, undefined, 0);
       this.setState(({vertexMenuSettings}) => ({
         vertexMenuSettings: vertexMenuSettings ? { ...menuSettings, expandResults } : null,
       }))
