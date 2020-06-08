@@ -20,6 +20,10 @@ const messages = defineMessages({
     id: 'vertex_menu.expand_all',
     defaultMessage: 'All',
   },
+  expand_none: {
+    id: 'vertex_menu.expand_none',
+    defaultMessage: 'No expansion results found',
+  },
 });
 
 interface IVertexMenuProps extends WrappedComponentProps {
@@ -83,13 +87,18 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
   }
 
   renderExpand = () => {
-    const { expandResults } = this.props.contents;
+    const { contents, intl } = this.props;
+    const { expandResults } = contents;
 
     if (!expandResults) {
       return <Spinner size={Spinner.SIZE_SMALL} />;
     }
 
     const totalCount = expandResults.reduce(((totalCount: number, obj: any) => totalCount + obj.count), 0);
+    if (!totalCount) {
+      return <div className="error-text">{intl.formatMessage(messages.expand_none)}</div>;
+    }
+
     const allOption = { count: totalCount, property: null};
 
     return [allOption, ...expandResults].map(this.renderExpandOption);

@@ -78,7 +78,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
     if (isFetching) {
       content = <Spinner className="VertexCreateDialog__spinner" size={Spinner.SIZE_SMALL} />
     } else if (filteredItems.length === 0) {
-      content = <span className="EntityViewer__property-list-item__error">{intl.formatMessage(messages.no_results)}</span>
+      content = <span className="error-text">{intl.formatMessage(messages.no_results)}</span>
     } else {
       content = filteredItems.map(renderItem);
     }

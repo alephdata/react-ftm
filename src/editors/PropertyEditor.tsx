@@ -121,7 +121,7 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
           {content}
         </div>
         {error && (
-          <div className="EntityViewer__property-list-item__error">{intl.formatMessage(error)}</div>
+          <div className="error-text">{intl.formatMessage(error)}</div>
         )}
       </>
     )
