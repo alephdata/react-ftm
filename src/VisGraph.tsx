@@ -6,7 +6,7 @@ import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { EntityManager } from './EntityManager';
 import { GraphConfig } from './GraphConfig';
 import { GraphRenderer } from './renderer/GraphRenderer'
-import { GraphLayout, Rectangle, Point, Vertex } from './layout';
+import { centerAround, GraphLayout, Rectangle, Point, Vertex } from './layout';
 import { Viewport } from './Viewport';
 import { IGraphContext, GraphContext } from './GraphContext'
 import { Sidebar, TableView, Toolbar, VertexMenu } from './components';
@@ -213,7 +213,10 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
         .map((entityData: IEntityDatum) => new Entity(entityManager.model, entityData));
 
       layout.addEntities(entities as Array<Entity>);
-      this.updateLayout(layout, {}, { modifyHistory: true })
+      const addedVertices = entities.map(e => layout.getVertexByEntity(e)).filter(v => v !== undefined)
+
+      console.log('added vertices', addedVertices);
+      this.updateLayout(centerAround(layout, [vertex], addedVertices), {}, { modifyHistory: true })
     }
   }
 
