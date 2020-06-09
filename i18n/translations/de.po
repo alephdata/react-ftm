@@ -4,7 +4,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-06-04T15:52:17.612Z\n"
+"POT-Creation-Date: 2020-06-09T16:14:33.945Z\n"
 "Last-Translator: pudo <friedrich@pudo.org>, 2020\n"
 "Language-Team: German (https://www.transifex.com/aleph/teams/76591/de/)\n"
 "MIME-Version: 1.0\n"
@@ -103,6 +103,20 @@ msgstr "Als Kreis ausrichten"
 #: i18n/messages.json
 msgid "Arrange as hierarchy"
 msgstr "Als Hierarchie ausrichten"
+
+#. [tooltip.layout_auto]
+#. defaultMessage is:
+#. Auto-layout
+#: i18n/messages.json
+msgid "Auto-layout"
+msgstr ""
+
+#. [tooltip.layout_center]
+#. defaultMessage is:
+#. Center
+#: i18n/messages.json
+msgid "Center"
+msgstr ""
 
 #. [dialog.edge_create.submit]
 #. defaultMessage is:
@@ -215,6 +229,13 @@ msgstr "Ungültiges Thema"
 #: i18n/messages.json
 msgid "No entities found"
 msgstr "Keine Entitäten gefunden"
+
+#. [vertex_menu.expand_none]
+#. defaultMessage is:
+#. No expansion results found
+#: i18n/messages.json
+msgid "No expansion results found"
+msgstr ""
 
 #. [search.results_text.none]
 #. defaultMessage is:

@@ -4,7 +4,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-06-04T15:52:17.612Z\n"
+"POT-Creation-Date: 2020-06-09T16:14:33.945Z\n"
 "Last-Translator: jen occrp, 2020\n"
 "Language-Team: Russian (https://www.transifex.com/aleph/teams/76591/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -88,7 +88,7 @@ msgstr "Выровнять вертикально"
 #. All
 #: i18n/messages.json
 msgid "All"
-msgstr ""
+msgstr "Все"
 
 #. [tooltip.layout_circle]
 #. defaultMessage is:
@@ -103,6 +103,20 @@ msgstr "Расположить в виде круга"
 #: i18n/messages.json
 msgid "Arrange as hierarchy"
 msgstr "Расположить в виде иерархии"
+
+#. [tooltip.layout_auto]
+#. defaultMessage is:
+#. Auto-layout
+#: i18n/messages.json
+msgid "Auto-layout"
+msgstr ""
+
+#. [tooltip.layout_center]
+#. defaultMessage is:
+#. Center
+#: i18n/messages.json
+msgid "Center"
+msgstr ""
 
 #. [dialog.edge_create.submit]
 #. defaultMessage is:
@@ -137,14 +151,14 @@ msgstr "Удалить выбранное"
 #. Expand entity
 #: i18n/messages.json
 msgid "Expand entity"
-msgstr ""
+msgstr "Развернуть сущность"
 
 #. [vertex_menu.expand]
 #. defaultMessage is:
 #. Expand {property}
 #: i18n/messages.json
 msgid "Expand {property}"
-msgstr ""
+msgstr "Развернуть {property}"
 
 #. [tooltip.export_svg]
 #. defaultMessage is:
@@ -215,6 +229,13 @@ msgstr "Некорректная тема"
 #: i18n/messages.json
 msgid "No entities found"
 msgstr "Сущности не найдены"
+
+#. [vertex_menu.expand_none]
+#. defaultMessage is:
+#. No expansion results found
+#: i18n/messages.json
+msgid "No expansion results found"
+msgstr ""
 
 #. [search.results_text.none]
 #. defaultMessage is:
