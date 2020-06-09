@@ -124,7 +124,6 @@ export class GraphLayout {
   }
 
   createEntity(entityData: any, center?: Point) {
-    console.log('in create entity', center)
     const entity = this.entityManager.createEntity(entityData);
     this.addEntities([entity], center);
     return entity;
@@ -248,9 +247,8 @@ export class GraphLayout {
     return this.getAdjacentEdges(this.selection)
   }
 
-  getAdjacentEdges(vertices: Array<Vertex> | Array<string>): Edge[] {
-    const vertexIds = vertices.map(v => v.id || v);
-    return this.getEdges().filter(e => this.isEdgeAdjacent(e, vertexIds))
+  getAdjacentEdges(vertices: Array<string>): Edge[] {
+    return this.getEdges().filter((e: Edge) => this.isEdgeAdjacent(e, vertices))
   }
 
   hasSelection(): boolean {
@@ -295,8 +293,8 @@ export class GraphLayout {
       vIds.indexOf(edge.targetId) !== -1;
   }
 
-  applyPositioning(positioningFunc: any, vertices?: Array<Vertex>) {
-    const vList = vertices || this.getVertices();
+  applyPositioning(positioningFunc: any, vertices: Array<Vertex>) {
+    const vIds = vertices.map(v => v.id);
     vertices.forEach((v, i) => {
       const position = positioningFunc(v, i);
       if (position) {
@@ -304,7 +302,7 @@ export class GraphLayout {
       }
     });
 
-    this.getAdjacentEdges(vertices).forEach((edge) => {
+    this.getAdjacentEdges(vIds).forEach((edge) => {
       this.edges.set(edge.id, edge.setLabelPosition(undefined))
     });
     return this;
@@ -440,7 +438,6 @@ export class GraphLayout {
     this.generate()
     const vertices = this.getVertices().filter(v => !v.isHidden())
     const edges = this.getEdges();
-    console.log(vertices);
     const positioningFunc = forceLayout({vertices, edges, options:{ center, maintainFixed: true }});
     this.applyPositioning(positioningFunc, vertices);
   }

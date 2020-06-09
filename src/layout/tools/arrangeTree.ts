@@ -30,13 +30,15 @@ const arrangeTree = ({ vertices, edges }: { vertices: Array<Vertex>, edges: Arra
   g.setDefaultEdgeLabel(function() { return {}; });
 
   nodes.forEach(node => g.setNode(node.id, node) )
+  // @ts-ignore
   links.forEach(link => g.setEdge(link.source.id, link.target.id))
 
   dagre.layout(g);
 
-  return (v, i) => {
+  return (v:Vertex, i:number) => {
     const node = nodes.find(n => n.id === v.id);
     if (node) {
+      // @ts-ignore
       return center.addition(new Point(node.x, node.y))
     }
   }

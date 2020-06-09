@@ -167,9 +167,9 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   private onMouseZoom(event: MouseWheelEvent) {
-    const zoomFactor = 2
     event.preventDefault()
     event.stopPropagation()
+    const zoomFactor = 1.5;
     const { viewport } = this.props
     const direction = event.deltaY < 0 ? -zoomFactor : zoomFactor
     const matrix = getRefMatrix(this.props.svgRef)
@@ -180,9 +180,9 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   private onKeyZoom(event: KeyboardEvent, direction: string) {
-    const zoomFactor = 3
     event.preventDefault()
     event.stopPropagation()
+    const zoomFactor = 3
     const { viewport } = this.props
     const newViewport = viewport.zoomToPoint(viewport.center, direction === 'in' ? -zoomFactor : zoomFactor)
     this.props.updateViewport(newViewport, {animate: true})

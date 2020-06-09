@@ -1,6 +1,5 @@
-import { GraphLayout, Rectangle } from "../";
+import { GraphLayout, Rectangle, Vertex } from "../";
 import alignCircle from "./alignCircle";
-import { applyPositioning } from "./applyPositioning";
 
 const RADIUS_SPACING = 8;
 

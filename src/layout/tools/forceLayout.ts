@@ -1,7 +1,5 @@
 import {forceCenter, forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY} from "d3-force";
-import {Vertex} from "../Vertex";
-import {Point} from "../Point";
-import {GraphLayout} from "../GraphLayout";
+import { Edge, GraphLayout, Point, Vertex } from "../";
 
 const forceLayout = ({vertices, edges, options}:{ vertices: Array<Vertex>, edges: Array<Edge>, options?: any }): any => {
   const { center, maintainFixed } = options;
@@ -32,7 +30,7 @@ const forceLayout = ({vertices, edges, options}:{ vertices: Array<Vertex>, edges
     .stop()
     .tick(300)
 
-  return (v, i) => {
+  return (v:Vertex, i:number) => {
     const node = nodes.find(n => n.id === v.id);
     if (node) {
       return new Point(node.x, node.y)

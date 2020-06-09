@@ -9,7 +9,7 @@ const alignHorizontal = ({ vertices }: { vertices: Array<Vertex> }): any => {
 
   const leftVertex = Math.min(...vertices.map(v => v.position.x))
 
-  return (v, i) => new Point(leftVertex + (i * STEP), averageY);
+  return (v:Vertex, i:number) => new Point(leftVertex + (i * STEP), averageY);
 }
 
 export default alignHorizontal;

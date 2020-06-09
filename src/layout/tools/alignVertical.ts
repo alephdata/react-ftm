@@ -9,7 +9,7 @@ const alignVertical = ({ vertices }: { vertices: Array<Vertex> }): any => {
 
   const topVertex = Math.min(...vertices.map(v => v.position.y))
 
-  return (v, i) => new Point(averageX, topVertex + (i * STEP))
+  return (v:Vertex, i:number) => new Point(averageX, topVertex + (i * STEP))
 }
 
 export default alignVertical;

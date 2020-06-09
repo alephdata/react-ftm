@@ -7,7 +7,7 @@ import { EntityManager } from '../EntityManager';
 import { GraphContext, IGraphContext } from '../GraphContext'
 import { EntitySelect, SchemaSelect } from '../editors'
 import { Entity, Schema } from '../types';
-import { removeCollisions, Point } from '../layout'
+import { Point } from '../layout'
 import Dialog from './Dialog'
 import c from 'classnames';
 
@@ -105,13 +105,11 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
   }
 
   async onSubmit(values: Values) {
-    console.log('in on submit', values)
     if (!values || !values.length) return;
     const entityData = values[0];
     const { layout, updateLayout, viewport, updateViewport } = this.context as IGraphContext
     const { vertexCreateOptions } = this.props;
     const center = vertexCreateOptions?.initialPosition || viewport.center;
-    console.log(center)
     const { query } = this.state
     const schema = this.getSchema();
     let entity;

@@ -25,7 +25,6 @@ import {
   GraphLayout,
   Rectangle,
   centerAround,
-  forceLayout,
   positionSelection,
 } from "../layout";
 import { History } from '../History';
