@@ -4,6 +4,7 @@ import { GraphLayout } from '../layout';
 import { GraphUpdateHandler } from '../GraphContext';
 import { TableEditor } from './TableEditor';
 import { EntityManager } from '../EntityManager';
+import { Viewport } from '../Viewport';
 import { Classes, Icon } from "@blueprintjs/core";
 import { Entity, IEntityDatum, Schema, Property as FTMProperty } from "@alephdata/followthemoney";
 import { Property } from '../types';
@@ -14,6 +15,7 @@ import c from 'classnames';
 
 interface ITableViewPanelProps {
   layout: GraphLayout
+  viewport: Viewport
   schema: Schema
   updateLayout: GraphUpdateHandler,
   writeable: boolean,
@@ -87,8 +89,8 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
   }
 
   onEntityCreate(entityData: IEntityDatum) {
-    const { layout, updateLayout } = this.props;
-    const entity = layout.createEntity(entityData);
+    const { layout, updateLayout, viewport } = this.props;
+    const entity = layout.createEntity(entityData, viewport.center);
     updateLayout(layout, null, { modifyHistory: false });
     this.addChangeToBatch('created', entity);
 

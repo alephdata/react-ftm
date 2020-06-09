@@ -105,9 +105,13 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
   }
 
   async onSubmit(values: Values) {
+    console.log('in on submit', values)
     if (!values || !values.length) return;
     const entityData = values[0];
     const { layout, updateLayout, viewport, updateViewport } = this.context as IGraphContext
+    const { vertexCreateOptions } = this.props;
+    const center = vertexCreateOptions?.initialPosition || viewport.center;
+    console.log(center)
     const { query } = this.state
     const schema = this.getSchema();
     let entity;
@@ -118,25 +122,24 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
       if (typeof entityData === 'string') {
         const captionProperty = schema?.caption[0];
         if (captionProperty) {
-          entity = layout.createEntity({ schema, properties: { [captionProperty]: query } }, viewport.center);
+          entity = layout.createEntity({ schema, properties: { [captionProperty]: query } }, center);
         } else {
-          entity = layout.createEntity({ schema }, viewport.center);
+          entity = layout.createEntity({ schema }, center);
         }
       } else {
         entity = entityData;
-        layout.addEntities([entity], viewport.center);
+        layout.addEntities([entity], center);
       }
     } catch {
       this.setState({ isProcessing: false })
       return;
     }
 
-
     const vertex = layout.getVertexByEntity(entity)
 
     if (vertex) {
-      if (this.props.vertexCreateOptions?.initialPosition) {
-        layout.vertices.set(vertex.id, vertex.snapPosition(position))
+      if (vertexCreateOptions?.initialPosition) {
+        layout.vertices.set(vertex.id, vertex.snapPosition(center))
       }
 
       layout.selectElement(vertex)

@@ -211,7 +211,6 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   _animateTransition(oldViewBox:string, viewBox:string, duration:number = .1) {
-    // console.log('calling animate transition');
     let start = this._now();
     let that = this;
     let domNode = ReactDOM.findDOMNode(that);

@@ -73,7 +73,6 @@ export class GraphLayout {
   }
 
   private generate(): void {
-    console.log('GENERATE');
     this.edges.forEach(edge => edge.garbage = true);
     this.vertices.forEach(vertex => vertex.garbage = true);
     this.entities.forEach((entity) => {
@@ -125,6 +124,7 @@ export class GraphLayout {
   }
 
   createEntity(entityData: any, center?: Point) {
+    console.log('in create entity', center)
     const entity = this.entityManager.createEntity(entityData);
     this.addEntities([entity], center);
     return entity;
@@ -438,7 +438,11 @@ export class GraphLayout {
 
   layout(center?: Point) {
     this.generate()
-    return forceLayout(this, { center, maintainFixed: true })
+    const vertices = this.getVertices().filter(v => !v.isHidden())
+    const edges = this.getEdges();
+    console.log(vertices);
+    const positioningFunc = forceLayout({vertices, edges, options:{ center, maintainFixed: true }});
+    this.applyPositioning(positioningFunc, vertices);
   }
 
   clone():GraphLayout{
@@ -446,7 +450,6 @@ export class GraphLayout {
   }
 
   update(withData:IGraphLayoutData):GraphLayout{
-    console.log("UPDATE");
     return GraphLayout.fromJSON(this.config, this.entityManager, withData)
   }
 

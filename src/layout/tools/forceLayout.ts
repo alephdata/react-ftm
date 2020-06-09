@@ -3,9 +3,9 @@ import {Vertex} from "../Vertex";
 import {Point} from "../Point";
 import {GraphLayout} from "../GraphLayout";
 
-const forceLayout = (layout:GraphLayout, options: any): GraphLayout => {
+const forceLayout = ({vertices, edges, options}:{ vertices: Array<Vertex>, edges: Array<Edge>, options?: any }): any => {
   const { center, maintainFixed } = options;
-  const nodes = layout.getVertices()
+  const nodes = vertices
     .filter((vertex) => !vertex.isHidden())
     .map((vertex) => {
       const n = {id: vertex.id, radius: vertex.radius, fixed: vertex.fixed} as any
@@ -15,7 +15,7 @@ const forceLayout = (layout:GraphLayout, options: any): GraphLayout => {
       }
       return n
     })
-  const links = layout.getEdges().map((edge) => {
+  const links = edges.map((edge) => {
     return {
       source: nodes.find((n) => n.id === edge.sourceId),
       target: nodes.find((n) => n.id === edge.targetId)
@@ -32,15 +32,12 @@ const forceLayout = (layout:GraphLayout, options: any): GraphLayout => {
     .stop()
     .tick(300)
 
-  nodes.forEach((node) => {
-    if (!maintainFixed || !node.fixed) {
-      const vertex = layout.vertices.get(node.id) as Vertex
-      const position = new Point(node.x, node.y)
-      layout.vertices.set(vertex.id, vertex.snapPosition(position))
+  return (v, i) => {
+    const node = nodes.find(n => n.id === v.id);
+    if (node) {
+      return new Point(node.x, node.y)
     }
-  });
-
-  return layout;
+  };
 }
 
 export default forceLayout;

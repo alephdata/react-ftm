@@ -3,6 +3,7 @@ import alignCircle from './alignCircle';
 import alignHorizontal from './alignHorizontal';
 import alignVertical from './alignVertical';
 import arrangeTree from './arrangeTree';
+import forceLayout from './forceLayout';
 
 
 export interface ILayoutFunction {
@@ -14,12 +15,20 @@ const positioning = {
   'alignHorizontal': alignHorizontal,
   'alignVertical': alignVertical,
   'arrangeTree': arrangeTree,
+  'forceLayout': forceLayout,
 }
 
-const positionSelection = (layout: GraphLayout, type: string) => {
-  const vertices = layout.getSelectedVertices().filter(v=>!v.isHidden());
-  const edges = layout.getSelectionAdjacentEdges();
-  const positioningFunc = positioning[type]({vertices, edges});
+const positionSelection = (layout: GraphLayout, type: string, options?: any) => {
+  let vertices, edges;
+  if (layout.hasSelection()) {
+    vertices = layout.getSelectedVertices().filter(v=>!v.isHidden());
+    edges = layout.getSelectionAdjacentEdges();
+  } else {
+    vertices = layout.getVertices().filter(v=>!v.isHidden());
+    edges = layout.getEdges();
+  }
+
+  const positioningFunc = positioning[type]({vertices, edges, options});
 
   return layout.applyPositioning(positioningFunc, vertices);
 }

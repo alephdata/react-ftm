@@ -93,6 +93,10 @@ const messages = defineMessages({
     id: 'tooltip.layout_auto',
     defaultMessage: 'Auto-layout',
   },
+  tooltip_layout_center: {
+    id: 'tooltip.layout_center',
+    defaultMessage: 'Center',
+  },
   tooltip_sidebar_view: {
     id: 'tooltip.sidebar_view',
     defaultMessage: 'Show sidebar',
@@ -190,7 +194,6 @@ export class Toolbar extends React.Component<IToolbarProps> {
     const canExpandSelection = layout.entityManager.hasExpand && layout.getSelectedVertices().length === 1
     const canGroupSelection = layout.getSelectedVertices().length > 1
     const canUngroupSelection = layout.getSelectedGroupings().length >= 1
-    const disableLayoutButtons = layout.selection && layout.selection.length <= 1;
     const showSearch = layout.vertices && layout.vertices.size > 0
 
     const editingButtons = [
@@ -278,34 +281,30 @@ export class Toolbar extends React.Component<IToolbarProps> {
         {
           helpText: intl.formatMessage(messages.tooltip_layout_horizontal),
           icon: "drag-handle-horizontal",
-          disabled: disableLayoutButtons,
           onClick: () => updateLayout(positionSelection(layout, 'alignHorizontal'), null, { modifyHistory:true }),
         },
         {
           helpText: intl.formatMessage(messages.tooltip_layout_vertical),
           icon: "drag-handle-vertical",
-          disabled: disableLayoutButtons,
           onClick: () => updateLayout(positionSelection(layout, 'alignVertical'), null, { modifyHistory:true }),
         },
         {
           helpText: intl.formatMessage(messages.tooltip_layout_circle),
           icon: "layout-circle",
-          disabled: disableLayoutButtons,
           onClick: () => updateLayout(positionSelection(layout, 'alignCircle'), null, { modifyHistory:true }),
         },
         {
           helpText: intl.formatMessage(messages.tooltip_layout_hierarchy),
           icon: "layout-hierarchy",
-          disabled: disableLayoutButtons,
           onClick: () => updateLayout(positionSelection(layout, 'arrangeTree'), null, { modifyHistory:true }),
         },
         {
           helpText: intl.formatMessage(messages.tooltip_layout_auto),
           icon: "layout",
-          onClick: () => updateLayout(forceLayout(layout, { center: viewport.center, maintainFixed: false }), null, { modifyHistory:true }),
+          onClick: () => updateLayout(positionSelection(layout, 'forceLayout', {center: viewport.center, maintainFixed: false}), null, { modifyHistory:true }),
         },
         {
-          helpText: 'center',
+          helpText: intl.formatMessage(messages.tooltip_layout_center),
           icon: "layout-auto",
           onClick: () => updateLayout(centerAround(layout), null, { modifyHistory:true }),
         }

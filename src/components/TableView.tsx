@@ -1,6 +1,7 @@
 import React from 'react';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { GraphLayout } from '../layout';
+import { Viewport } from '../Viewport';
 import { GraphUpdateHandler } from '../GraphContext';
 import { SchemaSelect } from '../editors';
 import { TableViewPanel } from './TableViewPanel';
@@ -21,6 +22,7 @@ const messages = defineMessages({
 interface ITableViewProps extends WrappedComponentProps {
   isOpen: boolean,
   layout: GraphLayout,
+  viewport: Viewport,
   updateLayout: GraphUpdateHandler,
   writeable: boolean,
   toggleTableView: () => void
