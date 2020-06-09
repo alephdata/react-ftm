@@ -259,23 +259,6 @@ export class Toolbar extends React.Component<IToolbarProps> {
           disabled: !canUngroupSelection,
         }
       ],
-    ];
-
-    const otherButtons = [
-      [
-        {
-          helpText: intl.formatMessage(messages.tooltip_select_mode),
-          icon: "select",
-          disabled: interactionMode !== modes.PAN,
-          onClick: () => this.onSetInteractionMode(modes.SELECT),
-        },
-        {
-          helpText: intl.formatMessage(messages.tooltip_pan_mode),
-          icon: "hand",
-          disabled: interactionMode === modes.PAN,
-          onClick: () => this.onSetInteractionMode(modes.PAN),
-        }
-      ],
       [
         {
           helpText: intl.formatMessage(messages.tooltip_layout_horizontal),
@@ -305,7 +288,25 @@ export class Toolbar extends React.Component<IToolbarProps> {
         {
           helpText: intl.formatMessage(messages.tooltip_layout_center),
           icon: "layout-auto",
+          disabled: !hasSelection,
           onClick: () => updateLayout(centerAround(layout), null, { modifyHistory:true }),
+        }
+      ],
+    ];
+
+    const otherButtons = [
+      [
+        {
+          helpText: intl.formatMessage(messages.tooltip_select_mode),
+          icon: "select",
+          disabled: interactionMode !== modes.PAN,
+          onClick: () => this.onSetInteractionMode(modes.SELECT),
+        },
+        {
+          helpText: intl.formatMessage(messages.tooltip_pan_mode),
+          icon: "hand",
+          disabled: interactionMode === modes.PAN,
+          onClick: () => this.onSetInteractionMode(modes.PAN),
         }
       ],
       [
