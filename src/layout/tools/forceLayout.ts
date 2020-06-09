@@ -25,8 +25,8 @@ const forceLayout = ({vertices, edges, options}:{ vertices: Array<Vertex>, edges
     simulation.force("x", forceX(center.x))
       .force("y", forceY(center.y))
   }
-  simulation.force('links', forceLink(links).strength(1).distance(4))
-    .force("charge", forceManyBody().strength(-3).distanceMin(4))
+  simulation.force('links', forceLink(links).strength(1).distance(6))
+    .force("charge", forceManyBody().strength(-3))
     .stop()
     .tick(300)
 
