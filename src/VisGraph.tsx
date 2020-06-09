@@ -177,12 +177,10 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     const { entityManager } = this.props;
     const menuSettings = { vertex, position, anchor: 'top', onlyShowExpand };
 
-    if (this.svgRef.current) {
-      const { height, width } = this.svgRef.current.getBoundingClientRect();
-      if (position.y > height/2) {
-        menuSettings.anchor = "bottom";
-        menuSettings.position = new Point(position.x, height - position.y);
-      }
+    const docHeight = document.body.clientHeight;
+    if (position.y > docHeight/2) {
+      menuSettings.anchor = "bottom";
+      menuSettings.position = new Point(position.x, docHeight - position.y);
     }
 
     this.setState({
@@ -350,13 +348,6 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                 />
               </div>
             )}
-            <VertexMenu
-              isOpen={vertexMenuSettings !== null && interactionMode !== modes.EDGE_DRAW}
-              contents={vertexMenuSettings}
-              actions={actions}
-              hideMenu={this.hideVertexMenu}
-              intl={intl}
-            />
           </div>
         </div>
         {writeable && (
@@ -378,6 +369,13 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
               isOpen={interactionMode === modes.EDGE_CREATE}
               toggleDialog={this.setInteractionMode}
               {...layoutContext}
+            />
+            <VertexMenu
+              isOpen={vertexMenuSettings !== null && interactionMode !== modes.EDGE_DRAW}
+              contents={vertexMenuSettings}
+              actions={actions}
+              hideMenu={this.hideVertexMenu}
+              intl={intl}
             />
           </>
         )}
