@@ -6,6 +6,7 @@ import { Edge } from './Edge'
 import { Grouping } from './Grouping'
 import { Point } from './Point';
 import { Rectangle } from './Rectangle';
+import { forceLayout } from './';
 import { EntityManager } from '../EntityManager';
 import { GraphConfig } from '../GraphConfig';
 
@@ -123,15 +124,15 @@ export class GraphLayout {
     this.vertices.forEach(vertex => vertex.garbage && this.vertices.delete(vertex.id));
   }
 
-  createEntity(entityData: any) {
+  createEntity(entityData: any, center?: Point) {
     const entity = this.entityManager.createEntity(entityData);
-    this.addEntities([entity]);
+    this.addEntities([entity], center);
     return entity;
   }
 
-  addEntities(entities: Array<Entity>) {
+  addEntities(entities: Array<Entity>, center?: Point) {
     entities.map(e => this.entities.set(e.id, e));
-    this.layout();
+    this.layout(center);
   }
 
   updateEntity(entity: Entity) {
@@ -435,45 +436,9 @@ export class GraphLayout {
     return Rectangle.fromPoints(...points);
   }
 
-  layout() {
+  layout(center?: Point) {
     this.generate()
-    this.layoutPositions()
-  }
-
-  layoutPositions() {
-    console.log("LAYOUT POSITIONS")
-    const nodes = this.getVertices()
-      .filter((vertex) => !vertex.isHidden())
-      .map((vertex) => {
-        const n = {id: vertex.id, fixed: vertex.fixed} as any
-        if (vertex.fixed) {
-          n.fx = vertex.position.x;
-          n.fy = vertex.position.y;
-        }
-        return n
-      })
-    const links = this.getEdges().map((edge) => {
-      return {
-        source: nodes.find((n) => n.id === edge.sourceId),
-        target: nodes.find((n) => n.id === edge.targetId)
-      }
-    }).filter((link) => (link.source && link.target))
-
-
-    const simulation = forceSimulation(nodes)
-      .force('links', forceLink(links).distance(3))
-      .force('collide', forceCollide(this.config.DEFAULT_VERTEX_RADIUS).strength(2))
-    simulation.stop()
-    simulation.tick(500)
-
-    nodes.forEach((node) => {
-      if (!node.fixed) {
-        console.log('setting position of non-fixed node');
-        const vertex = this.vertices.get(node.id) as Vertex
-        const position = new Point(node.x, node.y)
-        this.vertices.set(vertex.id, vertex.snapPosition(position))
-      }
-    })
+    return forceLayout(this, { center, maintainFixed: true })
   }
 
   clone():GraphLayout{

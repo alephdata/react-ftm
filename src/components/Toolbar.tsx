@@ -25,7 +25,7 @@ import {
   GraphLayout,
   Rectangle,
   centerAround,
-  disperse,
+  forceLayout,
   positionSelection,
 } from "../layout";
 import { History } from '../History';
@@ -88,6 +88,10 @@ const messages = defineMessages({
   tooltip_layout_hierarchy: {
     id: 'tooltip.layout_hierarchy',
     defaultMessage: 'Arrange as hierarchy',
+  },
+  tooltip_layout_auto: {
+    id: 'tooltip.layout_auto',
+    defaultMessage: 'Auto-layout',
   },
   tooltip_sidebar_view: {
     id: 'tooltip.sidebar_view',
@@ -296,9 +300,9 @@ export class Toolbar extends React.Component<IToolbarProps> {
           onClick: () => updateLayout(positionSelection(layout, 'arrangeTree'), null, { modifyHistory:true }),
         },
         {
-          helpText: 'disperse',
+          helpText: intl.formatMessage(messages.tooltip_layout_auto),
           icon: "layout",
-          onClick: () => updateLayout(disperse(layout), null, { modifyHistory:true }),
+          onClick: () => updateLayout(forceLayout(layout, { center: viewport.center, maintainFixed: false }), null, { modifyHistory:true }),
         },
         {
           helpText: 'center',

@@ -7,7 +7,7 @@ import { EntityManager } from '../EntityManager';
 import { GraphContext, IGraphContext } from '../GraphContext'
 import { EntitySelect, SchemaSelect } from '../editors'
 import { Entity, Schema } from '../types';
-import { Point } from '../layout'
+import { removeCollisions, Point } from '../layout'
 import Dialog from './Dialog'
 import c from 'classnames';
 
@@ -118,13 +118,13 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
       if (typeof entityData === 'string') {
         const captionProperty = schema?.caption[0];
         if (captionProperty) {
-          entity = layout.createEntity({ schema, properties: { [captionProperty]: query } });
+          entity = layout.createEntity({ schema, properties: { [captionProperty]: query } }, viewport.center);
         } else {
-          entity = layout.createEntity({ schema });
+          entity = layout.createEntity({ schema }, viewport.center);
         }
       } else {
         entity = entityData;
-        layout.addEntities([entity]);
+        layout.addEntities([entity], viewport.center);
       }
     } catch {
       this.setState({ isProcessing: false })
@@ -133,10 +133,12 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
 
 
     const vertex = layout.getVertexByEntity(entity)
-    const position = this.props.vertexCreateOptions?.initialPosition || viewport.center;
 
     if (vertex) {
-      layout.vertices.set(vertex.id, vertex.snapPosition(position))
+      if (this.props.vertexCreateOptions?.initialPosition) {
+        layout.vertices.set(vertex.id, vertex.snapPosition(position))
+      }
+
       layout.selectElement(vertex)
       updateLayout(layout, { created: [entity] }, { modifyHistory: true, clearSearch: true });
       this.setState({query: '', isProcessing: false, suggestions: []})

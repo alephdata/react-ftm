@@ -216,7 +216,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
       const addedVertices = entities.map(e => layout.getVertexByEntity(e)).filter(v => v !== undefined)
 
       console.log('added vertices', addedVertices);
-      this.updateLayout(centerAround(layout, [vertex], addedVertices), {}, { modifyHistory: true })
+      this.updateLayout(layout, {}, { modifyHistory: true })
     }
   }
 

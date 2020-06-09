@@ -63,15 +63,17 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
 
   private onDragMove(e: DraggableEvent, data: DraggableData) {
     console.log('calling onDragmove');
-    const { config } = this.props
+    const { actions, config, dragSelection, interactionMode } = this.props
     const matrix = getRefMatrix(this.gRef)
     const current = applyMatrix(matrix, data.x, data.y)
     const last = applyMatrix(matrix, data.lastX, data.lastY)
     const offset = config.pixelToGrid(current.subtract(last))
-    this.props.actions.setInteractionMode(modes.ITEM_DRAG)
+    if (interactionMode !== modes.ITEM_DRAG) {
+      actions.setInteractionMode(modes.ITEM_DRAG)
+    }
 
     if (offset.x || offset.y) {
-      this.props.dragSelection(offset)
+      dragSelection(offset)
     }
   }
 

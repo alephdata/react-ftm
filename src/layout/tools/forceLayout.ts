@@ -1,12 +1,20 @@
-import {forceCenter, forceCollide, forceLink, forceManyBody, forceSimulation} from "d3-force";
+import {forceCenter, forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY} from "d3-force";
 import {Vertex} from "../Vertex";
 import {Point} from "../Point";
 import {GraphLayout} from "../GraphLayout";
 
-export function forceLayout(layout:GraphLayout):GraphLayout{
+const forceLayout = (layout:GraphLayout, options: any): GraphLayout => {
+  const { center, maintainFixed } = options;
   const nodes = layout.getVertices()
-    .filter((vertex) => !vertex.hidden);
-
+    .filter((vertex) => !vertex.isHidden())
+    .map((vertex) => {
+      const n = {id: vertex.id, radius: vertex.radius, fixed: vertex.fixed} as any
+      if (maintainFixed && vertex.fixed) {
+        n.fx = vertex.position.x;
+        n.fy = vertex.position.y;
+      }
+      return n
+    })
   const links = layout.getEdges().map((edge) => {
     return {
       source: nodes.find((n) => n.id === edge.sourceId),
@@ -15,18 +23,24 @@ export function forceLayout(layout:GraphLayout):GraphLayout{
   }).filter((link) => (link.source && link.target))
 
   const simulation = forceSimulation(nodes)
-    .force('links', forceLink(links))
-    .force("manyBody", forceManyBody().strength(10))
-    // .force('collide', forceCollide(layout.config.DEFAULT_VERTEX_RADIUS).strength(2))
-    .force("center", forceCenter());
-  simulation.stop()
-  simulation.tick(500)
+  if (center) {
+    simulation.force("x", forceX(center.x))
+      .force("y", forceY(center.y))
+  }
+  simulation.force('links', forceLink(links).strength(1).distance(4))
+    .force("charge", forceManyBody().strength(-3).distanceMin(4))
+    .stop()
+    .tick(300)
 
   nodes.forEach((node) => {
-    const vertex = layout.vertices.get(node.id) as Vertex
-    const position = new Point(node.x, node.y)
-    layout.vertices.set(vertex.id, vertex.snapPosition(position))
-  })
+    if (!maintainFixed || !node.fixed) {
+      const vertex = layout.vertices.get(node.id) as Vertex
+      const position = new Point(node.x, node.y)
+      layout.vertices.set(vertex.id, vertex.snapPosition(position))
+    }
+  });
 
   return layout;
 }
+
+export default forceLayout;

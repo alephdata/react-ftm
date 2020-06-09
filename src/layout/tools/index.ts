@@ -1,9 +1,11 @@
 import centerAround from './centerAround';
-import disperse from './disperse';
+import forceLayout from './forceLayout';
+import removeCollisions from './removeCollisions';
 import positionSelection from './positionSelection';
 
 export {
   centerAround,
-  disperse,
+  forceLayout,
+  removeCollisions,
   positionSelection
 }
