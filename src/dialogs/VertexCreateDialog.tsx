@@ -128,7 +128,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
         entity = entityData;
         layout.addEntities([entity], center);
       }
-    } catch {
+    } catch (e) {
       this.setState({ isProcessing: false })
       return;
     }
@@ -139,8 +139,6 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
       if (vertexCreateOptions?.initialPosition) {
         layout.vertices.set(vertex.id, vertex.snapPosition(center))
       }
-
-      layout.selectElement(vertex)
       updateLayout(layout, { created: [entity] }, { modifyHistory: true, clearSearch: true });
       this.setState({query: '', isProcessing: false, suggestions: []})
       this.props.toggleDialog()

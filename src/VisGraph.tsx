@@ -12,7 +12,8 @@ import { IGraphContext, GraphContext } from './GraphContext'
 import { Sidebar, TableView, Toolbar, VertexMenu } from './components';
 import { History } from './History';
 import { EdgeCreateDialog, GroupingCreateDialog, VertexCreateDialog } from './dialogs';
-import { filterVerticesByText, modes } from './utils'
+import { filterVerticesByText, modes, showSuccessToast, showWarningToast } from './utils'
+
 
 import './VisGraph.scss';
 
@@ -20,6 +21,14 @@ const messages = defineMessages({
   tooltip_fit_selection: {
     id: 'tooltips.fit_to_selection',
     defaultMessage: 'Fit view to selection',
+  },
+  expand_success: {
+    id: 'toasts.expand_success',
+    defaultMessage: 'Successfully added {vertices} new nodes and {edges} new links to the diagram',
+  },
+  expand_none: {
+    id: 'toasts.expand_none',
+    defaultMessage: 'All expansion results are already present in the diagram',
   },
 });
 
@@ -200,7 +209,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
 
   async expandVertex(vertex: Vertex, properties: Array<string>) {
     if (!vertex.entityId) return;
-    const { entityManager, layout, viewport } = this.props;
+    const { entityManager, intl, layout, viewport } = this.props;
 
     this.setState({ vertexMenuSettings: null });
 
@@ -210,8 +219,17 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
         .reduce((entities: Array<Entity>, expandObj: any) => ([...entities, ...expandObj.entities]), [])
         .map((entityData: IEntityDatum) => new Entity(entityManager.model, entityData));
 
+      const before = layout.getVisibleElementCount();
       layout.addEntities(entities as Array<Entity>, viewport.center);
-      const addedVertices = entities.map((e:Entity) => layout.getVertexByEntity(e)).filter((v: Vertex) => v !== undefined)
+      const after = layout.getVisibleElementCount();
+      const vDiff = after.vertices - before.vertices;
+      const eDiff = after.edges - before.edges;
+
+      if (vDiff || eDiff) {
+        showSuccessToast(intl.formatMessage(messages.expand_success, { vertices: vDiff, edges: eDiff }));
+      } else {
+        showWarningToast(intl.formatMessage(messages.expand_none));
+      }
 
       this.updateLayout(layout, {}, { modifyHistory: true })
     }

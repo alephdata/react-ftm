@@ -168,9 +168,7 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
 
   onSelectionUpdate(entity: Entity, additional = true, allowUnselect = true) {
     const { layout, updateLayout } = this.props;
-
-    // select graphElement by entityId
-    layout.selectVerticesByFilter((v) => v.entityId === entity.id, additional, allowUnselect);
+    layout.selectByEntities([entity], additional, allowUnselect);
     updateLayout(layout, null, { clearSearch: true });
   }
 

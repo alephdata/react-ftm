@@ -72,6 +72,14 @@ export class GraphLayout {
     return Array.from(this.edges.values())
   }
 
+  getVisibleElementCount(): any {
+    return {
+      vertices: this.getVertices().filter(v => !v.isHidden()).length,
+      edges: this.getEdges().filter(e => !e.isHidden()).length,
+      groupings: this.getGroupings().length,
+    }
+  }
+
   private generate(): void {
     this.edges.forEach(edge => edge.garbage = true);
     this.vertices.forEach(vertex => vertex.garbage = true);
@@ -132,6 +140,7 @@ export class GraphLayout {
   addEntities(entities: Array<Entity>, center?: Point) {
     entities.map(e => this.entities.set(e.id, e));
     this.layout(center);
+    this.selectByEntities(entities);
   }
 
   updateEntity(entity: Entity) {
@@ -191,6 +200,11 @@ export class GraphLayout {
   selectVerticesByFilter(predicate: VertexPredicate, additional: boolean = false, allowUnselect: boolean = false) {
     const vertices = this.getVertices().filter((vertex) => !vertex.isHidden()).filter(predicate);
     this.selectElement(vertices, additional, allowUnselect);
+  }
+
+  selectByEntities(entities: Array<Entity>, additional: boolean = false, allowUnselect: boolean = false) {
+    const entityIds = entities.map(e => e.id);
+    this.selectVerticesByFilter(v => (v.isEntity() && entityIds.indexOf(v.entityId) > -1), additional, allowUnselect);
   }
 
   selectArea(area: Rectangle) {
