@@ -189,6 +189,7 @@ export class GraphLayout {
     } else {
       if (!additional) {
         this.selection = newSelection
+        this.groupings.delete('selectedArea');
       } else if (!isAlreadySelected) {
         this.selection = [...this.selection, ...newSelection]
       }
