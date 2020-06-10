@@ -3,7 +3,7 @@ import { defineMessages, WrappedComponentProps } from 'react-intl';
 import { Menu, MenuDivider, MenuItem, Spinner } from "@blueprintjs/core"
 import c from 'classnames';
 import { modes } from '../utils/interactionModes'
-import { Count } from '../types';
+import { Count, Schema } from '../types';
 
 import './VertexMenu.scss';
 
@@ -18,7 +18,7 @@ const messages = defineMessages({
   },
   expand_all: {
     id: 'vertex_menu.expand_all',
-    defaultMessage: 'All',
+    defaultMessage: 'all',
   },
   expand_none: {
     id: 'vertex_menu.expand_none',
@@ -53,11 +53,15 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
     const { contents, intl } = this.props;
 
     if (!propString) {
-      return intl.formatMessage(messages.expand_all);
+      return { label: intl.formatMessage(messages.expand_all), icon: "search-around" };
     }
     const { vertex } = contents;
     const property = vertex.getEntity()?.schema?.getProperty(propString);
-    return property?.label;
+    if (property) {
+      const schemaForIcon = property.getRange();
+      const icon = schemaForIcon ? <Schema.Icon schema={schemaForIcon} /> : null;
+      return { label: property.label, icon }
+    }
   }
 
   handleClickOutside(e: MouseEvent) {
@@ -78,9 +82,9 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
 
     return (
       <MenuItem
-        icon="search-around"
+        icon={propLabel.icon}
         onClick={() => actions.expandVertex(contents.vertex, property)}
-        text={intl.formatMessage(messages.expand, { property: propLabel })}
+        text={intl.formatMessage(messages.expand, { property: propLabel.label.toLowerCase() })}
         labelElement={<Count count={count} />}
       />
     )
