@@ -160,7 +160,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
         isOpen={isOpen}
         isProcessing={isProcessing}
         title={intl.formatMessage(messages.title)}
-        onClose={toggleDialog}
+        onClose={() => toggleDialog()}
         className="VertexCreateDialog"
       >
         <form onSubmit={(e) => {
