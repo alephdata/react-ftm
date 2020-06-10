@@ -204,7 +204,7 @@ export class GraphLayout {
 
   selectByEntities(entities: Array<Entity>, additional: boolean = false, allowUnselect: boolean = false) {
     const entityIds = entities.map(e => e.id);
-    this.selectVerticesByFilter(v => (v.isEntity() && entityIds.indexOf(v.entityId) > -1), additional, allowUnselect);
+    this.selectVerticesByFilter(v => (v.entityId !== undefined && entityIds.indexOf(v.entityId) > -1), additional, allowUnselect);
   }
 
   selectArea(area: Rectangle) {

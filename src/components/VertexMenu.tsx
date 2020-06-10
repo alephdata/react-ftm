@@ -53,7 +53,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
     const { contents, intl } = this.props;
 
     if (!propString) {
-      return { label: intl.formatMessage(messages.expand_all), icon: "search-around" };
+      return { label: intl.formatMessage(messages.expand_all) };
     }
     const { vertex } = contents;
     const property = vertex.getEntity()?.schema?.getProperty(propString);
@@ -82,7 +82,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
 
     return (
       <MenuItem
-        icon={propLabel.icon}
+        icon={propLabel.icon || "search-around"}
         onClick={() => actions.expandVertex(contents.vertex, property)}
         text={intl.formatMessage(messages.expand, { property: propLabel.label.toLowerCase() })}
         labelElement={<Count count={count} />}
