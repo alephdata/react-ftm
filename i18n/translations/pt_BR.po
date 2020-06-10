@@ -1,7 +1,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-06-09T16:14:33.945Z\n"
+"POT-Creation-Date: 2020-06-10T09:06:29.807Z\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/aleph/teams/76591/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -79,11 +79,11 @@ msgstr ""
 msgid "Align vertical"
 msgstr ""
 
-#. [vertex_menu.expand_all]
+#. [toasts.expand_none]
 #. defaultMessage is:
-#. All
+#. All expansion results are already present in the diagram
 #: i18n/messages.json
-msgid "All"
+msgid "All expansion results are already present in the diagram"
 msgstr ""
 
 #. [tooltip.layout_circle]
@@ -309,6 +309,22 @@ msgstr ""
 msgid "Source"
 msgstr ""
 
+#. [toasts.expand_success]
+#. defaultMessage is:
+#. Successfully added {vertices} new
+#.       {vertices, plural, one {node} other {nodes}}
+#.       and {edges} new
+#.       {edges, plural, one {link} other {links}}
+#.       to the diagram
+#: i18n/messages.json
+msgid ""
+"Successfully added {vertices} new\n"
+"      {vertices, plural, one {node} other {nodes}}\n"
+"      and {edges} new\n"
+"      {edges, plural, one {link} other {links}}\n"
+"      to the diagram"
+msgstr ""
+
 #. [dialog.edge_create.target_label]
 #. defaultMessage is:
 #. Target
@@ -356,6 +372,13 @@ msgstr ""
 #. Ungroup selection
 #: i18n/messages.json
 msgid "Ungroup selection"
+msgstr ""
+
+#. [vertex_menu.expand_all]
+#. defaultMessage is:
+#. all
+#: i18n/messages.json
+msgid "all"
 msgstr ""
 
 #. [dialog.vertex_create.name_placeholder]
