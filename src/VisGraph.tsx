@@ -24,7 +24,11 @@ const messages = defineMessages({
   },
   expand_success: {
     id: 'toasts.expand_success',
-    defaultMessage: 'Successfully added {vertices} new nodes and {edges} new links to the diagram',
+    defaultMessage: `Successfully added {vertices} new
+      {vertices, plural, one {node} other {nodes}}
+      and {edges} new
+      {edges, plural, one {link} other {links}}
+      to the diagram`,
   },
   expand_none: {
     id: 'toasts.expand_none',
