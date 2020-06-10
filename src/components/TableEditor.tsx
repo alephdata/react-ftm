@@ -17,8 +17,12 @@ import "./TableEditor.scss"
 
 const messages = defineMessages({
   add: {
-    id: 'table_editor.add_entity',
-    defaultMessage: 'Create a new {schema}',
+    id: 'table_editor.add_row',
+    defaultMessage: 'Add a new {schema} row',
+  },
+  remove: {
+    id: 'table_editor.remove_row',
+    defaultMessage: 'Remove new {schema} row',
   },
 });
 
@@ -58,7 +62,7 @@ interface ITableEditorState {
   addedColumns: Array<FTMProperty>
   shouldCommit: boolean
   headerRow: CellData[]
-  topAddRows: CellData[][]
+  showTopAddRow: boolean
   entityRows: CellData[][]
   createdEntityIds: string[]
 }
@@ -72,13 +76,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     this.state = {
       addedColumns: [],
       headerRow: [],
-      topAddRows: [],
+      showTopAddRow: false,
       entityRows: [],
       shouldCommit: false,
       createdEntityIds: [],
     }
 
-    this.onShowTopAddRow = this.onShowTopAddRow.bind(this);
+    this.toggleTopAddRow = this.toggleTopAddRow.bind(this);
     this.onAddColumn = this.onAddColumn.bind(this);
     this.getVisibleProperties = this.getVisibleProperties.bind(this);
     this.getNonVisibleProperties = this.getNonVisibleProperties.bind(this);
@@ -90,29 +94,40 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   componentDidUpdate(prevProps: ITableEditorProps, prevState: ITableEditorState) {
     const { entities, isPending, selection, sort, writeable } = this.props;
-    const { addedColumns } = this.state;
+    const { addedColumns, showTopAddRow } = this.state;
 
 
     const entitiesDeleted = prevProps.entities.length > entities.length;
     const entitiesAdded = prevProps.entities.length < entities.length;
     const sortChanged = prevProps.sort?.field !== sort?.field || prevProps.sort?.direction !== sort?.direction;
     const selectionChanged = prevProps.selection !== selection;
+    const topAddRowToggled = prevState.showTopAddRow !== showTopAddRow;
 
     if (prevState.addedColumns !== addedColumns || sortChanged || entitiesDeleted) {
       this.regenerateTable();
+      return;
     } else if (entitiesAdded) {
       this.appendAdditionalEntities(prevProps.entities);
     } else if (writeable && selectionChanged) {
       this.reflectUpdatedSelection();
     }
+    if (topAddRowToggled) {
+      this.regenerateHeader();
+    }
   }
 
   regenerateTable = () => {
     this.setState({
-      topAddRows: [],
+      showTopAddRow: false,
       headerRow: this.getHeaderRow(),
       entityRows: this.getEntityRows(),
       createdEntityIds: [],
+    });
+  }
+
+  regenerateHeader = () => {
+    this.setState({
+      headerRow: this.getHeaderRow(),
     });
   }
 
@@ -354,9 +369,10 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   renderAddButton = () => {
     const { intl, schema } = this.props;
+    const { showTopAddRow } = this.state;
     return (
-      <Tooltip content={intl.formatMessage(messages.add, { schema: schema.label })}>
-        <Button icon="new-object" onClick={this.onShowTopAddRow} intent={Intent.PRIMARY} minimal />
+      <Tooltip content={intl.formatMessage(messages[showTopAddRow ? 'remove' : 'add'], { schema: schema.label })}>
+        <Button icon={showTopAddRow ? 'remove' : 'add'} onClick={this.toggleTopAddRow} intent={Intent.PRIMARY} minimal />
       </Tooltip>
     );
   }
@@ -397,10 +413,10 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   handleNewRow = (row: number, changes: any) => {
     const { entities, intl, schema } = this.props;
-    const { entityRows, topAddRows } = this.state;
+    const { entityRows, showTopAddRow } = this.state;
     const visibleProps = this.getVisibleProperties();
     const entityData = { schema, properties: {} };
-    const shouldPrepend = row <= topAddRows.length;
+    const shouldPrepend = showTopAddRow && row === 1;
 
     changes.forEach(({ cell, value, col }: any) => {
       const property = cell?.data?.property || entityRows[0][col]?.data?.property;
@@ -416,15 +432,11 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const entity = this.props.entityManager.createEntity(entityData);
     const newEntityRow = this.getEntityRow(entity, visibleProps);
 
-    this.setState(({ entityRows, createdEntityIds, topAddRows }) => {
-      if (shouldPrepend) {
-        topAddRows.pop();
-      }
-
+    this.setState(({ entityRows, createdEntityIds, showTopAddRow }) => {
       return ({
         entityRows: shouldPrepend ? [newEntityRow, ...entityRows] : [...entityRows, newEntityRow],
         createdEntityIds: [...createdEntityIds, entity.id],
-        topAddRows
+        showTopAddRow: shouldPrepend ? false : showTopAddRow,
       })
     });
   }
@@ -488,18 +500,19 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     }));
   }
 
-  onShowTopAddRow() {
-    this.setState(({ topAddRows }) => ({
-      topAddRows: [...topAddRows, this.getAddRow()]
+  toggleTopAddRow() {
+    this.setState(({ showTopAddRow }) => ({
+      showTopAddRow: !showTopAddRow,
     }));
   }
 
   render() {
     const { isPending, writeable } = this.props;
-    const { headerRow, topAddRows, entityRows } = this.state
+    const { headerRow, showTopAddRow, entityRows } = this.state
     const bottomAddRow = writeable ? [this.getAddRow()] : [];
     const skeletonRows = isPending ? this.getSkeletonRows() : [];
-    const tableData = [headerRow, ...topAddRows, ...entityRows, ...skeletonRows, ...bottomAddRow]
+    const topAddRow = showTopAddRow ? [this.getAddRow()] : [];
+    const tableData = [headerRow, ...topAddRow, ...entityRows, ...skeletonRows, ...bottomAddRow]
 
     return (
       <div className="TableEditor">
