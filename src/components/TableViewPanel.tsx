@@ -91,7 +91,6 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
   onEntityCreate(entityData: IEntityDatum) {
     const { layout, updateLayout, viewport } = this.props;
     const entity = layout.createEntity(entityData, viewport.center);
-    updateLayout(layout, null, { modifyHistory: false });
     this.addChangeToBatch('created', entity);
 
     return entity;
@@ -128,6 +127,9 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
   propagateToHistory() {
     const { layout, updateLayout } = this.props;
     if (!_.isEmpty(this.batchedChanges)) {
+      if (this.batchedChanges.created) {
+        layout.addEntities(this.batchedChanges.created);
+      }
       updateLayout(layout, this.batchedChanges, { modifyHistory: true });
       this.batchedChanges = {};
     }

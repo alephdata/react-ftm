@@ -131,10 +131,8 @@ export class GraphLayout {
     this.vertices.forEach(vertex => vertex.garbage && this.vertices.delete(vertex.id));
   }
 
-  createEntity(entityData: any, center?: Point) {
-    const entity = this.entityManager.createEntity(entityData);
-    this.addEntities([entity], center);
-    return entity;
+  createEntity(entityData: any) {
+    return this.entityManager.createEntity(entityData);
   }
 
   addEntities(entities: Array<Entity>, center?: Point) {

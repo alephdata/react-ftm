@@ -92,6 +92,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const { entities, isPending, selection, sort, writeable } = this.props;
     const { addedColumns } = this.state;
 
+
     const entitiesDeleted = prevProps.entities.length > entities.length;
     const entitiesAdded = prevProps.entities.length < entities.length;
     const sortChanged = prevProps.sort?.field !== sort?.field || prevProps.sort?.direction !== sort?.direction;
@@ -122,6 +123,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     if (createdEntityIds.length) {
       newEntities = newEntities.filter(e => (createdEntityIds.indexOf(e.id) < 0));
     }
+
     if (newEntities.length) {
       const visibleProps = this.getVisibleProperties();
 
@@ -394,7 +396,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   // Change handlers
 
   handleNewRow = (row: number, changes: any) => {
-    const { intl, schema } = this.props;
+    const { entities, intl, schema } = this.props;
     const { entityRows, topAddRows } = this.state;
     const visibleProps = this.getVisibleProperties();
     const entityData = { schema, properties: {} };
@@ -418,6 +420,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       if (shouldPrepend) {
         topAddRows.pop();
       }
+
       return ({
         entityRows: shouldPrepend ? [newEntityRow, ...entityRows] : [...entityRows, newEntityRow],
         createdEntityIds: [...createdEntityIds, entity.id],
