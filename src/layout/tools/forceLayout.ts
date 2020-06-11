@@ -1,7 +1,7 @@
 import {forceCenter, forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY} from "d3-force";
-import { Edge, GraphLayout, Point, Vertex } from "../";
+import { Edge, GraphLayout, Grouping, Point, Vertex } from "../";
 
-const forceLayout = ({vertices, edges, options}:{ vertices: Array<Vertex>, edges: Array<Edge>, options?: any }): any => {
+const forceLayout = ({vertices, edges, groupings, options}:{ vertices: Array<Vertex>, edges: Array<Edge>, groupings: Array<Grouping>, options?: any }): any => {
   const { center, maintainFixed } = options;
   const nodes = vertices
     .filter((vertex) => !vertex.isHidden())
@@ -20,12 +20,27 @@ const forceLayout = ({vertices, edges, options}:{ vertices: Array<Vertex>, edges
     }
   }).filter((link) => (link.source && link.target))
 
+  let groupingLinks = [];
+  groupings.forEach((grouping) => {
+    const gVerts = grouping.getVertexIds();
+    gVerts.map(v1 => {
+      gVerts.map(v2 => {
+        groupingLinks.push({
+          source: nodes.find((n) => n.id === v1),
+          target: nodes.find((n) => n.id === v2)
+        });
+      })
+    })
+  });
+  groupingLinks = groupingLinks.filter((link) => (link.source && link.target && link.source !== link.target));
+
   const simulation = forceSimulation(nodes)
   if (center) {
     simulation.force("x", forceX(center.x))
       .force("y", forceY(center.y))
   }
   simulation.force('links', forceLink(links).strength(1).distance(6))
+    .force('groupingLinks', forceLink(groupingLinks).strength(1).distance(2))
     .force("charge", forceManyBody().strength(-3))
     .stop()
     .tick(300)

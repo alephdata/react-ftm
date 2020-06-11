@@ -19,16 +19,18 @@ const positioning = {
 }
 
 const positionSelection = (layout: GraphLayout, type: string, options?: any) => {
-  let vertices, edges;
+  let vertices, edges, groupings;
   if (layout.hasSelection()) {
     vertices = layout.getSelectedVertices().filter(v=>!v.isHidden());
     edges = layout.getSelectionAdjacentEdges();
+    groupings = layout.getSelectedGroupings();
   } else {
     vertices = layout.getVertices().filter(v=>!v.isHidden());
     edges = layout.getEdges();
+    groupings = layout.getGroupings();
   }
 
-  const positioningFunc = positioning[type]({vertices, edges, options});
+  const positioningFunc = positioning[type]({vertices, edges, groupings, options});
 
   return layout.applyPositioning(positioningFunc, vertices);
 }

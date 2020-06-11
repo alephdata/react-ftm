@@ -451,7 +451,8 @@ export class GraphLayout {
     this.generate()
     const vertices = this.getVertices().filter(v => !v.isHidden())
     const edges = this.getEdges();
-    const positioningFunc = forceLayout({vertices, edges, options:{ center, maintainFixed: true }});
+    const groupings = this.getGroupings();
+    const positioningFunc = forceLayout({vertices, edges, groupings, options:{ center, maintainFixed: true }});
     this.applyPositioning(positioningFunc, vertices);
   }
 
