@@ -20,7 +20,7 @@ const forceLayout = ({vertices, edges, groupings, options}:{ vertices: Array<Ver
     }
   }).filter((link) => (link.source && link.target))
 
-  let groupingLinks = [];
+  let groupingLinks: Array<any> = [];
   groupings.forEach((grouping) => {
     const gVerts = grouping.getVertexIds();
     gVerts.map(v1 => {
@@ -32,15 +32,15 @@ const forceLayout = ({vertices, edges, groupings, options}:{ vertices: Array<Ver
       })
     })
   });
-  groupingLinks = groupingLinks.filter((link) => (link.source && link.target && link.source !== link.target));
+  groupingLinks = groupingLinks.filter((link: any) => (link.source && link.target && link.source !== link.target));
 
   const simulation = forceSimulation(nodes)
   if (center) {
     simulation.force("x", forceX(center.x))
       .force("y", forceY(center.y))
   }
-  simulation.force('links', forceLink(links).strength(1).distance(6))
-    .force('groupingLinks', forceLink(groupingLinks).strength(1).distance(2))
+  simulation.force('links', forceLink(links).strength(1).distance(7))
+    .force('groupingLinks', forceLink(groupingLinks).strength(.3).distance(4))
     .force("charge", forceManyBody().strength(-3))
     .stop()
     .tick(300)

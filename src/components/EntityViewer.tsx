@@ -93,7 +93,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     })
   }
 
-  onSubmit(entity: Entity) {
+  onSubmit(entity: FTMEntity) {
     this.props.onEntityChanged(entity);
 
     this.setState({
