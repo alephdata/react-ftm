@@ -14,18 +14,25 @@
 
   &__title {
     text-align: center;
-    padding: 25px 15px;
+    padding: 30px 15px 20px;
 
-    svg {
-      @include themify() {
-       fill: themed('textColor');
-      }
-    }
     &__text {
-      @include breakText;
-      margin: 10px 0 0 !important;
-      @include themify() {
-        color: themed('textColor') !important;
+      margin-bottom: 30px;
+      &__main {
+        @include breakText;
+        margin: 0 !important;
+        font-size: 1.6em;
+        @include themify() {
+          color: themed('textColor') !important;
+        }
+      }
+      &__secondary {
+        margin-bottom: 3px !important;
+        opacity: .8;
+
+        @include themify() {
+          color: themed('textColor') !important;
+        }
       }
     }
 

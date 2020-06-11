@@ -10,17 +10,30 @@
 
   &__title {
     text-align: center;
-    padding: 25px 15px;
-
-    svg {
-      fill: white;
-    }
+    padding: 30px 15px 20px;
 
     &__text {
-      margin: 10px 0 0 !important;
-      @include themify() {
-        color: themed('textColor');
+      margin-bottom: 30px;
+      &__main {
+        @include breakText;
+        margin: 0 !important;
+        font-size: 1.6em;
+        @include themify() {
+          color: themed('textColor') !important;
+        }
       }
+      &__secondary {
+        margin-bottom: 3px !important;
+        opacity: .8;
+
+        @include themify() {
+          color: themed('textColor') !important;
+        }
+      }
+    }
+
+    &__settings {
+      margin-top: 20px;
     }
   }
 

@@ -21,17 +21,23 @@ export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
   render() {
     const { grouping, onEntitySelected, onEntityRemoved, onColorSelected, writeable } = this.props;
     return (
-      <div
-        className='GroupingViewer'
-      >
+      <div className='GroupingViewer'>
         <div className='GroupingViewer__title'>
-          <Icon iconSize={60} icon="group-objects" />
-          <h2 className='GroupingViewer__title__text'>{grouping.label}</h2>
-          <ColorPicker
-            currSelected={grouping.color}
-            onSelect={(color: string) => this.props.onColorSelected(grouping, color)}
-            swatchShape="square"
-          />
+          <div className='GroupingViewer__title__text'>
+            <p className='GroupingViewer__title__text__secondary'>
+              <Icon icon="group-objects" />
+            </p>
+            <h2 className='GroupingViewer__title__text__main'>
+              {grouping.label}
+            </h2>
+          </div>
+          <div className='GroupingViewer__title__settings'>
+            <ColorPicker
+              currSelected={grouping.color}
+              onSelect={(color: string) => this.props.onColorSelected(grouping, color)}
+              swatchShape="square"
+            />
+          </div>
         </div>
         <EntityList
           entities={grouping.getEntities()}

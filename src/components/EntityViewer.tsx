@@ -1,8 +1,8 @@
 import * as React from 'react'
 import {Classes, Divider, H2, UL} from '@blueprintjs/core'
-import { Entity, Property as FTMProperty, Schema as FTMSchema } from '@alephdata/followthemoney';
+import { Entity as FTMEntity, Property as FTMProperty, Schema as FTMSchema } from '@alephdata/followthemoney';
 import { ColorPicker, PropertyEditor, PropertySelect, RadiusPicker } from '../editors';
-import { Property, Schema } from '../types';
+import { Entity, Property, Schema } from '../types';
 import { GraphLayout, Vertex } from '../layout'
 import { matchText } from "../utils";
 
@@ -12,9 +12,9 @@ import c from 'classnames';
 import './EntityViewer.scss';
 
 interface IEntityViewerProps {
-  entity: Entity,
+  entity: FTMEntity,
   vertexRef?: Vertex,
-  onEntityChanged: (entity: Entity) => void
+  onEntityChanged: (entity: FTMEntity) => void
   onVertexColorSelected: (vertex: Vertex, color: string) => void
   onVertexRadiusSelected: (vertex: Vertex, radius: number) => void
   writeable: boolean
@@ -60,7 +60,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     }
   }
 
-  fetchEntitySuggestions(query: string, schemata?: Array<FTMSchema>): Promise<Entity[]> {
+  fetchEntitySuggestions(query: string, schemata?: Array<FTMSchema>): Promise<FTMEntity[]> {
     const { layout } = this.props;
 
     const entities = layout.getEntities()
@@ -74,7 +74,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     return new Promise((resolve) => resolve(entities));
   }
 
-  resolveEntityReference(entityId: string): Entity | undefined {
+  resolveEntityReference(entityId: string): FTMEntity | undefined {
     return this.props.layout.entities.get(entityId);
   }
 
@@ -143,12 +143,23 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     const { layout, entity, vertexRef, writeable } = this.props;
     const { visibleProps } = this.state;
     const availableProperties = this.schemaProperties.filter(p => visibleProps.indexOf(p) < 0);
+    const hasCaption = entity.getCaption() !== entity.schema.label;
+
+    console.log(entity.getCaption(), entity.schema.label);
 
     return (
       <div className={c('EntityViewer', { writeable: writeable })}>
         <div className='EntityViewer__title'>
-          <Schema.Icon size={60} schema={entity.schema} />
-          <h2 className='EntityViewer__title__text'>{entity.getCaption()}</h2>
+          <div className='EntityViewer__title__text'>
+            {hasCaption && (
+              <p className='EntityViewer__title__text__secondary'>
+                <Schema.Label schema={entity.schema} icon />
+              </p>
+            )}
+            <h2 className='EntityViewer__title__text__main'>
+              <Entity.Label entity={entity} icon={!hasCaption} />
+            </h2>
+          </div>
           {vertexRef &&
             <div className='EntityViewer__title__settings'>
               <ColorPicker
