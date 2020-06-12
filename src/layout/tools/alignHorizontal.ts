@@ -12,7 +12,7 @@ const alignHorizontal = (props:IPositioningProps): any => {
     .force("collide", forceCollide().radius(5).strength(.01))
     .force('links', forceLink(links).strength(.03))
     .force("y", forceY(center.y).strength(10))
-    .force('groupingLinks', forceLink(groupingLinks).strength(2).distance(3))
+    .force('groupingLinks', forceLink(groupingLinks).strength(2).distance(2))
     .force("charge", forceManyBody().strength(-2))
     .stop()
     .tick(300)

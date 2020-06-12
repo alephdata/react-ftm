@@ -1,19 +1,29 @@
+import { forceLink, forceManyBody, forceSimulation, forceY, forceX, forceRadial } from "d3-force";
+import { IPositioningProps } from './common';
+import getForceData from './getForceData';
 import { Edge, Point, Rectangle, Vertex } from "../";
 
-const alignCircle = ({vertices, center, radius}:{ vertices: Array<Vertex>, center?: Point, radius?: number }): any => {
-  const circleRadius = radius || vertices.length;
-  const circleCenter = center || Rectangle.fromPoints(
-    ...vertices.map(v => v.position)
-  ).getCenter();
-  const step = (2*Math.PI) / vertices.length;
+const alignCircle = (props:IPositioningProps): any => {
+  const { center, nodes, links, groupingLinks } = getForceData(props);
+  const radius = props.options?.radius || nodes.length;
 
-  return (v:Vertex, i:number) => {
-    const angle = step * i;
-    return new Point(
-      Math.round(circleCenter.x + circleRadius * Math.cos(angle)),
-      Math.round(circleCenter.y + circleRadius * Math.sin(angle))
-    );
+  const simulation = forceSimulation(nodes)
+    .force('groupingLinks', forceLink(groupingLinks).strength(1).distance(2))
+    .force("charge", forceManyBody())
+    .force("radial", forceRadial(radius, center.x, center.y).strength(3))
+    // .force("collide", forceCollide().radius(5).strength(.01))
+    // .force('links', forceLink(links).strength(.03))
+    .stop()
+    .tick(300)
+
+  const positionVertex = (v:Vertex, i:number) => {
+    const node = nodes.find(n => n.id === v.id);
+    if (node) {
+      return new Point(node.x, node.y)
+    }
   };
+
+  return { positionVertex };
 }
 
 export default alignCircle;

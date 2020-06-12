@@ -12,7 +12,7 @@ const alignVertical = (props:IPositioningProps): any => {
     .force("collide", forceCollide().radius(5).strength(.01))
     .force('links', forceLink(links).strength(.03))
     .force("x", forceX(center.x).strength(10))
-    .force('groupingLinks', forceLink(groupingLinks).strength(2).distance(3))
+    .force('groupingLinks', forceLink(groupingLinks).strength(2).distance(2))
     .force("charge", forceManyBody().strength(-2))
     .stop()
     .tick(300)
