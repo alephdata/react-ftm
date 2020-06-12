@@ -125,14 +125,21 @@ export class Toolbar extends React.Component<IToolbarProps> {
   constructor(props: Readonly<IToolbarProps>) {
     super(props);
     this.onSetInteractionMode = this.onSetInteractionMode.bind(this)
+    this.onPosition = this.onPosition.bind(this)
     this.visibleItemRenderer = this.visibleItemRenderer.bind(this)
     this.overflowListRenderer = this.overflowListRenderer.bind(this)
   }
 
   onSetInteractionMode(newMode: string) {
-    const {layout, updateLayout, actions} = this.props
+    const { layout, updateLayout, actions } = this.props
     actions.setInteractionMode(newMode)
     updateLayout(layout)
+  }
+
+  onPosition(type: string, options?: any) {
+    const { actions, layout, updateLayout } = this.props;
+    updateLayout(positionSelection(layout, type, options), null, { modifyHistory:true })
+    actions.fitToSelection();
   }
 
   visibleItemRenderer(buttonGroup:any, i:any) {
@@ -263,27 +270,27 @@ export class Toolbar extends React.Component<IToolbarProps> {
         {
           helpText: intl.formatMessage(messages.tooltip_layout_horizontal),
           icon: "drag-handle-horizontal",
-          onClick: () => updateLayout(positionSelection(layout, 'alignHorizontal'), null, { modifyHistory:true }),
+          onClick: () => this.onPosition('alignHorizontal'),
         },
         {
           helpText: intl.formatMessage(messages.tooltip_layout_vertical),
           icon: "drag-handle-vertical",
-          onClick: () => updateLayout(positionSelection(layout, 'alignVertical'), null, { modifyHistory:true }),
+          onClick: () => this.onPosition('alignVertical'),
         },
         {
           helpText: intl.formatMessage(messages.tooltip_layout_circle),
           icon: "layout-circle",
-          onClick: () => updateLayout(positionSelection(layout, 'alignCircle'), null, { modifyHistory:true }),
+          onClick: () => this.onPosition('alignCircle'),
         },
         {
           helpText: intl.formatMessage(messages.tooltip_layout_hierarchy),
           icon: "layout-hierarchy",
-          onClick: () => updateLayout(positionSelection(layout, 'arrangeTree'), null, { modifyHistory:true }),
+          onClick: () => this.onPosition('arrangeTree'),
         },
         {
           helpText: intl.formatMessage(messages.tooltip_layout_auto),
           icon: "layout",
-          onClick: () => updateLayout(positionSelection(layout, 'forceLayout', {center: viewport.center, maintainFixed: false}), null, { modifyHistory:true }),
+          onClick: () => this.onPosition('forceLayout', {center: viewport.center, maintainFixed: false}),
         },
         {
           helpText: intl.formatMessage(messages.tooltip_layout_center),

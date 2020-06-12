@@ -313,6 +313,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
       onSubmitSearch: this.onSubmitSearch,
       showVertexMenu: this.showVertexMenu,
       expandVertex: this.expandVertex,
+      fitToSelection: this.fitToSelection,
     };
 
     const showSidebar = layout.vertices && layout.vertices.size > 0 && !tableView;
