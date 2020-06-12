@@ -22,8 +22,8 @@ const alignHorizontal = (props:IPositioningProps): any => {
     .range([2, 15]);
 
   const positionEdge = (e:Edge, i:number) => {
-    const source = nodes.find(n => n.id === e.sourceId);
-    const target = nodes.find(n => n.id === e.targetId);
+    const source = nodes.find((n:any) => n.id === e.sourceId);
+    const target = nodes.find((n:any) => n.id === e.targetId);
     if (source && target) {
       const x = (source.x + target.x)/2;
       const xDistance = Math.abs(source.x - target.x);

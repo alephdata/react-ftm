@@ -7,7 +7,7 @@ const getForceData = ({vertices, edges, groupings, options = {}}:IPositioningPro
 
   const layoutCenter = center || Rectangle.fromPoints(...vertices.map(v => v.position)).getCenter();
 
-  const nodes = vertices
+  const nodes: Array<any> = vertices
     .filter((vertex) => !vertex.isHidden())
     .map((vertex) => {
       const n = {id: vertex.id, radius: vertex.radius, fixed: vertex.fixed} as any
@@ -17,7 +17,7 @@ const getForceData = ({vertices, edges, groupings, options = {}}:IPositioningPro
       }
       return n
     })
-  const links = edges.map((edge) => {
+  const links: Array<any> = edges.map((edge) => {
     return {
       source: nodes.find((n) => n.id === edge.sourceId),
       target: nodes.find((n) => n.id === edge.targetId)

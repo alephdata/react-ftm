@@ -20,18 +20,12 @@ const arrangeTree = (props:IPositioningProps):any => {
 
   g.setDefaultEdgeLabel(function() { return {}; });
 
-  nodes.forEach(node => g.setNode(node.id, node) )
+  nodes.forEach((node:any) => g.setNode(node.id, node) )
   // @ts-ignore
-  links.forEach(link => g.setEdge(link.source.id, link.target.id))
+  links.forEach((link:any) => g.setEdge(link.source.id, link.target.id))
 
   dagre.layout(g);
-
-  const positionVertex = (v:Vertex, i:number) => {
-    const node = nodes.find(n => n.id === v.id);
-    if (node) {
-      return new Point(node.x, node.y)
-    }
-  };
+  
   return { positionVertex: getPositionFromSimulation(nodes) };
 }
 

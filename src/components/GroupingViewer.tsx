@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { defineMessages, WrappedComponentProps } from 'react-intl';
 import {Classes, Divider, Icon, H2, UL} from '@blueprintjs/core'
 import {Entity, Property} from '@alephdata/followthemoney';
 import { ColorPicker, PropertySelect } from '../editors';
@@ -8,7 +9,14 @@ import c from 'classnames';
 
 import './GroupingViewer.scss';
 
-interface IGroupingViewerProps {
+const messages = defineMessages({
+  group: {
+    id: 'grouping.label',
+    defaultMessage: 'Group',
+  },
+});
+
+interface IGroupingViewerProps extends WrappedComponentProps {
   grouping: Grouping,
   entites: Array<any>
   onEntitySelected: (entity:Entity) => void
@@ -19,13 +27,14 @@ interface IGroupingViewerProps {
 
 export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
   render() {
-    const { grouping, onEntitySelected, onEntityRemoved, onColorSelected, writeable } = this.props;
+    const { grouping, intl, onEntitySelected, onEntityRemoved, onColorSelected, writeable } = this.props;
     return (
       <div className='GroupingViewer'>
         <div className='GroupingViewer__title'>
           <div className='GroupingViewer__title__text'>
             <p className='GroupingViewer__title__text__secondary'>
               <Icon icon="group-objects" />
+              <span>{intl.formatMessage(messages.group)}</span>
             </p>
             <h2 className='GroupingViewer__title__text__main'>
               {grouping.label}

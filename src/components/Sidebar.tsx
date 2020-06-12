@@ -123,6 +123,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
         onEntityRemoved={this.removeGroupingEntity}
         onColorSelected={this.setGroupingColor}
         writeable={writeable}
+        intl={intl}
       />
     } else if (selection.length) {
       contents = <EntityList entities={selection} onEntitySelected={this.onEntitySelected} />
