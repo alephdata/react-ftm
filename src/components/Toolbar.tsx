@@ -136,9 +136,9 @@ export class Toolbar extends React.Component<IToolbarProps> {
     updateLayout(layout)
   }
 
-  onPosition(type: string, options?: any) {
+  onPosition(type: string) {
     const { actions, layout, updateLayout } = this.props;
-    updateLayout(positionSelection(layout, type, options), null, { modifyHistory:true })
+    updateLayout(positionSelection(layout, type), null, { modifyHistory:true })
     actions.fitToSelection();
   }
 
@@ -193,7 +193,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
   }
 
   render() {
-    const { intl, layout, viewport, updateLayout, updateViewport, actions, history, interactionMode, showEditingButtons, logo, searchText, tableView } = this.props
+    const { intl, layout, updateLayout, actions, history, interactionMode, showEditingButtons, logo, searchText, tableView } = this.props
     const vertices = this.props.layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
@@ -290,7 +290,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
         {
           helpText: intl.formatMessage(messages.tooltip_layout_auto),
           icon: "layout",
-          onClick: () => this.onPosition('forceLayout', {center: viewport.center, maintainFixed: false}),
+          onClick: () => this.onPosition('forceLayout'),
         },
         {
           helpText: intl.formatMessage(messages.tooltip_layout_center),

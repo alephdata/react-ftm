@@ -6,3 +6,12 @@ export interface IPositioningProps {
   groupings: Array<Grouping>,
   options?: any
 }
+
+export const getPositionFromSimulation = (nodes: Array<any>) => {
+  return (v:Vertex, i:number) => {
+    const node = nodes.find(n => n.id === v.id);
+    if (node) {
+      return new Point(node.x, node.y)
+    }
+  }
+};

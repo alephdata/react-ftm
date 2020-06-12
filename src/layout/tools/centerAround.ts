@@ -6,7 +6,7 @@ const RADIUS_SPACING = 8;
 const centerAround = (layout: GraphLayout, vertsToCenter?: Array<Vertex>, vertsToPosition?: Array<Vertex> ): any => {
   const toCenter = vertsToCenter || layout.getSelectedVertices();
   const toPosition = vertsToPosition || layout.getVertices().filter(v => (!v.isHidden() && toCenter.indexOf(v) < 0));
-  const adjacentEdges = layout.getAdjacentEdges(toPosition);
+  const adjacentEdges = layout.getAdjacentEdges(toPosition.map(v => v.id));
   const groupings = layout.getGroupings();
 
   const centerBBox = Rectangle.fromPoints(

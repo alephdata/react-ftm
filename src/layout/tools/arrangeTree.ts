@@ -1,7 +1,7 @@
 // @ts-ignore
 import * as dagre from 'dagre'
 import { Edge, Point, Rectangle, Vertex } from "../";
-import { IPositioningProps } from './common';
+import { IPositioningProps, getPositionFromSimulation } from './common';
 import getForceData from './getForceData';
 
 
@@ -32,7 +32,7 @@ const arrangeTree = (props:IPositioningProps):any => {
       return new Point(node.x, node.y)
     }
   };
-  return { positionVertex };
+  return { positionVertex: getPositionFromSimulation(nodes) };
 }
 
 export default arrangeTree;

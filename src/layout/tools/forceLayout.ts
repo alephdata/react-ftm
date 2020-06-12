@@ -1,5 +1,5 @@
 import {forceCenter, forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY} from "d3-force";
-import { IPositioningProps } from './common';
+import { IPositioningProps, getPositionFromSimulation } from './common';
 import getForceData from './getForceData';
 import { Point, Vertex } from "../";
 
@@ -16,14 +16,7 @@ const forceLayout = (props:IPositioningProps): any => {
     .stop()
     .tick(300)
 
-  const positionVertex = (v:Vertex, i:number) => {
-    const node = nodes.find(n => n.id === v.id);
-    if (node) {
-      return new Point(node.x, node.y)
-    }
-  };
-
-  return { positionVertex };
+  return { positionVertex: getPositionFromSimulation(nodes) };
 }
 
 export default forceLayout;

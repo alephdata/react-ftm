@@ -5,7 +5,7 @@ import { IPositioningProps } from './common';
 const getForceData = ({vertices, edges, groupings, options = {}}:IPositioningProps): any => {
   const { center, maintainFixed } = options;
 
-  const center = Rectangle.fromPoints(...vertices.map(v => v.position)).getCenter();
+  const layoutCenter = center || Rectangle.fromPoints(...vertices.map(v => v.position)).getCenter();
 
   const nodes = vertices
     .filter((vertex) => !vertex.isHidden())
@@ -38,7 +38,7 @@ const getForceData = ({vertices, edges, groupings, options = {}}:IPositioningPro
   });
   groupingLinks = groupingLinks.filter((link: any) => (link.source && link.target && link.source !== link.target));
 
-  return { groupingLinks, links, nodes, center };
+  return { groupingLinks, links, nodes, center: layoutCenter };
 }
 
 export default getForceData;

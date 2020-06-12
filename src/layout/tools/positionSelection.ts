@@ -5,11 +5,6 @@ import alignVertical from './alignVertical';
 import arrangeTree from './arrangeTree';
 import forceLayout from './forceLayout';
 
-
-export interface ILayoutFunction {
-  (vertices: Array<Vertex>, edges: Array<Edge>): any;
-};
-
 const positioning = {
   'alignCircle': alignCircle,
   'alignHorizontal': alignHorizontal,

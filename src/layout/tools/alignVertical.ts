@@ -1,7 +1,7 @@
 import { forceLink, forceManyBody, forceSimulation, forceCollide, forceX } from "d3-force";
 import { scaleLinear } from 'd3-scale'
-import { Point, Vertex } from "../";
-import { IPositioningProps } from './common';
+import { Point, Edge, Vertex } from "../";
+import { IPositioningProps, getPositionFromSimulation } from './common';
 import getForceData from './getForceData';
 
 
@@ -15,14 +15,7 @@ const alignVertical = (props:IPositioningProps): any => {
     .force('groupingLinks', forceLink(groupingLinks).strength(2).distance(2))
     .force("charge", forceManyBody().strength(-2))
     .stop()
-    .tick(300)
-
-  const positionVertex = (v:Vertex, i:number) => {
-    const node = nodes.find(n => n.id === v.id);
-    if (node) {
-      return new Point(node.x, node.y)
-    }
-  };
+    .tick(300);
 
   const xOffsetScale = scaleLinear()
     .domain([1, 100])
@@ -40,7 +33,7 @@ const alignVertical = (props:IPositioningProps): any => {
     }
   };
 
-  return { positionVertex, positionEdge };
+  return { positionVertex: getPositionFromSimulation(nodes), positionEdge };
 }
 
 export default alignVertical;

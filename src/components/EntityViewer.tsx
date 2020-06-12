@@ -145,8 +145,6 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     const availableProperties = this.schemaProperties.filter(p => visibleProps.indexOf(p) < 0);
     const hasCaption = entity.getCaption() !== entity.schema.label;
 
-    console.log(entity.getCaption(), entity.schema.label);
-
     return (
       <div className={c('EntityViewer', { writeable: writeable })}>
         <div className='EntityViewer__title'>

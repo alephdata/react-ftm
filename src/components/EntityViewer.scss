@@ -28,7 +28,7 @@
       }
       &__secondary {
         margin-bottom: 3px !important;
-        opacity: .8;
+        opacity: .9;
 
         @include themify() {
           color: themed('textColor') !important;
