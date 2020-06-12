@@ -11,7 +11,7 @@ const forceLayout = (props:IPositioningProps): any => {
     .force("x", forceX(center.x))
     .force("y", forceY(center.y))
     .force('links', forceLink(links).strength(1).distance(7))
-    .force('groupingLinks', forceLink(groupingLinks).strength(.3).distance(4))
+    .force('groupingLinks', forceLink(groupingLinks).strength(.3).distance(5))
     .force("charge", forceManyBody().strength(-3))
     .stop()
     .tick(300)
