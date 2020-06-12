@@ -4,7 +4,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-06-10T09:06:29.807Z\n"
+"POT-Creation-Date: 2020-06-12T13:56:17.260Z\n"
 "Last-Translator: pudo <friedrich@pudo.org>, 2020\n"
 "Language-Team: German (https://www.transifex.com/aleph/teams/76591/de/)\n"
 "MIME-Version: 1.0\n"
@@ -19,6 +19,13 @@ msgstr ""
 #. '{label}' of …
 #: i18n/messages.json
 msgid "'{label}' of …"
+msgstr ""
+
+#. [table_editor.add_row]
+#. defaultMessage is:
+#. Add a new {schema} row
+#: i18n/messages.json
+msgid "Add a new {schema} row"
 msgstr ""
 
 #. [editor.property_add]
@@ -125,13 +132,6 @@ msgstr ""
 msgid "Create"
 msgstr "Speichern"
 
-#. [table_editor.add_entity]
-#. defaultMessage is:
-#. Create a new {schema}
-#: i18n/messages.json
-msgid "Create a new {schema}"
-msgstr ""
-
 #. [editor.validation.date_invalid]
 #. defaultMessage is:
 #. Date format: yyyy-m-d
@@ -187,6 +187,13 @@ msgstr "1 Resultat gefunden"
 #: i18n/messages.json
 msgid "Found {count} results"
 msgstr "{count} Resultate gefunden"
+
+#. [grouping.label]
+#. defaultMessage is:
+#. Group
+#: i18n/messages.json
+msgid "Group"
+msgstr ""
 
 #. [dialog.grouping_create.title]
 #. defaultMessage is:
@@ -267,6 +274,13 @@ msgstr "Typ auswählen"
 #: i18n/messages.json
 msgid "Redo"
 msgstr "Wiederholen"
+
+#. [table_editor.remove_row]
+#. defaultMessage is:
+#. Remove new {schema} row
+#: i18n/messages.json
+msgid "Remove new {schema} row"
+msgstr ""
 
 #. [dialog.grouping_create.placeholder]
 #. defaultMessage is:
