@@ -1,12 +1,11 @@
-import { Edge, GraphLayout, Grouping, Point, Vertex } from "../";
+import { Edge, GraphLayout, Grouping, Point, Rectangle, Vertex } from "../";
 import { IPositioningProps } from './common';
 
 
 const getForceData = ({vertices, edges, groupings, options = {}}:IPositioningProps): any => {
   const { center, maintainFixed } = options;
 
-  const centerX = center?.x || vertices.map(v => v.position.x).reduce((_r, p)=> _r + p, 0) / vertices.length;
-  const centerY = center?.y || vertices.map(v => v.position.y).reduce((_r, p)=> _r + p, 0) / vertices.length;
+  const center = Rectangle.fromPoints(...vertices.map(v => v.position)).getCenter();
 
   const nodes = vertices
     .filter((vertex) => !vertex.isHidden())
@@ -39,7 +38,7 @@ const getForceData = ({vertices, edges, groupings, options = {}}:IPositioningPro
   });
   groupingLinks = groupingLinks.filter((link: any) => (link.source && link.target && link.source !== link.target));
 
-  return { groupingLinks, links, nodes, center: new Point(centerX, centerY) };
+  return { groupingLinks, links, nodes, center };
 }
 
 export default getForceData;
