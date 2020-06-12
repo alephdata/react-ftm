@@ -19,7 +19,7 @@ const alignHorizontal = (props:IPositioningProps): any => {
 
   const yOffsetScale = scaleLinear()
     .domain([1, 100])
-    .range([2, 15]);
+    .range([2, 20]);
 
   const positionEdge = (e:Edge, i:number) => {
     const source = nodes.find((n:any) => n.id === e.sourceId);

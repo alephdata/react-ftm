@@ -10,8 +10,8 @@ const alignVertical = (props:IPositioningProps): any => {
 
   const simulation = forceSimulation(nodes)
     .force("collide", forceCollide().radius(5).strength(.01))
-    .force('links', forceLink(links).strength(.03))
-    .force("x", forceX(center.x).strength(10))
+    .force('links', forceLink(links).strength(.04))
+    .force("x", forceX(center.x).strength(8))
     .force('groupingLinks', forceLink(groupingLinks).strength(2).distance(2))
     .force("charge", forceManyBody().strength(-2))
     .stop()
@@ -19,7 +19,7 @@ const alignVertical = (props:IPositioningProps): any => {
 
   const xOffsetScale = scaleLinear()
     .domain([1, 100])
-    .range([2, 15]);
+    .range([2, 20]);
 
   const positionEdge = (e:Edge, i:number) => {
     const source = nodes.find((n:any) => n.id === e.sourceId);
