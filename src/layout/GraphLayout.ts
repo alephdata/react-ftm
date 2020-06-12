@@ -306,17 +306,19 @@ export class GraphLayout {
       vIds.indexOf(edge.targetId) !== -1;
   }
 
-  applyPositioning(positioningFunc: any, vertices: Array<Vertex>) {
+  applyPositioning(positioningFuncs: any, vertices: Array<Vertex>) {
+    const { positionVertex, positionEdge } = positioningFuncs;
     const vIds = vertices.map(v => v.id);
     vertices.forEach((v, i) => {
-      const position = positioningFunc(v, i);
+      const position = positionVertex(v, i);
       if (position) {
         this.vertices.set(v.id, v.snapPosition(position));
       }
     });
 
-    this.getAdjacentEdges(vIds).forEach((edge) => {
-      this.edges.set(edge.id, edge.setLabelPosition(undefined))
+    this.getAdjacentEdges(vIds).forEach((e, i) => {
+      const position = positionEdge ? positionEdge(e, i) : undefined;
+      this.edges.set(e.id, e.setLabelPosition(position))
     });
     return this;
   }
