@@ -124,6 +124,7 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
                 className="EdgeLabel__text"
                 fill={textColor}
                 style={style}
+                pointerEvents="none"
               >
                 {labelText}
               </text>
