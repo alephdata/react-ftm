@@ -12,7 +12,7 @@
   "typings": "dist/types/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/alephdata/react-ftm"
+    "url": "git+https://github.com/alephdata/react-ftm.git"
   },
   "license": "MIT",
   "engines": {
@@ -122,5 +122,12 @@
     "react-intl": "^3.12.0",
     "save-dev": "0.0.1-security",
     "truncate": "^2.1.0"
+  },
+  "bugs": {
+    "url": "https://github.com/alephdata/react-ftm/issues"
+  },
+  "homepage": "https://github.com/alephdata/react-ftm#readme",
+  "directories": {
+    "test": "test"
   }
 }
