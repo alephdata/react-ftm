@@ -302,11 +302,12 @@ export class GraphLayout {
   }
 
   isEdgeAdjacent(edge: Edge, vIds:Array<string>): boolean {
+    if (!vIds?.length) return false;
     return vIds.indexOf(edge.sourceId) !== -1 ||
       vIds.indexOf(edge.targetId) !== -1;
   }
 
-  applyPositioning(positioningFuncs: any, vertices: Array<Vertex>) {
+  applyPositioning(positioningFuncs: any, vertices: Array<Vertex>, maintainFixed: boolean = false) {
     const { positionVertex, positionEdge } = positioningFuncs;
     const vIds = vertices.map(v => v.id);
     vertices.forEach((v, i) => {
@@ -316,10 +317,15 @@ export class GraphLayout {
       }
     });
 
-    this.getAdjacentEdges(vIds).forEach((e, i) => {
-      const position = positionEdge ? positionEdge(e, i) : undefined;
-      this.edges.set(e.id, e.setLabelPosition(position))
-    });
+    let adjEdges = this.getAdjacentEdges(vIds);
+    if (maintainFixed) {
+      adjEdges = adjEdges.filter((e) => (!this.vertices.get(e.sourceId).fixed || !this.vertices.get(e.targetId).fixed))
+    }
+
+    adjEdges.forEach((e, i) => {
+        const position = positionEdge ? positionEdge(e, i) : undefined;
+        this.edges.set(e.id, e.setLabelPosition(position))
+      });
     return this;
   }
 
@@ -455,7 +461,7 @@ export class GraphLayout {
     const edges = this.getEdges();
     const groupings = this.getGroupings();
     const positioningFunc = forceLayout({vertices, edges, groupings, options:{ center, maintainFixed: true }});
-    this.applyPositioning(positioningFunc, vertices);
+    this.applyPositioning(positioningFunc, vertices, true);
   }
 
   clone():GraphLayout{
