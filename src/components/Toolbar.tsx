@@ -50,7 +50,7 @@ const messages = defineMessages({
   },
   tooltip_expand: {
     id: 'tooltip.expand',
-    defaultMessage: 'Expand entity',
+    defaultMessage: 'Discover links',
   },
   tooltip_delete: {
     id: 'tooltip.delete',

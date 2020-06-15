@@ -14,15 +14,15 @@ const messages = defineMessages({
   },
   expand: {
     id: 'vertex_menu.expand',
-    defaultMessage: 'Expand {property}',
+    defaultMessage: 'Discover {property}',
   },
   expand_all: {
     id: 'vertex_menu.expand_all',
-    defaultMessage: 'all',
+    defaultMessage: 'all links',
   },
   expand_none: {
     id: 'vertex_menu.expand_none',
-    defaultMessage: 'No expansion results found',
+    defaultMessage: 'No additional links found',
   },
 });
 
