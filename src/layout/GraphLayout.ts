@@ -319,7 +319,7 @@ export class GraphLayout {
 
     let adjEdges = this.getAdjacentEdges(vIds);
     if (maintainFixed) {
-      adjEdges = adjEdges.filter((e) => (!this.vertices.get(e.sourceId).fixed || !this.vertices.get(e.targetId).fixed))
+      adjEdges = adjEdges.filter((e) => (!this.vertices.get(e.sourceId)?.fixed || !this.vertices.get(e.targetId)?.fixed))
     }
 
     adjEdges.forEach((e, i) => {
