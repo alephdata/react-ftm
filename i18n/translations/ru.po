@@ -4,7 +4,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-06-12T13:56:17.260Z\n"
+"POT-Creation-Date: 2020-06-15T08:07:52.444Z\n"
 "Last-Translator: jen occrp, 2020\n"
 "Language-Team: Russian (https://www.transifex.com/aleph/teams/76591/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -148,17 +148,17 @@ msgstr "Удалить выбранное"
 
 #. [tooltip.expand]
 #. defaultMessage is:
-#. Expand entity
+#. Discover links
 #: i18n/messages.json
-msgid "Expand entity"
-msgstr "Показать сущность"
+msgid "Discover links"
+msgstr ""
 
 #. [vertex_menu.expand]
 #. defaultMessage is:
-#. Expand {property}
+#. Discover {property}
 #: i18n/messages.json
-msgid "Expand {property}"
-msgstr "Показать {property}"
+msgid "Discover {property}"
+msgstr ""
 
 #. [tooltip.export_svg]
 #. defaultMessage is:
@@ -230,19 +230,19 @@ msgstr "Неверная страна"
 msgid "Invalid topic"
 msgstr "Некорректная тема"
 
+#. [vertex_menu.expand_none]
+#. defaultMessage is:
+#. No additional links found
+#: i18n/messages.json
+msgid "No additional links found"
+msgstr ""
+
 #. [editor.entity.no_results]
 #. defaultMessage is:
 #. No entities found
 #: i18n/messages.json
 msgid "No entities found"
 msgstr "Сущности не найдены"
-
-#. [vertex_menu.expand_none]
-#. defaultMessage is:
-#. No expansion results found
-#: i18n/messages.json
-msgid "No expansion results found"
-msgstr "Показывать нечего"
 
 #. [search.results_text.none]
 #. defaultMessage is:
@@ -394,10 +394,10 @@ msgstr "Разгруппировать"
 
 #. [vertex_menu.expand_all]
 #. defaultMessage is:
-#. all
+#. all links
 #: i18n/messages.json
-msgid "all"
-msgstr "всё"
+msgid "all links"
+msgstr ""
 
 #. [dialog.vertex_create.name_placeholder]
 #. defaultMessage is:

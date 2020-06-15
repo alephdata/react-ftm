@@ -4,7 +4,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-06-12T13:56:17.260Z\n"
+"POT-Creation-Date: 2020-06-15T08:07:52.444Z\n"
 "Last-Translator: Eman Alqaisi <eman@arij.net>, 2020\n"
 "Language-Team: Arabic (https://www.transifex.com/aleph/teams/76591/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -148,16 +148,16 @@ msgstr "حذف التحديد"
 
 #. [tooltip.expand]
 #. defaultMessage is:
-#. Expand entity
+#. Discover links
 #: i18n/messages.json
-msgid "Expand entity"
+msgid "Discover links"
 msgstr ""
 
 #. [vertex_menu.expand]
 #. defaultMessage is:
-#. Expand {property}
+#. Discover {property}
 #: i18n/messages.json
-msgid "Expand {property}"
+msgid "Discover {property}"
 msgstr ""
 
 #. [tooltip.export_svg]
@@ -230,19 +230,19 @@ msgstr "دولة غير متاحة"
 msgid "Invalid topic"
 msgstr "الموضوع غير متاح"
 
+#. [vertex_menu.expand_none]
+#. defaultMessage is:
+#. No additional links found
+#: i18n/messages.json
+msgid "No additional links found"
+msgstr ""
+
 #. [editor.entity.no_results]
 #. defaultMessage is:
 #. No entities found
 #: i18n/messages.json
 msgid "No entities found"
 msgstr "لم يتم العثور على كيانات "
-
-#. [vertex_menu.expand_none]
-#. defaultMessage is:
-#. No expansion results found
-#: i18n/messages.json
-msgid "No expansion results found"
-msgstr ""
 
 #. [search.results_text.none]
 #. defaultMessage is:
@@ -394,9 +394,9 @@ msgstr "فك تجميع البيانات"
 
 #. [vertex_menu.expand_all]
 #. defaultMessage is:
-#. all
+#. all links
 #: i18n/messages.json
-msgid "all"
+msgid "all links"
 msgstr ""
 
 #. [dialog.vertex_create.name_placeholder]
