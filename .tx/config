@@ -1,7 +1,7 @@
 [main]
 host = https://www.transifex.com
 
-[vislib.messages-pot]
+[react-ftm.messages-pot]
 file_filter = i18n/translations/<lang>.po
 minimum_perc = 0
 source_file = i18n/messages.pot

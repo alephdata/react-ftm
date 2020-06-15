@@ -13,7 +13,7 @@ const external = pkg['peerDependencies'] && Object.keys(pkg['peerDependencies'])
 export default {
   input: `src/index.ts`,
   output: [
-    {file: pkg.main, name: 'vislib', format: 'umd', sourcemap: true},
+    {file: pkg.main, name: 'react-ftm', format: 'umd', sourcemap: true},
     {file: pkg.module, format: 'es', sourcemap: true},
   ],
   external,
