@@ -60,7 +60,6 @@ interface ITableEditorProps extends WrappedComponentProps {
 
 interface ITableEditorState {
   addedColumns: Array<FTMProperty>
-  shouldCommit: boolean
   headerRow: CellData[]
   showTopAddRow: boolean
   entityRows: CellData[][]
@@ -78,7 +77,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       headerRow: [],
       showTopAddRow: false,
       entityRows: [],
-      shouldCommit: false,
       createdEntityIds: [],
     }
 
@@ -319,19 +317,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   renderEditor = ({ cell, onCommit, onChange, onKeyDown, onRevert }: Datasheet.DataEditorProps<CellData, any>) => {
     const { entityManager, schema } = this.props;
-    const { shouldCommit } = this.state;
     const { entity, property } = cell.data;
 
     if (!property) return null;
-
-    if (shouldCommit) {
-      this.setState({ shouldCommit: false });
-      if (this.keyDownListener) {
-        document.removeEventListener('keydown', this.keyDownListener);
-        this.keyDownListener = null;
-      }
-      onCommit(null);
-    }
 
     if (!this.keyDownListener) {
       this.keyDownListener = (e:any) => { if (e.which === ESC_KEY) onRevert() };
@@ -343,7 +331,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
         entity={entity || new Entity(entityManager.model, { schema, id: `${Math.random()}` })}
         property={property}
         onChange={onChange}
-        onSubmit={(entity:Entity) => { onChange(entity.getProperty(property)); this.setState({ shouldCommit: true }); }}
+        onSubmit={(entity:Entity) => {
+          if (this.keyDownListener) {
+            document.removeEventListener('keydown', this.keyDownListener);
+            this.keyDownListener = null;
+          }
+          onCommit(entity.getProperty(property));
+        }}
         popoverProps={{ usePortal: false }}
         fetchEntitySuggestions={entityManager.getEntitySuggestions}
         resolveEntityReference={entityManager.resolveEntityReference}
