@@ -9,7 +9,7 @@ import { ITypeEditorProps } from "./common";
 const messages = defineMessages({
   no_results: {
     id: 'editor.entity.no_results',
-    defaultMessage: 'No entities found',
+    defaultMessage: 'No matching results found',
   },
   placeholder: {
     id: 'editor.entity.placeholder',
