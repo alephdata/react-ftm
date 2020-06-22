@@ -23,6 +23,7 @@ interface IEntityTypeProps extends ITypeEditorProps, WrappedComponentProps {
   entitySuggestions: Array<FTMEntity>
   isFetching: boolean
   onQueryChange: (query: string) => void
+  noResultsText?: string
 }
 
 interface IEntitySelectState {
@@ -78,7 +79,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
     if (isFetching) {
       content = <Spinner className="VertexCreateDialog__spinner" size={Spinner.SIZE_SMALL} />
     } else if (filteredItems.length === 0) {
-      content = <span className="error-text">{intl.formatMessage(messages.no_results)}</span>
+      content = <span className="error-text">{noResultsText || intl.formatMessage(messages.no_results)}</span>
     } else {
       content = filteredItems.map(renderItem);
     }
@@ -96,7 +97,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
   }
 
   render() {
-    const { allowMultiple, entitySuggestions, intl, onSubmit, inputProps = {}, popoverProps = {}, values } = this.props;
+    const { allowMultiple, entitySuggestions, intl, noResultsText, onSubmit, inputProps = {}, popoverProps = {}, values } = this.props;
     const { query } = this.state;
     const buttonText = values.length
       ? <Entity.Label entity={values[0]} icon />

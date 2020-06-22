@@ -500,7 +500,7 @@ export class GraphLayout {
       layout.edges.set(edge.id, edge)
     })
 
-    layout.generate()
+    layout.layout()
 
     if (layoutData.groupings) {
       layoutData.groupings.forEach((gdata) => {
