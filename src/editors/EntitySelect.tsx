@@ -24,6 +24,7 @@ interface IEntityTypeProps extends ITypeEditorProps, WrappedComponentProps {
   isFetching: boolean
   onQueryChange: (query: string) => void
   noResultsText?: string
+  buttonProps?: any
 }
 
 interface IEntitySelectState {
@@ -97,11 +98,11 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
   }
 
   render() {
-    const { allowMultiple, entitySuggestions, intl, onSubmit, inputProps = {}, popoverProps = {}, values } = this.props;
+    const { allowMultiple, entitySuggestions, intl, onSubmit, inputProps = {}, popoverProps = {}, buttonProps = {}, values } = this.props;
     const { query } = this.state;
     const buttonText = values.length
       ? <Entity.Label entity={values[0]} icon />
-      : intl.formatMessage(messages.placeholder);
+      : (buttonProps?.placeholder || intl.formatMessage(messages.placeholder));
 
     const filteredSuggestions = entitySuggestions.filter(e => (!values.find(val => val.id === e.id )))
     return <ControlGroup className="EntitySelect" vertical fill>
@@ -128,6 +129,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
               rightIcon="double-caret-vertical"
               elementRef={(ref) => this.inputRef = ref }
               fill
+              {...buttonProps}
             />
           </TypedSelect>
         )}
