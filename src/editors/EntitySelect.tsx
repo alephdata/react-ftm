@@ -72,7 +72,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
   }
 
   itemListRenderer(rendererProps: any) {
-    const { intl, isFetching } = this.props;
+    const { intl, isFetching, noResultsText } = this.props;
     const { filteredItems, itemsParentRef, renderItem } = rendererProps;
 
     let content;
@@ -97,7 +97,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
   }
 
   render() {
-    const { allowMultiple, entitySuggestions, intl, noResultsText, onSubmit, inputProps = {}, popoverProps = {}, values } = this.props;
+    const { allowMultiple, entitySuggestions, intl, onSubmit, inputProps = {}, popoverProps = {}, values } = this.props;
     const { query } = this.state;
     const buttonText = values.length
       ? <Entity.Label entity={values[0]} icon />
