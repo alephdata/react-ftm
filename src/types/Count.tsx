@@ -16,14 +16,15 @@ class Count extends React.PureComponent<ICountProps> {
   render() {
     const { count, full = false, className, isPending } = this.props;
 
-    if (!isPending && (count === undefined || count === 0)) {
+    if (!isPending && count == null) {
       return null;
     }
+    const showLoading = isPending && count == null;
 
     return (
-      <span className={c('Count', 'bp3-tag', 'bp3-small', 'bp3-minimal', 'bp3-round', className)}>
-        {isPending && <span>---</span>}
-        {!isPending && <Numeric num={count} abbr={!full} />}
+      <span className={c('Count', 'bp3-tag', 'bp3-small', 'bp3-minimal', 'bp3-round', {"bp3-skeleton": showLoading})}>
+        {showLoading && <span>--</span>}
+        {!showLoading && <Numeric num={count} abbr={!full} />}
       </span>
     );
   }
