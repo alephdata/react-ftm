@@ -3,7 +3,6 @@ import { Entity as FTMEntity} from "@alephdata/followthemoney";
 import truncateText from 'truncate';
 import c from 'classnames';
 import Schema from './Schema';
-import './Entity.scss'
 
 interface IEntityLabelProps  {
   entity: FTMEntity
