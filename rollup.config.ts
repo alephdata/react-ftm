@@ -16,7 +16,7 @@ export default {
     {file: pkg.main, name: 'react-ftm', format: 'umd', sourcemap: true},
     {file: pkg.module, format: 'es', sourcemap: true},
   ],
-  external,
+  external: [...external, 'recharts-scale'],
   watch: {
     include: 'src/**',
   },
