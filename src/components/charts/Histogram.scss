@@ -1,0 +1,33 @@
+@import "src/variables.scss";
+
+.Histogram {
+  .recharts-surface {
+    cursor: pointer;
+  }
+
+  &.dragging {
+    .recharts-surface {
+      fill: green;
+      cursor: col-resize;
+    }
+  }
+
+
+  .recharts-reference-area-rect, .recharts-tooltip-cursor {
+    fill: $light-gray4;
+  }
+
+  .recharts-reference-area-rect {
+    fill-opacity: .7;
+  }
+
+
+  .recharts-default-tooltip {
+    border-radius: $standard-border-radius;
+  }
+
+  text {
+    user-select: none;
+    pointer-events: none;
+  }
+}
