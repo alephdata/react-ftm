@@ -12,7 +12,7 @@ const dataFromEvent = (e: any) => (e?.activePayload?.[0]?.payload);
 interface IHistogramDatum {
   id: string
   label: string
-  count: number
+  [key: string]: any
 }
 
 interface IHistogramProps {
@@ -20,6 +20,7 @@ interface IHistogramProps {
   onSelect: (selected: any | Array<any> ) => void
   chartProps?: any
   containerProps?: any
+  dataPropName: string
 }
 
 interface IHistogramState {
@@ -63,7 +64,7 @@ export class Histogram extends React.Component<IHistogramProps, IHistogramState>
   }
 
   render() {
-    const { chartProps, containerProps, data } = this.props;
+    const { chartProps, containerProps, data, dataPropName } = this.props;
     const { selectStart, selectEnd } = this.state;
 
     return (
@@ -78,8 +79,8 @@ export class Histogram extends React.Component<IHistogramProps, IHistogramState>
             {...chartProps}
           >
             <XAxis dataKey="label" />
-            <Tooltip offset={15} />
-            <Bar dataKey="count" fill={Colors.BLUE2} />
+            <Tooltip offset={15} separator=": " />
+            <Bar dataKey={dataPropName} fill={Colors.BLUE2} />
             {selectStart && selectEnd && (
               <ReferenceArea x1={selectStart.label} x2={selectEnd.label} />
             )}

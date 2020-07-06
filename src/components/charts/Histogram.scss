@@ -26,6 +26,10 @@
     border-radius: $standard-border-radius;
   }
 
+  .recharts-tooltip-label {
+    text-align: center;
+  }
+
   text {
     user-select: none;
     pointer-events: none;
