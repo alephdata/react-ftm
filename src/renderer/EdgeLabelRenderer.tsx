@@ -40,8 +40,13 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
   }
 
   componentDidMount() {
-    const box = this.text.getBBox();
+    const { writeable } = this.props;
+    const g = this.gRef.current;
+    if (writeable && g !== null) {
+      g.addEventListener('dblclick', this.onDoubleClick)
+    }
 
+    const box = this.text.getBBox();
     this.setState({textExtents:[box.width,box.height]});
   }
 
@@ -50,6 +55,14 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
       const box = this.text.getBBox();
 
       this.setState({textExtents:[box.width,box.height]});
+    }
+  }
+
+  componentWillUnmount() {
+    const { writeable } = this.props;
+    const g = this.gRef.current;
+    if (writeable && g !== null) {
+      g.removeEventListener('dblclick', this.onDoubleClick)
     }
   }
 
@@ -77,6 +90,11 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
     this.dragInitial = applyMatrix(matrix, data.x, data.y)
 
     this.props.onClick(e)
+  }
+
+  onDoubleClick(e: any) {
+    e.preventDefault();
+    e.stopPropagation();
   }
 
   render() {
