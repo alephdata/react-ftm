@@ -155,7 +155,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
               </p>
             )}
             <h2 className='EntityViewer__title__text__main'>
-              <Entity.Label entity={entity} icon={!hasCaption} />
+              <Entity.Label entity={entity} icon={!hasCaption} iconSize={25} />
             </h2>
           </div>
           {vertexRef &&
