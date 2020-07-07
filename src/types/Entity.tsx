@@ -7,6 +7,7 @@ import Schema from './Schema';
 interface IEntityLabelProps  {
   entity: FTMEntity
   icon?:boolean
+  iconSize?: number
   truncate?:number
 }
 
