@@ -14,7 +14,10 @@ const positioning = {
 }
 
 const positionSelection = (layout: GraphLayout, type: string, options?: any) => {
-  let vertices, edges, groupings;
+  let vertices;
+  let edges;
+  let groupings;
+  
   if (layout.hasSelection()) {
     vertices = layout.getSelectedVertices().filter(v=>!v.isHidden());
     edges = layout.getSelectionAdjacentEdges();
