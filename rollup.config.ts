@@ -1,5 +1,5 @@
 import resolve from 'rollup-plugin-node-resolve'
-import commonjs from 'rollup-plugin-commonjs'
+import commonjs from '@rollup/plugin-commonjs'
 import sourceMaps from 'rollup-plugin-sourcemaps'
 import typescript from 'rollup-plugin-typescript2'
 import json from '@rollup/plugin-json';
@@ -33,14 +33,7 @@ export default {
     // Compile TypeScript files
     typescript({useTsconfigDeclarationDir: true}),
     // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
-    commonjs({
-      namedExports: {
-        "react-draggable": ['DraggableCore', 'DraggableEvent'],
-        'prop-types': [
-          'bool',
-        ],
-      }
-    }),
+    commonjs(),
     // Resolve source maps to the original source
     sourceMaps()
   ],
