@@ -8,7 +8,6 @@ import postcss from 'rollup-plugin-postcss';
 import image from 'rollup-plugin-img'
 
 const pkg = require('./package.json');
-const external = pkg['peerDependencies'] && Object.keys(pkg['peerDependencies']);
 
 export default {
   input: `src/index.ts`,
@@ -16,7 +15,6 @@ export default {
     {file: pkg.main, name: 'react-ftm', format: 'umd', sourcemap: true},
     {file: pkg.module, format: 'es', sourcemap: true},
   ],
-  external: [...external, 'recharts-scale'],
   watch: {
     include: 'src/**',
   },
