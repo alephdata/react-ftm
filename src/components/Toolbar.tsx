@@ -108,7 +108,10 @@ const messages = defineMessages({
     id: 'tooltip.export_svg',
     defaultMessage: 'Export as SVG',
   },
-
+  tooltip_settings: {
+    id: 'tooltip.settings',
+    defaultMessage: 'Settings',
+  },
 });
 
 interface IToolbarProps extends IGraphContext {
@@ -202,19 +205,21 @@ export class Toolbar extends React.Component<IToolbarProps> {
     const canUngroupSelection = layout.getSelectedGroupings().length >= 1
     const showSearch = layout.vertices && layout.vertices.size > 0
 
-    const editingButtons = [
+    const buttons = [
       [
         {
           helpText: intl.formatMessage(messages.tooltip_undo),
           icon: "undo",
           onClick: () => actions.navigateHistory(History.BACK),
           disabled: !history.canGoTo(History.BACK),
+          writeableOnly: true,
         },
         {
           helpText: intl.formatMessage(messages.tooltip_redo),
           icon: "redo",
           onClick: () => actions.navigateHistory(History.FORWARD),
           disabled: !history.canGoTo(History.FORWARD),
+          writeableOnly: true,
         }
       ],
       [
@@ -222,18 +227,21 @@ export class Toolbar extends React.Component<IToolbarProps> {
           helpText: intl.formatMessage(messages.tooltip_add_entities),
           icon: "new-object",
           onClick: () => this.onSetInteractionMode(modes.VERTEX_CREATE),
+          writeableOnly: true,
         },
         {
           helpText: intl.formatMessage(messages.tooltip_add_edges),
           icon: "new-link",
           onClick: () => this.onSetInteractionMode(modes.EDGE_CREATE),
           disabled: !canAddEdge,
+          writeableOnly: true,
         },
         {
           helpText: intl.formatMessage(messages.tooltip_delete),
           icon: "graph-remove",
           onClick: () => actions.removeSelection(),
           disabled: !hasSelection,
+          writeableOnly: true,
         },
         {
           helpText: intl.formatMessage(messages.tooltip_expand),
@@ -250,6 +258,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
             }
           },
           disabled: !canExpandSelection,
+          writeableOnly: true,
         }
       ],
       [
@@ -258,50 +267,16 @@ export class Toolbar extends React.Component<IToolbarProps> {
           icon: "group-objects",
           onClick: () => this.onSetInteractionMode(modes.GROUPING_CREATE),
           disabled: !canGroupSelection,
+          writeableOnly: true,
         },
         {
           helpText: intl.formatMessage(messages.tooltip_ungroup),
           icon: "ungroup-objects",
           onClick: () => actions.ungroupSelection(),
           disabled: !canUngroupSelection,
+          writeableOnly: true,
         }
       ],
-      [
-        {
-          helpText: intl.formatMessage(messages.tooltip_layout_horizontal),
-          icon: "drag-handle-horizontal",
-          onClick: () => this.onPosition('alignHorizontal'),
-        },
-        {
-          helpText: intl.formatMessage(messages.tooltip_layout_vertical),
-          icon: "drag-handle-vertical",
-          onClick: () => this.onPosition('alignVertical'),
-        },
-        {
-          helpText: intl.formatMessage(messages.tooltip_layout_circle),
-          icon: "layout-circle",
-          onClick: () => this.onPosition('alignCircle'),
-        },
-        {
-          helpText: intl.formatMessage(messages.tooltip_layout_hierarchy),
-          icon: "layout-hierarchy",
-          onClick: () => this.onPosition('arrangeTree'),
-        },
-        {
-          helpText: intl.formatMessage(messages.tooltip_layout_auto),
-          icon: "layout",
-          onClick: () => this.onPosition('forceLayout'),
-        },
-        {
-          helpText: intl.formatMessage(messages.tooltip_layout_center),
-          icon: "layout-auto",
-          disabled: !hasSelection,
-          onClick: () => updateLayout(centerAround(layout), null, { modifyHistory:true }),
-        }
-      ],
-    ];
-
-    const otherButtons = [
       [
         {
           helpText: intl.formatMessage(messages.tooltip_select_mode),
@@ -332,11 +307,57 @@ export class Toolbar extends React.Component<IToolbarProps> {
       ],
       [
         {
+          helpText: intl.formatMessage(messages.tooltip_layout_horizontal),
+          icon: "drag-handle-horizontal",
+          onClick: () => this.onPosition('alignHorizontal'),
+          writeableOnly: true,
+        },
+        {
+          helpText: intl.formatMessage(messages.tooltip_layout_vertical),
+          icon: "drag-handle-vertical",
+          onClick: () => this.onPosition('alignVertical'),
+          writeableOnly: true,
+        },
+        {
+          helpText: intl.formatMessage(messages.tooltip_layout_circle),
+          icon: "layout-circle",
+          onClick: () => this.onPosition('alignCircle'),
+          writeableOnly: true,
+        },
+        {
+          helpText: intl.formatMessage(messages.tooltip_layout_hierarchy),
+          icon: "layout-hierarchy",
+          onClick: () => this.onPosition('arrangeTree'),
+          writeableOnly: true,
+        },
+        {
+          helpText: intl.formatMessage(messages.tooltip_layout_auto),
+          icon: "layout",
+          onClick: () => this.onPosition('forceLayout'),
+          writeableOnly: true,
+        },
+        {
+          helpText: intl.formatMessage(messages.tooltip_layout_center),
+          icon: "layout-auto",
+          disabled: !hasSelection,
+          onClick: () => updateLayout(centerAround(layout), null, { modifyHistory:true }),
+          writeableOnly: true,
+        }
+      ],
+      [
+        {
           helpText: intl.formatMessage(messages.tooltip_export_svg),
           icon: "media",
           onClick: () => actions.exportSvg(),
         }
-      ]
+      ],
+      [
+        {
+          helpText: intl.formatMessage(messages.tooltip_settings),
+          icon: "cog",
+          onClick: () => actions.toggleSettingsDialog(),
+        }
+      ],
     ];
 
     return <div className="Toolbar">
@@ -350,7 +371,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
       )}
       <div className="Toolbar__main">
         <OverflowList
-          items={showEditingButtons ? [...editingButtons, ...otherButtons] : otherButtons}
+          items={showEditingButtons ? buttons : buttons.filter((b: any) => !b.writeableOnly)}
           collapseFrom={Boundary.END}
           visibleItemRenderer={this.visibleItemRenderer}
           overflowRenderer={this.overflowListRenderer}
