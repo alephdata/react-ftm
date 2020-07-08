@@ -4,7 +4,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-06-15T08:07:52.444Z\n"
+"POT-Creation-Date: 2020-07-08T13:51:32.263Z\n"
 "Last-Translator: pudo <friedrich@pudo.org>, 2020\n"
 "Language-Team: German (https://www.transifex.com/aleph/teams/76591/de/)\n"
 "MIME-Version: 1.0\n"
@@ -239,10 +239,10 @@ msgstr ""
 
 #. [editor.entity.no_results]
 #. defaultMessage is:
-#. No entities found
+#. No matching results found
 #: i18n/messages.json
-msgid "No entities found"
-msgstr "Keine Entitäten gefunden"
+msgid "No matching results found"
+msgstr ""
 
 #. [search.results_text.none]
 #. defaultMessage is:

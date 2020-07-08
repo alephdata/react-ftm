@@ -64,8 +64,11 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   onClick(e: any) {
-    const { vertices } = this.props
-    this.props.selectGrouping(vertices, e.shiftKey);
+    const { grouping, vertices } = this.props
+
+    if (grouping.id !== 'selectedArea') {
+      this.props.selectGrouping(vertices, e.shiftKey);
+    }
   }
 
   onMouseOver() {
