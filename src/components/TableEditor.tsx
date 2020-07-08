@@ -6,7 +6,6 @@ import { PropertyEditor } from '../editors';
 import { Property } from '../types';
 import { EntityManager } from '../EntityManager';
 import { PropertySelect } from '../editors';
-import { TruncatedFormat } from "@blueprintjs/table";
 import { Button, Checkbox, Classes, Icon, Intent, Popover, Position, Tooltip } from "@blueprintjs/core";
 import { Entity, Property as FTMProperty, Schema, Value, Values } from "@alephdata/followthemoney";
 import Datasheet from 'react-datasheet';
