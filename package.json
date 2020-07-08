@@ -89,7 +89,6 @@
     "react-intl-po": "^2.2.2",
     "rimraf": "^3.0.2",
     "rollup": "^2.20.0",
-    "rollup-plugin-img": "^1.1.0",
     "rollup-plugin-postcss": "^3.1.1",
     "rollup-plugin-sourcemaps": "^0.6.2",
     "rollup-plugin-typescript2": "^0.27.1",

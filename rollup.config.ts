@@ -5,8 +5,6 @@ import typescript from 'rollup-plugin-typescript2'
 import json from '@rollup/plugin-json';
 import postcss from 'rollup-plugin-postcss';
 
-import image from 'rollup-plugin-img'
-
 const pkg = require('./package.json');
 
 export default {
@@ -23,7 +21,6 @@ export default {
     postcss({
       extensions: [ '.css', '.scss' ],
     }),
-    image(),
     // Allow node_modules resolution, so you can use 'external' to control
     // which external modules to include in the bundle
     resolve(),
