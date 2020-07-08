@@ -4,7 +4,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-06-15T08:07:52.444Z\n"
+"POT-Creation-Date: 2020-07-08T13:51:32.263Z\n"
 "Last-Translator: jen occrp, 2020\n"
 "Language-Team: Russian (https://www.transifex.com/aleph/teams/76591/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "'{label}'"
 #. Add a new {schema} row
 #: i18n/messages.json
 msgid "Add a new {schema} row"
-msgstr ""
+msgstr "Добавить новый ряд {schema}"
 
 #. [editor.property_add]
 #. defaultMessage is:
@@ -151,14 +151,14 @@ msgstr "Удалить выбранное"
 #. Discover links
 #: i18n/messages.json
 msgid "Discover links"
-msgstr ""
+msgstr "Рассмотреть связи"
 
 #. [vertex_menu.expand]
 #. defaultMessage is:
 #. Discover {property}
 #: i18n/messages.json
 msgid "Discover {property}"
-msgstr ""
+msgstr "Рассмотреть {property}"
 
 #. [tooltip.export_svg]
 #. defaultMessage is:
@@ -193,7 +193,7 @@ msgstr "Результатов поиска: {count}"
 #. Group
 #: i18n/messages.json
 msgid "Group"
-msgstr ""
+msgstr "Группа"
 
 #. [dialog.grouping_create.title]
 #. defaultMessage is:
@@ -235,14 +235,14 @@ msgstr "Некорректная тема"
 #. No additional links found
 #: i18n/messages.json
 msgid "No additional links found"
-msgstr ""
+msgstr "Дополнительные связи не найдены"
 
 #. [editor.entity.no_results]
 #. defaultMessage is:
-#. No entities found
+#. No matching results found
 #: i18n/messages.json
-msgid "No entities found"
-msgstr "Сущности не найдены"
+msgid "No matching results found"
+msgstr ""
 
 #. [search.results_text.none]
 #. defaultMessage is:
@@ -280,7 +280,7 @@ msgstr "Повторить действие"
 #. Remove new {schema} row
 #: i18n/messages.json
 msgid "Remove new {schema} row"
-msgstr ""
+msgstr "Удалит новый ряд {schema}"
 
 #. [dialog.grouping_create.placeholder]
 #. defaultMessage is:
@@ -342,6 +342,10 @@ msgid ""
 "      {edges, plural, one {link} other {links}}\n"
 "      to the diagram"
 msgstr ""
+"К диаграмме добавлены {вершины} new\n"
+"      {vertices, plural, one {узел} other {узлы}}\n"
+"      и {ветви} new\n"
+"      {edges, plural, one {связь} other {связи}}"
 
 #. [dialog.edge_create.target_label]
 #. defaultMessage is:
@@ -397,7 +401,7 @@ msgstr "Разгруппировать"
 #. all links
 #: i18n/messages.json
 msgid "all links"
-msgstr ""
+msgstr "все связи"
 
 #. [dialog.vertex_create.name_placeholder]
 #. defaultMessage is:
