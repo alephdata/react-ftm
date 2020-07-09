@@ -1,9 +1,19 @@
-import { defaultModel, Entity, Model, Namespace, Schema, IEntityDatum } from '@alephdata/followthemoney'
+import {
+  defaultModel,
+  Entity,
+  Model,
+  Namespace,
+  PropertyType,
+  Schema,
+  IEntityDatum
+} from '@alephdata/followthemoney'
 
 
 export interface IEntityManagerProps {
   model?: Model,
   namespace?: Namespace,
+  pivotTypes?: Array<string>
+  updatePivotTypes?: (types: Array<string>) => void,
   createEntity?: (entity: IEntityDatum) => Entity,
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
@@ -14,23 +24,42 @@ export interface IEntityManagerProps {
 
 export class EntityManager {
   public readonly model: Model
+  public readonly pivotTypes: Array<string>
   public readonly namespace?: Namespace
   public readonly hasExpand: boolean = false
   private overload: any
 
   constructor(props?: IEntityManagerProps) {
     if (props) {
-      const { model, namespace, ...rest } = props;
+      const { model, namespace, pivotTypes, ...rest } = props;
       this.model = model || new Model(defaultModel)
+      this.pivotTypes = pivotTypes || ['entity']
       this.namespace = namespace
       this.overload = rest;
       this.hasExpand = this.overload.expandEntity !== undefined;
     } else {
       this.model = new Model(defaultModel);
+      this.pivotTypes = ['entity'];
     }
 
     this.getEntitySuggestions = this.getEntitySuggestions.bind(this);
     this.resolveEntityReference = this.resolveEntityReference.bind(this);
+  }
+
+  setPivotTypes(types: Array<string>) {
+    this.pivotTypes = types;
+  }
+
+  togglePivotType(type: string) {
+    if (this.pivotTypes.includes(type)) {
+      this.pivotTypes = this.pivotTypes.filter(t => t !== type)
+    } else {
+      this.pivotTypes = [...this.pivotTypes, type];
+    }
+    if (this.overload?.updatePivotTypes) {
+      this.overload.updatePivotTypes(this.pivotTypes);
+    }
+    return this.pivotTypes;
   }
 
   createEntity(entityData: any) {

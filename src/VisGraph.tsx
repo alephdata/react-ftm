@@ -412,7 +412,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
               isOpen={settingsDialogOpen}
               toggleDialog={this.toggleSettingsDialog}
               intl={intl}
-              model={entityManager.model}
+              entityManager={entityManager}
             />
           </>
         )}
