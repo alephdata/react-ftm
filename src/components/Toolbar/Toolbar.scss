@@ -118,7 +118,7 @@ $width-right: $sidebar-width;
     }
   }
 
-  &__button-group {
+  .ToolbarButtonGroup {
     .toolbar-left & {
       flex-wrap: wrap;
     }
@@ -162,7 +162,4 @@ $width-right: $sidebar-width;
       border-color: themed('disabledColor') !important;
     }
   }
-
-
-
 }

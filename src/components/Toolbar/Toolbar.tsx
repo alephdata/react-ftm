@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
-import { modes } from '../utils'
 import {
   AnchorButton,
   Boundary,
@@ -16,18 +15,21 @@ import {
   Popover,
   Tooltip,
 } from "@blueprintjs/core"
-import { IGraphContext } from '../GraphContext';
-import { GraphLogo } from '../GraphLogo';
-import { Point } from '../layout/Point'
-import { SearchBox } from '.';
-import { filterVerticesByText } from '../utils';
+import { IGraphContext } from '../../GraphContext';
+import { GraphLogo } from '../../GraphLogo';
+import { SearchBox } from '../';
+import { filterVerticesByText, modes} from '../../utils';
 import {
   GraphLayout,
+  Point,
   Rectangle,
   centerAround,
   positionSelection,
-} from "../layout";
-import { History } from '../History';
+} from "../../layout";
+import ToolbarButtonGroup from './ToolbarButtonGroup';
+import { IToolbarButton, IToolbarButtonGroup } from './common';
+
+import { History } from '../../History';
 
 import './Toolbar.scss';
 
@@ -71,6 +73,10 @@ const messages = defineMessages({
   tooltip_pan_mode: {
     id: 'tooltip.pan_mode',
     defaultMessage: 'Toggle pan mode',
+  },
+  tooltip_layouts: {
+    id: 'tooltip.layouts',
+    defaultMessage: 'Layouts',
   },
   tooltip_layout_horizontal: {
     id: 'tooltip.layout_horizontal',
@@ -129,7 +135,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
     super(props);
     this.onSetInteractionMode = this.onSetInteractionMode.bind(this)
     this.onPosition = this.onPosition.bind(this)
-    this.visibleItemRenderer = this.visibleItemRenderer.bind(this)
+    this.itemRenderer = this.itemRenderer.bind(this)
     this.overflowListRenderer = this.overflowListRenderer.bind(this)
   }
 
@@ -145,43 +151,20 @@ export class Toolbar extends React.Component<IToolbarProps> {
     actions.fitToSelection();
   }
 
-  visibleItemRenderer(buttonGroup:any, i:any) {
-    const { config } = this.props.layout;
+  itemRenderer(buttonGroup:IToolbarButtonGroup, i:number, visible: boolean) {
     return (
       <React.Fragment key={i}>
         {i !== 0 && <Divider />}
-        <ButtonGroup
-          className="Toolbar__button-group"
-        >
-          {buttonGroup.map(({ disabled, helpText, icon, onClick }: any) => (
-            <Tooltip content={helpText} key={icon} position="bottom" popoverClassName="Toolbar__button-tip" boundary="viewport">
-              <AnchorButton icon={icon} onClick={onClick} disabled={disabled} />
-            </Tooltip>
-          ))}
-        </ButtonGroup>
+        <ToolbarButtonGroup
+          buttonGroup={buttonGroup}
+          visible={visible}
+        />
       </React.Fragment>
     );
   }
 
-  overflowItemRenderer(buttonGroup:any, i:any) {
-    return (
-      <React.Fragment key={i}>
-        {i !== 0 && <Menu.Divider />}
-        {buttonGroup.map(({ disabled, helpText, icon, onClick }: any) => (
-          <Menu.Item
-            icon={icon}
-            key={icon}
-            onClick={onClick}
-            text={helpText}
-            disabled={disabled}
-          />
-        ))}
-      </React.Fragment>
-    );
-  }
-
-  overflowListRenderer(overflowItems: any) {
-    const menuContent = overflowItems.map((item:any, i:any) => this.overflowItemRenderer(item, i));
+  overflowListRenderer(overflowItems: IToolbarButtonGroup) {
+    const menuContent = overflowItems.map((item:IToolbarButtonGroup, i:number) => this.itemRenderer(item, i, false));
     return (
       <Popover
         content={<Menu>{menuContent}</Menu>}
@@ -205,7 +188,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
     const canUngroupSelection = layout.getSelectedGroupings().length >= 1
     const showSearch = layout.vertices && layout.vertices.size > 0
 
-    const buttons = [
+    const buttons: Array<IToolbarButtonGroup> = [
       [
         {
           helpText: intl.formatMessage(messages.tooltip_undo),
@@ -243,23 +226,25 @@ export class Toolbar extends React.Component<IToolbarProps> {
           disabled: !hasSelection,
           writeableOnly: true,
         },
-        {
-          helpText: intl.formatMessage(messages.tooltip_expand),
-          icon: "search-around",
-          onClick: (e: React.MouseEvent) => {
-            const selectedVertex = vertices[0];
+        ...(layout.entityManager.hasExpand ? (
+          [{
+            helpText: intl.formatMessage(messages.tooltip_expand),
+            icon: "search-around",
+            onClick: (e: React.MouseEvent) => {
+              const selectedVertex = vertices[0];
 
-            if (selectedVertex.isEntity()) {
-              const isTopToolbar = layout.config.toolbarPosition === 'top';
-              const posX = isTopToolbar ? e.clientX - 10 : 70;
-              const posY = isTopToolbar ? 40 : e.clientY - 10;
+              if (selectedVertex.isEntity()) {
+                const isTopToolbar = layout.config.toolbarPosition === 'top';
+                const posX = isTopToolbar ? e.clientX - 10 : 70;
+                const posY = isTopToolbar ? 40 : e.clientY - 10;
 
-              actions.showVertexMenu(selectedVertex, new Point(posX, posY), true);
-            }
-          },
-          disabled: !canExpandSelection,
-          writeableOnly: true,
-        }
+                actions.showVertexMenu(selectedVertex, new Point(posX, posY), true);
+              }
+            },
+            disabled: !canExpandSelection,
+            writeableOnly: true,
+          }]
+        ) : [])
       ],
       [
         {
@@ -307,41 +292,42 @@ export class Toolbar extends React.Component<IToolbarProps> {
       ],
       [
         {
-          helpText: intl.formatMessage(messages.tooltip_layout_horizontal),
-          icon: "drag-handle-horizontal",
-          onClick: () => this.onPosition('alignHorizontal'),
-          writeableOnly: true,
-        },
-        {
-          helpText: intl.formatMessage(messages.tooltip_layout_vertical),
-          icon: "drag-handle-vertical",
-          onClick: () => this.onPosition('alignVertical'),
-          writeableOnly: true,
-        },
-        {
-          helpText: intl.formatMessage(messages.tooltip_layout_circle),
-          icon: "layout-circle",
-          onClick: () => this.onPosition('alignCircle'),
-          writeableOnly: true,
-        },
-        {
-          helpText: intl.formatMessage(messages.tooltip_layout_hierarchy),
-          icon: "layout-hierarchy",
-          onClick: () => this.onPosition('arrangeTree'),
-          writeableOnly: true,
-        },
-        {
-          helpText: intl.formatMessage(messages.tooltip_layout_auto),
+          helpText: intl.formatMessage(messages.tooltip_layouts),
           icon: "layout",
-          onClick: () => this.onPosition('forceLayout'),
           writeableOnly: true,
-        },
-        {
-          helpText: intl.formatMessage(messages.tooltip_layout_center),
-          icon: "layout-auto",
-          disabled: !hasSelection,
-          onClick: () => updateLayout(centerAround(layout), null, { modifyHistory:true }),
-          writeableOnly: true,
+          subItems: [
+            {
+              helpText: intl.formatMessage(messages.tooltip_layout_horizontal),
+              icon: "layout-linear",
+              onClick: () => this.onPosition('alignHorizontal'),
+            },
+            {
+              helpText: intl.formatMessage(messages.tooltip_layout_vertical),
+              icon: "drag-handle-vertical",
+              onClick: () => this.onPosition('alignVertical'),
+            },
+            {
+              helpText: intl.formatMessage(messages.tooltip_layout_circle),
+              icon: "layout-circle",
+              onClick: () => this.onPosition('alignCircle'),
+            },
+            {
+              helpText: intl.formatMessage(messages.tooltip_layout_hierarchy),
+              icon: "layout-hierarchy",
+              onClick: () => this.onPosition('arrangeTree'),
+            },
+            {
+              helpText: intl.formatMessage(messages.tooltip_layout_auto),
+              icon: "layout",
+              onClick: () => this.onPosition('forceLayout'),
+            },
+            {
+              helpText: intl.formatMessage(messages.tooltip_layout_center),
+              icon: "layout-auto",
+              disabled: !hasSelection,
+              onClick: () => updateLayout(centerAround(layout), null, { modifyHistory:true }),
+            }
+          ]
         }
       ],
       [
@@ -373,7 +359,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
         <OverflowList
           items={showEditingButtons ? buttons : buttons.filter((b: any) => !b.writeableOnly)}
           collapseFrom={Boundary.END}
-          visibleItemRenderer={this.visibleItemRenderer}
+          visibleItemRenderer={(buttonGroup: IToolbarButtonGroup, i: number) => this.itemRenderer(buttonGroup, i, true)}
           overflowRenderer={this.overflowListRenderer}
           className="Toolbar__button-group-container"
           observeParents
