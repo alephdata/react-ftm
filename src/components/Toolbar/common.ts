@@ -4,7 +4,7 @@ export interface IToolbarButton {
   disabled?: boolean
   writeableOnly?: boolean
   onClick?: () => void
-  subItems?: IToolbarButtonGroup
+  subItems?: Array<IToolbarButton>
 }
 
-export interface IToolbarButtonGroup = Array<IToolbarButton>
+export type IToolbarButtonGroup = Array<IToolbarButton>
