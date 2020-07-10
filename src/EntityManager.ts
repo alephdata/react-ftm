@@ -48,18 +48,14 @@ export class EntityManager {
 
   setPivotTypes(types: Array<string>) {
     this.pivotTypes = types;
+
+    if (this.overload?.updatePivotTypes) {
+      this.overload.updatePivotTypes(types);
+    }
   }
 
-  togglePivotType(type: string) {
-    if (this.pivotTypes.includes(type)) {
-      this.pivotTypes = this.pivotTypes.filter(t => t !== type)
-    } else {
-      this.pivotTypes = [...this.pivotTypes, type];
-    }
-    if (this.overload?.updatePivotTypes) {
-      this.overload.updatePivotTypes(this.pivotTypes);
-    }
-    return this.pivotTypes;
+  hasPivotType(type: string) {
+    return this.pivotTypes.includes(type);
   }
 
   createEntity(entityData: any) {

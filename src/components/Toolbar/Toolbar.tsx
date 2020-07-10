@@ -15,6 +15,7 @@ import {
   Popover,
   Tooltip,
 } from "@blueprintjs/core"
+import c from 'classnames';
 import { IGraphContext } from '../../GraphContext';
 import { GraphLogo } from '../../GraphLogo';
 import { SearchBox } from '../';
@@ -152,25 +153,29 @@ export class Toolbar extends React.Component<IToolbarProps> {
   }
 
   itemRenderer(buttonGroup:IToolbarButtonGroup, i:number, visible: boolean) {
+    const { config } = this.props.layout;
+
     return (
       <React.Fragment key={i}>
         {i !== 0 && <Divider />}
         <ToolbarButtonGroup
           buttonGroup={buttonGroup}
           visible={visible}
+          editorTheme={config.editorTheme}
         />
       </React.Fragment>
     );
   }
 
   overflowListRenderer(overflowItems: IToolbarButtonGroup) {
+    const { config } = this.props.layout;
     const menuContent = overflowItems.map((item:IToolbarButtonGroup, i:number) => this.itemRenderer(item, i, false));
     return (
       <Popover
         content={<Menu>{menuContent}</Menu>}
         position="bottom"
         minimal
-        popoverClassName="Toolbar__overflow-list"
+        popoverClassName={c("Toolbar__menu", `theme-${config.editorTheme}`)}
         boundary="viewport"
       >
         <Button icon="double-chevron-right" />

@@ -14,12 +14,14 @@ import {
   Popover,
   Tooltip,
 } from "@blueprintjs/core"
+import c from 'classnames';
 import { IToolbarButton, IToolbarButtonGroup } from './common';
 
 
 interface IToolbarButtonGroupProps {
   buttonGroup: IToolbarButtonGroup
   visible: boolean
+  editorTheme: string
 }
 
 export class ToolbarButtonGroup extends React.PureComponent<IToolbarButtonGroupProps> {
@@ -28,6 +30,8 @@ export class ToolbarButtonGroup extends React.PureComponent<IToolbarButtonGroupP
   }
 
   renderVisible(items: any) {
+    const { editorTheme } = this.props;
+
     return (
       <ButtonGroup
         className="ToolbarButtonGroup"
@@ -39,7 +43,7 @@ export class ToolbarButtonGroup extends React.PureComponent<IToolbarButtonGroupP
               <Popover
                 content={<Menu>{this.renderHidden(subItems)}</Menu>}
                 position="bottom"
-                popoverClassName="ToolbarButton__overflow-list"
+                popoverClassName={c("Toolbar__menu", `theme-${editorTheme}`)}
                 boundary="viewport"
                 minimal
                 interactionKind="hover"
@@ -49,8 +53,14 @@ export class ToolbarButtonGroup extends React.PureComponent<IToolbarButtonGroupP
             );
           } else {
             return (
-              <Tooltip content={helpText} key={icon} position="bottom" popoverClassName="ToolbarButton__button-tip" boundary="viewport">
-                <AnchorButton icon={icon} onClick={onClick} disabled={disabled} />
+              <Tooltip
+                content={helpText}
+                key={icon}
+                position="bottom"
+                popoverClassName={c("Toolbar__button-tip", `theme-${editorTheme}`)}
+                boundary="viewport"
+              >
+                  <AnchorButton icon={icon} onClick={onClick} disabled={disabled} />
               </Tooltip>
             );
           }

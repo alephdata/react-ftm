@@ -1,7 +1,8 @@
 import * as React from 'react';
 import _ from 'lodash';
+import { Model } from '@alephdata/followthemoney';
 import { defineMessages, FormattedMessage, WrappedComponentProps } from 'react-intl';
-import { Intent, ControlGroup, InputGroup, Colors, Checkbox } from '@blueprintjs/core'
+import { Intent, FormGroup, ControlGroup, InputGroup, Colors, Checkbox, Button, Intent } from '@blueprintjs/core'
 
 import { GraphContext, IGraphContext } from '../GraphContext'
 import { ColorPicker } from '../editors';
@@ -18,16 +19,25 @@ const messages = defineMessages({
     id: 'dialog.settings.title',
     defaultMessage: 'Settings',
   },
-  // placeholder: {
-  //   id: 'dialog.settings.placeholder',
-  //   defaultMessage: 'Select a label for the grouping',
-  // },
+  submit: {
+    id: 'dialog.settings.submit',
+    defaultMessage: 'Save changes',
+  },
+  label: {
+    id: 'dialog.settings.pivot_types.label',
+    defaultMessage: 'Connect shared values',
+  },
+  helpText: {
+    id: 'dialog.settings.pivot_types.help_text',
+    defaultMessage: 'The selected property types above will be used to draw connections between nodes when values are shared',
+  },
 });
 
 interface ISettingsDialogProps extends WrappedComponentProps {
   isOpen: boolean
   toggleDialog: () => any
-  entityManager: EntityManager
+  model: Model
+  pivotTypes: Array<string>
 }
 
 interface ISettingsDialogState {
@@ -39,20 +49,34 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
     super(props);
 
     this.state = {};
-    this.renderCheckbox = this.renderCheckbox.bind(this);
+    this.renderPivotType = this.renderPivotType.bind(this);
+    this.togglePivotType = this.togglePivotType.bind(this);
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.entityManager.pivotTypes !== prevState.pivotTypes) {
+    if (!prevState.pivotTypes) {
       return {
-        pivotTypes: nextProps.entityManager.pivotTypes,
+        pivotTypes: nextProps.pivotTypes,
       };
     }
     return {};
   }
 
-  renderCheckbox(type) {
-    const { entityManager, isOpen, toggleDialog } = this.props;
+  togglePivotType(type: string) {
+    this.setState(({ pivotTypes }) => {
+      if (pivotTypes.includes(type)) {
+        return ({
+          pivotTypes: pivotTypes.filter(t => t !== type)
+        })
+      }
+      return ({
+        pivotTypes: [...pivotTypes, type]
+      })
+    });
+  }
+
+  renderPivotType(type) {
+    const { isOpen, toggleDialog } = this.props;
     const { pivotTypes } = this.state;
 
     const isSelected = pivotTypes.includes(type.name);
@@ -60,18 +84,17 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
       <Checkbox
         checked={isSelected}
         label={type.label}
-        onChange={() => {
-          const nextPivotTypes = entityManager.togglePivotType(type.name);
-          this.setState({ pivotTypes: nextPivotTypes });
-        }
+        onChange={() => this.togglePivotType(type.name)}
       />
     );
   }
 
   render() {
-    const { intl, isOpen, entityManager, toggleDialog } = this.props;
+    const { intl, isOpen, model, toggleDialog } = this.props;
+    const { pivotTypes } = this.state;
 
-    const typeOptions = _.sortBy(Object.values(entityManager.model.types), ['label']);
+    const matchableTypes = Object.values(model.types).filter(t => t.matchable);
+    const typeOptions = _.sortBy(matchableTypes, ['label']);
 
     return (
       <Dialog
@@ -81,21 +104,28 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
         onClose={() => toggleDialog()}
         className="SettingsDialog"
       >
-        <form onSubmit={this.onSubmit}>
-          <div className="bp3-dialog-body">
-            <div className="SettingsDialog__section">
-              <h5 className="SettingsDialog__section__title">
-                <FormattedMessage
-                  id="dialog.settings.pivot_types.title"
-                  defaultMessage="Select properties to connect"
-                />
-              </h5>
+        <div className="bp3-dialog-body">
+          <div className="SettingsDialog__section">
+            <FormGroup
+              helperText={intl.formatMessage(messages.helpText)}
+              label={intl.formatMessage(messages.label)}
+            >
               <div className="SettingsDialog__type-select">
-                {typeOptions.map(this.renderCheckbox)}
+                {typeOptions.map(this.renderPivotType)}
               </div>
-            </div>
+            </FormGroup>
           </div>
-        </form>
+        </div>
+        <div className="bp3-dialog-footer">
+          <div className="bp3-dialog-footer-actions">
+            <Button
+              intent={Intent.PRIMARY}
+              text={intl.formatMessage(messages.submit)}
+              type="submit"
+              onClick={() => toggleDialog({ pivotTypes })}
+            />
+          </div>
+        </div>
       </Dialog>
     );
   }

@@ -250,10 +250,18 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     this.setState(({ tableView }) => ({ tableView: !tableView }))
   }
 
-  toggleSettingsDialog() {
-    this.setState(({ settingsDialogOpen }) => ({ settingsDialogOpen: !settingsDialogOpen }))
-  }
+  toggleSettingsDialog(settings) {
+    const { entityManager, layout } = this.props;
 
+    this.setState(({ settingsDialogOpen }) => ({ settingsDialogOpen: !settingsDialogOpen }));
+
+    if (settings) {
+      const { pivotTypes } = settings;
+      entityManager.setPivotTypes(pivotTypes);
+      layout.layout();
+      this.updateLayout(layout, null, { forceSaveUpdate: true });
+    }
+  }
   fitToSelection() {
     const {layout, viewport} = this.props
     const selection = layout.getSelectedVertices()
@@ -410,9 +418,10 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
             />
             <SettingsDialog
               isOpen={settingsDialogOpen}
-              toggleDialog={this.toggleSettingsDialog}
               intl={intl}
-              entityManager={entityManager}
+              pivotTypes={entityManager.pivotTypes}
+              model={entityManager.model}
+              toggleDialog={this.toggleSettingsDialog}
             />
           </>
         )}
