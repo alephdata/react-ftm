@@ -250,7 +250,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     this.setState(({ tableView }) => ({ tableView: !tableView }))
   }
 
-  toggleSettingsDialog(settings) {
+  toggleSettingsDialog(settings?: any) {
     const { entityManager, layout } = this.props;
 
     this.setState(({ settingsDialogOpen }) => ({ settingsDialogOpen: !settingsDialogOpen }));

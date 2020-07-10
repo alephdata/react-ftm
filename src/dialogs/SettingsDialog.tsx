@@ -1,14 +1,12 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { Model } from '@alephdata/followthemoney';
+import { Model, PropertyType } from '@alephdata/followthemoney';
 import { defineMessages, FormattedMessage, WrappedComponentProps } from 'react-intl';
-import { Intent, FormGroup, ControlGroup, InputGroup, Colors, Checkbox, Button, Intent } from '@blueprintjs/core'
+import { Intent, FormGroup, ControlGroup, InputGroup, Colors, Checkbox, Dialog, Button } from '@blueprintjs/core'
 
 import { GraphContext, IGraphContext } from '../GraphContext'
 import { ColorPicker } from '../editors';
-import EntityManager from '../';
-
-import Dialog from './Dialog';
+import { EntityManager } from '../EntityManager';
 
 import { Point, Grouping } from '../layout'
 
@@ -35,7 +33,7 @@ const messages = defineMessages({
 
 interface ISettingsDialogProps extends WrappedComponentProps {
   isOpen: boolean
-  toggleDialog: () => any
+  toggleDialog: (submitVals?: any) => void
   model: Model
   pivotTypes: Array<string>
 }
@@ -48,18 +46,16 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
   constructor(props: any) {
     super(props);
 
-    this.state = {};
+    this.state = { pivotTypes: [] };
     this.renderPivotType = this.renderPivotType.bind(this);
     this.togglePivotType = this.togglePivotType.bind(this);
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (!prevState.pivotTypes) {
-      return {
-        pivotTypes: nextProps.pivotTypes,
-      };
+  componentDidUpdate(prevProps: ISettingsDialogProps) {
+    const { pivotTypes } = this.props;
+    if (prevProps.pivotTypes !== pivotTypes) {
+      this.setState({ pivotTypes });
     }
-    return {};
   }
 
   togglePivotType(type: string) {
@@ -75,7 +71,7 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
     });
   }
 
-  renderPivotType(type) {
+  renderPivotType(type: PropertyType) {
     const { isOpen, toggleDialog } = this.props;
     const { pivotTypes } = this.state;
 

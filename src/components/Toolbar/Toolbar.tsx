@@ -167,7 +167,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
     );
   }
 
-  overflowListRenderer(overflowItems: IToolbarButtonGroup) {
+  overflowListRenderer(overflowItems: Array<IToolbarButtonGroup>) {
     const { config } = this.props.layout;
     const menuContent = overflowItems.map((item:IToolbarButtonGroup, i:number) => this.itemRenderer(item, i, false));
     return (

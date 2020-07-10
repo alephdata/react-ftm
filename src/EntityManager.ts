@@ -24,9 +24,9 @@ export interface IEntityManagerProps {
 
 export class EntityManager {
   public readonly model: Model
-  public readonly pivotTypes: Array<string>
   public readonly namespace?: Namespace
   public readonly hasExpand: boolean = false
+  public pivotTypes: Array<string>
   private overload: any
 
   constructor(props?: IEntityManagerProps) {
