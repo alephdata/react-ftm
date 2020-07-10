@@ -4,7 +4,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-07-08T13:51:32.263Z\n"
+"POT-Creation-Date: 2020-07-10T11:03:14.756Z\n"
 "Last-Translator: jen occrp, 2020\n"
 "Language-Team: Russian (https://www.transifex.com/aleph/teams/76591/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -125,6 +125,13 @@ msgstr "Авторасположение"
 msgid "Center"
 msgstr "В центр"
 
+#. [dialog.settings.pivot_types.label]
+#. defaultMessage is:
+#. Connect shared values
+#: i18n/messages.json
+msgid "Connect shared values"
+msgstr ""
+
 #. [dialog.edge_create.submit]
 #. defaultMessage is:
 #. Create
@@ -230,6 +237,13 @@ msgstr "Неверная страна"
 msgid "Invalid topic"
 msgstr "Некорректная тема"
 
+#. [tooltip.layouts]
+#. defaultMessage is:
+#. Layouts
+#: i18n/messages.json
+msgid "Layouts"
+msgstr ""
+
 #. [vertex_menu.expand_none]
 #. defaultMessage is:
 #. No additional links found
@@ -242,7 +256,7 @@ msgstr "Дополнительные связи не найдены"
 #. No matching results found
 #: i18n/messages.json
 msgid "No matching results found"
-msgstr ""
+msgstr "Ничего подходящего не найдено"
 
 #. [search.results_text.none]
 #. defaultMessage is:
@@ -282,6 +296,13 @@ msgstr "Повторить действие"
 msgid "Remove new {schema} row"
 msgstr "Удалит новый ряд {schema}"
 
+#. [dialog.settings.submit]
+#. defaultMessage is:
+#. Save changes
+#: i18n/messages.json
+msgid "Save changes"
+msgstr ""
+
 #. [dialog.grouping_create.placeholder]
 #. defaultMessage is:
 #. Select a label for the grouping
@@ -305,6 +326,16 @@ msgstr "Выбрать сущность"
 #: i18n/messages.json
 msgid "Select type"
 msgstr "Выбрать тип"
+
+#. [tooltip.settings]
+#. defaultMessage is:
+#. Settings
+#. [dialog.settings.title]
+#. defaultMessage is:
+#. Settings
+#: i18n/messages.json i18n/messages.json
+msgid "Settings"
+msgstr ""
 
 #. [tooltip.sidebar_view]
 #. defaultMessage is:
@@ -353,6 +384,16 @@ msgstr ""
 #: i18n/messages.json
 msgid "Target"
 msgstr "Цель"
+
+#. [dialog.settings.pivot_types.help_text]
+#. defaultMessage is:
+#. The selected property types above will be used to draw connections between
+#. nodes when values are shared
+#: i18n/messages.json
+msgid ""
+"The selected property types above will be used to draw connections between "
+"nodes when values are shared"
+msgstr ""
 
 #. [editor.validation.required]
 #. defaultMessage is:
