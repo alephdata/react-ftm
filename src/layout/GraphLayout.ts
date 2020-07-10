@@ -101,10 +101,9 @@ export class GraphLayout {
         const mainVertex = Vertex.fromEntity(this, entity);
         this.addVertex(mainVertex)
 
-        // TODO: make "typesConfig" part of the layout.
         const properties = entity.getProperties()
         // removing properties which should not be represented as a vertex
-          .filter(property => property.type.pivot);
+          .filter(property => this.entityManager.hasPivotType(property.type.name));
 
         properties.forEach((prop) => {
           entity.getProperty(prop).forEach((value) => {

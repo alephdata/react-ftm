@@ -110,30 +110,11 @@ $width-right: $sidebar-width;
     .toolbar-left & {
       flex-direction: column;
     }
-
-    .bp3-menu {
-      @include themify() {
-        background-color: themed('tooltipColor') !important;
-      }
-    }
   }
 
-  &__button-group {
+  .ToolbarButtonGroup {
     .toolbar-left & {
       flex-wrap: wrap;
-    }
-  }
-
-  &__button-tip {
-    .bp3-popover-content {
-      @include themify() {
-        background-color: themed('tooltipColor') !important;
-      }
-    }
-    .bp3-popover-arrow path {
-      @include themify() {
-        fill: themed('tooltipColor') !important;
-      }
     }
   }
 
@@ -162,7 +143,5 @@ $width-right: $sidebar-width;
       border-color: themed('disabledColor') !important;
     }
   }
-
-
 
 }

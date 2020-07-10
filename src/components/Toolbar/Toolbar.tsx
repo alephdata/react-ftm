@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
-import { modes } from '../utils'
 import {
   AnchorButton,
   Boundary,
@@ -16,18 +15,22 @@ import {
   Popover,
   Tooltip,
 } from "@blueprintjs/core"
-import { IGraphContext } from '../GraphContext';
-import { GraphLogo } from '../GraphLogo';
-import { Point } from '../layout/Point'
-import { SearchBox } from '.';
-import { filterVerticesByText } from '../utils';
+import c from 'classnames';
+import { IGraphContext } from '../../GraphContext';
+import { GraphLogo } from '../../GraphLogo';
+import { SearchBox } from '../';
+import { filterVerticesByText, modes} from '../../utils';
 import {
   GraphLayout,
+  Point,
   Rectangle,
   centerAround,
   positionSelection,
-} from "../layout";
-import { History } from '../History';
+} from "../../layout";
+import ToolbarButtonGroup from './ToolbarButtonGroup';
+import { IToolbarButton, IToolbarButtonGroup } from './common';
+
+import { History } from '../../History';
 
 import './Toolbar.scss';
 
@@ -72,6 +75,10 @@ const messages = defineMessages({
     id: 'tooltip.pan_mode',
     defaultMessage: 'Toggle pan mode',
   },
+  tooltip_layouts: {
+    id: 'tooltip.layouts',
+    defaultMessage: 'Layouts',
+  },
   tooltip_layout_horizontal: {
     id: 'tooltip.layout_horizontal',
     defaultMessage: 'Align horizontal',
@@ -108,7 +115,10 @@ const messages = defineMessages({
     id: 'tooltip.export_svg',
     defaultMessage: 'Export as SVG',
   },
-
+  tooltip_settings: {
+    id: 'tooltip.settings',
+    defaultMessage: 'Settings',
+  },
 });
 
 interface IToolbarProps extends IGraphContext {
@@ -126,7 +136,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
     super(props);
     this.onSetInteractionMode = this.onSetInteractionMode.bind(this)
     this.onPosition = this.onPosition.bind(this)
-    this.visibleItemRenderer = this.visibleItemRenderer.bind(this)
+    this.itemRenderer = this.itemRenderer.bind(this)
     this.overflowListRenderer = this.overflowListRenderer.bind(this)
   }
 
@@ -142,49 +152,30 @@ export class Toolbar extends React.Component<IToolbarProps> {
     actions.fitToSelection();
   }
 
-  visibleItemRenderer(buttonGroup:any, i:any) {
+  itemRenderer(buttonGroup:IToolbarButtonGroup, i:number, visible: boolean) {
     const { config } = this.props.layout;
+
     return (
       <React.Fragment key={i}>
         {i !== 0 && <Divider />}
-        <ButtonGroup
-          className="Toolbar__button-group"
-        >
-          {buttonGroup.map(({ disabled, helpText, icon, onClick }: any) => (
-            <Tooltip content={helpText} key={icon} position="bottom" popoverClassName="Toolbar__button-tip" boundary="viewport">
-              <AnchorButton icon={icon} onClick={onClick} disabled={disabled} />
-            </Tooltip>
-          ))}
-        </ButtonGroup>
+        <ToolbarButtonGroup
+          buttonGroup={buttonGroup}
+          visible={visible}
+          editorTheme={config.editorTheme}
+        />
       </React.Fragment>
     );
   }
 
-  overflowItemRenderer(buttonGroup:any, i:any) {
-    return (
-      <React.Fragment key={i}>
-        {i !== 0 && <Menu.Divider />}
-        {buttonGroup.map(({ disabled, helpText, icon, onClick }: any) => (
-          <Menu.Item
-            icon={icon}
-            key={icon}
-            onClick={onClick}
-            text={helpText}
-            disabled={disabled}
-          />
-        ))}
-      </React.Fragment>
-    );
-  }
-
-  overflowListRenderer(overflowItems: any) {
-    const menuContent = overflowItems.map((item:any, i:any) => this.overflowItemRenderer(item, i));
+  overflowListRenderer(overflowItems: Array<IToolbarButtonGroup>) {
+    const { config } = this.props.layout;
+    const menuContent = overflowItems.map((item:IToolbarButtonGroup, i:number) => this.itemRenderer(item, i, false));
     return (
       <Popover
         content={<Menu>{menuContent}</Menu>}
         position="bottom"
         minimal
-        popoverClassName="Toolbar__overflow-list"
+        popoverClassName={c("Toolbar__menu", `theme-${config.editorTheme}`)}
         boundary="viewport"
       >
         <Button icon="double-chevron-right" />
@@ -202,19 +193,21 @@ export class Toolbar extends React.Component<IToolbarProps> {
     const canUngroupSelection = layout.getSelectedGroupings().length >= 1
     const showSearch = layout.vertices && layout.vertices.size > 0
 
-    const editingButtons = [
+    const buttons: Array<IToolbarButtonGroup> = [
       [
         {
           helpText: intl.formatMessage(messages.tooltip_undo),
           icon: "undo",
           onClick: () => actions.navigateHistory(History.BACK),
           disabled: !history.canGoTo(History.BACK),
+          writeableOnly: true,
         },
         {
           helpText: intl.formatMessage(messages.tooltip_redo),
           icon: "redo",
           onClick: () => actions.navigateHistory(History.FORWARD),
           disabled: !history.canGoTo(History.FORWARD),
+          writeableOnly: true,
         }
       ],
       [
@@ -222,35 +215,41 @@ export class Toolbar extends React.Component<IToolbarProps> {
           helpText: intl.formatMessage(messages.tooltip_add_entities),
           icon: "new-object",
           onClick: () => this.onSetInteractionMode(modes.VERTEX_CREATE),
+          writeableOnly: true,
         },
         {
           helpText: intl.formatMessage(messages.tooltip_add_edges),
           icon: "new-link",
           onClick: () => this.onSetInteractionMode(modes.EDGE_CREATE),
           disabled: !canAddEdge,
+          writeableOnly: true,
         },
         {
           helpText: intl.formatMessage(messages.tooltip_delete),
           icon: "graph-remove",
           onClick: () => actions.removeSelection(),
           disabled: !hasSelection,
+          writeableOnly: true,
         },
-        {
-          helpText: intl.formatMessage(messages.tooltip_expand),
-          icon: "search-around",
-          onClick: (e: React.MouseEvent) => {
-            const selectedVertex = vertices[0];
+        ...(layout.entityManager.hasExpand ? (
+          [{
+            helpText: intl.formatMessage(messages.tooltip_expand),
+            icon: "search-around",
+            onClick: (e: React.MouseEvent) => {
+              const selectedVertex = vertices[0];
 
-            if (selectedVertex.isEntity()) {
-              const isTopToolbar = layout.config.toolbarPosition === 'top';
-              const posX = isTopToolbar ? e.clientX - 10 : 70;
-              const posY = isTopToolbar ? 40 : e.clientY - 10;
+              if (selectedVertex.isEntity()) {
+                const isTopToolbar = layout.config.toolbarPosition === 'top';
+                const posX = isTopToolbar ? e.clientX - 10 : 70;
+                const posY = isTopToolbar ? 40 : e.clientY - 10;
 
-              actions.showVertexMenu(selectedVertex, new Point(posX, posY), true);
-            }
-          },
-          disabled: !canExpandSelection,
-        }
+                actions.showVertexMenu(selectedVertex, new Point(posX, posY), true);
+              }
+            },
+            disabled: !canExpandSelection,
+            writeableOnly: true,
+          }]
+        ) : [])
       ],
       [
         {
@@ -258,50 +257,16 @@ export class Toolbar extends React.Component<IToolbarProps> {
           icon: "group-objects",
           onClick: () => this.onSetInteractionMode(modes.GROUPING_CREATE),
           disabled: !canGroupSelection,
+          writeableOnly: true,
         },
         {
           helpText: intl.formatMessage(messages.tooltip_ungroup),
           icon: "ungroup-objects",
           onClick: () => actions.ungroupSelection(),
           disabled: !canUngroupSelection,
+          writeableOnly: true,
         }
       ],
-      [
-        {
-          helpText: intl.formatMessage(messages.tooltip_layout_horizontal),
-          icon: "drag-handle-horizontal",
-          onClick: () => this.onPosition('alignHorizontal'),
-        },
-        {
-          helpText: intl.formatMessage(messages.tooltip_layout_vertical),
-          icon: "drag-handle-vertical",
-          onClick: () => this.onPosition('alignVertical'),
-        },
-        {
-          helpText: intl.formatMessage(messages.tooltip_layout_circle),
-          icon: "layout-circle",
-          onClick: () => this.onPosition('alignCircle'),
-        },
-        {
-          helpText: intl.formatMessage(messages.tooltip_layout_hierarchy),
-          icon: "layout-hierarchy",
-          onClick: () => this.onPosition('arrangeTree'),
-        },
-        {
-          helpText: intl.formatMessage(messages.tooltip_layout_auto),
-          icon: "layout",
-          onClick: () => this.onPosition('forceLayout'),
-        },
-        {
-          helpText: intl.formatMessage(messages.tooltip_layout_center),
-          icon: "layout-auto",
-          disabled: !hasSelection,
-          onClick: () => updateLayout(centerAround(layout), null, { modifyHistory:true }),
-        }
-      ],
-    ];
-
-    const otherButtons = [
       [
         {
           helpText: intl.formatMessage(messages.tooltip_select_mode),
@@ -332,11 +297,58 @@ export class Toolbar extends React.Component<IToolbarProps> {
       ],
       [
         {
+          helpText: intl.formatMessage(messages.tooltip_layouts),
+          icon: "layout",
+          writeableOnly: true,
+          subItems: [
+            {
+              helpText: intl.formatMessage(messages.tooltip_layout_horizontal),
+              icon: "layout-linear",
+              onClick: () => this.onPosition('alignHorizontal'),
+            },
+            {
+              helpText: intl.formatMessage(messages.tooltip_layout_vertical),
+              icon: "drag-handle-vertical",
+              onClick: () => this.onPosition('alignVertical'),
+            },
+            {
+              helpText: intl.formatMessage(messages.tooltip_layout_circle),
+              icon: "layout-circle",
+              onClick: () => this.onPosition('alignCircle'),
+            },
+            {
+              helpText: intl.formatMessage(messages.tooltip_layout_hierarchy),
+              icon: "layout-hierarchy",
+              onClick: () => this.onPosition('arrangeTree'),
+            },
+            {
+              helpText: intl.formatMessage(messages.tooltip_layout_auto),
+              icon: "layout",
+              onClick: () => this.onPosition('forceLayout'),
+            },
+            {
+              helpText: intl.formatMessage(messages.tooltip_layout_center),
+              icon: "layout-auto",
+              disabled: !hasSelection,
+              onClick: () => updateLayout(centerAround(layout), null, { modifyHistory:true }),
+            }
+          ]
+        }
+      ],
+      [
+        {
           helpText: intl.formatMessage(messages.tooltip_export_svg),
           icon: "media",
           onClick: () => actions.exportSvg(),
         }
-      ]
+      ],
+      [
+        {
+          helpText: intl.formatMessage(messages.tooltip_settings),
+          icon: "cog",
+          onClick: () => actions.toggleSettingsDialog(),
+        }
+      ],
     ];
 
     return <div className="Toolbar">
@@ -350,9 +362,9 @@ export class Toolbar extends React.Component<IToolbarProps> {
       )}
       <div className="Toolbar__main">
         <OverflowList
-          items={showEditingButtons ? [...editingButtons, ...otherButtons] : otherButtons}
+          items={showEditingButtons ? buttons : buttons.filter((b: any) => !b.writeableOnly)}
           collapseFrom={Boundary.END}
-          visibleItemRenderer={this.visibleItemRenderer}
+          visibleItemRenderer={(buttonGroup: IToolbarButtonGroup, i: number) => this.itemRenderer(buttonGroup, i, true)}
           overflowRenderer={this.overflowListRenderer}
           className="Toolbar__button-group-container"
           observeParents

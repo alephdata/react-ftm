@@ -11,7 +11,7 @@ import { Viewport } from './Viewport';
 import { IGraphContext, GraphContext } from './GraphContext'
 import { Sidebar, TableView, Toolbar, VertexMenu } from './components';
 import { History } from './History';
-import { EdgeCreateDialog, GroupingCreateDialog, VertexCreateDialog } from './dialogs';
+import { EdgeCreateDialog, GroupingCreateDialog, SettingsDialog, VertexCreateDialog } from './dialogs';
 import { filterVerticesByText, modes, showSuccessToast, showWarningToast } from './utils'
 
 
@@ -54,6 +54,7 @@ interface IVisGraphState {
   interactionMode: string
   searchText: string
   tableView: boolean
+  settingsDialogOpen: boolean
   vertexCreateOptions?: any
   vertexMenuSettings: any,
 }
@@ -80,6 +81,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
       tableView: false,
       searchText: externalFilterText || '',
       vertexMenuSettings: null,
+      settingsDialogOpen: false,
     };
 
     this.addVertex = this.addVertex.bind(this)
@@ -97,6 +99,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     this.updateViewport = this.updateViewport.bind(this);
     this.hideVertexMenu = this.hideVertexMenu.bind(this);
     this.showVertexMenu = this.showVertexMenu.bind(this);
+    this.toggleSettingsDialog = this.toggleSettingsDialog.bind(this);
     this.expandVertex = this.expandVertex.bind(this);
   }
 
@@ -244,9 +247,21 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   toggleTableView() {
-    this.setState({ tableView: !this.state.tableView })
+    this.setState(({ tableView }) => ({ tableView: !tableView }))
   }
 
+  toggleSettingsDialog(settings?: any) {
+    const { entityManager, layout } = this.props;
+
+    this.setState(({ settingsDialogOpen }) => ({ settingsDialogOpen: !settingsDialogOpen }));
+
+    if (settings) {
+      const { pivotTypes } = settings;
+      entityManager.setPivotTypes(pivotTypes);
+      layout.layout();
+      this.updateLayout(layout, null, { forceSaveUpdate: true });
+    }
+  }
   fitToSelection() {
     const {layout, viewport} = this.props
     const selection = layout.getSelectedVertices()
@@ -289,7 +304,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
 
   render() {
     const { config, entityManager, intl, layout, locale, viewport, writeable } = this.props;
-    const { animateTransition, interactionMode, searchText, tableView, vertexMenuSettings } = this.state;
+    const { animateTransition, interactionMode, searchText, settingsDialogOpen, tableView, vertexMenuSettings } = this.state;
     const vertices = layout.getSelectedVertices()
     const [sourceVertex, targetVertex] = vertices;
 
@@ -314,6 +329,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
       showVertexMenu: this.showVertexMenu,
       expandVertex: this.expandVertex,
       fitToSelection: this.fitToSelection,
+      toggleSettingsDialog: this.toggleSettingsDialog,
     };
 
     const showSidebar = layout.vertices && layout.vertices.size > 0 && !tableView;
@@ -399,6 +415,13 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
               actions={actions}
               hideMenu={this.hideVertexMenu}
               intl={intl}
+            />
+            <SettingsDialog
+              isOpen={settingsDialogOpen}
+              intl={intl}
+              pivotTypes={entityManager.pivotTypes}
+              model={entityManager.model}
+              toggleDialog={this.toggleSettingsDialog}
             />
           </>
         )}
