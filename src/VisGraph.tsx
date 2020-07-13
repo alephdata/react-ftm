@@ -6,7 +6,7 @@ import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { EntityManager } from './EntityManager';
 import { GraphConfig } from './GraphConfig';
 import { GraphRenderer } from './renderer/GraphRenderer'
-import { GraphLayout, Rectangle, Point, Vertex } from './layout';
+import { GraphLayout, Rectangle, Point, Settings, Vertex } from './layout';
 import { Viewport } from './Viewport';
 import { IGraphContext, GraphContext } from './GraphContext'
 import { Sidebar, TableView, Toolbar, VertexMenu } from './components';
@@ -256,9 +256,9 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     this.setState(({ settingsDialogOpen }) => ({ settingsDialogOpen: !settingsDialogOpen }));
 
     if (settings) {
-      const { pivotTypes } = settings;
-      entityManager.setPivotTypes(pivotTypes);
+      layout.settings = Settings.fromJSON(settings);
       layout.layout();
+      this.updateLayout(layout, {}, { modifyHistory: true });
     }
   }
   fitToSelection() {
@@ -418,7 +418,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
             <SettingsDialog
               isOpen={settingsDialogOpen}
               intl={intl}
-              pivotTypes={entityManager.pivotTypes}
+              settings={layout.settings}
               model={entityManager.model}
               toggleDialog={this.toggleSettingsDialog}
             />

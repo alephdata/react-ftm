@@ -8,6 +8,7 @@ import { Point } from './Point';
 import { Rectangle } from './Rectangle';
 import { forceLayout } from './';
 import { EntityManager } from '../EntityManager';
+import { Settings } from './Settings';
 import { GraphConfig } from '../GraphConfig';
 
 export interface IGraphLayoutData {
@@ -16,6 +17,7 @@ export interface IGraphLayoutData {
   edges: Array<any>
   groupings?: Array<any>
   selection?: Array<string>
+  settings: Settings
 }
 
 export type VertexPredicate = (vertex: Vertex) => boolean
@@ -30,6 +32,7 @@ export class GraphLayout {
   entities = new Map<string, Entity>()
   groupings = new Map<string, Grouping>()
   selection = new Array<string>()
+  settings = new Settings()
   private hasDraggedSelection = false
 
   constructor(config: GraphConfig, entityManager: EntityManager) {
@@ -103,7 +106,7 @@ export class GraphLayout {
 
         const properties = entity.getProperties()
         // removing properties which should not be represented as a vertex
-          .filter(property => this.entityManager.hasPivotType(property.type.name));
+          .filter(property => this.settings.hasPivotType(property.type.name));
 
         properties.forEach((prop) => {
           entity.getProperty(prop).forEach((value) => {
@@ -477,7 +480,8 @@ export class GraphLayout {
       vertices: this.getVertices().map((vertex) => vertex.toJSON()),
       edges: this.getEdges().map((edge) => edge.toJSON()),
       groupings: this.getGroupings().map((grouping) => grouping.toJSON()),
-      selection: this.selection
+      selection: this.selection,
+      settings: this.settings.toJSON(),
     }
   }
 
@@ -498,6 +502,7 @@ export class GraphLayout {
       const edge = Edge.fromJSON(layout, edata)
       layout.edges.set(edge.id, edge)
     })
+    layout.settings = Settings.fromJSON(layoutData.settings);
 
     layout.layout()
 

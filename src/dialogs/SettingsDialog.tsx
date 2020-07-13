@@ -6,8 +6,7 @@ import { Intent, FormGroup, ControlGroup, InputGroup, Colors, Checkbox, Dialog, 
 
 import { GraphContext, IGraphContext } from '../GraphContext'
 import { ColorPicker } from '../editors';
-
-import { Point, Grouping } from '../layout'
+import { Point, Grouping, Settings } from '../layout'
 
 import './SettingsDialog.scss';
 
@@ -32,9 +31,9 @@ const messages = defineMessages({
 
 interface ISettingsDialogProps extends WrappedComponentProps {
   isOpen: boolean
-  toggleDialog: (submitVals?: any) => void
+  toggleDialog: () => void
   model: Model
-  pivotTypes: Array<string>
+  settings: Settings
 }
 
 interface ISettingsDialogState {
@@ -42,19 +41,10 @@ interface ISettingsDialogState {
 }
 
 export class SettingsDialog extends React.Component<ISettingsDialogProps, ISettingsDialogState> {
-  constructor(props: any) {
-    super(props);
+  constructor(props: ISettingsDialogProps) {
+    this.state = { pivotTypes: props.settings.pivotTypes };
 
-    this.state = { pivotTypes: props.pivotTypes };
-    this.renderPivotType = this.renderPivotType.bind(this);
     this.togglePivotType = this.togglePivotType.bind(this);
-  }
-
-  componentDidUpdate(prevProps: ISettingsDialogProps) {
-    const { pivotTypes } = this.props;
-    if (prevProps.pivotTypes !== pivotTypes) {
-      this.setState({ pivotTypes });
-    }
   }
 
   togglePivotType(type: string) {
@@ -70,8 +60,9 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
     });
   }
 
-  renderPivotType(type: PropertyType) {
-    const { isOpen, toggleDialog } = this.props;
+
+  renderPivotType = (type: PropertyType) => {
+    const { isOpen, settings } = this.props;
     const { pivotTypes } = this.state;
 
     const isSelected = pivotTypes.includes(type.name);
