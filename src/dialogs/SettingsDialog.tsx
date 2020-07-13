@@ -6,7 +6,7 @@ import { Intent, FormGroup, ControlGroup, InputGroup, Colors, Checkbox, Dialog, 
 
 import { GraphContext, IGraphContext } from '../GraphContext'
 import { ColorPicker } from '../editors';
-import { Point, Grouping, Settings } from '../layout'
+import { Point, Grouping, ISettingsData, Settings } from '../layout'
 
 import './SettingsDialog.scss';
 
@@ -31,7 +31,7 @@ const messages = defineMessages({
 
 interface ISettingsDialogProps extends WrappedComponentProps {
   isOpen: boolean
-  toggleDialog: () => void
+  toggleDialog: (settings?: ISettingsData) => void
   model: Model
   settings: Settings
 }
@@ -43,7 +43,7 @@ interface ISettingsDialogState {
 export class SettingsDialog extends React.Component<ISettingsDialogProps, ISettingsDialogState> {
   constructor(props: ISettingsDialogProps) {
     super(props);
-    
+
     this.state = { pivotTypes: props.settings.pivotTypes };
 
     this.togglePivotType = this.togglePivotType.bind(this);
