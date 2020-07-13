@@ -41,6 +41,7 @@ export class ToolbarButtonGroup extends React.PureComponent<IToolbarButtonGroupP
           if (subItems) {
             return (
               <Popover
+                key={icon}
                 content={<Menu>{this.renderHidden(subItems)}</Menu>}
                 position="bottom"
                 popoverClassName={c("Toolbar__menu", `theme-${editorTheme}`)}
