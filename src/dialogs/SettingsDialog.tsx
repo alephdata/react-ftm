@@ -42,6 +42,8 @@ interface ISettingsDialogState {
 
 export class SettingsDialog extends React.Component<ISettingsDialogProps, ISettingsDialogState> {
   constructor(props: ISettingsDialogProps) {
+    super(props);
+    
     this.state = { pivotTypes: props.settings.pivotTypes };
 
     this.togglePivotType = this.togglePivotType.bind(this);

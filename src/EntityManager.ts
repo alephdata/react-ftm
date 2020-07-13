@@ -28,7 +28,7 @@ export class EntityManager {
 
   constructor(props?: IEntityManagerProps) {
     if (props) {
-      const { model, namespace, pivotTypes, ...rest } = props;
+      const { model, namespace, ...rest } = props;
       this.model = model || new Model(defaultModel)
       this.namespace = namespace
       this.overload = rest;

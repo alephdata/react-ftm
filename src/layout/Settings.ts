@@ -1,12 +1,12 @@
 
-export interface ISettingsProps {
+export interface ISettingsData {
   pivotTypes: Array<string>
 }
 
 export class Settings {
   public pivotTypes: Array<string>
 
-  constructor(props?: ISettingsProps) {
+  constructor(props?: ISettingsData) {
     this.pivotTypes = props?.pivotTypes || ['entity']
   }
 
@@ -20,7 +20,7 @@ export class Settings {
     })
   }
 
-  static fromJSON(props: ISettingsProps): Settings {
-    return new Settings(props);
+  static fromJSON(data: ISettingsData): Settings {
+    return new Settings(data);
   }
 }

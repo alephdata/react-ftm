@@ -8,7 +8,7 @@ import { Point } from './Point';
 import { Rectangle } from './Rectangle';
 import { forceLayout } from './';
 import { EntityManager } from '../EntityManager';
-import { Settings } from './Settings';
+import { ISettingsData, Settings } from './Settings';
 import { GraphConfig } from '../GraphConfig';
 
 export interface IGraphLayoutData {
@@ -17,7 +17,7 @@ export interface IGraphLayoutData {
   edges: Array<any>
   groupings?: Array<any>
   selection?: Array<string>
-  settings: Settings
+  settings: ISettingsData
 }
 
 export type VertexPredicate = (vertex: Vertex) => boolean
