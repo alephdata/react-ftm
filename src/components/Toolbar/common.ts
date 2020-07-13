@@ -3,7 +3,7 @@ export interface IToolbarButton {
   helpText: string
   disabled?: boolean
   writeableOnly?: boolean
-  onClick?: () => void
+  onClick?: (e?: any) => void
   subItems?: Array<IToolbarButton>
 }
 

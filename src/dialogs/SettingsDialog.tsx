@@ -6,7 +6,6 @@ import { Intent, FormGroup, ControlGroup, InputGroup, Colors, Checkbox, Dialog, 
 
 import { GraphContext, IGraphContext } from '../GraphContext'
 import { ColorPicker } from '../editors';
-import { EntityManager } from '../EntityManager';
 
 import { Point, Grouping } from '../layout'
 
@@ -46,7 +45,7 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
   constructor(props: any) {
     super(props);
 
-    this.state = { pivotTypes: [] };
+    this.state = { pivotTypes: props.pivotTypes };
     this.renderPivotType = this.renderPivotType.bind(this);
     this.togglePivotType = this.togglePivotType.bind(this);
   }
@@ -78,6 +77,7 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
     const isSelected = pivotTypes.includes(type.name);
     return (
       <Checkbox
+        key={type.name}
         checked={isSelected}
         label={type.label}
         onChange={() => this.togglePivotType(type.name)}

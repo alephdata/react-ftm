@@ -259,7 +259,6 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
       const { pivotTypes } = settings;
       entityManager.setPivotTypes(pivotTypes);
       layout.layout();
-      this.updateLayout(layout, null, { forceSaveUpdate: true });
     }
   }
   fitToSelection() {
