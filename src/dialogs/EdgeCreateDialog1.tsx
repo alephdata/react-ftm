@@ -1,14 +1,12 @@
 import * as React from 'react'
-import { defineMessages, WrappedComponentProps } from 'react-intl';
+import { defineMessages } from 'react-intl';
 import _ from 'lodash';
 import { Menu, MenuItem, FormGroup, Icon, Intent, Button, Alignment, Position } from '@blueprintjs/core'
 import { Select, IItemListRendererProps, IItemRendererProps } from '@blueprintjs/select';
-import { Entity } from '@alephdata/followthemoney'
-
-import { EntitySelect } from '../editors'
-import { EdgeType } from '../components'
 import { IGraphContext } from '../GraphContext'
-import { EntityManager } from '../EntityManager'
+import { EdgeType } from '../components'
+import { VertexSelect } from '../editors'
+import { Vertex,Edge } from '../layout';
 import { Schema } from '../types';
 
 import Dialog from './Dialog';
@@ -42,19 +40,16 @@ const messages = defineMessages({
 
 const EdgeTypeSelect = Select.ofType<EdgeType>();
 
-interface IEdgeCreateDialogProps extends WrappedComponentProps {
-  source: Entity
-  target?: Entity
+interface IEdgeCreateDialogProps extends IGraphContext {
+  source: Vertex
+  target?: Vertex
   isOpen: boolean,
   toggleDialog: () => any
-  entityManager: EntityManager
 }
 
 interface IEdgeCreateDialogState {
-  source?: Entity
-  target?: Entity
-  sourceSuggestions: any
-  targetSuggestions: any
+  source?: Vertex
+  target?: Vertex
   type?: EdgeType
   isProcessing: boolean
 }
@@ -63,8 +58,6 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   types: EdgeType[] = []
   state: IEdgeCreateDialogState = {
     isProcessing: false,
-    sourceSuggestions: { isPending: false, results: [] },
-    targetSuggestions: { isPending: false, results: [] },
   }
 
   constructor(props: any) {
@@ -79,9 +72,9 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
 
 
   componentDidMount() {
-    const { entityManager, source, target } = this.props
+    const { layout, source, target } = this.props
     this.setState({ source, target })
-    this.types = EdgeType.getAll(entityManager.model)
+    this.types = EdgeType.getAll(layout.entityManager.model)
   }
 
   componentDidUpdate(prevProps: IEdgeCreateDialogProps) {
@@ -101,11 +94,11 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     }
   }
 
-  onSelectSource(source: Entity) {
+  onSelectSource(source: Vertex) {
     this.setState({ source, type: undefined })
   }
 
-  onSelectTarget(target: Entity) {
+  onSelectTarget(target: Vertex) {
     this.setState({ target, type: undefined })
   }
 
@@ -115,11 +108,39 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   }
 
   async onSubmit(e: React.ChangeEvent<HTMLFormElement>) {
-    const { onSubmit } = this.props
+    const { layout, viewport, updateLayout, updateViewport, toggleDialog } = this.props
     const { source, target, type } = this.state
+    const entityChanges: any = {} ;
     e.preventDefault()
     if (source && target && type && this.isValid()) {
-      onSubmit({ source, target, type});
+      this.setState({ isProcessing: true });
+      const sourceEntity = source.getEntity()
+      const targetEntity = target.getEntity()
+      if (type.property && sourceEntity) {
+        const value = targetEntity || target.label
+        sourceEntity.setProperty(type.property, value)
+        layout.updateEntity(sourceEntity);
+        entityChanges.updated = [sourceEntity]
+        const edge = Edge.fromValue(layout, type.property, source, target)
+        layout.selectElement(edge)
+        updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
+      }
+      if (type.schema && type.schema.edge && sourceEntity && targetEntity) {
+        const entity = layout.createEntity({
+          schema: type.schema,
+          properties: {
+            [type.schema.edge.source]: sourceEntity.id,
+            [type.schema.edge.target]: targetEntity.id,
+          }
+        });
+        layout.addEntities([entity]);
+        const edge = Edge.fromEntity(layout, entity, source, target)
+        layout.selectElement(edge)
+        entityChanges.created = [entity];
+      }
+      updateLayout(layout, entityChanges, { modifyHistory: true, clearSearch: true });
+      this.setState({ isProcessing: false });
+      toggleDialog()
     }
   }
 
@@ -143,16 +164,16 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     return []
   }
 
-  // getVertices(include?: Vertex, except?: Vertex): Vertex[] {
-  //   const { layout } = this.props
-  //   return layout.getVertices()
-  //     .filter((vertex) => {
-  //       const isInclude = include ? include.id === vertex.id : false
-  //       const isExcept = except ? except.id === vertex.id : false
-  //       return vertex.isEntity() && (isInclude || !(isExcept || vertex.isHidden()));
-  //     })
-  //     .sort((a, b) => a.label.localeCompare(b.label))
-  // }
+  getVertices(include?: Vertex, except?: Vertex): Vertex[] {
+    const { layout } = this.props
+    return layout.getVertices()
+      .filter((vertex) => {
+        const isInclude = include ? include.id === vertex.id : false
+        const isExcept = except ? except.id === vertex.id : false
+        return vertex.isEntity() && (isInclude || !(isExcept || vertex.isHidden()));
+      })
+      .sort((a, b) => a.label.localeCompare(b.label))
+  }
 
   getSourceLabel(): string | undefined {
     const { type } = this.state
@@ -223,18 +244,9 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     />
   }
 
-  async fetchEntitySuggestions(query: string, which?: string) {
-    const stateKey = `${which}Suggestions`;
-
-    const { entityManager } = this.props;
-    this.setState({ [stateKey]: { isProcessing: true } });
-    const results = await entityManager.getEntitySuggestions(query);
-    this.setState({ [stateKey]: { isProcessing: false, results } });
-  }
-
   render() {
     const { intl, isOpen, toggleDialog } = this.props
-    const { isProcessing, source, target, type, sourceSuggestions, targetSuggestions } = this.state
+    const { isProcessing, source, target, type } = this.state
     const types = this.getTypes()
 
     return (
@@ -251,14 +263,10 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
             <div style={{flex: 1, display: 'flex', flexFlow: 'row'}}>
               <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
                 <FormGroup label={intl.formatMessage(messages.source)} helperText={this.getSourceLabel()}>
-                  <EntitySelect
-                    onSubmit={this.onSelectSource}
-                    onChange={this.onSelectSource}
-                    values={[source]}
-                    allowMultiple={false}
-                    isFetching={sourceSuggestions.isPending}
-                    entitySuggestions={sourceSuggestions.results}
-                    onQueryChange={(query) => this.fetchEntitySuggestions(query, 'source')}
+                  <VertexSelect
+                    vertices={this.getVertices(source, target)}
+                    vertex={source}
+                    onSelect={this.onSelectSource}
                   />
                 </FormGroup>
               </div>
@@ -288,14 +296,10 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
               </div>
               <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
                 <FormGroup label={intl.formatMessage(messages.target)} helperText={this.getTargetLabel()}>
-                  <EntitySelect
-                    onSubmit={this.onSelectTarget}
-                    onChange={this.onSelectTarget}
-                    values={[target]}
-                    allowMultiple={false}
-                    isFetching={targetSuggestions.isPending}
-                    entitySuggestions={targetSuggestions.results}
-                    onQueryChange={(query) => this.fetchEntitySuggestions(query, 'target')}
+                  <VertexSelect
+                    vertices={this.getVertices(target, source)}
+                    vertex={target}
+                    onSelect={this.onSelectTarget}
                   />
                 </FormGroup>
               </div>

@@ -189,6 +189,35 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     })
   }
 
+  onEdgeCreate({ source, target, type}) {
+    const { layout, viewport } = this.props;
+    const entityChanges: any = {};
+    if (type.property && source) {
+      const value = target || target.getCaption()
+      source.setProperty(type.property, value)
+      layout.updateEntity(source);
+      entityChanges.updated = [source]
+      const edge = Edge.fromValue(layout, type.property, source, target)
+      layout.selectElement(edge)
+      updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
+    }
+    if (type.schema && type.schema.edge && source && target) {
+      const entity = layout.createEntity({
+        schema: type.schema,
+        properties: {
+          [type.schema.edge.source]: source.id,
+          [type.schema.edge.target]: targetEntity.id,
+        }
+      });
+      layout.addEntities([entity]);
+      const edge = Edge.fromEntity(layout, entity, source, target)
+      layout.selectElement(edge)
+      entityChanges.created = [entity];
+    }
+    updateLayout(layout, entityChanges, { modifyHistory: true, clearSearch: true });
+    this.setInteractionMode();
+  }
+
   async showVertexMenu(vertex: Vertex, position: Point, onlyShowExpand: boolean = false) {
     const { entityManager } = this.props;
     const menuSettings = { vertex, position, anchor: 'top', onlyShowExpand };
@@ -304,8 +333,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
   render() {
     const { config, entityManager, intl, layout, locale, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, settingsDialogOpen, tableView, vertexMenuSettings } = this.state;
-    const vertices = layout.getSelectedVertices()
-    const [sourceVertex, targetVertex] = vertices;
+    const [sourceEntity, targetEntity] = layout.getSelectedEntities();
 
     const layoutContext = {
       layout: layout,
@@ -402,11 +430,13 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
               toggleDialog={this.setInteractionMode} />
 
             <EdgeCreateDialog
-              source={sourceVertex}
-              target={targetVertex}
+              source={sourceEntity}
+              target={targetEntity}
               isOpen={interactionMode === modes.EDGE_CREATE}
               toggleDialog={this.setInteractionMode}
-              {...layoutContext}
+              onSubmit={this.onEdgeCreate}
+              entityManager={entityManager}
+              intl={intl}
             />
             <VertexMenu
               isOpen={vertexMenuSettings !== null && interactionMode !== modes.EDGE_DRAW}

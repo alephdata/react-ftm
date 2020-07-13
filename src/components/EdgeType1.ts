@@ -1,4 +1,5 @@
-import { Entity, Model, Schema, Property } from '@alephdata/followthemoney'
+import { Model, Schema, Property } from '@alephdata/followthemoney'
+import { Vertex } from '../layout/Vertex'
 
 
 export class EdgeType {
@@ -14,24 +15,27 @@ export class EdgeType {
     this.key = ((schema && schema.name) || (property && property.qname)) as string
   }
 
-  match(source: Entity, target: Entity): boolean {
-    if (!source) {
+  match(source: Vertex, target: Vertex): boolean {
+    const sourceEntity = source.getEntity()
+    const targetEntity = target.getEntity()
+    if (!sourceEntity) {
       return false
     }
-    if (this.property && source.schema.hasProperty(this.property)) {
+    if (this.property && sourceEntity.schema.hasProperty(this.property)) {
       if (target.type === this.property.type.name) {
-        if (!target) {
+        const targetEntity = target.getEntity()
+        if (!targetEntity) {
           return true
         }
-        return target.schema.isA(this.property.getRange())
+        return targetEntity.schema.isA(this.property.getRange())
       }
 
     }
-    if (this.schema && this.schema.edge && target) {
+    if (this.schema && this.schema.edge && targetEntity) {
       const sourceProperty = this.schema.getProperty(this.schema.edge.source)
       const targetProperty = this.schema.getProperty(this.schema.edge.target)
-      if (source.schema.isA(sourceProperty.getRange())) {
-        if (target.schema.isA(targetProperty.getRange())) {
+      if (sourceEntity.schema.isA(sourceProperty.getRange())) {
+        if (targetEntity.schema.isA(targetProperty.getRange())) {
           return true
         }
       }
