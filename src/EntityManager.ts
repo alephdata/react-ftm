@@ -24,6 +24,7 @@ export class EntityManager {
   public readonly model: Model
   public readonly namespace?: Namespace
   public readonly hasExpand: boolean = false
+  public readonly hasSuggest: boolean = false
   private overload: any = {}
 
   constructor(props?: IEntityManagerProps) {
@@ -33,6 +34,7 @@ export class EntityManager {
       this.namespace = namespace
       this.overload = rest;
       this.hasExpand = this.overload.expandEntity !== undefined;
+      this.hasSuggest = this.overload.getEntitySuggestions !== undefined;
     } else {
       this.model = new Model(defaultModel);
     }

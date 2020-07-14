@@ -6,7 +6,7 @@ import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { EntityManager } from './EntityManager';
 import { GraphConfig } from './GraphConfig';
 import { GraphRenderer } from './renderer/GraphRenderer'
-import { GraphLayout, Rectangle, Point, Settings, Vertex } from './layout';
+import { Edge, GraphLayout, Rectangle, Point, Settings, Vertex } from './layout';
 import { Viewport } from './Viewport';
 import { IGraphContext, GraphContext } from './GraphContext'
 import { Sidebar, TableView, Toolbar, VertexMenu } from './components';
@@ -101,6 +101,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     this.showVertexMenu = this.showVertexMenu.bind(this);
     this.toggleSettingsDialog = this.toggleSettingsDialog.bind(this);
     this.expandVertex = this.expandVertex.bind(this);
+    this.onEdgeCreate = this.onEdgeCreate.bind(this);
   }
 
   componentDidMount() {
@@ -189,15 +190,19 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     })
   }
 
-  onEdgeCreate({ source, target, type}) {
-    const { layout, viewport } = this.props;
+  onEdgeCreate({ source, target, type }) {
+    console.log('in on edge create', source, target, type);
+    const { layout, viewport, updateLayout, updateViewport } = this.props;
+    const sourceVertex = layout.getVertexByEntity(source);
+    const targetVertex = layout.getVertexByEntity(target);
+
     const entityChanges: any = {};
     if (type.property && source) {
-      const value = target || target.getCaption()
+      const value = target || target.getCaption();
       source.setProperty(type.property, value)
       layout.updateEntity(source);
       entityChanges.updated = [source]
-      const edge = Edge.fromValue(layout, type.property, source, target)
+      const edge = Edge.fromValue(layout, type.property, sourceVertex, targetVertex)
       layout.selectElement(edge)
       updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
     }
@@ -206,11 +211,11 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
         schema: type.schema,
         properties: {
           [type.schema.edge.source]: source.id,
-          [type.schema.edge.target]: targetEntity.id,
+          [type.schema.edge.target]: target.id,
         }
       });
       layout.addEntities([entity]);
-      const edge = Edge.fromEntity(layout, entity, source, target)
+      const edge = Edge.fromEntity(layout, entity, sourceVertex, targetVertex)
       layout.selectElement(edge)
       entityChanges.created = [entity];
     }

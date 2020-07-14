@@ -87,16 +87,12 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
 
   async fetchSuggestions(query: string, schemata: Array<FTMSchema>) {
     const { layout } = this.context as IGraphContext
+    const { entityManager } = this.props;
 
-    if (query.length === 0) {
-      this.setState({ suggestions: [] });
-    } else {
-      const { entityManager } = this.props;
-      this.setState({ isFetchingSuggestions: true });
-      const suggestions = await entityManager.getEntitySuggestions(query, schemata);
-      const filteredSuggestions = suggestions.filter((entity: FTMEntity) => !layout.hasEntity(entity));
-      this.setState({ isFetchingSuggestions: false, suggestions: filteredSuggestions });
-    }
+    this.setState({ isFetchingSuggestions: true });
+    const suggestions = await entityManager.getEntitySuggestions(query, schemata);
+    const filteredSuggestions = suggestions.filter((entity: FTMEntity) => !layout.hasEntity(entity));
+    this.setState({ isFetchingSuggestions: false, suggestions: filteredSuggestions });
   }
 
   getSchema(): FTMSchema {
@@ -147,7 +143,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
 
   render() {
     const { intl, layout } = this.context as IGraphContext
-    const { isOpen, toggleDialog } = this.props;
+    const { entityManager, isOpen, toggleDialog } = this.props;
     const { isFetchingSuggestions, isProcessing, query, suggestions } = this.state;
     const schema = this.getSchema()
     const placeholder = intl.formatMessage(messages.name_placeholder, { schema: schema.label });

@@ -9,7 +9,6 @@ import { Classes, Icon } from "@blueprintjs/core";
 import { Entity, IEntityDatum, Schema, Property as FTMProperty } from "@alephdata/followthemoney";
 import { Property } from '../types';
 import { SortType } from './SortType';
-import { matchText } from "../utils";
 
 import c from 'classnames';
 

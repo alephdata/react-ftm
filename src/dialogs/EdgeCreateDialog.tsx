@@ -255,9 +255,9 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
               <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
                 <FormGroup label={intl.formatMessage(messages.source)} helperText={this.getSourceLabel()}>
                   <EntitySelect
-                    onSubmit={this.onSelectSource}
-                    onChange={this.onSelectSource}
-                    values={[source]}
+                    onSubmit={(selected: Array<Entity>) => this.onSelectSource(selected?.[0])}
+                    onChange={(selected: Array<Entity>) => this.onSelectSource(selected?.[0])}
+                    values={source ? [source] : []}
                     allowMultiple={false}
                     isFetching={sourceSuggestions.isPending}
                     entitySuggestions={sourceSuggestions.results}
@@ -292,9 +292,9 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
               <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
                 <FormGroup label={intl.formatMessage(messages.target)} helperText={this.getTargetLabel()}>
                   <EntitySelect
-                    onSubmit={this.onSelectTarget}
-                    onChange={this.onSelectTarget}
-                    values={[target]}
+                    onSubmit={(selected: Array<Entity>) => this.onSelectTarget(selected?.[0])}
+                    onChange={(selected: Array<Entity>) => this.onSelectTarget(selected?.[0])}
+                    values={target ? [target] : []}
                     allowMultiple={false}
                     isFetching={targetSuggestions.isPending}
                     entitySuggestions={targetSuggestions.results}

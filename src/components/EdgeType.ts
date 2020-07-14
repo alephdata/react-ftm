@@ -15,6 +15,7 @@ export class EdgeType {
   }
 
   match(source: Entity, target: Entity): boolean {
+    // console.log('in edgetype', source, target);
     if (!source) {
       return false
     }

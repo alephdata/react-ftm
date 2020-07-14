@@ -106,8 +106,6 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
       ? <Entity.Label entity={values[0]} icon />
       : (buttonProps?.placeholder || intl.formatMessage(messages.placeholder));
 
-    console.log('entity suggestions', entitySuggestions);
-
     const filteredSuggestions = entitySuggestions.filter(e => (!values.find(val => val.id === e.id )))
     return <ControlGroup className="EntitySelect" vertical fill>
         {!allowMultiple && (
