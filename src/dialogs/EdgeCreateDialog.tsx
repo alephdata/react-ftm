@@ -102,11 +102,19 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   }
 
   onSelectSource(source: Entity) {
-    this.setState({ source, type: undefined })
+    this.setState(({ target }) => ({
+      source,
+      target: target.id === source.id ? undefined : target,
+      type: undefined
+    }))
   }
 
   onSelectTarget(target: Entity) {
-    this.setState({ target, type: undefined })
+    this.setState(({ source }) => ({
+      target,
+      source: source.id === target.id ? undefined : source,
+      type: undefined
+    }))
   }
 
   isValid() {
@@ -213,7 +221,8 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     />
   }
 
-  async fetchEntitySuggestions(query: string, which?: string) {
+  async fetchEntitySuggestions(query: string, which: string) {
+    const { source, target } = this.state;
     const stateKey = `${which}Suggestions`;
 
     console.log('fetching', query, which);
@@ -221,7 +230,6 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     const { entityManager } = this.props;
     this.setState({ [stateKey]: { isProcessing: true, results: [] } });
     const results = await entityManager.getEntitySuggestions(query, ['Thing']);
-    console.log('results', which, results);
     this.setState({ [stateKey]: { isProcessing: false, results } });
   }
 
