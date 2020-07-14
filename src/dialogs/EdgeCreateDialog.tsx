@@ -220,7 +220,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
 
     const { entityManager } = this.props;
     this.setState({ [stateKey]: { isProcessing: true, results: [] } });
-    const results = await entityManager.getEntitySuggestions(query);
+    const results = await entityManager.getEntitySuggestions(query, ['Thing']);
     console.log('results', which, results);
     this.setState({ [stateKey]: { isProcessing: false, results } });
   }
