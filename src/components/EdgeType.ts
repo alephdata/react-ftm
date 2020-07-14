@@ -15,18 +15,11 @@ export class EdgeType {
   }
 
   match(source: Entity, target: Entity): boolean {
-    // console.log('in edgetype', source, target);
     if (!source) {
       return false
     }
     if (this.property && source.schema.hasProperty(this.property)) {
-      if (target.type === this.property.type.name) {
-        if (!target) {
-          return true
-        }
-        return target.schema.isA(this.property.getRange())
-      }
-
+      return target.schema.isA(this.property.getRange());
     }
     if (this.schema && this.schema.edge && target) {
       const sourceProperty = this.schema.getProperty(this.schema.edge.source)
@@ -50,7 +43,7 @@ export class EdgeType {
       types.push(new EdgeType(schema))
     })
     model.getProperties().forEach((prop) => {
-      if (prop.type.grouped && !prop.stub) {
+      if (prop.type.grouped && !prop.stub && prop.hasRange) {
         types.push(new EdgeType(undefined, prop))
       }
     })

@@ -137,22 +137,12 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
 
   getTypes(): EdgeType[] {
     const { source, target } = this.state
+
     if (source && target) {
       return this.types.filter((et) => et.match(source, target) || et.match(target, source))
     }
     return []
   }
-
-  // getVertices(include?: Vertex, except?: Vertex): Vertex[] {
-  //   const { layout } = this.props
-  //   return layout.getVertices()
-  //     .filter((vertex) => {
-  //       const isInclude = include ? include.id === vertex.id : false
-  //       const isExcept = except ? except.id === vertex.id : false
-  //       return vertex.isEntity() && (isInclude || !(isExcept || vertex.isHidden()));
-  //     })
-  //     .sort((a, b) => a.label.localeCompare(b.label))
-  // }
 
   getSourceLabel(): string | undefined {
     const { type } = this.state
