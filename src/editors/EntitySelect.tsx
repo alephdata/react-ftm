@@ -49,7 +49,6 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
   }
 
   componentDidMount() {
-    console.log('mounting entity select');
     this.inputRef && this.inputRef.focus();
     this.onQueryChange('');
   }

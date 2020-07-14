@@ -191,8 +191,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   onEdgeCreate({ source, target, type }) {
-    console.log('in on edge create', source, target, type);
-    const { layout, viewport, updateLayout, updateViewport } = this.props;
+    const { layout, viewport } = this.props;
     const sourceVertex = layout.getVertexByEntity(source);
     const targetVertex = layout.getVertexByEntity(target);
 
@@ -204,7 +203,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
       entityChanges.updated = [source]
       const edge = Edge.fromValue(layout, type.property, sourceVertex, targetVertex)
       layout.selectElement(edge)
-      updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
+      this.updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
     }
     if (type.schema && type.schema.edge && source && target) {
       const entity = layout.createEntity({
@@ -219,7 +218,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
       layout.selectElement(edge)
       entityChanges.created = [entity];
     }
-    updateLayout(layout, entityChanges, { modifyHistory: true, clearSearch: true });
+    this.updateLayout(layout, entityChanges, { modifyHistory: true, clearSearch: true });
     this.setInteractionMode();
   }
 
