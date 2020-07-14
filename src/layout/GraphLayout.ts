@@ -1,4 +1,4 @@
-import { Entity, IEntityDatum } from '@alephdata/followthemoney'
+import { Entity, IEntityDatum, Schema } from '@alephdata/followthemoney'
 import { forceSimulation, forceLink, forceCollide } from 'd3-force';
 import { DraggableEvent } from 'react-draggable';
 import { Vertex } from './Vertex'
@@ -10,6 +10,7 @@ import { forceLayout } from './';
 import { EntityManager } from '../EntityManager';
 import { ISettingsData, Settings } from './Settings';
 import { GraphConfig } from '../GraphConfig';
+import { matchText } from "../utils";
 
 export interface IGraphLayoutData {
   entities: Array<IEntityDatum>
@@ -44,6 +45,7 @@ export class GraphLayout {
     this.addEntities = this.addEntities.bind(this);
     this.createEntity = this.createEntity.bind(this);
     this.removeEntity = this.removeEntity.bind(this);
+    this.getEntitySuggestions = this.getEntitySuggestions.bind(this);
     this.isGroupingSelected = this.isGroupingSelected.bind(this);
   }
 
@@ -229,6 +231,21 @@ export class GraphLayout {
     return this.getRelatedEntities(
       ...this.getSelectedVertices(), ...this.getSelectedEdges()
     )
+  }
+
+  getEntitySuggestions(query: string, schemata?: Array<Schema>): Promise<Entity[]> {
+    console.log('in getEntitySuggestions', this);
+    const predicate = (e) => {
+      const schemaMatch = !schemata || e.schema.isAny(schemata);
+      const textMatch = matchText(e.getCaption() || '', query);
+      return schemaMatch && textMatch;
+    }
+
+    const entities = this.getEntities()
+      .filter(predicate)
+      .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
+
+    return new Promise((resolve) => resolve(entities));
   }
 
   getSelectedGroupings(): Grouping[] {

@@ -435,7 +435,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
               isOpen={interactionMode === modes.EDGE_CREATE}
               toggleDialog={this.setInteractionMode}
               onSubmit={this.onEdgeCreate}
-              entityManager={entityManager}
+              entityManager={entityManager.set('getEntitySuggestions', layout.getEntitySuggestions)}
               intl={intl}
             />
             <VertexMenu

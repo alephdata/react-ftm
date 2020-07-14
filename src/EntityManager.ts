@@ -24,7 +24,7 @@ export class EntityManager {
   public readonly model: Model
   public readonly namespace?: Namespace
   public readonly hasExpand: boolean = false
-  private overload: any
+  private overload: any = {}
 
   constructor(props?: IEntityManagerProps) {
     if (props) {
@@ -107,5 +107,11 @@ export class EntityManager {
     created && created.forEach((entity: Entity) => factor > 0 ? this.updateEntity(entity) : this.deleteEntity(entity.id));
     updated && updated.forEach((entity: Entity) => this.updateEntity(entity));
     deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntity(entity.id) : this.updateEntity(entity));
+  }
+
+  set(key, value) {
+    this.overload[key] = value;
+
+    return this;
   }
 }

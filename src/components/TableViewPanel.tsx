@@ -42,7 +42,7 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
       model: props.layout.entityManager.model,
       createEntity: this.onEntityCreate.bind(this),
       updateEntity: this.onEntityUpdate.bind(this),
-      getEntitySuggestions: this.fetchEntitySuggestions.bind(this),
+      getEntitySuggestions: props.layout.getEntitySuggestions.bind(this),
       resolveEntityReference: this.resolveEntityReference.bind(this),
     });
 
@@ -132,20 +132,6 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
       updateLayout(layout, this.batchedChanges, { modifyHistory: true });
       this.batchedChanges = {};
     }
-  }
-
-  fetchEntitySuggestions(query: string, schemata?: Array<Schema>): Promise<Entity[]> {
-    const { layout } = this.props;
-
-    const entities = layout.getEntities()
-      .filter(e => {
-        const schemaMatch = !schemata || e.schema.isAny(schemata);
-        const textMatch = matchText(e.getCaption() || '', query);
-        return schemaMatch && textMatch;
-      })
-      .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
-
-    return new Promise((resolve) => resolve(entities));
   }
 
   resolveEntityReference(entityId: string): Entity | undefined {
