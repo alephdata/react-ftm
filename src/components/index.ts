@@ -6,7 +6,6 @@ const TableEditor = withTranslator(TableEditorBase);
 
 export { TableEditor }
 
-export * from './EdgeType'
 export * from './EntityList'
 export * from './EntityViewer'
 export * from './GroupingViewer'

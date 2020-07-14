@@ -2,6 +2,7 @@ import { withTranslator } from '../Translator';
 
 import CountBase from './Count';
 import Date from './Date';
+import EdgeType from './EdgeType';
 import Entity from './Entity';
 import EnumValue from './EnumValue';
 import FileSize from './FileSize';
@@ -16,6 +17,7 @@ const Numeric = withTranslator(NumericBase);
 export {
   Count,
   Date,
+  EdgeType,
   Entity,
   EnumValue as Country,
   EnumValue as Language,

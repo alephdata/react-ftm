@@ -1,15 +1,12 @@
 import * as React from 'react'
 import { defineMessages, WrappedComponentProps } from 'react-intl';
-import _ from 'lodash';
-import { Menu, MenuItem, FormGroup, Icon, Intent, Button, Alignment, Position } from '@blueprintjs/core'
-import { Select, IItemListRendererProps, IItemRendererProps } from '@blueprintjs/select';
+import { FormGroup, Intent, Button } from '@blueprintjs/core'
 import { Entity } from '@alephdata/followthemoney'
 
-import { EntitySelect } from '../editors'
-import { EdgeType } from '../components'
+import { EdgeTypeSelect, EntitySelect } from '../editors'
+import { EdgeType } from '../types'
 import { IGraphContext } from '../GraphContext'
 import { EntityManager } from '../EntityManager'
-import { Schema } from '../types';
 
 import Dialog from './Dialog';
 
@@ -39,8 +36,6 @@ const messages = defineMessages({
     defaultMessage: 'Create',
   },
 });
-
-const EdgeTypeSelect = Select.ofType<EdgeType>();
 
 interface IEdgeCreateDialogProps extends WrappedComponentProps {
   source: Entity
@@ -74,9 +69,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     this.onChangeType = this.onChangeType.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.onReverse = this.onReverse.bind(this)
-    this.renderEdgeType = this.renderEdgeType.bind(this)
   }
-
 
   componentDidMount() {
     const { entityManager, source, target } = this.props
@@ -188,39 +181,6 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     }
   }
 
-  getEdgeTypeIcon(type?: EdgeType) {
-    if (type?.schema) {
-      return <Schema.Icon schema={type.schema} />
-    } else {
-      return <Icon icon="link" />
-    }
-  }
-
-  renderEdgeTypeList(props: IItemListRendererProps<EdgeType>) {
-    const { items, itemsParentRef, renderItem } = props;
-    const [propertyEdgeTypes, entityEdgeTypes] = _.partition(
-      items,
-      (et: EdgeType) => et.isPropertyEdgeType()
-    );
-    return (
-      <Menu ulRef={itemsParentRef}>
-        {entityEdgeTypes.map(renderItem)}
-        <Menu.Divider />
-        {propertyEdgeTypes.map(renderItem)}
-      </Menu>
-    );
-  }
-
-  renderEdgeType(type: EdgeType, { handleClick, modifiers }:IItemRendererProps) {
-    return <MenuItem
-      active={modifiers.active}
-      key={type.key}
-      text={type.label}
-      icon={this.getEdgeTypeIcon(type)}
-      onClick={handleClick}
-    />
-  }
-
   async fetchEntitySuggestions(query: string, which: string) {
     const { source, target } = this.state;
     const stateKey = `${which}Suggestions`;
@@ -264,25 +224,11 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
               <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
                 <FormGroup label={intl.formatMessage(messages.type)} helperText={this.getTypeDescription()}>
                   <EdgeTypeSelect
-                    popoverProps={{
-                      position: Position.BOTTOM_LEFT,
-                      minimal: true,
-                      targetProps: {style: {width: '100%'}}
-                    }}
-                    filterable={false}
                     items={types}
-                    itemListRenderer={this.renderEdgeTypeList}
-                    itemRenderer={this.renderEdgeType}
-                    onItemSelect={this.onChangeType}
-                  >
-                    <Button fill
-                      disabled={!types.length}
-                      text={type ? type.label : intl.formatMessage(messages.type_select)}
-                      alignText={Alignment.LEFT}
-                      icon={this.getEdgeTypeIcon(type)}
-                      rightIcon='double-caret-vertical'
-                    />
-                  </EdgeTypeSelect>
+                    value={type}
+                    onChange={this.onChangeType}
+                    placeholder={intl.formatMessage(messages.type_select)}
+                  />
                 </FormGroup>
               </div>
               <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
