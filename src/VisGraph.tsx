@@ -12,6 +12,7 @@ import { IGraphContext, GraphContext } from './GraphContext'
 import { Sidebar, TableView, Toolbar, VertexMenu } from './components';
 import { History } from './History';
 import { EdgeCreateDialog, GroupingCreateDialog, SettingsDialog, VertexCreateDialog } from './dialogs';
+import { EdgeType } from './types';
 import { filterVerticesByText, modes, showSuccessToast, showWarningToast } from './utils'
 
 
@@ -190,20 +191,21 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     })
   }
 
-  onEdgeCreate({ source, target, type }) {
+  onEdgeCreate(source: Entity, target: Entity, type: EdgeType) {
     const { layout, viewport } = this.props;
     const sourceVertex = layout.getVertexByEntity(source);
     const targetVertex = layout.getVertexByEntity(target);
+    if (!sourceVertex || !targetVertex) {
+      return;
+    }
 
     const entityChanges: any = {};
+    let edge;
     if (type.property && source) {
-      const value = target || target.getCaption();
-      source.setProperty(type.property, value)
+      source.setProperty(type.property, target)
       layout.updateEntity(source);
       entityChanges.updated = [source]
-      const edge = Edge.fromValue(layout, type.property, sourceVertex, targetVertex)
-      layout.selectElement(edge)
-      this.updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
+      edge = Edge.fromValue(layout, type.property, sourceVertex, targetVertex)
     }
     if (type.schema && type.schema.edge && source && target) {
       const entity = layout.createEntity({
@@ -214,12 +216,16 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
         }
       });
       layout.addEntities([entity]);
-      const edge = Edge.fromEntity(layout, entity, sourceVertex, targetVertex)
-      layout.selectElement(edge)
       entityChanges.created = [entity];
+      edge = Edge.fromEntity(layout, entity, sourceVertex, targetVertex)
     }
-    this.updateLayout(layout, entityChanges, { modifyHistory: true, clearSearch: true });
-    this.setInteractionMode();
+
+    if (edge) {
+      layout.selectElement(edge)
+      this.updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
+      this.updateLayout(layout, entityChanges, { modifyHistory: true, clearSearch: true });
+      this.setInteractionMode();
+    }
   }
 
   async showVertexMenu(vertex: Vertex, position: Point, onlyShowExpand: boolean = false) {

@@ -43,6 +43,7 @@ interface IEdgeCreateDialogProps extends WrappedComponentProps {
   isOpen: boolean,
   toggleDialog: () => any
   entityManager: EntityManager
+  onSubmit: (source: Entity, target: Entity, type: EdgeType) => void
 }
 
 interface IEdgeCreateDialogState {
@@ -97,7 +98,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   onSelectSource(source: Entity) {
     this.setState(({ target }) => ({
       source,
-      target: target.id === source.id ? undefined : target,
+      target: target?.id === source.id ? undefined : target,
       type: undefined
     }))
   }
@@ -105,7 +106,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   onSelectTarget(target: Entity) {
     this.setState(({ source }) => ({
       target,
-      source: source.id === target.id ? undefined : source,
+      source: source?.id === target.id ? undefined : source,
       type: undefined
     }))
   }
@@ -120,7 +121,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     const { source, target, type } = this.state
     e.preventDefault()
     if (source && target && type && this.isValid()) {
-      onSubmit({ source, target, type});
+      onSubmit(source, target, type);
     }
   }
 
@@ -181,13 +182,14 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     }
   }
 
-  async fetchEntitySuggestions(query: string, which: string) {
+  async fetchEntitySuggestions(query: string, stateKey: string) {
     const { source, target } = this.state;
-    const stateKey = `${which}Suggestions`;
 
     const { entityManager } = this.props;
+    // @ts-ignore
     this.setState({ [stateKey]: { isProcessing: true, results: [] } });
-    const results = await entityManager.getEntitySuggestions(query, ['Thing']);
+    const results = await entityManager.getEntitySuggestions(query, [entityManager.model.getSchema('Thing')]);
+    // @ts-ignore
     this.setState({ [stateKey]: { isProcessing: false, results } });
   }
 
@@ -216,7 +218,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                     allowMultiple={false}
                     isFetching={sourceSuggestions.isPending}
                     entitySuggestions={sourceSuggestions.results}
-                    onQueryChange={(query) => this.fetchEntitySuggestions(query, 'source')}
+                    onQueryChange={(query: string) => this.fetchEntitySuggestions(query, 'sourceSuggestions')}
                   />
                 </FormGroup>
               </div>
@@ -238,7 +240,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                     allowMultiple={false}
                     isFetching={targetSuggestions.isPending}
                     entitySuggestions={targetSuggestions.results}
-                    onQueryChange={(query) => this.fetchEntitySuggestions(query, 'target')}
+                    onQueryChange={(query: string) => this.fetchEntitySuggestions(query, 'targetSuggestions')}
                   />
                 </FormGroup>
               </div>

@@ -111,7 +111,7 @@ export class EntityManager {
     deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntity(entity.id) : this.updateEntity(entity));
   }
 
-  set(key, value) {
+  set(key: string, value: any) {
     this.overload[key] = value;
 
     return this;

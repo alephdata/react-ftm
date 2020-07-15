@@ -9,7 +9,7 @@ const TypedSelect = Select.ofType<EdgeType>()
 
 interface IEdgeTypeSelectProps {
   items: Array<EdgeType>
-  value: EdgeType
+  value?: EdgeType
   onChange: (item: EdgeType) => void
   placeholder: string
 }

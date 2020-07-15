@@ -25,7 +25,7 @@ export default {
     // which external modules to include in the bundle
     resolve(),
     // Compile TypeScript files
-    typescript({check: false, useTsconfigDeclarationDir: true}),
+    typescript({useTsconfigDeclarationDir: true}),
     // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
     commonjs(),
     // Resolve source maps to the original source

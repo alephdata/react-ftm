@@ -234,7 +234,7 @@ export class GraphLayout {
   }
 
   getEntitySuggestions(query: string, schemata?: Array<Schema>): Promise<Entity[]> {
-    const predicate = (e) => {
+    const predicate = (e: Entity) => {
       const schemaMatch = !schemata || e.schema.isAny(schemata);
       const textMatch = matchText(e.getCaption() || '', query);
       return schemaMatch && textMatch;

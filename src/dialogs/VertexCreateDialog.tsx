@@ -207,7 +207,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
                   large
                   fill
                   value={query}
-                  onChange={(e) => this.onQueryChange(e.target.value)}
+                  onChange={(e: any) => this.onQueryChange(e.target.value)}
                 />
               )}
               <Button
