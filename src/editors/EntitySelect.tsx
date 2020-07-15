@@ -6,6 +6,8 @@ import { Alignment, Button, ControlGroup, FormGroup, Menu, MenuItem, Position, S
 import { ItemListRenderer, ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
 import { ITypeEditorProps } from "./common";
 
+import './EntitySelect.scss';
+
 const messages = defineMessages({
   no_results: {
     id: 'editor.entity.no_results',
