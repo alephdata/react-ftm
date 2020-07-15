@@ -71,8 +71,10 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
   async fetchEntitySuggestions(query: string) {
     const { entity, intl, property } = this.props;
     if (this.props.fetchEntitySuggestions) {
+      const entityId = entity.id;
       this.setState({ entitySuggestions: { isPending: true, results: [] }});
       const suggestions = await this.props.fetchEntitySuggestions(query, [property.getRange()]);
+      const filteredSuggestions = suggestions.filter(e => e.id !== entityId);
       this.setState({ entitySuggestions: { isPending: false, results: suggestions }});
     }
   }
