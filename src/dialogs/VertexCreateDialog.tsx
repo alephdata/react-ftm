@@ -26,6 +26,10 @@ const messages = defineMessages({
     id: 'dialog.vertex_create.type_placeholder',
     defaultMessage: 'Pick a type',
   },
+  no_results: {
+    id: 'dialog.vertex_create.no_suggestions',
+    defaultMessage: 'No suggestions found',
+  },
 });
 
 interface IVertexCreateDialogProps extends WrappedComponentProps {
@@ -88,11 +92,12 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
   async fetchSuggestions(query: string, schemata: Array<FTMSchema>) {
     const { layout } = this.context as IGraphContext
     const { entityManager } = this.props;
-
-    this.setState({ isFetchingSuggestions: true });
-    const suggestions = await entityManager.getEntitySuggestions(query, schemata);
-    const filteredSuggestions = suggestions.filter((entity: FTMEntity) => !layout.hasEntity(entity));
-    this.setState({ isFetchingSuggestions: false, suggestions: filteredSuggestions });
+    if (entityManager.hasSuggest) {
+      this.setState({ isFetchingSuggestions: true });
+      const suggestions = await entityManager.getEntitySuggestions(query, schemata);
+      const filteredSuggestions = suggestions.filter((entity: FTMEntity) => !layout.hasEntity(entity));
+      this.setState({ isFetchingSuggestions: false, suggestions: filteredSuggestions });
+    }
   }
 
   getSchema(): FTMSchema {
@@ -145,6 +150,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     const { intl, layout } = this.context as IGraphContext
     const { entityManager, isOpen, toggleDialog } = this.props;
     const { isFetchingSuggestions, isProcessing, query, suggestions } = this.state;
+    const { hasSuggest } = entityManager;
     const schema = this.getSchema()
     const placeholder = intl.formatMessage(messages.name_placeholder, { schema: schema.label });
     const vertexSelectText = schema ? schema.label : intl.formatMessage(messages.type_placeholder);
@@ -182,16 +188,28 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
                   className="VertexCreateDialog__schema-select"
                 />
               </SchemaSelect>
-              <EntitySelect
-                onSubmit={this.onSubmit}
-                values={[]}
-                allowMultiple={true}
-                isFetching={isFetchingSuggestions}
-                entitySuggestions={suggestions}
-                onQueryChange={this.onQueryChange}
-                popoverProps={{ usePortal: false }}
-                inputProps={{ large: true }}
-              />
+              {hasSuggest && (
+                <EntitySelect
+                  onSubmit={this.onSubmit}
+                  values={[]}
+                  allowMultiple={true}
+                  isFetching={isFetchingSuggestions}
+                  entitySuggestions={suggestions}
+                  onQueryChange={this.onQueryChange}
+                  popoverProps={{ usePortal: false }}
+                  inputProps={{ large: true }}
+                  noResultsText={intl.formatMessage(messages.no_results)}
+                />
+              )}
+              {!hasSuggest && (
+                <InputGroup
+                  autoFocus
+                  large
+                  fill
+                  value={query}
+                  onChange={(e) => this.onQueryChange(e.target.value)}
+                />
+              )}
               <Button
                 large
                 icon="arrow-right"
