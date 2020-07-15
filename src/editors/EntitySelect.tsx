@@ -108,6 +108,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
       : (buttonProps?.placeholder || intl.formatMessage(messages.placeholder));
 
     const filteredSuggestions = entitySuggestions.filter(e => (!values.find(val => val.id === e.id )))
+
     return <ControlGroup className="EntitySelect" vertical fill>
         {!allowMultiple && (
           <TypedSelect
@@ -116,7 +117,6 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
             itemListRenderer={this.itemListRenderer}
             items={filteredSuggestions}
             popoverProps={{
-              position: Position.BOTTOM_LEFT,
               minimal: true,
               targetProps: {style: {width: '100%'}},
               ...popoverProps
@@ -144,7 +144,6 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
             itemListRenderer={this.itemListRenderer}
             items={filteredSuggestions}
             popoverProps={{
-              position: Position.BOTTOM_LEFT,
               minimal: true,
               targetProps: {style: {width: '100%'}},
               ...popoverProps
@@ -157,7 +156,6 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
               ...inputProps
             }}
             selectedItems={values}
-            openOnKeyDown
             resetOnSelect
             fill
             query={query}
