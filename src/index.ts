@@ -7,6 +7,7 @@ const VisGraph = withTranslator(VisGraphBase);
 export { VisGraph, IVisGraphProps };
 
 export * from './layout'
+export * from './dialogs'
 export * from './editors'
 export * from './components'
 export * from './renderer'
