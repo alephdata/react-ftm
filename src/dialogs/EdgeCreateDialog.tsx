@@ -212,7 +212,6 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                 <FormGroup label={intl.formatMessage(messages.source)} helperText={this.getSourceLabel()}>
                   <EntitySelect
                     onSubmit={(selected: Array<Entity>) => this.onSelectSource(selected?.[0])}
-                    onChange={(selected: Array<Entity>) => this.onSelectSource(selected?.[0])}
                     values={source ? [source] : []}
                     allowMultiple={false}
                     isFetching={sourceSuggestions.isPending}
@@ -235,7 +234,6 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                 <FormGroup label={intl.formatMessage(messages.target)} helperText={this.getTargetLabel()}>
                   <EntitySelect
                     onSubmit={(selected: Array<Entity>) => this.onSelectTarget(selected?.[0])}
-                    onChange={(selected: Array<Entity>) => this.onSelectTarget(selected?.[0])}
                     values={target ? [target] : []}
                     allowMultiple={false}
                     isFetching={targetSuggestions.isPending}

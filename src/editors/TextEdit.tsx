@@ -16,7 +16,9 @@ const messages = defineMessages({
   },
 });
 
-interface ITextEditProps extends ITypeEditorProps, WrappedComponentProps {}
+interface ITextEditProps extends ITypeEditorProps, WrappedComponentProps {
+  onChange: (values: Values) => void
+}
 
 interface ITextEditState {
   forceMultiEdit: boolean,

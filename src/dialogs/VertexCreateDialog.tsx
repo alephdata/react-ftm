@@ -184,7 +184,6 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
               </SchemaSelect>
               <EntitySelect
                 onSubmit={this.onSubmit}
-                onChange={this.onSubmit}
                 values={[]}
                 allowMultiple={true}
                 isFetching={isFetchingSuggestions}

@@ -84,7 +84,6 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
 
     const commonProps = {
       onSubmit: this.onSubmit,
-      onChange: this.onChange,
       values,
       popoverProps,
     };
@@ -110,7 +109,7 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
         />
       );
     } else {
-      content = <TextEdit {...commonProps} />;
+      content = <TextEdit onChange={this.onChange} {...commonProps} />;
     }
 
     return (
