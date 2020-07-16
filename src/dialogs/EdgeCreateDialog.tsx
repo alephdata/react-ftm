@@ -1,12 +1,11 @@
 import * as React from 'react'
 import { defineMessages, WrappedComponentProps } from 'react-intl';
 import { FormGroup, Intent, Button } from '@blueprintjs/core'
-import { Entity } from '@alephdata/followthemoney'
+import { Entity, Model, Schema } from '@alephdata/followthemoney'
 
 import { EdgeTypeSelect, EntitySelect } from '../editors'
 import { EdgeType } from '../types'
 import { IGraphContext } from '../GraphContext'
-import { EntityManager } from '../EntityManager'
 
 import Dialog from './Dialog';
 
@@ -42,7 +41,8 @@ interface IEdgeCreateDialogProps extends WrappedComponentProps {
   target?: Entity
   isOpen: boolean,
   toggleDialog: () => any
-  entityManager: EntityManager
+  model: Model
+  getEntitySuggestions: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>
   onSubmit: (source: Entity, target: Entity, type: EdgeType) => void
 }
 
@@ -73,9 +73,9 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   }
 
   componentDidMount() {
-    const { entityManager, source, target } = this.props
+    const { model, source, target } = this.props
     this.setState({ source, target })
-    this.types = EdgeType.getAll(entityManager.model)
+    this.types = EdgeType.getAll(model)
   }
 
   componentDidUpdate(prevProps: IEdgeCreateDialogProps) {
@@ -185,10 +185,10 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   async fetchEntitySuggestions(query: string, stateKey: string) {
     const { source, target } = this.state;
 
-    const { entityManager } = this.props;
+    const { getEntitySuggestions, model } = this.props;
     // @ts-ignore
     this.setState({ [stateKey]: { isProcessing: true, results: [] } });
-    const results = await entityManager.getEntitySuggestions(query, [entityManager.model.getSchema('Thing')]);
+    const results = await getEntitySuggestions(query, [model.getSchema('Thing')]);
     // @ts-ignore
     this.setState({ [stateKey]: { isProcessing: false, results } });
   }
