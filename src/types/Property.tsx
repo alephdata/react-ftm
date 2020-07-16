@@ -137,7 +137,7 @@ class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
     } else if (prop.type.name === 'url') {
       content = vals.map(val => <span style={{ display: 'block' }}>{val}</span>);
     } else {
-      content = (<span>{ wordList(vals, separator) }</span>);
+      content = wordList(vals, separator);
     }
 
     return <span className="PropertyValues">{content}</span>;
