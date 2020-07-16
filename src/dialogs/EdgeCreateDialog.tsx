@@ -184,11 +184,13 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
 
   async fetchEntitySuggestions(query: string, stateKey: string) {
     const { source, target } = this.state;
-
     const { getEntitySuggestions, model } = this.props;
+
+    const schemata = model.getSchemata()
+      .filter(schema => schema.isThing() && !schema.generated && !schema.abstract)
     // @ts-ignore
     this.setState({ [stateKey]: { isProcessing: true, results: [] } });
-    const results = await getEntitySuggestions(query, [model.getSchema('Thing')]);
+    const results = await getEntitySuggestions(query, schemata);
     // @ts-ignore
     this.setState({ [stateKey]: { isProcessing: false, results } });
   }
