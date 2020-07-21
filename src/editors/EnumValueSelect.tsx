@@ -32,7 +32,7 @@ class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
     this.inputRef && this.inputRef.focus();
   }
 
-  onChange(item?: any, event: any) {
+  onChange(item: any, event: any) {
     event.stopPropagation();
     const { values } = this.props;
     if (item) {
