@@ -33,6 +33,7 @@ class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
   }
 
   onChange(item: any, event: any) {
+    event.preventDefault();
     event.stopPropagation();
     const { values } = this.props;
     if (item) {
