@@ -1,7 +1,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-07-10T11:03:14.756Z\n"
+"POT-Creation-Date: 2020-07-23T10:20:28.055Z\n"
 "Language-Team: Turkish (https://www.transifex.com/aleph/teams/76591/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -262,6 +262,13 @@ msgstr ""
 #. No results found
 #: i18n/messages.json i18n/messages.json
 msgid "No results found"
+msgstr ""
+
+#. [dialog.vertex_create.no_suggestions]
+#. defaultMessage is:
+#. No suggestions found
+#: i18n/messages.json
+msgid "No suggestions found"
 msgstr ""
 
 #. [editor.vertex_select.disabled]

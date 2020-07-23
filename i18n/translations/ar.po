@@ -5,7 +5,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-07-10T11:03:14.756Z\n"
+"POT-Creation-Date: 2020-07-23T10:20:28.055Z\n"
 "Last-Translator: Ido <leptep@gmail.com>, 2020\n"
 "Language-Team: Arabic (https://www.transifex.com/aleph/teams/76591/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -268,6 +268,13 @@ msgstr ""
 #: i18n/messages.json i18n/messages.json
 msgid "No results found"
 msgstr "لم يتم العثور على نتائج"
+
+#. [dialog.vertex_create.no_suggestions]
+#. defaultMessage is:
+#. No suggestions found
+#: i18n/messages.json
+msgid "No suggestions found"
+msgstr ""
 
 #. [editor.vertex_select.disabled]
 #. defaultMessage is:

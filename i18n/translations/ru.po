@@ -4,7 +4,7 @@
 # 
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2020-07-10T11:03:14.756Z\n"
+"POT-Creation-Date: 2020-07-23T10:20:28.055Z\n"
 "Last-Translator: jen occrp, 2020\n"
 "Language-Team: Russian (https://www.transifex.com/aleph/teams/76591/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -130,7 +130,7 @@ msgstr "В центр"
 #. Connect shared values
 #: i18n/messages.json
 msgid "Connect shared values"
-msgstr ""
+msgstr "Связать общие значения"
 
 #. [dialog.edge_create.submit]
 #. defaultMessage is:
@@ -242,7 +242,7 @@ msgstr "Некорректная тема"
 #. Layouts
 #: i18n/messages.json
 msgid "Layouts"
-msgstr ""
+msgstr "Способы представления"
 
 #. [vertex_menu.expand_none]
 #. defaultMessage is:
@@ -267,6 +267,13 @@ msgstr "Ничего подходящего не найдено"
 #: i18n/messages.json i18n/messages.json
 msgid "No results found"
 msgstr "Ничего не найдено"
+
+#. [dialog.vertex_create.no_suggestions]
+#. defaultMessage is:
+#. No suggestions found
+#: i18n/messages.json
+msgid "No suggestions found"
+msgstr ""
 
 #. [editor.vertex_select.disabled]
 #. defaultMessage is:
@@ -301,7 +308,7 @@ msgstr "Удалит новый ряд {schema}"
 #. Save changes
 #: i18n/messages.json
 msgid "Save changes"
-msgstr ""
+msgstr "Сохранить изменения"
 
 #. [dialog.grouping_create.placeholder]
 #. defaultMessage is:
@@ -335,7 +342,7 @@ msgstr "Выбрать тип"
 #. Settings
 #: i18n/messages.json i18n/messages.json
 msgid "Settings"
-msgstr ""
+msgstr "Настройки"
 
 #. [tooltip.sidebar_view]
 #. defaultMessage is:
@@ -394,6 +401,8 @@ msgid ""
 "The selected property types above will be used to draw connections between "
 "nodes when values are shared"
 msgstr ""
+"Выбранные типы свойств будут использованы для отображения связей между "
+"узлами с общими значениями"
 
 #. [editor.validation.required]
 #. defaultMessage is:
