@@ -2,4 +2,8 @@
 
 .PropertyValues {
   @include breakText;
+
+  .EntityLabel {
+    display: inline-block;
+  }
 }

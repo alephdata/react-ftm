@@ -267,6 +267,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
 
       const before = layout.getVisibleElementCount();
       layout.addEntities(entities as Array<Entity>, viewport.center);
+      layout.layout();
       const after = layout.getVisibleElementCount();
       const vDiff = after.vertices - before.vertices;
       const eDiff = after.edges - before.edges;
@@ -370,7 +371,6 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     };
 
     const showSidebar = layout.vertices && layout.vertices.size > 0 && !tableView;
-
     return (
       <GraphContext.Provider value={layoutContext}>
         <div className={c('VisGraph', `toolbar-${config.toolbarPosition}`, `theme-${config.editorTheme}`)}>
