@@ -96,8 +96,10 @@ export class GraphLayout {
         entity.getProperty(sourceProperty).forEach((source) => {
           entity.getProperty(targetProperty).forEach((target) => {
             const sourceVertex = Vertex.fromValue(this, sourceProperty, source)
-            const targetVertex = Vertex.fromValue(this, targetProperty, target)
+            if (!sourceVertex) { return; }
             this.addVertex(sourceVertex)
+            const targetVertex = Vertex.fromValue(this, targetProperty, target)
+            if (!targetVertex) { return; }
             this.addVertex(targetVertex)
             this.addEdge(Edge.fromEntity(this, entity, sourceVertex, targetVertex))
           })
@@ -122,6 +124,7 @@ export class GraphLayout {
               }
             } else {
               propertyVertex = Vertex.fromValue(this, prop, value);
+              if (!propertyVertex) { return; }
               this.addVertex(propertyVertex)
             }
             if (propertyVertex) {
