@@ -9,6 +9,8 @@ export function wordList(arr:Array<any>, sep:string) {
   }
 
   return arr.slice(1)
-    .reduce((xs, x) => xs.concat([sep, x]), [arr[0]])
-    .map((elem: string) => <span>{elem}</span>);
+    .reduce((xs, x) => xs.concat([
+      <span key={`${x}_sep`} className="separator">{sep}</span>,
+      <span key={x}>{x}</span>
+    ]), [arr[0]])
 }
