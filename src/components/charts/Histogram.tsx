@@ -1,9 +1,11 @@
 import * as React from 'react'
 import { Colors } from "@blueprintjs/core";
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 import {
   BarChart, Bar, Cell, XAxis, Tooltip, Legend, ReferenceArea, ResponsiveContainer,
 } from 'recharts';
 import c from 'classnames';
+import Numeric from '../../types/Numeric';
 
 import './Histogram.scss';
 
@@ -15,7 +17,7 @@ interface IHistogramDatum {
   [key: string]: any
 }
 
-interface IHistogramProps {
+interface IHistogramProps extends WrappedComponentProps {
   data: Array<IHistogramDatum>
   onSelect: (selected: any | Array<any> ) => void
   chartProps?: any
@@ -79,7 +81,11 @@ export class Histogram extends React.Component<IHistogramProps, IHistogramState>
             {...chartProps}
           >
             <XAxis dataKey="label" />
-            <Tooltip offset={15} separator=": " />
+            <Tooltip
+              offset={15}
+              separator=": "
+              formatter={value => !isNaN(value) ? null : <Numeric num={+value} />}
+            />
             <Bar dataKey={dataPropName} fill={Colors.BLUE2} />
             {selectStart && selectEnd && (
               <ReferenceArea x1={selectStart.label} x2={selectEnd.label} />
@@ -90,3 +96,5 @@ export class Histogram extends React.Component<IHistogramProps, IHistogramState>
     );
   }
 }
+
+export default injectIntl(Histogram);
