@@ -12,5 +12,5 @@ export function wordList(arr:Array<any>, sep:string) {
     .reduce((xs, x) => xs.concat([
       <span key={`${x}_sep`} className="separator">{sep}</span>,
       <span key={x}>{x}</span>
-    ]), [arr[0]])
+    ]), [<span>{arr[0]}</span>])
 }
