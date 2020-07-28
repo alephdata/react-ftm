@@ -93,7 +93,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const { entities, isPending, selection, sort, writeable } = this.props;
     const { addedColumns, showTopAddRow } = this.state;
 
-
     const entitiesDeleted = prevProps.entities.length > entities.length;
     const entitiesAdded = prevProps.entities.length < entities.length;
     const sortChanged = prevProps.sort?.field !== sort?.field || prevProps.sort?.direction !== sort?.direction;
@@ -208,6 +207,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   getEntityRow = (entity: Entity, visibleProps: Array<FTMProperty>) => {
     const { visitEntity, writeable } = this.props;
+    const readOnly = !writeable || entity.writeable === false;
 
     const propCells = visibleProps.map(property => {
       let values = entity.getProperty(property.name);
@@ -217,7 +217,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
       return ({
         ...getCellBase('property'),
-        readOnly: !writeable,
+        readOnly,
         value: values,
         data: { entity, property },
       })
@@ -225,11 +225,11 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     const entityLinkCell = visitEntity != undefined ? [this.getEntityLinkCell(entity)] : [];
 
-    if (writeable) {
+    if (readOnly) {
+      return [...entityLinkCell, ...propCells];
+    } else {
       const checkbox = this.getCheckboxCell(entity);
       return [...entityLinkCell, checkbox, ...propCells];
-    } else {
-      return [...entityLinkCell, ...propCells];
     }
   }
 
