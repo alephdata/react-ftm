@@ -115,7 +115,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.27.0",
     "numeral": "^2.0.6",
-    "react-datasheet": "^1.4.1",
+    "react-datasheet": "^1.4.8",
     "react-draggable": "^4.4.3",
     "react-intl": "^5.4.3",
     "recharts": "^1.8.5",
