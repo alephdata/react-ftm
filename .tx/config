@@ -1,9 +1,9 @@
 [main]
 host = https://www.transifex.com
 
-[react-ftm.messages-pot]
-file_filter = i18n/translations/<lang>.po
+[react-ftm.messagesjson]
+file_filter = i18n/translations/<lang>.json
 minimum_perc = 0
-source_file = i18n/messages.pot
+source_file = i18n/messages.json
 source_lang = en_US
-type = PO
+type = JSON
