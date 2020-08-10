@@ -1,7 +1,7 @@
 [main]
 host = https://www.transifex.com
 
-[react-ftm.messagesjson]
+[react-ftm.messages-json]
 file_filter = i18n/translations/<lang>.json
 minimum_perc = 0
 source_file = i18n/messages.json
