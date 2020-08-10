@@ -21,3 +21,4 @@ translate:
 	tx push --source
 	tx pull -a -f
 	npm run compile-translations
+	npm run concat-translations
