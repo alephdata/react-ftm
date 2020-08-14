@@ -207,7 +207,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   getEntityRow = (entity: Entity, visibleProps: Array<FTMProperty>) => {
     const { visitEntity, writeable } = this.props;
-    const readOnly = !writeable || entity.writeable === false;
 
     const propCells = visibleProps.map(property => {
       let values = entity.getProperty(property.name);
@@ -217,7 +216,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
       return ({
         ...getCellBase('property'),
-        readOnly,
+        readOnly: !writeable,
         value: values,
         data: { entity, property },
       })
@@ -225,7 +224,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     const entityLinkCell = visitEntity != undefined ? [this.getEntityLinkCell(entity)] : [];
 
-    if (readOnly) {
+    if (!writeable) {
       return [...entityLinkCell, ...propCells];
     } else {
       const checkbox = this.getCheckboxCell(entity);
