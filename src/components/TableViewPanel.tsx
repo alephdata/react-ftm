@@ -115,9 +115,11 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
     this.batchedChanges[operation] = [...currValues, entity];
   }
 
-  visitEntity(entity: Entity) {
+  visitEntity(entity: Entity | string) {
     const { layout, fitToSelection, toggleTableView, updateLayout } = this.props;
-    this.onSelectionUpdate(entity, false, false);
+    const entityToSelect = typeof entity === 'string' ? this.resolveEntityReference(entity) : entity;
+
+    this.onSelectionUpdate(entityToSelect, false, false);
     toggleTableView();
     fitToSelection();
   }
