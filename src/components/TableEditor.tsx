@@ -323,7 +323,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
             small
             rightIcon={<Icon icon="fullscreen" iconSize={12} className="TableEditor__link-cell__icon" />}
             className="TableEditor__link-cell"
-            onClick={() => visitEntity(values[0])}
+            onClick={() => visitEntity && visitEntity(values[0])}
           >
             {cellContents}
           </Button>

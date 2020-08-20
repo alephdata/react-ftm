@@ -8,11 +8,11 @@ interface IMIMETypeCommonProps {
 }
 
 const MIMETypeRegistry = {
-  'application/json': { icon: 'code', label: 'JSON'}
+  'application/json': { icon: 'code', label: 'JSON'},
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': { icon: 'th', label: 'Microsoft Excel'},
   'application/vnd.ms-excel': { icon: 'th', label: 'Microsoft Excel'},
-  'application/zip': { icon: 'compressed', label: 'Zip Archive'}
-  'text/csv': { icon: 'th', label: 'Comma-separated table'}
+  'application/zip': { icon: 'compressed', label: 'Zip Archive'},
+  'text/csv': { icon: 'th', label: 'Comma-separated table'},
 }
 
 class MIMETypeIcon extends React.Component<IMIMETypeCommonProps>{
