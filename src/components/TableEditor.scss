@@ -96,4 +96,25 @@
     max-height: 110px;
     overflow-y: auto;
   }
+
+  &__link-cell {
+    &.bp3-button {
+      padding: 0;
+      background: inherit !important;
+    }
+
+    &__icon {
+      display: none;
+    }
+
+    &:hover {
+      .EntityLabel span {
+        text-decoration: underline;
+      }
+
+      & > .bp3-icon {
+        display: block !important;
+      }
+    }
+  }
 }

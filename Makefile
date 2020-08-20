@@ -17,7 +17,8 @@ dev:
 build: dist
 
 translate:
-	npm run translate
+	npm run messages
 	tx push --source
 	tx pull -a -f
-	npm run po2json
+	npm run compile-translations
+	npm run concat-translations

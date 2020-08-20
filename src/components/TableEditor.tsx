@@ -54,7 +54,7 @@ interface ITableEditorProps extends WrappedComponentProps {
   writeable: boolean
   isPending?: boolean
   updateFinishedCallback?: () => void
-  visitEntity?: (entity: Entity) => void
+  visitEntity?: (entity: Entity | string) => void
 }
 
 interface ITableEditorState {
@@ -92,7 +92,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   componentDidUpdate(prevProps: ITableEditorProps, prevState: ITableEditorState) {
     const { entities, isPending, selection, sort, writeable } = this.props;
     const { addedColumns, showTopAddRow } = this.state;
-
 
     const entitiesDeleted = prevProps.entities.length > entities.length;
     const entitiesAdded = prevProps.entities.length < entities.length;
@@ -225,11 +224,11 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     const entityLinkCell = visitEntity != undefined ? [this.getEntityLinkCell(entity)] : [];
 
-    if (writeable) {
+    if (!writeable) {
+      return [...entityLinkCell, ...propCells];
+    } else {
       const checkbox = this.getCheckboxCell(entity);
       return [...entityLinkCell, checkbox, ...propCells];
-    } else {
-      return [...entityLinkCell, ...propCells];
     }
   }
 
@@ -304,15 +303,39 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     return null;
   }
 
-  renderPropValue = ({entity, property}: {entity: Entity, property: FTMProperty}) => (
-    <div className="TableEditor__overflow-container">
+  renderPropValue = ({entity, property}: {entity: Entity, property: FTMProperty}) => {
+    const { entityManager, visitEntity } = this.props;
+
+    const values = entity.getProperty(property.name);
+    const cellContents = (
       <Property.Values
-        values={entity.getProperty(property.name)}
+        values={values}
         prop={property}
-        resolveEntityReference={this.props.entityManager.resolveEntityReference}
+        resolveEntityReference={entityManager.resolveEntityReference}
       />
-    </div>
-  );
+    );
+    const showVisitLink = visitEntity && property.type.name === 'entity' && values.length;
+    if (showVisitLink) {
+      return (
+        <div className="TableEditor__overflow-container">
+          <Button
+            minimal
+            small
+            rightIcon={<Icon icon="fullscreen" iconSize={12} className="TableEditor__link-cell__icon" />}
+            className="TableEditor__link-cell"
+            onClick={() => visitEntity && visitEntity(values[0])}
+          >
+            {cellContents}
+          </Button>
+        </div>
+      );
+    }
+    return (
+      <div className="TableEditor__overflow-container">
+        {cellContents}
+      </div>
+    );
+  }
 
   renderEditor = ({ cell, onCommit, onChange, onKeyDown, onRevert }: Datasheet.DataEditorProps<CellData, any>) => {
     const { entityManager, schema } = this.props;
