@@ -65,7 +65,7 @@
     "@formatjs/cli": "^2.6.0",
     "@rollup/plugin-commonjs": "^14.0.0",
     "@rollup/plugin-json": "^4.0.3",
-    "@rollup/plugin-node-resolve": "^8.4.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
     "@types/bezier-js": "0.0.8",
     "@types/classnames": "^2.2.10",
     "@types/d3": "^5.7.2",
