@@ -106,7 +106,7 @@
     "react-dom": "^16.8.6"
   },
   "dependencies": {
-    "d3-force": "^2.0.1",
+    "d3-force": "^2.1.1",
     "d3-scale": "^3.2.2",
     "dagre": "^0.8.4",
     "filesize": "^6.1.0",
