@@ -14,9 +14,6 @@ import { showErrorToast, validate } from '../utils';
 
 import "./TableEditor.scss"
 
-// @ts-ignore
-const TableComponent = Datasheet?.default || Datasheet;
-
 const messages = defineMessages({
   add: {
     id: 'table_editor.add_row',
@@ -535,7 +532,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     return (
       <div className="TableEditor">
-        <TableComponent
+        <Datasheet
           data={tableData}
           valueRenderer={(cell: CellData) => cell.value}
           valueViewer={this.renderValue}
