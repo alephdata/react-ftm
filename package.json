@@ -82,7 +82,7 @@
     "hoist-non-react-statics": "^3.3.2",
     "jest": "^25.2.2",
     "jest-config": "^26.4.2",
-    "node-jq": "^1.11.1",
+    "node-jq": "^1.11.2",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-dom": "^16.11.0",
