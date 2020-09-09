@@ -158,7 +158,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
               <Entity.Label entity={entity} icon={!hasCaption} iconSize={25} />
             </h2>
           </div>
-          {vertexRef &&
+          {vertexRef && writeable && (
             <div className='EntityViewer__title__settings'>
               <ColorPicker
                 currSelected={vertexRef.color}
@@ -171,9 +171,8 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
                 schema={entity.schema}
               />
             </div>
-          }
+          )}
         </div>
-
         <UL className={c('EntityViewer__property-list', Classes.LIST_UNSTYLED)}>
           {visibleProps.map(this.renderProperty)}
         </UL>

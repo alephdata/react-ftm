@@ -152,16 +152,21 @@ export class Toolbar extends React.Component<IToolbarProps> {
     actions.fitToSelection();
   }
 
-  itemRenderer(buttonGroup:IToolbarButtonGroup, i:number, visible: boolean) {
-    const { config } = this.props.layout;
+  itemRenderer(buttonGroup:IToolbarButtonGroup, visible: boolean) {
+    const { layout, showEditingButtons } = this.props;
+
+    const filteredGroup = showEditingButtons
+      ? buttonGroup
+      : buttonGroup.filter((b: any) => !b.writeableOnly);
+    if (!filteredGroup.length) { return null; }
 
     return (
-      <React.Fragment key={i}>
-        {i !== 0 && <Divider />}
+      <React.Fragment key={filteredGroup[0]?.helpText}>
+        <Divider />
         <ToolbarButtonGroup
-          buttonGroup={buttonGroup}
+          buttonGroup={filteredGroup}
           visible={visible}
-          editorTheme={config.editorTheme}
+          editorTheme={layout.config.editorTheme}
         />
       </React.Fragment>
     );
@@ -169,7 +174,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
 
   overflowListRenderer(overflowItems: Array<IToolbarButtonGroup>) {
     const { config } = this.props.layout;
-    const menuContent = overflowItems.map((item:IToolbarButtonGroup, i:number) => this.itemRenderer(item, i, false));
+    const menuContent = overflowItems.map((item:IToolbarButtonGroup) => this.itemRenderer(item, false));
     return (
       <Popover
         content={<Menu>{menuContent}</Menu>}
@@ -347,6 +352,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
           helpText: intl.formatMessage(messages.tooltip_settings),
           icon: "cog",
           onClick: () => actions.toggleSettingsDialog(),
+          writeableOnly: true,
         }
       ],
     ];
@@ -362,9 +368,9 @@ export class Toolbar extends React.Component<IToolbarProps> {
       )}
       <div className="Toolbar__main">
         <OverflowList
-          items={showEditingButtons ? buttons : buttons.filter((b: any) => !b.writeableOnly)}
+          items={buttons}
           collapseFrom={Boundary.END}
-          visibleItemRenderer={(buttonGroup: IToolbarButtonGroup, i: number) => this.itemRenderer(buttonGroup, i, true)}
+          visibleItemRenderer={(buttonGroup: IToolbarButtonGroup) => this.itemRenderer(buttonGroup, true)}
           overflowRenderer={this.overflowListRenderer}
           className="Toolbar__button-group-container"
           observeParents

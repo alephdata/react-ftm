@@ -110,6 +110,10 @@ $width-right: $sidebar-width;
     .toolbar-left & {
       flex-direction: column;
     }
+
+    .bp3-divider:first-child {
+      display: none;
+    }
   }
 
   .ToolbarButtonGroup {
