@@ -158,7 +158,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
     const filteredGroup = showEditingButtons
       ? buttonGroup
       : buttonGroup.filter((b: any) => !b.writeableOnly);
-    if (!filteredGroup.length) { return null; }
+    if (!filteredGroup.length) { return <></>; }
 
     return (
       <React.Fragment key={filteredGroup[0]?.helpText}>
