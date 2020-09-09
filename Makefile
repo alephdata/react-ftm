@@ -16,6 +16,9 @@ dev:
 
 build: dist
 
+publish:
+	npm publish -timeout=9999999
+
 translate:
 	npm run messages
 	tx push --source
