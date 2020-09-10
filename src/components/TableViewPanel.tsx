@@ -39,6 +39,7 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
 
     this.localEntityManager = new EntityManager({
       model: props.layout.entityManager.model,
+      namespace: props.layout.entityManager.namespace,
       createEntity: this.onEntityCreate.bind(this),
       updateEntity: this.onEntityUpdate.bind(this),
       getEntitySuggestions: props.layout.getEntitySuggestions.bind(this),
