@@ -1,4 +1,4 @@
-import { renderDiagram } from './index.ts';
+import { renderDiagram } from '../index.ts';
 
 renderDiagram({
   id: 'diagram',

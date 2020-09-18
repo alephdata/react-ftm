@@ -24,8 +24,8 @@
     "compile-translations": "formatjs compile-folder i18n/translations i18n/translations",
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rm -f dist/react-ftm.*",
-    "build": "webpack --env.production",
-    "start": "webpack-dev-server --open",
+    "build": "webpack --config webpack.prod.js",
+    "start": "webpack-dev-server --open --config webpack.dev.js",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",
     "test:prod": "npm run lint && npm run test -- --no-cache",
@@ -101,7 +101,8 @@
     "typescript": "^3.9.7",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^5.1.4"
   },
   "peerDependencies": {
     "@blueprintjs/core": "^3.23.1",

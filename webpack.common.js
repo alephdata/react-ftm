@@ -3,10 +3,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-  mode: 'development',
   entry: {
     'react-ftm': './src/index.ts',
-    embed: './src/index-embed.ts'
+    embed: './src/embed/index-embed.ts'
   },
   module: {
     rules: [
@@ -34,10 +33,6 @@ module.exports = {
   },
   resolve: {
     extensions: [ '.tsx', '.ts', '.js' ],
-  },
-  devtool: 'inline-source-map',
-  devServer: {
-    contentBase: './dist',
   },
   plugins: [
     new CleanWebpackPlugin(),
