@@ -36,6 +36,7 @@
   "table_editor.add_schema": "Добавить тип сущности",
   "table_editor.remove_row": "Удалит новый ряд {schema}",
   "toasts.expand_none": "Все сведения уже представлены на диаграмме",
+  "toasts.expand_success": "Successfully added {vertices} new {vertices, plural, one {node} other {nodes}} and {edges} new {edges, plural, one {link} other {links}} to the diagram",
   "tooltip.add_edges": "Добавить связь",
   "tooltip.add_entities": "Добавить сущности",
   "tooltip.delete": "Удалить выбранное",

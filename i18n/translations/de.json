@@ -36,6 +36,7 @@
   "table_editor.add_schema": "Type hinzufügen",
   "table_editor.remove_row": "Zeile vom Typ {schema} entfernen",
   "toasts.expand_none": "Alle verknüpften Verbindungen sind bereits sichtbar",
+  "toasts.expand_success": "Successfully added {vertices} new {vertices, plural, one {node} other {nodes}} and {edges} new {edges, plural, one {link} other {links}} to the diagram",
   "tooltip.add_edges": "Verbindung hinzufügen",
   "tooltip.add_entities": "Entitäten hinzufügen",
   "tooltip.delete": "Auswahl entfernen",

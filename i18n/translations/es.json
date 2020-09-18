@@ -36,6 +36,7 @@
   "table_editor.add_schema": "Agregar tipo de entidad",
   "table_editor.remove_row": "Eliminar nueva fila de {schema}",
   "toasts.expand_none": "Todos los resultados de expansión ya están presentes en el diagrama",
+  "toasts.expand_success": "Successfully added {vertices} new {vertices, plural, one {node} other {nodes}} and {edges} new {edges, plural, one {link} other {links}} to the diagram",
   "tooltip.add_edges": "Agregar enlace",
   "tooltip.add_entities": "Agregar entidades",
   "tooltip.delete": "Eliminar selección",
