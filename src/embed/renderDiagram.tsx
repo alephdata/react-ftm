@@ -1,9 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import NetworkDiagram from './NetworkDiagram';
-import { fetchExternalData, fetchLocalData } from './common';
+import { fetchExternalData, fetchLocalData, IEmbeddedElementConfig } from './util';
 
-export const renderDiagram = async (id: string, type: string, dataURL?: string, config?: any) => {
+export interface IRenderDiagramProps {
+  id: string
+  type: string
+  dataURL?: string
+  config?: IEmbeddedElementConfig
+}
+
+export const renderDiagram = async (props: IRenderDiagramProps) => {
+  const { id, type, dataURL, config } = props;
   let data;
   if (dataURL) {
     data = await fetchExternalData(dataURL);

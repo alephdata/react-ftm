@@ -7,7 +7,7 @@
     "dist/**/*"
   ],
   "author": "OCCRP Data <data@occrp.org>",
-  "main": "dist/react-ftm.umd.js",
+  "main": "dist/react-ftm.js",
   "module": "dist/react-ftm.es5.js",
   "typings": "dist/types/index.d.ts",
   "repository": {
@@ -24,7 +24,7 @@
     "compile-translations": "formatjs compile-folder i18n/translations i18n/translations",
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rm -f dist/react-ftm.*",
-    "build": "webpack",
+    "build": "webpack --env.production",
     "start": "webpack-dev-server --open",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",

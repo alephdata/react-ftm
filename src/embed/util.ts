@@ -5,7 +5,7 @@ export interface IEmbeddedElementConfig {
 
 export interface IEmbeddedElementProps {
   data: any
-  config: IEmbeddedElementConfig
+  config?: IEmbeddedElementConfig
 }
 
 export const fetchExternalData = (dataURL: string) => {

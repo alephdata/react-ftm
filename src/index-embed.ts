@@ -1,11 +1,11 @@
 import { renderDiagram } from './index.ts';
 
-renderDiagram(
-  'diagram',
-  'NetworkDiagram',
-  undefined,
-  {
+renderDiagram({
+  id: 'diagram',
+  type: 'NetworkDiagram',
+  dataURL: undefined,
+  config: {
     writeable: true,
     containerProps: { style: { height: '100vh', width: '100vw' } }
   }
-);
+});

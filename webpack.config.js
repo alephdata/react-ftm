@@ -5,8 +5,8 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
   mode: 'development',
   entry: {
-    'react-ftm.umd': './src/index.ts',
-    embed: './src/index-embed.tsx'
+    'react-ftm': './src/index.ts',
+    embed: './src/index-embed.ts'
   },
   module: {
     rules: [

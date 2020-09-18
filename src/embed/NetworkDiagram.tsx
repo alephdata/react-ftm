@@ -1,5 +1,5 @@
 import React from 'react'
-import { IEmbeddedElementProps } from './common';
+import { IEmbeddedElementProps } from './util';
 import { EntityManager, GraphConfig, GraphLayout, Viewport, VisGraph } from '../';
 
 const config = new GraphConfig({ editorTheme: "dark", toolbarPosition: 'top' });
