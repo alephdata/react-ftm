@@ -5,7 +5,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
   mode: 'development',
   entry: {
-    lib: './src/index.ts',
+    'react-ftm.umd': './src/index.ts',
     embed: './src/index-embed.tsx'
   },
   module: {
@@ -26,13 +26,14 @@ module.exports = {
           'sass-loader',
         ],
       },
+      {
+        test: /\.vis$/,
+        loader: 'json-loader'
+      }
     ],
   },
   resolve: {
     extensions: [ '.tsx', '.ts', '.js' ],
-  },
-  node: {
-    fs: 'empty'
   },
   devtool: 'inline-source-map',
   devServer: {
@@ -45,7 +46,7 @@ module.exports = {
     }),
   ],
   output: {
-    filename: '[name].bundle.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
     library: 'reactFTM',
     libraryTarget: 'umd'

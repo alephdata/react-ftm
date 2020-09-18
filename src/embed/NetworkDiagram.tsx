@@ -1,10 +1,11 @@
 import React from 'react'
+import { IEmbeddedElementProps } from './common';
 import { EntityManager, GraphConfig, GraphLayout, Viewport, VisGraph } from '../';
 
 const config = new GraphConfig({ editorTheme: "dark", toolbarPosition: 'top' });
 const entityManager = new EntityManager();
 
-interface INetworkDiagramProps {}
+interface INetworkDiagramProps extends IEmbeddedElementProps {}
 
 interface INetworkDiagramState {
   layout: GraphLayout,
@@ -12,26 +13,25 @@ interface INetworkDiagramState {
   viewport: Viewport
 }
 
-export default class NetworkDiaggram extends React.Component <INetworkDiagramProps, INetworkDiagramState> {
-  constructor(props: any) {
+export default class NetworkDiagram extends React.Component <INetworkDiagramProps, INetworkDiagramState> {
+  constructor(props: INetworkDiagramProps) {
     super(props)
 
     // const storedGraphData = localStorage.getItem('storedGraphData')
 
-    // if (storedGraphData && !props.ipcRenderer) {
-    //   const parsed = JSON.parse(storedGraphData)
-    //   this.state = {
-    //     // @ts-ignore
-    //     layout: GraphLayout.fromJSON(config, entityManager, parsed.layout),
-    //     viewport: Viewport.fromJSON(config, parsed.viewport),
-    //   }
-    // } else {
+    if (props.data) {
+      this.state = {
+        // @ts-ignore
+        layout: GraphLayout.fromJSON(config, entityManager, props.data.layout),
+        viewport: Viewport.fromJSON(config, props.data.viewport),
+      }
+    } else {
       this.state = {
         // @ts-ignore
         layout: new GraphLayout(config, entityManager),
         viewport: new Viewport(config)
       }
-    // }
+    }
 
     this.updateLayout = this.updateLayout.bind(this);
     this.updateViewport = this.updateViewport.bind(this);
