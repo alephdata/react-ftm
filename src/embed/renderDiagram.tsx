@@ -1,18 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import NetworkDiagram from './NetworkDiagram';
-
-const fetchExternal = (dataURL: string) => {
-  return new Promise((resolve, reject) => {
-    const data = fetch('https://jsonplaceholder.typicode.com/posts/1')
-      .then(response => response.json())
-      .then(json => resolve(json))
-      .catch(error => reject(error));
-  })
-}
+import { fetchExternalData, fetchLocalData } from './common';
 
 export const renderDiagram = async (id: string, type: string, dataURL?: string, config?: any) => {
-  const data = dataURL ? await fetchExternal(dataURL) : require('./sample.vis');
+  let data;
+  if (dataURL) {
+    data = await fetchExternalData(dataURL);
+  } else {
+    data = fetchLocalData() || require('./sample.vis');
+  }
 
   let DiagramElem;
   switch (type) {
@@ -21,8 +18,17 @@ export const renderDiagram = async (id: string, type: string, dataURL?: string, 
       break;
   }
 
+  let domElem = document.getElementById(id);
+  if (!domElem) {
+    domElem = document.createElement('div');
+    domElem.setAttribute('id', id);
+    document.body.appendChild(domElem);
+  }
+
   ReactDOM.render(
-    <DiagramElem data={data} config={config} />,
-    document.getElementById(id)
+    <div {...config?.containerProps}>
+      <DiagramElem data={data} config={config} />
+    </div>,
+    domElem
   );
 }

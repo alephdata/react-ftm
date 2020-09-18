@@ -17,7 +17,7 @@ export default class NetworkDiagram extends React.Component <INetworkDiagramProp
   constructor(props: INetworkDiagramProps) {
     super(props)
 
-    // const storedGraphData = localStorage.getItem('storedGraphData')
+    console.log('props are', props)
 
     if (props.data) {
       this.state = {
@@ -40,14 +40,16 @@ export default class NetworkDiagram extends React.Component <INetworkDiagramProp
   updateLayout(layout: GraphLayout, historyModified: boolean = false) {
     this.setState({'layout': layout})
 
-    // if (historyModified) {
-    //   this.saveToLocalStorage({ layout });
-    // }
+    if (this.props.config?.writeable && historyModified) {
+      this.saveToLocalStorage({ layout });
+    }
   }
 
   updateViewport(viewport: Viewport) {
     this.setState({'viewport': viewport})
-    // this.saveToLocalStorage({ viewport });
+    if (this.props.config?.writeable) {
+      this.saveToLocalStorage({ viewport });
+    }
   }
 
   saveToLocalStorage({ layout, viewport }: { layout?: GraphLayout, viewport?: Viewport }) {

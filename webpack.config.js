@@ -41,9 +41,7 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin({
-      title: 'Embed Dev',
-    }),
+    new HtmlWebpackPlugin(),
   ],
   output: {
     filename: '[name].js',
