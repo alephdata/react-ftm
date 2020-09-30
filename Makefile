@@ -5,8 +5,8 @@ all: build
 install:
 	npm install && npm link
 
-dist:
-	translate && npm run build
+dist: translate
+	npm run build
 
 clean:
 	rm -rf node_modules dist
