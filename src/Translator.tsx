@@ -9,9 +9,13 @@ export function withTranslator<T>(
     render() {
       const { locale, ...rest } = this.props;
 
+      //  override arabic locale to marocan version
+      // We want all dates and numbers in latin instead of default ar eastern digits
+      const modifiedLocale = locale === "ar" ? "ar-ma" : locale;
+
       return (
         <IntlProvider
-          locale={locale || "en"}
+          locale={modifiedLocale || "en"}
           key={locale || "en"}
           messages={translations[locale || "en"]}
         >
