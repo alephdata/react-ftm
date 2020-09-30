@@ -11,6 +11,7 @@ import {
 
 export interface IEntityManagerProps {
   model?: Model,
+  entities: Array<IEntityDatum>
   namespace?: Namespace,
   createEntity?: (entity: IEntityDatum) => Entity,
   updateEntity?: (entity: Entity) => void,
@@ -67,6 +68,10 @@ export class EntityManager {
       this.overload.createEntity(entity);
     }
     return entity;
+  }
+
+  addEntities(entities: Array<Entity>) {
+    entities.map(e => this.entities.set(e.id, e));
   }
 
   updateEntity(entity: Entity) {

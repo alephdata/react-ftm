@@ -15,7 +15,6 @@ import { EdgeCreateDialog, GroupingCreateDialog, SettingsDialog, VertexCreateDia
 import { EdgeType } from './types';
 import { filterVerticesByText, modes, showSuccessToast, showWarningToast } from './utils'
 
-
 import './VisGraph.scss';
 
 const messages = defineMessages({
@@ -67,13 +66,13 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
 
   constructor(props: IVisGraphProps) {
     super(props)
-    const { config, externalFilterText, layout, viewport, writeable } = props
+    const { config, externalFilterText, layout, entities, viewport, writeable } = props
 
     this.history = new History();
     this.svgRef = React.createRef()
 
     if (layout) {
-      this.history.push({layout:layout.toJSON()});
+      this.history.push({ layout:layout.toJSON(), entities });
     }
 
     this.state = {
@@ -181,7 +180,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
       entityManager.applyEntityChanges(entityChanges, factor);
     }
 
-    this.updateLayout(GraphLayout.fromJSON(config, entityManager, layout), null, { forceSaveUpdate: true })
+    this.updateLayout(GraphLayout.fromJSON(config, layout), null, { forceSaveUpdate: true })
   }
 
   addVertex(options?: any) {

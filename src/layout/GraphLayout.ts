@@ -7,13 +7,11 @@ import { Grouping } from './Grouping'
 import { Point } from './Point';
 import { Rectangle } from './Rectangle';
 import { forceLayout } from './';
-import { EntityManager } from '../EntityManager';
 import { ISettingsData, Settings } from './Settings';
 import { GraphConfig } from '../GraphConfig';
 import { matchText } from "../utils";
 
 export interface IGraphLayoutData {
-  entities: Array<IEntityDatum>
   vertices: Array<any>
   edges: Array<any>
   groupings?: Array<any>
@@ -27,25 +25,18 @@ export type GraphElement = Vertex | Edge
 
 export class GraphLayout {
   public readonly config: GraphConfig
-  public readonly entityManager: EntityManager
   vertices = new Map<string, Vertex>()
   edges = new Map<string, Edge>()
-  entities = new Map<string, Entity>()
   groupings = new Map<string, Grouping>()
   selection = new Array<string>()
   settings = new Settings()
   private hasDraggedSelection = false
 
-  constructor(config: GraphConfig, entityManager: EntityManager) {
+  constructor(config: GraphConfig) {
     this.config = config;
-    this.entityManager = entityManager;
 
     this.addVertex = this.addVertex.bind(this);
     this.addEdge = this.addEdge.bind(this);
-    this.addEntities = this.addEntities.bind(this);
-    this.createEntity = this.createEntity.bind(this);
-    this.removeEntity = this.removeEntity.bind(this);
-    this.getEntitySuggestions = this.getEntitySuggestions.bind(this);
     this.isGroupingSelected = this.isGroupingSelected.bind(this);
   }
 
@@ -85,10 +76,10 @@ export class GraphLayout {
     }
   }
 
-  private generate(): void {
+  private generate(entities: Array<IEntityDatum>): void {
     this.edges.forEach(edge => edge.garbage = true);
     this.vertices.forEach(vertex => vertex.garbage = true);
-    this.entities.forEach((entity) => {
+    entities.forEach((entity) => {
       if (entity.schema.edge) {
         const sourceProperty = entity.schema.getProperty(entity.schema.edge.source)
         const targetProperty = entity.schema.getProperty(entity.schema.edge.target)
@@ -136,40 +127,6 @@ export class GraphLayout {
     })
     this.edges.forEach(edge => edge.garbage && this.edges.delete(edge.id));
     this.vertices.forEach(vertex => vertex.garbage && this.vertices.delete(vertex.id));
-  }
-
-  createEntity(entityData: any) {
-    return this.entityManager.createEntity(entityData);
-  }
-
-  addEntities(entities: Array<Entity>, center?: Point) {
-    entities.map(e => this.entities.set(e.id, e));
-    this.layout(center);
-    this.selectByEntities(entities);
-  }
-
-  updateEntity(entity: Entity) {
-    this.entities.set(entity.id, entity)
-    this.layout()
-
-    this.entityManager.updateEntity(entity);
-
-    return entity;
-  }
-
-  removeEntity(entityId: string, propagate?: boolean) {
-    this.entities.delete(entityId)
-    if (propagate) {
-      this.entityManager.deleteEntity(entityId);
-    }
-  }
-
-  getEntities(): Entity[] {
-    return Array.from(this.entities.values())
-  }
-
-  hasEntity(entity: Entity): boolean {
-    return this.entities.has(entity.id);
   }
 
   addGrouping(grouping: Grouping) {
@@ -234,20 +191,6 @@ export class GraphLayout {
     return this.getRelatedEntities(
       ...this.getSelectedVertices(), ...this.getSelectedEdges()
     )
-  }
-
-  getEntitySuggestions(query: string, schemata?: Array<Schema>): Promise<Entity[]> {
-    const predicate = (e: Entity) => {
-      const schemaMatch = !schemata || e.schema.isAny(schemata);
-      const textMatch = matchText(e.getCaption() || '', query);
-      return schemaMatch && textMatch;
-    }
-
-    const entities = this.getEntities()
-      .filter(predicate)
-      .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
-
-    return new Promise((resolve) => resolve(entities));
   }
 
   getSelectedGroupings(): Grouping[] {
@@ -476,8 +419,8 @@ export class GraphLayout {
     return Rectangle.fromPoints(...points);
   }
 
-  layout(center?: Point) {
-    this.generate()
+  layout(entities: Array<Entity>, center?: Point) {
+    this.generate(entities)
     const vertices = this.getVertices().filter(v => !v.isHidden())
     const edges = this.getEdges();
     const groupings = this.getGroupings();
@@ -490,12 +433,11 @@ export class GraphLayout {
   }
 
   update(withData:IGraphLayoutData):GraphLayout{
-    return GraphLayout.fromJSON(this.config, this.entityManager, withData)
+    return GraphLayout.fromJSON(this.config, withData)
   }
 
   toJSON(): IGraphLayoutData {
     return {
-      entities: this.getEntities().map((entity) => entity.toJSON()),
       vertices: this.getVertices().map((vertex) => vertex.toJSON()),
       edges: this.getEdges().map((edge) => edge.toJSON()),
       groupings: this.getGroupings().map((grouping) => grouping.toJSON()),
@@ -504,29 +446,26 @@ export class GraphLayout {
     }
   }
 
-  static fromJSON(config: GraphConfig, entityManager: EntityManager, data: any): GraphLayout {
-    const layoutData = data as IGraphLayoutData
-    const layout = new GraphLayout(config, entityManager)
+  static fromJSON(config: GraphConfig, data: IGraphLayoutData): GraphLayout {
+    const { vertices, edges, settings, selection, groupings } = data;
 
-    layoutData.entities.forEach((edata) => {
-      layout.entities.set(edata.id, entityManager.model.getEntity(edata))
-    })
+    const layout = new GraphLayout(config)
 
-    layoutData.vertices.forEach((vdata) => {
+    vertices.forEach((vdata) => {
       const vertex = Vertex.fromJSON(layout, vdata)
       layout.vertices.set(vertex.id, vertex)
     })
 
-    layoutData.edges.forEach((edata) => {
+    edges.forEach((edata) => {
       const edge = Edge.fromJSON(layout, edata)
       layout.edges.set(edge.id, edge)
     })
-    layout.settings = Settings.fromJSON(layoutData.settings);
+    layout.settings = Settings.fromJSON(settings);
 
     layout.layout()
 
-    if (layoutData.groupings) {
-      layoutData.groupings.forEach((gdata) => {
+    if (groupings) {
+      groupings.forEach((gdata) => {
         const grouping = Grouping.fromJSON(layout, gdata)
         layout.groupings.set(grouping.id, grouping)
       })
@@ -534,7 +473,7 @@ export class GraphLayout {
       layout.groupings = new Map()
     }
 
-    layout.selection = layoutData.selection || []
+    layout.selection = selection || []
 
     return layout
   }
