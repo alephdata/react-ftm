@@ -191,7 +191,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   onEdgeCreate(source: Entity, target: Entity, type: EdgeType) {
-    const { layout, viewport } = this.props;
+    const { entityManager, layout, viewport } = this.props;
     const sourceVertex = layout.getVertexByEntity(source);
     const targetVertex = layout.getVertexByEntity(target);
     if (!sourceVertex || !targetVertex) {
@@ -202,7 +202,8 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     let edge;
     if (type.property && source) {
       source.setProperty(type.property, target)
-      layout.updateEntity(source);
+      entityManager.updateEntity(source);
+      layout.layout(entityManager.entities);
       entityChanges.updated = [source]
       edge = Edge.fromValue(layout, type.property, sourceVertex, targetVertex)
     }
@@ -214,7 +215,8 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
           [type.schema.edge.target]: target.id,
         }
       });
-      layout.addEntities([entity]);
+      entityManager.addEntities([entity]);
+      layout.layout(entityManager.entities);
       entityChanges.created = [entity];
       edge = Edge.fromEntity(layout, entity, sourceVertex, targetVertex)
     }
@@ -265,8 +267,10 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
         .map((entityData: IEntityDatum) => new Entity(entityManager.model, entityData));
 
       const before = layout.getVisibleElementCount();
-      layout.addEntities(entities as Array<Entity>, viewport.center);
-      layout.layout();
+      entityManager.addEntities(entities as Array<Entity>);
+      layout.layout(entityManager.entities, viewport.center);
+      layout.selectByEntities(entities);
+
       const after = layout.getVisibleElementCount();
       const vDiff = after.vertices - before.vertices;
       const eDiff = after.edges - before.edges;
@@ -310,9 +314,13 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   removeSelection() {
-    const { layout } = this.props
-    const removedEntities = layout.removeSelection()
-    this.updateLayout(layout, { deleted: removedEntities }, { modifyHistory:true })
+    const { entityManager, layout } = this.props;
+
+    const entitiesToRemove = layout.removeSelection();
+    entityManager.removeEntities(entitiesToRemove, true);
+    layout.layout();
+
+    this.updateLayout(layout, { deleted: entitiesToRemove }, { modifyHistory:true })
   }
 
   ungroupSelection() {
@@ -407,7 +415,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
             </div>
             {showSidebar && (
               <div className="VisGraph__sidebar">
-                <Sidebar {...layoutContext} writeable={writeable} searchText={searchText} isOpen={showSidebar} />
+                <Sidebar {...layoutContext} entityManager={entityManager} writeable={writeable} searchText={searchText} isOpen={showSidebar} />
               </div>
             )}
             {tableView && (
@@ -444,8 +452,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
               isOpen={interactionMode === modes.EDGE_CREATE}
               toggleDialog={this.setInteractionMode}
               onSubmit={this.onEdgeCreate}
-              model={entityManager.model}
-              getEntitySuggestions={layout.getEntitySuggestions}
+              entityManager={entityManager}
               intl={intl}
             />
             <VertexMenu

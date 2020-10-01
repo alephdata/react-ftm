@@ -14,6 +14,7 @@ import c from 'classnames';
 
 interface ITableViewPanelProps {
   layout: GraphLayout
+  entityManager: EntityManager
   viewport: Viewport
   schema: Schema
   updateLayout: GraphUpdateHandler,
@@ -38,11 +39,11 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
     };
 
     this.localEntityManager = new EntityManager({
-      model: props.layout.entityManager.model,
-      namespace: props.layout.entityManager.namespace,
+      model: props.entityManager.model,
+      namespace: props.entityManager.namespace,
       createEntity: this.onEntityCreate.bind(this),
       updateEntity: this.onEntityUpdate.bind(this),
-      getEntitySuggestions: props.layout.getEntitySuggestions.bind(this),
+      getEntitySuggestions: (queryText, schemata) => props.entityManager.getEntitySuggestions(true, queryText, schemata),
       resolveEntityReference: this.resolveEntityReference.bind(this),
     });
 
@@ -55,10 +56,10 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
   }
 
   getEntities(schema: Schema) {
-    const { layout } = this.props;
+    const { entityManager } = this.props;
     const { sort } = this.state;
 
-    const entities = layout.getEntities()
+    const entities = entityManager.getEntities()
       .filter(e => e.schema.name === schema.name);
 
     if (sort) {
@@ -96,17 +97,19 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
   }
 
   onEntityDelete(entity: Entity) {
-    const { layout, updateLayout } = this.props;
-    layout.removeEntity(entity.id, true);
+    const { entityManager, layout, updateLayout } = this.props;
+    entityManager.removeEntities([entity.id]);
+    entityManager.deleteEntity(entity.id, true);
 
     updateLayout(layout, null, { modifyHistory: false });
     this.addChangeToBatch('deleted', entity);
   }
 
   onEntityUpdate(entity: Entity) {
-    const { layout, updateLayout } = this.props;
+    const { entityManager, layout, updateLayout } = this.props;
 
-    layout.updateEntity(entity);
+    entityManager.updateEntity(entity);
+    layout.layout(entityManager.entities);
     updateLayout(layout, null, { modifyHistory: false });
     this.addChangeToBatch('updated', entity);
   }
@@ -127,10 +130,12 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
   }
 
   propagateToHistory() {
-    const { layout, updateLayout, viewport } = this.props;
+    const { entityManager, layout, updateLayout, viewport } = this.props;
     if (!_.isEmpty(this.batchedChanges)) {
       if (this.batchedChanges.created) {
-        layout.addEntities(this.batchedChanges.created, viewport.center);
+        entityManager.addEntities(this.batchedChanges.created);
+        layout.layout(entityManager.entities, viewport.center);
+        layout.selectByEntities(this.batchedChanges.created);
       }
       updateLayout(layout, this.batchedChanges, { modifyHistory: true });
       this.batchedChanges = {};

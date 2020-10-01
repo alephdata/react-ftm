@@ -70,18 +70,39 @@ export class EntityManager {
     return entity;
   }
 
+  getEntities(): Entity[] {
+    return Array.from(this.entities.values())
+  }
+
+  hasEntity(entity: Entity): boolean {
+    return this.entities.has(entity.id);
+  }
+
   addEntities(entities: Array<Entity>) {
     entities.map(e => this.entities.set(e.id, e));
   }
 
+  removeEntities(entityIds: Array<string>, propagate?: boolean) {
+    entities.map(e => {
+      this.entities.delete(entityId);
+      if (propagate) {
+        this.deleteEntity(entityId, true);
+      }
+    });
+  }
+
   updateEntity(entity: Entity) {
+    this.entities.set(entity.id, entity)
+
     if (this.overload?.updateEntity) {
       this.overload.updateEntity(entity);
     }
+
+    return entity;
   }
 
-  deleteEntity(entityId: string) {
-    if (this.overload?.deleteEntity) {
+  deleteEntity(entityId: string, propagate?: boolean) {
+    if (propagate && this.overload?.deleteEntity) {
       this.overload.deleteEntity(entityId);
     }
   }
@@ -99,7 +120,21 @@ export class EntityManager {
     }
   }
 
-  async getEntitySuggestions(queryText: string, schemata?: Array<Schema>) {
+  async getEntitySuggestions(local: boolean, queryText: string, schemata?: Array<Schema>) {
+    if (local) {
+      const predicate = (e: Entity) => {
+        const schemaMatch = !schemata || e.schema.isAny(schemata);
+        const textMatch = matchText(e.getCaption() || '', query);
+        return schemaMatch && textMatch;
+      }
+
+      const entities = this.getEntities()
+        .filter(predicate)
+        .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
+
+      return new Promise((resolve) => resolve(entities));
+    }
+
     if (this.overload?.getEntitySuggestions) {
       const suggestions = await this.overload.getEntitySuggestions(queryText, schemata);
       return suggestions;

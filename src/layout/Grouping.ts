@@ -59,7 +59,7 @@ export class Grouping {
   }
 
   getEntities(): Array<Entity> {
-    return this.layout.getRelatedEntities(...this.getVertices())
+    return this.layout.getRelatedEntities(...this.getVertices());
   }
 
   getBoundingRect(): Rectangle {

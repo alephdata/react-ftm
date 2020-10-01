@@ -43,8 +43,9 @@ export class Sidebar extends React.Component<ISidebarProps> {
   }
 
   appendToLayout(entity: Entity) {
-    const { layout } = this.props
-    layout.updateEntity(entity);
+    const { layout, entityManager } = this.props
+    entityManager.updateEntity(entity);
+    layout.layout(entityManager.entities);
     this.props.updateLayout(layout, { updated: [entity] }, { modifyHistory:true });
   }
 
@@ -93,7 +94,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
   }
 
   render() {
-    const { intl, isOpen, layout, writeable, searchText } = this.props
+    const { entityManager, intl, isOpen, layout, writeable, searchText } = this.props
     const selection = layout.getSelectedEntities()
     const selectedGroupings = layout.getSelectedGroupings()
     let contents, searchResultsText;
@@ -105,6 +106,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
         vertexRef = layout.getVertexByEntity(entity)
       }
       contents = <EntityViewer
+        entityManager={entityManager}
         entity={entity}
         onEntityChanged={this.appendToLayout}
         vertexRef={vertexRef}

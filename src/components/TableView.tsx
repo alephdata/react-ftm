@@ -38,8 +38,8 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
   constructor(props: ITableViewProps) {
     super(props);
 
-    const { layout } = this.props;
-    const schemata = layout.getEntities()
+    const { entityManager } = this.props;
+    const schemata = entityManager.getEntities()
       .map(entity => entity.schema)
       .filter((schema, index, list) => !schema.isEdge && list.indexOf(schema) === index)
       .sort((a, b) => a.label.localeCompare(b.label));

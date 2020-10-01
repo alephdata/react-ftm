@@ -19,6 +19,7 @@ interface IEntityViewerProps {
   onVertexRadiusSelected: (vertex: Vertex, radius: number) => void
   writeable: boolean
   layout: GraphLayout
+  entityManager: EntityManager
 }
 
 interface IEntityViewerState {
@@ -61,9 +62,9 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   fetchEntitySuggestions(query: string, schemata?: Array<FTMSchema>): Promise<FTMEntity[]> {
-    const { layout } = this.props;
+    const { entityManager } = this.props;
 
-    const entities = layout.getEntities()
+    const entities = entityManager.getEntities()
       .filter(e => {
         const schemaMatch = !schemata || e.schema.isAny(schemata);
         const textMatch = matchText(e.getCaption() || '', query);

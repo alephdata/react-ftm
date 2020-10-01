@@ -94,8 +94,8 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
     const { entityManager } = this.props;
     if (entityManager.hasSuggest) {
       this.setState({ isFetchingSuggestions: true });
-      const suggestions = await entityManager.getEntitySuggestions(query, schemata);
-      const filteredSuggestions = suggestions.filter((entity: FTMEntity) => !layout.hasEntity(entity));
+      const suggestions = await entityManager.getEntitySuggestions(false, query, schemata);
+      const filteredSuggestions = suggestions.filter((entity: FTMEntity) => !entityManager.hasEntity(entity));
       this.setState({ isFetchingSuggestions: false, suggestions: filteredSuggestions });
     }
   }
@@ -128,7 +128,9 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
       } else {
         entity = entityData;
       }
-      layout.addEntities([entity], center);
+      entityManager.addEntities([entity]);
+      layout.layout(entityManager.entities, center);
+      layout.selectByEntities([entity]);
     } catch (e) {
       this.setState({ isProcessing: false })
       return;

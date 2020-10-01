@@ -41,8 +41,7 @@ interface IEdgeCreateDialogProps extends WrappedComponentProps {
   target?: Entity
   isOpen: boolean,
   toggleDialog: () => any
-  model: Model
-  getEntitySuggestions: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>
+  entityManager: EntityManager
   onSubmit: (source: Entity, target: Entity, type: EdgeType) => void
 }
 
@@ -73,9 +72,9 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   }
 
   componentDidMount() {
-    const { model, source, target } = this.props
+    const { entityManager, source, target } = this.props
     this.setState({ source, target })
-    this.types = EdgeType.getAll(model)
+    this.types = EdgeType.getAll(entityManager.model)
   }
 
   componentDidUpdate(prevProps: IEdgeCreateDialogProps) {
@@ -184,13 +183,13 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
 
   async fetchEntitySuggestions(query: string, stateKey: string) {
     const { source, target } = this.state;
-    const { getEntitySuggestions, model } = this.props;
+    const { entityManager, getEntitySuggestions } = this.props;
 
-    const schemata = model.getSchemata()
+    const schemata = entityManager.model.getSchemata()
       .filter(schema => schema.isThing() && !schema.generated && !schema.abstract)
     // @ts-ignore
     this.setState({ [stateKey]: { isProcessing: true, results: [] } });
-    const results = await getEntitySuggestions(query, schemata);
+    const results = await entityManager.getEntitySuggestions(true, query, schemata);
     // @ts-ignore
     this.setState({ [stateKey]: { isProcessing: false, results } });
   }

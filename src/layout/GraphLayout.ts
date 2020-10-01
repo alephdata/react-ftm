@@ -342,32 +342,15 @@ export class GraphLayout {
     })
   }
 
-  dropSelection() {
-    const vertices = this.getSelectedVertices();
-
-    vertices.forEach((vertex) => {
-      this.vertices.set(vertex.id, vertex.snapPosition(vertex.position))
-      this.addVertexToGroupings(vertex)
-      this.removeSubgroups()
-    });
-
-    if (this.hasDraggedSelection) {
-      this.hasDraggedSelection = false;
-      return true;
-    }
-  }
-
   removeSelection() {
-    const removedEntities: Array<Entity | undefined> = [];
+    const entitiesToRemove: Array<Entity | undefined> = [];
 
     this.getSelectedVertices().forEach((vertex) => {
       if (vertex.entityId) {
-        removedEntities.push(vertex.getEntity());
-        this.removeEntity(vertex.entityId, true);
+        entitiesToRemove.push(vertex.getEntity());
         this.edges.forEach((edge) => {
           if (edge.isEntity() && edge.isLinkedToVertex(vertex) && edge.entityId) {
-            removedEntities.push(edge.getEntity());
-            this.removeEntity(edge.entityId, true);
+            entitiesToRemove.push(edge.getEntity());
           }
         })
       } else {
@@ -384,17 +367,27 @@ export class GraphLayout {
       const entity = edge.getEntity()
       if (entity) {
         if (edge.isEntity()) {
-          removedEntities.push(edge.getEntity());
-          this.removeEntity(entity.id, true);
-        } else {
-          // TODO: Remove value
+          entitiesToRemove.push(edge.getEntity());
         }
       }
-    })
+    });
 
-    this.layout()
+    return entitiesToRemove;
+  }
 
-    return removedEntities;
+  dropSelection() {
+    const vertices = this.getSelectedVertices();
+
+    vertices.forEach((vertex) => {
+      this.vertices.set(vertex.id, vertex.snapPosition(vertex.position))
+      this.addVertexToGroupings(vertex)
+      this.removeSubgroups()
+    });
+
+    if (this.hasDraggedSelection) {
+      this.hasDraggedSelection = false;
+      return true;
+    }
   }
 
   ungroupSelection() {
@@ -420,7 +413,7 @@ export class GraphLayout {
   }
 
   layout(entities: Array<Entity>, center?: Point) {
-    this.generate(entities)
+    this.generate(entities);
     const vertices = this.getVertices().filter(v => !v.isHidden())
     const edges = this.getEdges();
     const groupings = this.getGroupings();
