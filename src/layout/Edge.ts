@@ -13,6 +13,7 @@ interface IEdgeData {
   labelPosition?: IPointData
   entityId?: string
   propertyQName?: string
+  directed: boolean
 }
 
 export class Edge {
@@ -25,6 +26,7 @@ export class Edge {
   public labelPosition?: Point
   public readonly entityId?: string
   public readonly propertyQName?: string
+  public readonly directed: boolean = false
 
   // temp flag for disposal of outdated nodes
   public garbage: boolean = false
@@ -62,21 +64,7 @@ export class Edge {
   }
 
   isEntity(): boolean {
-    return !!(this.entityId && !this.propertyQName && this.layout.entities.get(this.entityId))
-  }
-
-  getEntity(): Entity | undefined {
-    if (this.entityId) {
-      return this.layout.entities.get(this.entityId)
-    }
-  }
-
-  isDirected(): boolean {
-    if (this.isEntity()) {
-      const entity = this.getEntity();
-      return entity?.schema?.edge?.directed || false;
-    }
-    return false;
+    return !!(this.entityId && !this.propertyQName)
   }
 
   getRect(): Rectangle {
@@ -130,7 +118,8 @@ export class Edge {
       targetId: this.targetId,
       entityId: this.entityId,
       labelPosition: this.labelPosition && this.labelPosition.toJSON(),
-      propertyQName: this.propertyQName
+      propertyQName: this.propertyQName,
+      directed: this.directed
     }
   }
 
@@ -145,7 +134,8 @@ export class Edge {
       label: entity.getEdgeCaption(),
       sourceId: source.id,
       targetId: target.id,
-      entityId: entity.id
+      entityId: entity.id,
+      directed: entity.schema?.edge?.directed || false,
     })
   }
 
@@ -160,7 +150,8 @@ export class Edge {
       sourceId: source.id,
       targetId: target.id,
       entityId: source.entityId,
-      propertyQName: property.qname
+      propertyQName: property.qname,
+      directed: false
     })
   }
 

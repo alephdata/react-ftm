@@ -1,17 +1,17 @@
 import * as React from 'react';
-import { IconRegistry } from '@alephdata/followthemoney'
+import { Entity, IconRegistry } from '@alephdata/followthemoney'
 import { Colors } from '@blueprintjs/core'
-import { Vertex } from "../layout/Vertex";
 
 interface IIconRendererProps {
-  vertex:Vertex
+  entity:Entity
   radius: number
 }
 
 export class IconRenderer extends React.PureComponent<IIconRendererProps>{
   render(){
-    const { vertex, radius } = this.props
-    const entity  = vertex.getEntity()
+    const { entity, radius } = this.props
+
+    console.log('entity is', entity)
     if(!entity) {
       return null
     }

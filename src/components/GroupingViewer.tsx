@@ -4,6 +4,7 @@ import {Classes, Divider, Icon, H2, UL} from '@blueprintjs/core'
 import {Entity, Property} from '@alephdata/followthemoney';
 import { ColorPicker, PropertySelect } from '../editors';
 import { Vertex, Grouping } from '../layout'
+import { GraphContext } from '../GraphContext'
 import {EntityList} from "./EntityList";
 import c from 'classnames';
 
@@ -18,15 +19,15 @@ const messages = defineMessages({
 
 interface IGroupingViewerProps extends WrappedComponentProps {
   grouping: Grouping,
-  entites: Array<any>
   onEntitySelected: (entity:Entity) => void
   onEntityRemoved: (grouping: Grouping, entity:Entity) => void
   onColorSelected: (grouping: Grouping, color: string) => void
   writeable: boolean
 }
 
-export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
+class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
   render() {
+    const { entityManager } = this.context;
     const { grouping, intl, onEntitySelected, onEntityRemoved, onColorSelected, writeable } = this.props;
     return (
       <div className='GroupingViewer'>
@@ -49,7 +50,7 @@ export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
           </div>
         </div>
         <EntityList
-          entities={grouping.getEntities()}
+          entities={entityManager.getEntities(grouping.getEntityIds())}
           onEntitySelected={onEntitySelected}
           onEntityRemoved={writeable ? (entity => onEntityRemoved(grouping, entity)) : undefined}
         />
@@ -57,3 +58,8 @@ export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
     )
   }
 }
+
+
+GroupingViewer.contextType = GraphContext;
+
+export { GroupingViewer };

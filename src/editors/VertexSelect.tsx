@@ -27,8 +27,10 @@ const TypedSelect = Select.ofType<Vertex>();
 
 class VertexSelect extends React.PureComponent<IVertexSelectProps> {
   getVertexIcon = (vertex: Vertex) => {
+    const { entityManager } = this.context;
+
     if (vertex.isEntity()) {
-      const entity = vertex.getEntity()
+      const entity = entityManager.getEntity(vertex.entityId)
       if (entity) {
         return <Schema.Icon schema={entity.schema} />
       }

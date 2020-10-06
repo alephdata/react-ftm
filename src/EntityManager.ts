@@ -7,6 +7,7 @@ import {
   Schema,
   IEntityDatum
 } from '@alephdata/followthemoney'
+import { matchText } from "./utils";
 
 
 export interface IEntityManagerProps {
@@ -26,6 +27,7 @@ export class EntityManager {
   public readonly namespace?: Namespace
   public readonly hasExpand: boolean = false
   public readonly hasSuggest: boolean = false
+  entities = new Map<string, Entity>()
   private overload: any = {}
 
   constructor(props?: IEntityManagerProps) {
@@ -40,6 +42,8 @@ export class EntityManager {
       this.model = new Model(defaultModel);
     }
 
+    this.getEntity = this.getEntity.bind(this);
+    this.getEntities = this.getEntities.bind(this);
     this.getEntitySuggestions = this.getEntitySuggestions.bind(this);
     this.resolveEntityReference = this.resolveEntityReference.bind(this);
   }
@@ -70,8 +74,16 @@ export class EntityManager {
     return entity;
   }
 
-  getEntities(): Entity[] {
-    return Array.from(this.entities.values())
+  getEntities(ids?: Array<string>): Entity[] {
+    if (ids) {
+      return ids.map(id => this.getEntity(id)).filter(e => e !== undefined) as Entity[];
+    } else {
+      return Array.from(this.entities.values());
+    }
+  }
+
+  getEntity(entityId: string): Entity | undefined {
+    return this.entities.get(entityId);
   }
 
   hasEntity(entity: Entity): boolean {
@@ -83,10 +95,10 @@ export class EntityManager {
   }
 
   removeEntities(entityIds: Array<string>, propagate?: boolean) {
-    entities.map(e => {
-      this.entities.delete(entityId);
+    entityIds.map(id => {
+      this.entities.delete(id);
       if (propagate) {
-        this.deleteEntity(entityId, true);
+        this.deleteEntity(id, true);
       }
     });
   }
@@ -124,7 +136,7 @@ export class EntityManager {
     if (local) {
       const predicate = (e: Entity) => {
         const schemaMatch = !schemata || e.schema.isAny(schemata);
-        const textMatch = matchText(e.getCaption() || '', query);
+        const textMatch = matchText(e.getCaption() || '', queryText);
         return schemaMatch && textMatch;
       }
 
@@ -149,5 +161,19 @@ export class EntityManager {
     created && created.forEach((entity: Entity) => factor > 0 ? this.updateEntity(entity) : this.deleteEntity(entity.id));
     updated && updated.forEach((entity: Entity) => this.updateEntity(entity));
     deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntity(entity.id) : this.updateEntity(entity));
+  }
+
+  toJSON(): Array<IEntityDatum> {
+    return this.getEntities().map(entity => entity.toJSON());
+  }
+
+  static fromJSON(props: any, entitiesData: Array<IEntityDatum>): EntityManager {
+    const entityManager = new EntityManager(props);
+
+    const entities = entitiesData.map((entityDatum: IEntityDatum) => new Entity(entityManager.model, entityDatum));
+
+    entityManager.addEntities(entities);
+
+    return entityManager
   }
 }

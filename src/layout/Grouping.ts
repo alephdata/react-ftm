@@ -58,8 +58,8 @@ export class Grouping {
       .map((vertexId) => this.layout.vertices.get(vertexId)) as Vertex[]
   }
 
-  getEntities(): Array<Entity> {
-    return this.layout.getRelatedEntities(...this.getVertices());
+  getEntityIds(): Array<string> {
+    return this.layout.getEntityIds(...this.getVertices());
   }
 
   getBoundingRect(): Rectangle {

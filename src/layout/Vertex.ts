@@ -55,13 +55,7 @@ export class Vertex {
   }
 
   isEntity(): boolean {
-    return !!(this.entityId && this.layout.entities.get(this.entityId))
-  }
-
-  getEntity(): Entity | undefined {
-    if (this.entityId) {
-      return this.layout.entities.get(this.entityId)
-    }
+    return !!(this.entityId)
   }
 
   clone(): Vertex {
@@ -145,14 +139,11 @@ export class Vertex {
 
   static fromValue(layout: GraphLayout, property: Property, value: Value): Vertex | null {
     if (property.type.name === PropertyType.ENTITY || value instanceof Entity) {
-      if ('string' === typeof value) {
-        const entity = layout.entities.get(value)
-        if (!entity) {
-          return null;
-        }
-        return Vertex.fromEntity(layout, entity);
+      if (value instanceof Entity) {
+        return Vertex.fromEntity(layout, value);
+      } else {
+        return null;
       }
-      return Vertex.fromEntity(layout, value);
     }
     const type = property.type.name;
     return new Vertex(layout, {

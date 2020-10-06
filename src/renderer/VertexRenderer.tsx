@@ -2,6 +2,7 @@ import * as React from 'react'
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
 import { Colors } from '@blueprintjs/core';
 import { GraphConfig } from '../GraphConfig';
+import { GraphContext } from '../GraphContext';
 import { Point } from '../layout/Point'
 import { Vertex } from '../layout/Vertex'
 import { getRefMatrix, applyMatrix } from './utils';
@@ -28,7 +29,7 @@ interface IVertexRendererState {
   hovered: boolean
 }
 
-export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IVertexRendererState> {
+class VertexRenderer extends React.PureComponent<IVertexRendererProps, IVertexRendererState> {
   gRef: React.RefObject<SVGGElement>
 
   constructor(props: Readonly<IVertexRendererProps>) {
@@ -155,6 +156,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   render() {
+    const { entityManager } = this.context;
     const { vertex, config, selected, highlighted, interactionMode, writeable } = this.props
     const { x, y } = config.gridToPixel(vertex.position)
     const isEntity = vertex.isEntity()
@@ -185,9 +187,13 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
             onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}
             />
           <VertexLabelRenderer center={labelPosition} label={vertex.label} type={vertex.type} onClick={this.onClick} color={vertexColor}/>
-          <IconRenderer vertex={vertex} radius={vertexRadius}/>
+          <IconRenderer entity={entityManager.getEntity(vertex.entityId)} radius={vertexRadius}/>
         </g>
       </DraggableCore>
     );
   }
 }
+
+VertexRenderer.contextType = GraphContext;
+
+export { VertexRenderer };

@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { defineMessages } from 'react-intl';
+import { defineMessages, WrappedComponentProps } from 'react-intl';
 import { Entity } from '@alephdata/followthemoney';
 import { Drawer, Icon, Position } from "@blueprintjs/core";
-import { IGraphContext } from '../GraphContext'
+import { GraphContext } from '../GraphContext'
 import { EntityList, EntityViewer, GroupingViewer } from "./";
 import { Grouping, Vertex } from '../layout'
 import c from 'classnames';
@@ -24,13 +24,14 @@ const messages = defineMessages({
   },
 });
 
-export interface ISidebarProps extends IGraphContext {
+export interface ISidebarProps {
   searchText: string,
   writeable: boolean,
   isOpen: boolean
+  selectedEntities: Array<Entity>
 }
 
-export class Sidebar extends React.Component<ISidebarProps> {
+class Sidebar extends React.Component<ISidebarProps> {
 
   constructor(props: Readonly<ISidebarProps>) {
     super(props);
@@ -43,25 +44,25 @@ export class Sidebar extends React.Component<ISidebarProps> {
   }
 
   appendToLayout(entity: Entity) {
-    const { layout, entityManager } = this.props
+    const { layout, entityManager, updateLayout } = this.context
     entityManager.updateEntity(entity);
-    layout.layout(entityManager.entities);
-    this.props.updateLayout(layout, { updated: [entity] }, { modifyHistory:true });
+    layout.layout(entityManager.getEntities());
+    updateLayout(layout, { updated: [entity] }, { modifyHistory:true });
   }
 
   removeGroupingEntity(grouping: Grouping, entity: Entity) {
-    const { layout } = this.props
+    const { layout, updateLayout } = this.context
 
     const vertex = layout.getVertexByEntity(entity);
 
     if (vertex) {
       layout.groupings.set(grouping.id, grouping.removeVertex(vertex))
-      this.props.updateLayout(layout, null, { modifyHistory:true })
+      updateLayout(layout, null, { modifyHistory:true })
     }
   }
 
   setVertexColor(vertex: Vertex, color: string) {
-    const { layout, updateLayout } = this.props
+    const { layout, updateLayout } = this.context
     if (vertex) {
       layout.vertices.set(vertex.id, vertex.setColor(color))
       updateLayout(layout, null, { modifyHistory: true })
@@ -69,7 +70,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
   }
 
   setVertexRadius(vertex: Vertex, radius: number) {
-    const { layout, updateLayout } = this.props
+    const { layout, updateLayout } = this.context
     if (vertex) {
       layout.vertices.set(vertex.id, vertex.setRadius(radius))
       updateLayout(layout, null, { modifyHistory: true })
@@ -77,7 +78,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
   }
 
   setGroupingColor(grouping: Grouping, color: string) {
-    const { layout, updateLayout } = this.props
+    const { layout, updateLayout } = this.context
     if (grouping) {
       layout.groupings.set(grouping.id, grouping.setColor(color))
       updateLayout(layout, null, { modifyHistory:true });
@@ -85,54 +86,50 @@ export class Sidebar extends React.Component<ISidebarProps> {
   }
 
   onEntitySelected(entity:Entity){
-    const { layout } = this.props;
+    const { entityManager, layout, updateLayout } = this.context
     const vertexToSelect = layout.getVertexByEntity(entity);
     if(vertexToSelect) {
       layout.selectElement(vertexToSelect)
-      this.props.updateLayout(layout, null, { clearSearch: true });
+      updateLayout(layout, null, { clearSearch: true });
     }
   }
 
   render() {
-    const { entityManager, intl, isOpen, layout, writeable, searchText } = this.props
-    const selection = layout.getSelectedEntities()
+    const { entityManager, intl, layout } = this.context;
+    const { isOpen, writeable, searchText, selectedEntities } = this.props;
     const selectedGroupings = layout.getSelectedGroupings()
     let contents, searchResultsText;
 
-    if (selection.length === 1) {
-      const entity = selection[0]
+    if (selectedEntities.length === 1) {
+      const entity = selectedEntities[0]
       let vertexRef
       if (!entity.schema.edge) {
         vertexRef = layout.getVertexByEntity(entity)
       }
       contents = <EntityViewer
-        entityManager={entityManager}
         entity={entity}
         onEntityChanged={this.appendToLayout}
         vertexRef={vertexRef}
         onVertexColorSelected={this.setVertexColor}
         onVertexRadiusSelected={this.setVertexRadius}
         writeable={writeable}
-        layout={layout}
       />
       searchResultsText = intl.formatMessage(messages.search_found_one);
     } else if (!searchText && selectedGroupings.length === 1) {
       const grouping = selectedGroupings[0]
       contents = <GroupingViewer
         grouping={grouping}
-        entites={grouping.getEntities()}
         onEntitySelected={this.onEntitySelected}
         onEntityRemoved={this.removeGroupingEntity}
         onColorSelected={this.setGroupingColor}
         writeable={writeable}
         intl={intl}
       />
-    } else if (selection.length) {
-      contents = <EntityList entities={selection} onEntitySelected={this.onEntitySelected} />
-      searchResultsText = intl.formatMessage(messages.search_found_multiple, { count: selection.length });
+    } else if (selectedEntities.length) {
+      contents = <EntityList entities={selectedEntities} onEntitySelected={this.onEntitySelected} />
+      searchResultsText = intl.formatMessage(messages.search_found_multiple, { count: selectedEntities.length });
     } else {
-      const vertices = layout.getVertices().filter((v) => !v.isHidden())
-      const entities = vertices.map((v) => v.getEntity()).filter((e) => !!e)
+      const entities = entityManager.getEntities()
       contents = <EntityList entities={entities as Entity[]} onEntitySelected={this.onEntitySelected}/>
       searchResultsText = intl.formatMessage(messages.search_found_none);
     }
@@ -156,3 +153,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
     )
   }
 }
+
+Sidebar.contextType = GraphContext;
+
+export { Sidebar };

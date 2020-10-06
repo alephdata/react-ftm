@@ -66,13 +66,13 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
 
   constructor(props: IVisGraphProps) {
     super(props)
-    const { config, externalFilterText, layout, entities, viewport, writeable } = props
+    const { config, externalFilterText, layout, viewport, writeable } = props
 
     this.history = new History();
     this.svgRef = React.createRef()
 
     if (layout) {
-      this.history.push({ layout:layout.toJSON(), entities });
+      this.history.push({ layout:layout.toJSON() });
     }
 
     this.state = {
@@ -203,12 +203,12 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     if (type.property && source) {
       source.setProperty(type.property, target)
       entityManager.updateEntity(source);
-      layout.layout(entityManager.entities);
+      layout.layout(entityManager.getEntities());
       entityChanges.updated = [source]
       edge = Edge.fromValue(layout, type.property, sourceVertex, targetVertex)
     }
     if (type.schema && type.schema.edge && source && target) {
-      const entity = layout.createEntity({
+      const entity = entityManager.createEntity({
         schema: type.schema,
         properties: {
           [type.schema.edge.source]: source.id,
@@ -216,7 +216,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
         }
       });
       entityManager.addEntities([entity]);
-      layout.layout(entityManager.entities);
+      layout.layout(entityManager.getEntities());
       entityChanges.created = [entity];
       edge = Edge.fromEntity(layout, entity, sourceVertex, targetVertex)
     }
@@ -268,7 +268,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
 
       const before = layout.getVisibleElementCount();
       entityManager.addEntities(entities as Array<Entity>);
-      layout.layout(entityManager.entities, viewport.center);
+      layout.layout(entityManager.getEntities(), viewport.center);
       layout.selectByEntities(entities);
 
       const after = layout.getVisibleElementCount();
@@ -300,7 +300,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
 
     if (settings) {
       layout.settings = Settings.fromJSON(settings);
-      layout.layout();
+      layout.layout(entityManager.getEntities());
       this.updateLayout(layout, {}, { modifyHistory: true });
     }
   }
@@ -318,7 +318,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
 
     const entitiesToRemove = layout.removeSelection();
     entityManager.removeEntities(entitiesToRemove, true);
-    layout.layout();
+    layout.layout(entityManager.getEntities());
 
     this.updateLayout(layout, { deleted: entitiesToRemove }, { modifyHistory:true })
   }
@@ -351,15 +351,18 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
   render() {
     const { config, entityManager, intl, layout, locale, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, settingsDialogOpen, tableView, vertexMenuSettings } = this.state;
-    const [sourceEntity, targetEntity] = layout.getSelectedEntities();
+    const selectedEntities = entityManager.getEntities(layout.getSelectedEntityIds());
 
     const layoutContext = {
       layout: layout,
       updateLayout: this.updateLayout,
       viewport: viewport,
       updateViewport: this.updateViewport,
+      entityManager: entityManager,
       intl: intl,
     };
+
+    console.log('in visgraph, context is', layoutContext)
 
     const actions = {
       addVertex: this.addVertex,
@@ -390,7 +393,6 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
               logo={config.logo}
               searchText={searchText}
               tableView={tableView}
-              {...layoutContext}
             />
           </div>
           <div className={c("VisGraph__content", { 'sidebar-open': showSidebar, 'table-open': tableView })}>
@@ -410,12 +412,16 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                 actions={actions}
                 interactionMode={interactionMode}
                 writeable={writeable}
-                {...layoutContext}
               />
             </div>
             {showSidebar && (
               <div className="VisGraph__sidebar">
-                <Sidebar {...layoutContext} entityManager={entityManager} writeable={writeable} searchText={searchText} isOpen={showSidebar} />
+                <Sidebar
+                  writeable={writeable}
+                  searchText={searchText}
+                  isOpen={showSidebar}
+                  selectedEntities={selectedEntities}
+                />
               </div>
             )}
             {tableView && (
@@ -424,9 +430,6 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                   isOpen={tableView}
                   toggleTableView={this.toggleTableView}
                   fitToSelection={this.fitToSelection}
-                  layout={layout}
-                  viewport={viewport}
-                  updateLayout={this.updateLayout}
                   writeable={writeable}
                 />
               </div>
@@ -439,16 +442,16 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
               isOpen={interactionMode === modes.VERTEX_CREATE}
               toggleDialog={this.setInteractionMode}
               vertexCreateOptions={this.state.vertexCreateOptions}
-              entityManager={entityManager}
+              schema={entityManager.model.getSchema('Person')}
             />
 
             <GroupingCreateDialog
               isOpen={interactionMode === modes.GROUPING_CREATE}
-              toggleDialog={this.setInteractionMode} />
-
+              toggleDialog={this.setInteractionMode}
+            />
             <EdgeCreateDialog
-              source={sourceEntity}
-              target={targetEntity}
+              source={selectedEntities?.[0]}
+              target={selectedEntities?.[1]}
               isOpen={interactionMode === modes.EDGE_CREATE}
               toggleDialog={this.setInteractionMode}
               onSubmit={this.onEdgeCreate}
@@ -466,8 +469,8 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
               isOpen={settingsDialogOpen}
               intl={intl}
               settings={layout.settings}
-              model={entityManager.model}
               toggleDialog={this.toggleSettingsDialog}
+              entityManager={entityManager}
             />
           </>
         )}

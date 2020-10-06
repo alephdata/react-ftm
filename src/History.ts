@@ -2,7 +2,6 @@ import {GraphLayout, IGraphLayoutData} from "./layout";
 
 interface IHistoryObject {
   layout: IGraphLayoutData,
-  entities: Array<IEntityDatum>
   entityChanges?: any
 }
 

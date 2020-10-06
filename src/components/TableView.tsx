@@ -6,7 +6,7 @@ import { GraphUpdateHandler } from '../GraphContext';
 import { SchemaSelect } from '../editors';
 import { TableViewPanel } from './TableViewPanel';
 import { Button, Drawer, Position, TabId, Tab, Tabs } from "@blueprintjs/core";
-import { Schema as FTMSchema } from "@alephdata/followthemoney";
+import { Schema as FTMSchema, Entity } from "@alephdata/followthemoney";
 import { Schema } from '../types';
 import c from 'classnames';
 
@@ -19,11 +19,8 @@ const messages = defineMessages({
   },
 });
 
-interface ITableViewProps extends WrappedComponentProps {
+interface ITableViewProps {
   isOpen: boolean,
-  layout: GraphLayout,
-  viewport: Viewport,
-  updateLayout: GraphUpdateHandler,
   writeable: boolean,
   toggleTableView: () => void
   fitToSelection: () => void
@@ -34,15 +31,15 @@ interface ITableViewState {
   schemata: Array<FTMSchema>,
 }
 
-export class TableViewBase extends React.Component<ITableViewProps, ITableViewState> {
+export class TableView extends React.Component<ITableViewProps, ITableViewState> {
   constructor(props: ITableViewProps) {
     super(props);
 
-    const { entityManager } = this.props;
+    const { entityManager } = this.context;
     const schemata = entityManager.getEntities()
-      .map(entity => entity.schema)
-      .filter((schema, index, list) => !schema.isEdge && list.indexOf(schema) === index)
-      .sort((a, b) => a.label.localeCompare(b.label));
+      .map((entity: Entity) => entity.schema)
+      .filter((schema: FTMSchema, index: number, list: any) => !schema.isEdge && list.indexOf(schema) === index)
+      .sort((a: FTMSchema, b: FTMSchema) => a.label.localeCompare(b.label));
 
     const activeTabId = schemata && schemata.length ? schemata[0].name : 0;
 
@@ -65,7 +62,8 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
   }
 
   render() {
-    const { intl, isOpen, layout, toggleTableView, writeable, ...rest } = this.props;
+    const { entityManager, intl, layout } = this.context;
+    const { isOpen, toggleTableView, writeable, fitToSelection } = this.props;
     const { activeTabId, schemata } = this.state;
 
     return (
@@ -96,11 +94,10 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
               title={<Schema.Label schema={schema} icon />}
               panel={(
                 <TableViewPanel
-                  layout={layout}
                   schema={schema}
                   writeable={writeable}
                   toggleTableView={toggleTableView}
-                  {...rest}
+                  fitToSelection={fitToSelection}
                 />
               )}
             />
@@ -108,7 +105,7 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
           {writeable && (
             <div className="TableView__schemaAdd">
               <SchemaSelect
-                model={layout.entityManager.model}
+                model={entityManager.model}
                 onSelect={schema => this.addSchema(schema)}
                 optionsFilter={(schema => !schemata.includes(schema))}
               >
@@ -124,5 +121,3 @@ export class TableViewBase extends React.Component<ITableViewProps, ITableViewSt
     )
   }
 }
-
-export const TableView = injectIntl(TableViewBase);

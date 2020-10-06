@@ -4,6 +4,7 @@ import { Entity as FTMEntity, Property as FTMProperty, Schema as FTMSchema } fro
 import { ColorPicker, PropertyEditor, PropertySelect, RadiusPicker } from '../editors';
 import { Entity, Property, Schema } from '../types';
 import { GraphLayout, Vertex } from '../layout'
+import { GraphContext } from '../GraphContext';
 import { matchText } from "../utils";
 
 import c from 'classnames';
@@ -18,8 +19,6 @@ interface IEntityViewerProps {
   onVertexColorSelected: (vertex: Vertex, color: string) => void
   onVertexRadiusSelected: (vertex: Vertex, radius: number) => void
   writeable: boolean
-  layout: GraphLayout
-  entityManager: EntityManager
 }
 
 interface IEntityViewerState {
@@ -27,7 +26,7 @@ interface IEntityViewerState {
   currEditing: FTMProperty | null
 }
 
-export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntityViewerState> {
+class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntityViewerState> {
   private schemaProperties: FTMProperty[];
 
   constructor(props: IEntityViewerProps) {
@@ -40,8 +39,6 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     }
 
     this.onNewPropertySelected = this.onNewPropertySelected.bind(this);
-    this.fetchEntitySuggestions = this.fetchEntitySuggestions.bind(this);
-    this.resolveEntityReference = this.resolveEntityReference.bind(this);
     this.renderProperty = this.renderProperty.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
@@ -59,24 +56,6 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
         visibleProps: this.getVisibleProperties(nextProps)
       })
     }
-  }
-
-  fetchEntitySuggestions(query: string, schemata?: Array<FTMSchema>): Promise<FTMEntity[]> {
-    const { entityManager } = this.props;
-
-    const entities = entityManager.getEntities()
-      .filter(e => {
-        const schemaMatch = !schemata || e.schema.isAny(schemata);
-        const textMatch = matchText(e.getCaption() || '', query);
-        return schemaMatch && textMatch;
-      })
-      .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
-
-    return new Promise((resolve) => resolve(entities));
-  }
-
-  resolveEntityReference(entityId: string): FTMEntity | undefined {
-    return this.props.layout.entities.get(entityId);
   }
 
   onNewPropertySelected(p:FTMProperty){
@@ -103,7 +82,8 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   renderProperty(property:FTMProperty){
-    const { entity, layout } = this.props;
+    const { entityManager, layout } = this.context;
+    const { entity } = this.props;
     const { currEditing } = this.state;
     const isEditable = property?.name === currEditing?.name;
 
@@ -125,14 +105,14 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
                 onSubmit={this.onSubmit}
                 entity={entity}
                 property={property}
-                fetchEntitySuggestions={this.fetchEntitySuggestions}
-                resolveEntityReference={this.resolveEntityReference}
+                fetchEntitySuggestions={(queryText: string, schemata?: Array<Schema>) => entityManager.getEntitySuggestions(true, queryText, schemata)}
+                resolveEntityReference={entityManager.getEntity}
               />
             </div>
           )}
           {!isEditable && (
             <div>
-              <Property.Values prop={property} values={entity.getProperty(property.name)} resolveEntityReference={this.resolveEntityReference} />
+              <Property.Values prop={property} values={entity.getProperty(property.name)} resolveEntityReference={entityManager.getEntity} />
             </div>
           )}
         </div>
@@ -141,7 +121,8 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   render() {
-    const { layout, entity, vertexRef, writeable } = this.props;
+    const { layout } = this.context;
+    const { entity, vertexRef, writeable } = this.props;
     const { visibleProps } = this.state;
     const availableProperties = this.schemaProperties.filter(p => visibleProps.indexOf(p) < 0);
     const hasCaption = entity.getCaption() !== entity.schema.label;
@@ -188,3 +169,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     )
   }
 }
+
+EntityViewer.contextType = GraphContext;
+
+export { EntityViewer };

@@ -40,6 +40,41 @@ export class GraphLayout {
     this.isGroupingSelected = this.isGroupingSelected.bind(this);
   }
 
+  getVertices(): Vertex[] {
+    return Array.from(this.vertices.values())
+  }
+
+  getEdges(): Edge[] {
+    return Array.from(this.edges.values())
+  }
+
+  getGroupings(): Grouping[] {
+    return Array.from(this.groupings.values());
+  }
+
+  getSelectedVertices(): Vertex[] {
+    return this.selection
+      .filter((vertexId) => this.vertices.has(vertexId))
+      .map((vertexId) => this.vertices.get(vertexId)) as Vertex[]
+  }
+
+  getSelectedEdges(): Edge[] {
+    return this.selection
+      .filter((edgeId) => this.edges.has(edgeId))
+      .map((edgeId) => this.edges.get(edgeId)) as Edge[]
+  }
+
+  getSelectedGroupings(): Grouping[] {
+    return this.getGroupings()
+      .filter(grouping => grouping.id !== 'selectedArea' && this.isGroupingSelected(grouping))
+  }
+
+  getSelectedEntityIds() {
+    return this.getEntityIds(
+      ...this.getSelectedVertices(), ...this.getSelectedEdges()
+    )
+  }
+
   addVertex(vertex: Vertex): Vertex {
     const existing = this.vertices.get(vertex.id)
     if (existing) {
@@ -50,9 +85,6 @@ export class GraphLayout {
     return this.vertices.get(vertex.id) as Vertex
   }
 
-  getVertices(): Vertex[] {
-    return Array.from(this.vertices.values())
-  }
 
   addEdge(edge: Edge): Edge {
     const existing = this.edges.get(edge.id)
@@ -64,9 +96,6 @@ export class GraphLayout {
     return this.edges.get(edge.id) as Edge
   }
 
-  getEdges(): Edge[] {
-    return Array.from(this.edges.values())
-  }
 
   getVisibleElementCount(): any {
     return {
@@ -76,7 +105,7 @@ export class GraphLayout {
     }
   }
 
-  private generate(entities: Array<IEntityDatum>): void {
+  private generate(entities: Array<Entity>): void {
     this.edges.forEach(edge => edge.garbage = true);
     this.vertices.forEach(vertex => vertex.garbage = true);
     entities.forEach((entity) => {
@@ -86,10 +115,14 @@ export class GraphLayout {
 
         entity.getProperty(sourceProperty).forEach((source) => {
           entity.getProperty(targetProperty).forEach((target) => {
-            const sourceVertex = Vertex.fromValue(this, sourceProperty, source)
+            const sourceEntity = source instanceof Entity ? source : entities.find(e => e.id === source);
+            if (!sourceEntity) { return; }
+            const sourceVertex = Vertex.fromValue(this, sourceProperty, sourceEntity)
             if (!sourceVertex) { return; }
             this.addVertex(sourceVertex)
-            const targetVertex = Vertex.fromValue(this, targetProperty, target)
+            const targetEntity = target instanceof Entity ? target : entities.find(e => e.id === target);
+            if (!targetEntity) { return; }
+            const targetVertex = Vertex.fromValue(this, targetProperty, targetEntity)
             if (!targetVertex) { return; }
             this.addVertex(targetVertex)
             this.addEdge(Edge.fromEntity(this, entity, sourceVertex, targetVertex))
@@ -109,7 +142,7 @@ export class GraphLayout {
             // if property contains an entity reference, draw edge to referred entity,
             //  otherwise create value node
             if (prop.type.name === 'entity') {
-              const entity = typeof value === 'string' ? this.entities.get(value) : value;
+              const entity = typeof value === 'string' ? entities.find(e => e.id === value) : value;
               if (entity?.id) {
                 propertyVertex = this.getVertexByEntity(entity);
               }
@@ -134,9 +167,6 @@ export class GraphLayout {
     this.removeSubgroups()
   }
 
-  getGroupings(): Grouping[] {
-    return Array.from(this.groupings.values());
-  }
 
   getVertexByEntity(entity: Entity): Vertex | undefined {
     return this.getVertices()
@@ -181,38 +211,13 @@ export class GraphLayout {
     }
   }
 
-  getSelectedVertices(): Vertex[] {
-    return this.selection
-      .filter((vertexId) => this.vertices.has(vertexId))
-      .map((vertexId) => this.vertices.get(vertexId)) as Vertex[]
-  }
-
-  getSelectedEntities() {
-    return this.getRelatedEntities(
-      ...this.getSelectedVertices(), ...this.getSelectedEdges()
-    )
-  }
-
-  getSelectedGroupings(): Grouping[] {
-    return this.getGroupings()
-      .filter(grouping => grouping.id !== 'selectedArea' && this.isGroupingSelected(grouping))
-  }
-
-  getRelatedEntities(...elements: Array<GraphElement>): Array<Entity> {
+  getEntityIds(...elements: Array<GraphElement>): Array<string> {
     return Array.from(elements.reduce((entities, element) => {
-      if (this.entities.has(element.entityId as string)) {
-        entities.add(
-          this.entities.get(element.entityId as string) as Entity
-        )
+      if (element.entityId) {
+        entities.add(element.entityId);
       }
-      return entities
-    }, new Set<Entity>()).values())
-  }
-
-  getSelectedEdges(): Edge[] {
-    return this.selection
-      .filter((edgeId) => this.edges.has(edgeId))
-      .map((edgeId) => this.edges.get(edgeId)) as Edge[]
+      return entities;
+    }, new Set<string>()))
   }
 
   getHighlightedEdges(): Edge[] {
@@ -343,14 +348,14 @@ export class GraphLayout {
   }
 
   removeSelection() {
-    const entitiesToRemove: Array<Entity | undefined> = [];
+    const entityIdsToRemove: Array<string> = [];
 
     this.getSelectedVertices().forEach((vertex) => {
       if (vertex.entityId) {
-        entitiesToRemove.push(vertex.getEntity());
+        entityIdsToRemove.push(vertex.entityId);
         this.edges.forEach((edge) => {
           if (edge.isEntity() && edge.isLinkedToVertex(vertex) && edge.entityId) {
-            entitiesToRemove.push(edge.getEntity());
+            entityIdsToRemove.push(edge.entityId);
           }
         })
       } else {
@@ -364,15 +369,12 @@ export class GraphLayout {
       })
     })
     this.getSelectedEdges().forEach((edge) => {
-      const entity = edge.getEntity()
-      if (entity) {
-        if (edge.isEntity()) {
-          entitiesToRemove.push(edge.getEntity());
-        }
+      if (edge.isEntity() && edge.entityId) {
+        entityIdsToRemove.push(edge.entityId);
       }
     });
 
-    return entitiesToRemove;
+    return entityIdsToRemove;
   }
 
   dropSelection() {
@@ -454,8 +456,6 @@ export class GraphLayout {
       layout.edges.set(edge.id, edge)
     })
     layout.settings = Settings.fromJSON(settings);
-
-    layout.layout()
 
     if (groupings) {
       groupings.forEach((gdata) => {

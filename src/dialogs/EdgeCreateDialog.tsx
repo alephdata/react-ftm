@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { defineMessages, WrappedComponentProps } from 'react-intl';
 import { FormGroup, Intent, Button } from '@blueprintjs/core'
-import { Entity, Model, Schema } from '@alephdata/followthemoney'
+import { Entity, Schema } from '@alephdata/followthemoney'
 
 import { EdgeTypeSelect, EntitySelect } from '../editors'
 import { EdgeType } from '../types'
-import { IGraphContext } from '../GraphContext'
+import { EntityManager } from '../EntityManager'
 
 import Dialog from './Dialog';
 
@@ -41,8 +41,8 @@ interface IEdgeCreateDialogProps extends WrappedComponentProps {
   target?: Entity
   isOpen: boolean,
   toggleDialog: () => any
-  entityManager: EntityManager
   onSubmit: (source: Entity, target: Entity, type: EdgeType) => void
+  entityManager: EntityManager
 }
 
 interface IEdgeCreateDialogState {
@@ -182,11 +182,11 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   }
 
   async fetchEntitySuggestions(query: string, stateKey: string) {
+    const { entityManager } = this.props;
     const { source, target } = this.state;
-    const { entityManager, getEntitySuggestions } = this.props;
 
     const schemata = entityManager.model.getSchemata()
-      .filter(schema => schema.isThing() && !schema.generated && !schema.abstract)
+      .filter((schema: Schema) => schema.isThing() && !schema.generated && !schema.abstract)
     // @ts-ignore
     this.setState({ [stateKey]: { isProcessing: true, results: [] } });
     const results = await entityManager.getEntitySuggestions(true, query, schemata);

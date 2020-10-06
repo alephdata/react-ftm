@@ -4,7 +4,7 @@ import { Model, PropertyType } from '@alephdata/followthemoney';
 import { defineMessages, FormattedMessage, WrappedComponentProps } from 'react-intl';
 import { Intent, FormGroup, ControlGroup, InputGroup, Colors, Checkbox, Dialog, Button } from '@blueprintjs/core'
 
-import { GraphContext, IGraphContext } from '../GraphContext'
+import { EntityManager } from '../EntityManager';
 import { ColorPicker } from '../editors';
 import { Point, Grouping, ISettingsData, Settings } from '../layout'
 
@@ -32,8 +32,8 @@ const messages = defineMessages({
 interface ISettingsDialogProps extends WrappedComponentProps {
   isOpen: boolean
   toggleDialog: (settings?: ISettingsData) => void
-  model: Model
   settings: Settings
+  entityManager: EntityManager
 }
 
 interface ISettingsDialogState {
@@ -79,10 +79,10 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
   }
 
   render() {
-    const { intl, isOpen, model, toggleDialog } = this.props;
+    const { entityManager, intl, isOpen, toggleDialog } = this.props;
     const { pivotTypes } = this.state;
 
-    const matchableTypes = Object.values(model.types).filter(t => t.matchable);
+    const matchableTypes = Object.values(entityManager.model.types).filter(t => t.matchable);
     const typeOptions = _.sortBy(matchableTypes, ['label']);
 
     return (

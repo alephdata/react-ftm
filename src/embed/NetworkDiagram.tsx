@@ -1,9 +1,10 @@
 import React from 'react'
 import { IEmbeddedElementProps } from './util';
+import { Entity, IEntityDatum } from "@alephdata/followthemoney";
+
 import { EntityManager, GraphConfig, GraphLayout, Viewport, VisGraph } from '../';
 
 const config = new GraphConfig({ editorTheme: "dark", toolbarPosition: 'top' });
-const entityManager = new EntityManager();
 
 interface INetworkDiagramProps extends IEmbeddedElementProps {}
 
@@ -11,24 +12,24 @@ interface INetworkDiagramState {
   layout: GraphLayout,
   locale?: string,
   viewport: Viewport
+  entityManager: EntityManager
 }
 
 export default class NetworkDiagram extends React.Component <INetworkDiagramProps, INetworkDiagramState> {
   constructor(props: INetworkDiagramProps) {
     super(props)
 
-    console.log('props are', props)
-
     if (props.data) {
       this.state = {
-        // @ts-ignore
-        layout: GraphLayout.fromJSON(config, entityManager, props.data.layout),
+        entityManager: EntityManager.fromJSON({}, props.data?.entities || props.data?.layout?.entities),
+        layout: GraphLayout.fromJSON(config, props.data.layout),
         viewport: Viewport.fromJSON(config, props.data.viewport),
       }
     } else {
       this.state = {
         // @ts-ignore
-        layout: new GraphLayout(config, entityManager),
+        entityManager: new EntityManager(),
+        layout: new GraphLayout(config),
         viewport: new Viewport(config)
       }
     }
@@ -52,8 +53,9 @@ export default class NetworkDiagram extends React.Component <INetworkDiagramProp
     }
   }
 
-  saveToLocalStorage({ layout, viewport }: { layout?: GraphLayout, viewport?: Viewport }) {
+  saveToLocalStorage({ entityManager, layout, viewport }: { entityManager?: EntityManager, layout?: GraphLayout, viewport?: Viewport }) {
     const graphData = JSON.stringify({
+      entities: entityManager ? entityManager.toJSON() : this.state.entityManager.toJSON(),
       layout: layout ? layout.toJSON() : this.state.layout.toJSON(),
       viewport: viewport ? viewport.toJSON() : this.state.viewport.toJSON()
     })
@@ -61,7 +63,7 @@ export default class NetworkDiagram extends React.Component <INetworkDiagramProp
   }
 
   render() {
-    const { layout, viewport } = this.state;
+    const { entityManager, layout, viewport } = this.state;
 
     return (
       <VisGraph

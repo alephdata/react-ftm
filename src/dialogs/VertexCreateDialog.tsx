@@ -3,8 +3,7 @@ import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Alignment, Button, ControlGroup, InputGroup, Intent, Menu, MenuItem, Spinner, Divider } from '@blueprintjs/core'
 import { Entity as FTMEntity, Schema as FTMSchema, Values } from '@alephdata/followthemoney'
 
-import { EntityManager } from '../EntityManager';
-import { GraphContext, IGraphContext } from '../GraphContext'
+import { GraphContext } from '../GraphContext'
 import { EntitySelect, SchemaSelect } from '../editors'
 import { Entity, Schema } from '../types';
 import { Point } from '../layout'
@@ -32,11 +31,11 @@ const messages = defineMessages({
   },
 });
 
-interface IVertexCreateDialogProps extends WrappedComponentProps {
+interface IVertexCreateDialogProps {
   isOpen: boolean,
   toggleDialog: () => any,
   vertexCreateOptions?: any
-  entityManager: EntityManager,
+  schema: FTMSchema
 }
 
 interface IVertexCreateDialogState {
@@ -47,9 +46,7 @@ interface IVertexCreateDialogState {
   suggestions: FTMEntity[],
 }
 
-export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogProps, IVertexCreateDialogState> {
-  static contextType = GraphContext;
-  context!: React.ContextType<typeof GraphContext>;
+class VertexCreateDialog extends React.Component<IVertexCreateDialogProps, IVertexCreateDialogState> {
   state: IVertexCreateDialogState;
 
   constructor(props: any) {
@@ -64,7 +61,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
       isFetchingSuggestions: false,
       isProcessing: false,
       suggestions: [],
-      schema: props.entityManager.model.getSchema('Person')
+      schema: props.schema
     };
   }
 
@@ -90,8 +87,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
   }
 
   async fetchSuggestions(query: string, schemata: Array<FTMSchema>) {
-    const { layout } = this.context as IGraphContext
-    const { entityManager } = this.props;
+    const { entityManager } = this.context
     if (entityManager.hasSuggest) {
       this.setState({ isFetchingSuggestions: true });
       const suggestions = await entityManager.getEntitySuggestions(false, query, schemata);
@@ -101,14 +97,14 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
   }
 
   getSchema(): FTMSchema {
-    const { layout } = this.context as IGraphContext
-    return this.state.schema || layout.entityManager.model.getSchema('Person')
+    const { entityManager } = this.context
+    return this.state.schema || entityManager.model.getSchema('Person')
   }
 
   async onSubmit(values: Values) {
     if (!values || !values.length) return;
     const entityData = values[0];
-    const { layout, updateLayout, viewport, updateViewport } = this.context as IGraphContext
+    const { entityManager, layout, updateLayout, viewport, updateViewport } = this.context;
     const { vertexCreateOptions } = this.props;
     const center = vertexCreateOptions?.initialPosition || viewport.center;
     const { query } = this.state
@@ -121,15 +117,15 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
       if (typeof entityData === 'string') {
         const captionProperty = schema?.caption[0];
         if (captionProperty) {
-          entity = layout.createEntity({ schema, properties: { [captionProperty]: query } });
+          entity = entityManager.createEntity({ schema, properties: { [captionProperty]: query } });
         } else {
-          entity = layout.createEntity({ schema });
+          entity = entityManager.createEntity({ schema });
         }
       } else {
         entity = entityData;
       }
       entityManager.addEntities([entity]);
-      layout.layout(entityManager.entities, center);
+      layout.layout(entityManager.getEntities(), center);
       layout.selectByEntities([entity]);
     } catch (e) {
       this.setState({ isProcessing: false })
@@ -149,8 +145,8 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
   }
 
   render() {
-    const { intl, layout } = this.context as IGraphContext
-    const { entityManager, isOpen, toggleDialog } = this.props;
+    const { entityManager, intl, layout } = this.context
+    const { isOpen, toggleDialog } = this.props;
     const { isFetchingSuggestions, isProcessing, query, suggestions } = this.state;
     const { hasSuggest } = entityManager;
     const schema = this.getSchema()
@@ -176,7 +172,7 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
           <div className="bp3-dialog-body">
             <ControlGroup fill>
               <SchemaSelect
-                model={layout.entityManager.model}
+                model={entityManager.model}
                 onSelect={this.onSchemaSelect}
                 optionsFilter={schema => schema.isThing()}
               >
@@ -227,4 +223,6 @@ export class VertexCreateDialogBase extends React.Component<IVertexCreateDialogP
   }
 }
 
-export const VertexCreateDialog = injectIntl(VertexCreateDialogBase);
+VertexCreateDialog.contextType = GraphContext;
+
+export { VertexCreateDialog };

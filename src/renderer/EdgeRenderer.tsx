@@ -65,7 +65,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
       return null;
     }
     const isEntity = edge.isEntity()
-    const isDirected = edge.isDirected()
+    const isDirected = edge.directed
 
     const vertex1Position = config.gridToPixel(vertex1.position)
     const vertex2Position = config.gridToPixel(vertex2.position)

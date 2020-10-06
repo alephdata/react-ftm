@@ -16,7 +16,7 @@ import {
   Tooltip,
 } from "@blueprintjs/core"
 import c from 'classnames';
-import { IGraphContext } from '../../GraphContext';
+import { GraphContext } from '../../GraphContext';
 import { GraphLogo } from '../../GraphLogo';
 import { SearchBox } from '../';
 import { filterVerticesByText, modes} from '../../utils';
@@ -121,7 +121,7 @@ const messages = defineMessages({
   },
 });
 
-interface IToolbarProps extends IGraphContext {
+interface IToolbarProps {
   actions: any,
   history: History,
   interactionMode: string,
@@ -141,19 +141,22 @@ export class Toolbar extends React.Component<IToolbarProps> {
   }
 
   onSetInteractionMode(newMode: string) {
-    const { layout, updateLayout, actions } = this.props
+    const { layout, updateLayout } = this.context
+    const { actions } = this.props
     actions.setInteractionMode(newMode)
     updateLayout(layout)
   }
 
   onPosition(type: string) {
-    const { actions, layout, updateLayout } = this.props;
+    const { layout, updateLayout } = this.context
+    const { actions } = this.props
     updateLayout(positionSelection(layout, type), null, { modifyHistory:true })
     actions.fitToSelection();
   }
 
   itemRenderer(buttonGroup:IToolbarButtonGroup, visible: boolean) {
-    const { layout, showEditingButtons } = this.props;
+    const { layout } = this.context
+    const { showEditingButtons } = this.props;
 
     const filteredGroup = showEditingButtons
       ? buttonGroup
@@ -173,7 +176,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
   }
 
   overflowListRenderer(overflowItems: Array<IToolbarButtonGroup>) {
-    const { config } = this.props.layout;
+    const { config } = this.context.layout;
     const menuContent = overflowItems.map((item:IToolbarButtonGroup) => this.itemRenderer(item, false));
     return (
       <Popover
@@ -189,11 +192,14 @@ export class Toolbar extends React.Component<IToolbarProps> {
   }
 
   render() {
-    const { intl, layout, updateLayout, actions, history, interactionMode, showEditingButtons, logo, searchText, tableView } = this.props
-    const vertices = this.props.layout.getSelectedVertices()
+    const { entityManager, intl, layout, updateLayout } = this.context;
+
+    console.log('context', this.context)
+    const { actions, history, interactionMode, showEditingButtons, logo, searchText, tableView } = this.props
+    const vertices = layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
-    const canExpandSelection = layout.entityManager.hasExpand && layout.getSelectedVertices().length === 1
+    const canExpandSelection = entityManager.hasExpand && layout.getSelectedVertices().length === 1
     const canGroupSelection = layout.getSelectedVertices().length > 1
     const canUngroupSelection = layout.getSelectedGroupings().length >= 1
     const showSearch = layout.vertices && layout.vertices.size > 0
@@ -236,7 +242,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
           disabled: !hasSelection,
           writeableOnly: true,
         },
-        ...(layout.entityManager.hasExpand ? (
+        ...(entityManager.hasExpand ? (
           [{
             helpText: intl.formatMessage(messages.tooltip_expand),
             icon: "search-around",
@@ -384,5 +390,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
     </div>
   }
 }
+
+Toolbar.contextType = GraphContext;
 
 export default Toolbar;

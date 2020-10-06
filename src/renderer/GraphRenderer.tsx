@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Viewport } from '../Viewport';
 import { Vertex, Point, Rectangle, Edge, GraphElement, Grouping } from '../layout';
-import { IGraphContext } from '../GraphContext'
+import { GraphContext } from '../GraphContext'
 import { Canvas } from './Canvas'
 import { EdgeRenderer } from './EdgeRenderer'
 import { EdgeDrawer } from './EdgeDrawer'
@@ -10,7 +10,7 @@ import { GroupingRenderer } from './GroupingRenderer'
 import { modes } from '../utils/interactionModes'
 
 
-interface IGraphRendererProps extends IGraphContext {
+interface IGraphRendererProps {
   svgRef: React.RefObject<SVGSVGElement>,
   animateTransition: boolean,
   actions: any,
@@ -18,7 +18,7 @@ interface IGraphRendererProps extends IGraphContext {
   writeable: boolean
 }
 
-export class GraphRenderer extends React.Component<IGraphRendererProps> {
+class GraphRenderer extends React.Component<IGraphRendererProps> {
   constructor(props: any) {
     super(props)
     this.selectElement = this.selectElement.bind(this);
@@ -29,37 +29,38 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   dragSelection(offset: Point, initialPosition?: Point) {
-    const { layout } = this.props;
+    const { layout, updateLayout } = this.context;
     layout.dragSelection(offset, initialPosition)
-    this.props.updateLayout(layout)
+    updateLayout(layout)
   }
 
   dropSelection() {
-    const { layout } = this.props;
+    const { layout, updateLayout } = this.context;
     const shouldUpdateHistory = layout.dropSelection()
-    this.props.updateLayout(layout, null, { modifyHistory:shouldUpdateHistory })
+    updateLayout(layout, null, { modifyHistory:shouldUpdateHistory })
   }
 
   clearSelection() {
-    const { layout } = this.props;
+    const { layout, updateLayout } = this.context;
     layout.clearSelection()
-    this.props.updateLayout(layout)
+    updateLayout(layout)
   }
 
   selectElement(element: GraphElement | Array<GraphElement>, additional: boolean = false) {
-    const { layout } = this.props;
+    const { layout, updateLayout } = this.context;
     layout.selectElement(element, additional)
-    this.props.updateLayout(layout, null, { clearSearch: true });
+    updateLayout(layout, null, { clearSearch: true });
   }
 
   selectArea(area: Rectangle) {
-    const { layout } = this.props;
+    const { layout, updateLayout } = this.context;
     layout.selectArea(area)
-    this.props.updateLayout(layout, null, { clearSearch: true })
+    updateLayout(layout, null, { clearSearch: true })
   }
 
   renderGroupings() {
-    const { actions, interactionMode, layout, writeable } = this.props;
+    const { layout } = this.context;
+    const { actions, interactionMode, writeable } = this.props;
     const groupings = layout.getGroupings();
     return groupings.map((grouping: Grouping) => {
       const vertices = grouping.getVertices()
@@ -84,9 +85,10 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   renderEdges() {
-    const { layout, svgRef, writeable } = this.props;
+    const { layout } = this.context;
+    const { svgRef, writeable } = this.props;
 
-    return layout.getEdges().filter((edge) => !edge.isHidden()).map((edge) => {
+    return layout.getEdges().filter((edge: Edge) => !edge.isHidden()).map((edge: Edge) => {
       const vertex1 = layout.vertices.get(edge.sourceId);
       const vertex2 = layout.vertices.get(edge.targetId);
       return  <EdgeRenderer
@@ -106,8 +108,9 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   renderVertices() {
-    const { layout, actions, interactionMode, writeable } = this.props;
-    const vertices = layout.getVertices().filter((vertex) => !vertex.isHidden())
+    const { entityManager, layout } = this.context;
+    const { actions, interactionMode, writeable } = this.props;
+    const vertices = layout.getVertices().filter((vertex: Vertex) => !vertex.isHidden())
 
     return vertices.map((vertex: Vertex) =>
       <VertexRenderer
@@ -122,20 +125,23 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
         interactionMode={interactionMode}
         actions={actions}
         writeable={writeable}
-        hasExpand={layout.entityManager.hasExpand}
+        hasExpand={entityManager.hasExpand}
       />
     )
   }
 
   getEdgeCreateSourcePoint() {
-    const vertices = this.props.layout.getSelectedVertices()
+    const { layout, viewport } = this.context;
+
+    const vertices = layout.getSelectedVertices()
     if (vertices && vertices.length) {
-      return this.props.viewport.config.gridToPixel(vertices[0].getPosition())
+      return viewport.config.gridToPixel(vertices[0].getPosition())
     }
   }
 
   render(){
-    const { svgRef, layout, viewport, animateTransition, actions, interactionMode, writeable } = this.props;
+    const { layout, updateViewport, viewport } = this.context;
+    const { svgRef, animateTransition, actions, interactionMode, writeable } = this.props;
 
     return (
       <Canvas
@@ -144,7 +150,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
         selectArea={this.selectArea}
         interactionMode={interactionMode}
         clearSelection={this.clearSelection}
-        updateViewport={this.props.updateViewport}
+        updateViewport={updateViewport}
         animateTransition={animateTransition}
         actions={actions}
         writeable={writeable}
@@ -162,3 +168,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     );
   }
 }
+
+GraphRenderer.contextType = GraphContext;
+
+export { GraphRenderer };

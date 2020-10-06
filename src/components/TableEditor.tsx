@@ -361,7 +361,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
           onCommit(entity.getProperty(property));
         }}
         popoverProps={{ usePortal: false }}
-        fetchEntitySuggestions={props => entityManager.getEntitySuggestions(false, ...props)}
+        fetchEntitySuggestions={(queryText: string, schemata?: Array<Schema>) => entityManager.getEntitySuggestions(false, queryText, schemata)}
         resolveEntityReference={entityManager.resolveEntityReference}
       />
     );
