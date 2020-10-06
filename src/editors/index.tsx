@@ -9,7 +9,6 @@ import PropertySelectBase from './PropertySelect';
 import RadiusPicker from './RadiusPicker';
 import SchemaSelect from './SchemaSelect';
 import TextEditBase from './TextEdit';
-import VertexSelect from './VertexSelect';
 
 const EntitySelect = withTranslator(EntitySelectBase);
 const EnumValueSelect = withTranslator(EnumValueSelectBase);
@@ -29,5 +28,4 @@ export {
   RadiusPicker,
   SchemaSelect,
   TextEdit,
-  VertexSelect,
 };

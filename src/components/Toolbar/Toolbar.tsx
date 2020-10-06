@@ -17,7 +17,6 @@ import {
 } from "@blueprintjs/core"
 import c from 'classnames';
 import { GraphContext } from '../../GraphContext';
-import { GraphLogo } from '../../GraphLogo';
 import { SearchBox } from '../';
 import { filterVerticesByText, modes} from '../../utils';
 import {
@@ -127,7 +126,6 @@ interface IToolbarProps {
   showEditingButtons: boolean,
   searchText: string,
   tableView: boolean,
-  logo?: GraphLogo,
 }
 
 export class Toolbar extends React.Component<IToolbarProps> {
@@ -194,7 +192,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
 
   render() {
     const { entityManager, interactionMode, intl, layout, updateLayout } = this.context;
-    const { actions, history, showEditingButtons, logo, searchText, tableView } = this.props;
+    const { actions, history, showEditingButtons, searchText, tableView } = this.props;
 
     const vertices = layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
@@ -202,7 +200,8 @@ export class Toolbar extends React.Component<IToolbarProps> {
     const canExpandSelection = entityManager.hasExpand && layout.getSelectedVertices().length === 1
     const canGroupSelection = layout.getSelectedVertices().length > 1
     const canUngroupSelection = layout.getSelectedGroupings().length >= 1
-    const showSearch = layout.vertices && layout.vertices.size > 0
+    const showSearch = layout.vertices && layout.vertices.size > 0;
+    const { logo } = layout.config;
 
     const buttons: Array<IToolbarButtonGroup> = [
       [

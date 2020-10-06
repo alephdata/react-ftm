@@ -389,7 +389,6 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
               actions={actions}
               history={this.history}
               showEditingButtons={writeable}
-              logo={config.logo}
               searchText={searchText}
               tableView={tableView}
             />
