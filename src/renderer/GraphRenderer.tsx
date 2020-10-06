@@ -68,7 +68,6 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
       return (
         <GroupingRenderer
           key={grouping.id}
-          config={layout.config}
           grouping={grouping}
           vertices={vertices}
           selectGrouping={this.selectElement}
@@ -89,7 +88,6 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
       const vertex2 = layout.vertices.get(edge.targetId);
       return  <EdgeRenderer
           key={edge.id}
-          config={layout.config}
           svgRef={svgRef}
           edge={edge}
           vertex1={vertex1}
@@ -109,7 +107,6 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     return vertices.map((vertex: Vertex) =>
       <VertexRenderer
         key={vertex.id}
-        config={layout.config}
         vertex={vertex}
         selectVertex={this.selectElement}
         dragSelection={this.dragSelection}

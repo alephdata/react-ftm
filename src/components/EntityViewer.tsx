@@ -6,9 +6,7 @@ import { Entity, Property, Schema } from '../types';
 import { GraphLayout, Vertex } from '../layout'
 import { GraphContext } from '../GraphContext';
 import { matchText } from "../utils";
-
 import c from 'classnames';
-
 
 import './EntityViewer.scss';
 
@@ -149,7 +147,6 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
               <RadiusPicker
                 radius={vertexRef.radius}
                 onChange={(radius: number) => this.props.onVertexRadiusSelected(vertexRef, radius)}
-                config={layout.config}
                 schema={entity.schema}
               />
             </div>

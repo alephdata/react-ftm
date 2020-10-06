@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { GraphConfig } from '../GraphConfig';
+import { GraphContext } from '../GraphContext';
 import { Point } from '../layout/Point'
 import { Colors } from '@blueprintjs/core';
 import { getRefMatrix, applyMatrix } from './utils';
@@ -9,7 +9,6 @@ import './EdgeLabelRenderer.scss'
 
 interface IEdgeLabelRendererProps {
   labelText: string,
-  config: GraphConfig,
   center: Point,
   onClick: (e: any) => void,
   dragSelection: (offset: Point, initialPosition?: Point) => any,
@@ -24,6 +23,7 @@ interface IEdgeLabelRendererState {
 }
 
 export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererProps, IEdgeLabelRendererState> {
+  static contextType = GraphContext;
   gRef: React.RefObject<SVGGElement>
   text: any
   dragInitial: Point
@@ -66,7 +66,7 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
   }
 
   private onDragMove(e: DraggableEvent, data: DraggableData) {
-    const { config } = this.props
+    const { config } = this.context.layout;
 
     const matrix = getRefMatrix(this.gRef)
     const current = applyMatrix(matrix, data.x, data.y)
@@ -84,11 +84,11 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
   }
 
   onDragStart(e: DraggableEvent, data: DraggableData) {
-    const { config, svgRef } = this.props
+    const { onClick, svgRef } = this.props
     const matrix = getRefMatrix(svgRef)
     this.dragInitial = applyMatrix(matrix, data.x, data.y)
 
-    this.props.onClick(e)
+    onClick(e)
   }
 
   onDoubleClick(e: any) {
@@ -97,11 +97,11 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
   }
 
   render() {
-    const { writeable } = this.context;
-    const { labelText, center, onClick, outlineColor, textColor, config } = this.props;
+    const { layout, writeable } = this.context;
+    const { labelText, center, onClick, outlineColor, textColor } = this.props;
     const margin = 1.5;
     const extents = this.state.textExtents;
-    const { x, y } = config.gridToPixel(center);
+    const { x, y } = layout.config.gridToPixel(center);
     const translate = `translate(${x} ${y})`
     const style = {
       fontSize: "5px",

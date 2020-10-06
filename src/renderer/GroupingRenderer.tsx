@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { GraphConfig } from '../GraphConfig';
 import { GraphContext } from '../GraphContext';
 import { GraphElement, Grouping, Point, Rectangle, Vertex } from '../layout'
 import { getRefMatrix, applyMatrix } from './utils';
@@ -8,7 +7,6 @@ import { modes } from '../utils/interactionModes'
 
 interface IGroupingRendererProps {
   grouping: Grouping
-  config: GraphConfig
   vertices: Vertex[]
   selectGrouping: (element: Array<GraphElement>, additional?: boolean) => any
   dragSelection: (offset: Point) => any
@@ -38,11 +36,12 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   private onDragMove(e: DraggableEvent, data: DraggableData) {
-    const { actions, config } = this.props
+    const { layout } = this.context;
+    const { actions } = this.props
     const matrix = getRefMatrix(this.gRef)
     const current = applyMatrix(matrix, data.x, data.y)
     const last = applyMatrix(matrix, data.lastX, data.lastY)
-    const offset = config.pixelToGrid(current.subtract(last))
+    const offset = layout.config.pixelToGrid(current.subtract(last))
     actions.setInteractionMode(modes.ITEM_DRAG)
     if (offset.x || offset.y) {
       this.props.dragSelection(offset)
@@ -80,7 +79,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
 
   render() {
     const { interactionMode, layout, writeable } = this.context;
-    const { config, grouping, vertices } = this.props
+    const { grouping, vertices } = this.props
     const { hovered } = this.state;
 
     if (!vertices || vertices.length <= 1) { return null; }
@@ -98,12 +97,12 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
       fontWeight: "bold"
     }
     const selectedAreaStyle: React.CSSProperties = {
-      stroke: config.UNSELECTED_COLOR,
+      stroke: layout.config.UNSELECTED_COLOR,
       strokeWidth: "0.5px",
       strokeDasharray: "2",
       pointerEvents: interactionMode === modes.ITEM_DRAG ? "none" : "auto"
     }
-    const displayColor = grouping && (isHighlighted || hovered) ? grouping.color : config.UNSELECTED_COLOR
+    const displayColor = grouping && (isHighlighted || hovered) ? grouping.color : layout.config.UNSELECTED_COLOR
 
     return (
       <DraggableCore

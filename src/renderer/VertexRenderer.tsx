@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
 import { Colors } from '@blueprintjs/core';
-import { GraphConfig } from '../GraphConfig';
 import { GraphContext } from '../GraphContext';
 import { Point } from '../layout/Point'
 import { Vertex } from '../layout/Vertex'
@@ -13,7 +12,6 @@ import { modes } from '../utils/interactionModes'
 
 interface IVertexRendererProps {
   vertex: Vertex
-  config: GraphConfig
   selectVertex: (vertex: Vertex, additional?: boolean) => any
   dragSelection: (offset: Point) => any
   dropSelection: () => any
@@ -59,12 +57,12 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   private onDragMove(e: DraggableEvent, data: DraggableData) {
-    const { interactionMode } = this.context;
-    const { actions, config, dragSelection } = this.props
+    const { interactionMode, layout } = this.context;
+    const { actions, dragSelection } = this.props
     const matrix = getRefMatrix(this.gRef)
     const current = applyMatrix(matrix, data.x, data.y)
     const last = applyMatrix(matrix, data.lastX, data.lastY)
-    const offset = config.pixelToGrid(current.subtract(last))
+    const offset = layout.config.pixelToGrid(current.subtract(last))
     if (interactionMode !== modes.ITEM_DRAG) {
       actions.setInteractionMode(modes.ITEM_DRAG)
     }
@@ -134,15 +132,15 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
 
   getColor() {
     const { layout } = this.context;
-    const { vertex, config } = this.props
+    const { vertex } = this.props
     const { hovered } = this.state;
 
     const highlighted = layout.isElementSelected(vertex) || layout.selection.length === 0;
 
     if (highlighted || hovered) {
-      return vertex.color || config.DEFAULT_VERTEX_COLOR
+      return vertex.color || layout.config.DEFAULT_VERTEX_COLOR
     } else {
-      return config.UNSELECTED_COLOR
+      return layout.config.UNSELECTED_COLOR
     }
   }
 
@@ -163,14 +161,14 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
 
   render() {
     const { entityManager, layout, interactionMode, writeable } = this.context;
-    const { vertex, config } = this.props
-    const { x, y } = config.gridToPixel(vertex.position)
+    const { vertex } = this.props
+    const { x, y } = layout.config.gridToPixel(vertex.position)
     const selected = layout.isElementSelected(vertex)
     const isEntity = vertex.isEntity()
-    const defaultRadius = isEntity ? config.DEFAULT_VERTEX_RADIUS : config.DEFAULT_VERTEX_RADIUS/2;
-    const vertexRadius = (vertex.radius || defaultRadius) * config.gridUnit
+    const defaultRadius = isEntity ? layout.config.DEFAULT_VERTEX_RADIUS : layout.config.DEFAULT_VERTEX_RADIUS/2;
+    const vertexRadius = (vertex.radius || defaultRadius) * layout.config.gridUnit
     const translate = `translate(${x} ${y})`
-    const labelPosition = new Point(0, vertexRadius + config.gridUnit/2)
+    const labelPosition = new Point(0, vertexRadius + layout.config.gridUnit/2)
 
     const vertexColor = this.getColor()
     const groupStyles: React.CSSProperties = {

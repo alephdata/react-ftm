@@ -2,7 +2,7 @@ import * as React from 'react'
 import c from 'classnames';
 import { Slider } from '@blueprintjs/core';
 import { Vertex } from '../layout'
-import { GraphConfig } from '../GraphConfig';
+import { GraphContext } from '../GraphContext';
 import { Schema as FTMSchema } from "@alephdata/followthemoney";
 import { Schema } from '../types';
 
@@ -10,7 +10,6 @@ import { Schema } from '../types';
 interface IRadiusPickerProps {
   currSelected?: number
   onChange: (radius: number) => void
-  config: GraphConfig
   schema: FTMSchema
   radius: number
 }
@@ -18,9 +17,12 @@ interface IRadiusPickerProps {
 import './RadiusPicker.scss'
 
 class RadiusPicker extends React.PureComponent<IRadiusPickerProps> {
+  static contextType = GraphContext;
+
   render() {
-    const { config, onChange, radius, schema } = this.props;
-    const defaultRadius = config.DEFAULT_VERTEX_RADIUS;
+    const { layout } = this.context;
+    const { onChange, radius, schema } = this.props;
+    const defaultRadius = layout.config.DEFAULT_VERTEX_RADIUS;
     const radiusRange = [defaultRadius*.5, defaultRadius*1.5];
     return (
       <div className='RadiusPicker'>
