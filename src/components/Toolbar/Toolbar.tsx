@@ -132,6 +132,8 @@ interface IToolbarProps {
 }
 
 export class Toolbar extends React.Component<IToolbarProps> {
+  static contextType = GraphContext;
+
   constructor(props: Readonly<IToolbarProps>) {
     super(props);
     this.onSetInteractionMode = this.onSetInteractionMode.bind(this)
@@ -193,9 +195,8 @@ export class Toolbar extends React.Component<IToolbarProps> {
 
   render() {
     const { entityManager, intl, layout, updateLayout } = this.context;
+    const { actions, history, interactionMode, showEditingButtons, logo, searchText, tableView } = this.props;
 
-    console.log('context', this.context)
-    const { actions, history, interactionMode, showEditingButtons, logo, searchText, tableView } = this.props
     const vertices = layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
@@ -390,7 +391,3 @@ export class Toolbar extends React.Component<IToolbarProps> {
     </div>
   }
 }
-
-Toolbar.contextType = GraphContext;
-
-export default Toolbar;

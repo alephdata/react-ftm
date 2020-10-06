@@ -354,15 +354,14 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     const selectedEntities = entityManager.getEntities(layout.getSelectedEntityIds());
 
     const layoutContext = {
-      layout: layout,
+      layout,
       updateLayout: this.updateLayout,
-      viewport: viewport,
+      viewport,
       updateViewport: this.updateViewport,
-      entityManager: entityManager,
-      intl: intl,
+      entityManager,
+      intl,
+      writeable
     };
-
-    console.log('in visgraph, context is', layoutContext)
 
     const actions = {
       addVertex: this.addVertex,
@@ -411,13 +410,11 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                 animateTransition={animateTransition}
                 actions={actions}
                 interactionMode={interactionMode}
-                writeable={writeable}
               />
             </div>
             {showSidebar && (
               <div className="VisGraph__sidebar">
                 <Sidebar
-                  writeable={writeable}
                   searchText={searchText}
                   isOpen={showSidebar}
                   selectedEntities={selectedEntities}
@@ -430,7 +427,6 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                   isOpen={tableView}
                   toggleTableView={this.toggleTableView}
                   fitToSelection={this.fitToSelection}
-                  writeable={writeable}
                 />
               </div>
             )}
@@ -444,10 +440,20 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
               vertexCreateOptions={this.state.vertexCreateOptions}
               schema={entityManager.model.getSchema('Person')}
             />
-
             <GroupingCreateDialog
               isOpen={interactionMode === modes.GROUPING_CREATE}
               toggleDialog={this.setInteractionMode}
+            />
+            <VertexMenu
+              isOpen={vertexMenuSettings !== null && interactionMode !== modes.EDGE_DRAW}
+              contents={vertexMenuSettings}
+              actions={actions}
+              hideMenu={this.hideVertexMenu}
+            />
+            <SettingsDialog
+              isOpen={settingsDialogOpen}
+              settings={layout.settings}
+              toggleDialog={this.toggleSettingsDialog}
             />
             <EdgeCreateDialog
               source={selectedEntities?.[0]}
@@ -457,20 +463,6 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
               onSubmit={this.onEdgeCreate}
               entityManager={entityManager}
               intl={intl}
-            />
-            <VertexMenu
-              isOpen={vertexMenuSettings !== null && interactionMode !== modes.EDGE_DRAW}
-              contents={vertexMenuSettings}
-              actions={actions}
-              hideMenu={this.hideVertexMenu}
-              intl={intl}
-            />
-            <SettingsDialog
-              isOpen={settingsDialogOpen}
-              intl={intl}
-              settings={layout.settings}
-              toggleDialog={this.toggleSettingsDialog}
-              entityManager={entityManager}
             />
           </>
         )}

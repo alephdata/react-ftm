@@ -1,9 +1,10 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { Model, PropertyType } from '@alephdata/followthemoney';
-import { defineMessages, FormattedMessage, WrappedComponentProps } from 'react-intl';
+import { Model, PropertyType, IPropertyTypeDatum } from '@alephdata/followthemoney';
+import { defineMessages, FormattedMessage } from 'react-intl';
 import { Intent, FormGroup, ControlGroup, InputGroup, Colors, Checkbox, Dialog, Button } from '@blueprintjs/core'
 
+import { GraphContext } from '../GraphContext';
 import { EntityManager } from '../EntityManager';
 import { ColorPicker } from '../editors';
 import { Point, Grouping, ISettingsData, Settings } from '../layout'
@@ -29,11 +30,10 @@ const messages = defineMessages({
   },
 });
 
-interface ISettingsDialogProps extends WrappedComponentProps {
+interface ISettingsDialogProps {
   isOpen: boolean
   toggleDialog: (settings?: ISettingsData) => void
   settings: Settings
-  entityManager: EntityManager
 }
 
 interface ISettingsDialogState {
@@ -41,11 +41,11 @@ interface ISettingsDialogState {
 }
 
 export class SettingsDialog extends React.Component<ISettingsDialogProps, ISettingsDialogState> {
+  static contextType = GraphContext;
+
   constructor(props: ISettingsDialogProps) {
     super(props);
-
     this.state = { pivotTypes: props.settings.pivotTypes };
-
     this.togglePivotType = this.togglePivotType.bind(this);
   }
 
@@ -79,10 +79,12 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
   }
 
   render() {
-    const { entityManager, intl, isOpen, toggleDialog } = this.props;
+    const { entityManager, intl } = this.context;
+    const { isOpen, toggleDialog } = this.props;
     const { pivotTypes } = this.state;
 
-    const matchableTypes = Object.values(entityManager.model.types).filter(t => t.matchable);
+    const matchableTypes = Object.values(entityManager.model.types as Array<PropertyType>)
+      .filter((t:PropertyType) => t.matchable);
     const typeOptions = _.sortBy(matchableTypes, ['label']);
 
     return (

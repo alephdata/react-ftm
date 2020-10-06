@@ -21,7 +21,6 @@ interface IVertexRendererProps {
   dropSelection: () => any
   interactionMode: string
   actions: any
-  writeable: boolean
   hasExpand: boolean
 }
 
@@ -29,7 +28,8 @@ interface IVertexRendererState {
   hovered: boolean
 }
 
-class VertexRenderer extends React.PureComponent<IVertexRendererProps, IVertexRendererState> {
+export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IVertexRendererState> {
+  static contextType = GraphContext;
   gRef: React.RefObject<SVGGElement>
 
   constructor(props: Readonly<IVertexRendererProps>) {
@@ -47,7 +47,7 @@ class VertexRenderer extends React.PureComponent<IVertexRendererProps, IVertexRe
   }
 
   componentDidMount() {
-    const { writeable } = this.props;
+    const { writeable } = this.context;
     const g = this.gRef.current;
     if (writeable && g !== null) {
       g.addEventListener('dblclick', this.onDoubleClick)
@@ -55,7 +55,7 @@ class VertexRenderer extends React.PureComponent<IVertexRendererProps, IVertexRe
   }
 
   componentWillUnmount() {
-    const { writeable } = this.props;
+    const { writeable } = this.context;
     const g = this.gRef.current;
     if (writeable && g !== null) {
       g.removeEventListener('dblclick', this.onDoubleClick)
@@ -156,8 +156,8 @@ class VertexRenderer extends React.PureComponent<IVertexRendererProps, IVertexRe
   }
 
   render() {
-    const { entityManager } = this.context;
-    const { vertex, config, selected, highlighted, interactionMode, writeable } = this.props
+    const { entityManager, writeable } = this.context;
+    const { vertex, config, selected, highlighted, interactionMode } = this.props
     const { x, y } = config.gridToPixel(vertex.position)
     const isEntity = vertex.isEntity()
     const defaultRadius = isEntity ? config.DEFAULT_VERTEX_RADIUS : config.DEFAULT_VERTEX_RADIUS/2;
@@ -193,7 +193,3 @@ class VertexRenderer extends React.PureComponent<IVertexRendererProps, IVertexRe
     );
   }
 }
-
-VertexRenderer.contextType = GraphContext;
-
-export { VertexRenderer };

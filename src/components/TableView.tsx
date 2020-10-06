@@ -1,5 +1,5 @@
 import React from 'react';
-import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
+import { defineMessages, injectIntl } from 'react-intl';
 import { GraphLayout } from '../layout';
 import { Viewport } from '../Viewport';
 import { GraphUpdateHandler } from '../GraphContext';
@@ -21,7 +21,6 @@ const messages = defineMessages({
 
 interface ITableViewProps {
   isOpen: boolean,
-  writeable: boolean,
   toggleTableView: () => void
   fitToSelection: () => void
 }
@@ -62,8 +61,8 @@ export class TableView extends React.Component<ITableViewProps, ITableViewState>
   }
 
   render() {
-    const { entityManager, intl, layout } = this.context;
-    const { isOpen, toggleTableView, writeable, fitToSelection } = this.props;
+    const { entityManager, intl, layout, writeable } = this.context;
+    const { isOpen, toggleTableView, fitToSelection } = this.props;
     const { activeTabId, schemata } = this.state;
 
     return (
@@ -95,7 +94,6 @@ export class TableView extends React.Component<ITableViewProps, ITableViewState>
               panel={(
                 <TableViewPanel
                   schema={schema}
-                  writeable={writeable}
                   toggleTableView={toggleTableView}
                   fitToSelection={fitToSelection}
                 />

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { defineMessages, WrappedComponentProps } from 'react-intl';
+import { defineMessages } from 'react-intl';
 import {Classes, Divider, Icon, H2, UL} from '@blueprintjs/core'
 import {Entity, Property} from '@alephdata/followthemoney';
 import { ColorPicker, PropertySelect } from '../editors';
@@ -17,18 +17,19 @@ const messages = defineMessages({
   },
 });
 
-interface IGroupingViewerProps extends WrappedComponentProps {
+interface IGroupingViewerProps {
   grouping: Grouping,
   onEntitySelected: (entity:Entity) => void
   onEntityRemoved: (grouping: Grouping, entity:Entity) => void
   onColorSelected: (grouping: Grouping, color: string) => void
-  writeable: boolean
 }
 
-class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
+export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
+  static contextType = GraphContext;
+
   render() {
-    const { entityManager } = this.context;
-    const { grouping, intl, onEntitySelected, onEntityRemoved, onColorSelected, writeable } = this.props;
+    const { entityManager, intl, writeable } = this.context;
+    const { grouping, onEntitySelected, onEntityRemoved, onColorSelected } = this.props;
     return (
       <div className='GroupingViewer'>
         <div className='GroupingViewer__title'>
@@ -58,8 +59,3 @@ class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
     )
   }
 }
-
-
-GroupingViewer.contextType = GraphContext;
-
-export { GroupingViewer };

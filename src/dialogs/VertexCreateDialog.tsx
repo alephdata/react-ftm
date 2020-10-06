@@ -46,8 +46,8 @@ interface IVertexCreateDialogState {
   suggestions: FTMEntity[],
 }
 
-class VertexCreateDialog extends React.Component<IVertexCreateDialogProps, IVertexCreateDialogState> {
-  state: IVertexCreateDialogState;
+export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps, IVertexCreateDialogState> {
+  static contextType = GraphContext;
 
   constructor(props: any) {
     super(props);
@@ -222,7 +222,3 @@ class VertexCreateDialog extends React.Component<IVertexCreateDialogProps, IVert
     );
   }
 }
-
-VertexCreateDialog.contextType = GraphContext;
-
-export { VertexCreateDialog };

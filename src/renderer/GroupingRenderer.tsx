@@ -16,7 +16,6 @@ interface IGroupingRendererProps {
   dropSelection: () => any
   interactionMode: string
   actions: any
-  writeable: boolean
 }
 
 interface IGroupingRendererState {
@@ -80,7 +79,8 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   render() {
-    const { config, grouping, interactionMode, selected, highlighted, vertices, writeable } = this.props
+    const { writeable } = this.context;
+    const { config, grouping, interactionMode, selected, highlighted, vertices } = this.props
     const { hovered } = this.state
 
     if (!vertices || vertices.length <= 1) { return null; }

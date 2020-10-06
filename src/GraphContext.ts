@@ -14,6 +14,7 @@ export interface IGraphContext extends WrappedComponentProps  {
   viewport: Viewport,
   updateViewport: ViewportUpdateHandler,
   entityManager: EntityManager
+  writeable: boolean
 }
 
 export const GraphContext = React.createContext<IGraphContext | undefined>(undefined)

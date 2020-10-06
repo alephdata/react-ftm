@@ -11,7 +11,6 @@ export class IconRenderer extends React.PureComponent<IIconRendererProps>{
   render(){
     const { entity, radius } = this.props
 
-    console.log('entity is', entity)
     if(!entity) {
       return null
     }

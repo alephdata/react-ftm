@@ -2,13 +2,11 @@ import * as React from 'react'
 import { Colors } from '@blueprintjs/core';
 import { GraphConfig } from '../GraphConfig';
 import { Edge, Point } from '../layout'
-import { Viewport } from "../Viewport";
 import { getRefMatrix, applyMatrix } from './utils';
 
 
 interface IEdgeDrawerProps {
   svgRef: React.RefObject<SVGSVGElement>,
-  viewport: Viewport
   sourcePoint?: Point
 }
 
@@ -43,7 +41,7 @@ export class EdgeDrawer extends React.PureComponent<IEdgeDrawerProps, IEdgeDrawe
   }
 
   onMouseMove(e: MouseEvent) {
-    const { svgRef, viewport } = this.props
+    const { svgRef } = this.props
     const matrix = getRefMatrix(svgRef)
     const targetPoint = applyMatrix(matrix, e.clientX, e.clientY)
     this.setState({targetPoint})

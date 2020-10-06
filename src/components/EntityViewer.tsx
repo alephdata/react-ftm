@@ -18,7 +18,6 @@ interface IEntityViewerProps {
   onEntityChanged: (entity: FTMEntity) => void
   onVertexColorSelected: (vertex: Vertex, color: string) => void
   onVertexRadiusSelected: (vertex: Vertex, radius: number) => void
-  writeable: boolean
 }
 
 interface IEntityViewerState {
@@ -26,7 +25,8 @@ interface IEntityViewerState {
   currEditing: FTMProperty | null
 }
 
-class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntityViewerState> {
+export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntityViewerState> {
+  static contextType = GraphContext;
   private schemaProperties: FTMProperty[];
 
   constructor(props: IEntityViewerProps) {
@@ -121,8 +121,8 @@ class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntityViewer
   }
 
   render() {
-    const { layout } = this.context;
-    const { entity, vertexRef, writeable } = this.props;
+    const { layout, writeable } = this.context;
+    const { entity, vertexRef } = this.props;
     const { visibleProps } = this.state;
     const availableProperties = this.schemaProperties.filter(p => visibleProps.indexOf(p) < 0);
     const hasCaption = entity.getCaption() !== entity.schema.label;
@@ -169,7 +169,3 @@ class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntityViewer
     )
   }
 }
-
-EntityViewer.contextType = GraphContext;
-
-export { EntityViewer };

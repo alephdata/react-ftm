@@ -31,7 +31,6 @@ interface IGroupingCreateDialogState {
 
 export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogProps, IGroupingCreateDialogState> {
   static contextType = GraphContext;
-  context!: React.ContextType<typeof GraphContext>;
   state: IGroupingCreateDialogState = {
     label: '',
     isProcessing: false,

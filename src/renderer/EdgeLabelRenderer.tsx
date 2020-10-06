@@ -17,7 +17,6 @@ interface IEdgeLabelRendererProps {
   outlineColor?: string,
   textColor?: string,
   svgRef: React.RefObject<SVGSVGElement>,
-  writeable: boolean,
 }
 
 interface IEdgeLabelRendererState {
@@ -40,7 +39,7 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
   }
 
   componentDidMount() {
-    const { writeable } = this.props;
+    const { writeable } = this.context;
     const g = this.gRef.current;
     if (writeable && g !== null) {
       g.addEventListener('dblclick', this.onDoubleClick)
@@ -59,7 +58,7 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
   }
 
   componentWillUnmount() {
-    const { writeable } = this.props;
+    const { writeable } = this.context;
     const g = this.gRef.current;
     if (writeable && g !== null) {
       g.removeEventListener('dblclick', this.onDoubleClick)
@@ -98,7 +97,8 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
   }
 
   render() {
-    const { labelText, center, onClick, outlineColor, textColor, config, writeable } = this.props;
+    const { writeable } = this.context;
+    const { labelText, center, onClick, outlineColor, textColor, config } = this.props;
     const margin = 1.5;
     const extents = this.state.textExtents;
     const { x, y } = config.gridToPixel(center);

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { defineMessages, WrappedComponentProps } from 'react-intl';
+import { defineMessages } from 'react-intl';
 import { Entity } from '@alephdata/followthemoney';
 import { Drawer, Icon, Position } from "@blueprintjs/core";
 import { GraphContext } from '../GraphContext'
@@ -26,12 +26,12 @@ const messages = defineMessages({
 
 export interface ISidebarProps {
   searchText: string,
-  writeable: boolean,
   isOpen: boolean
   selectedEntities: Array<Entity>
 }
 
-class Sidebar extends React.Component<ISidebarProps> {
+export class Sidebar extends React.Component<ISidebarProps> {
+  static contextType = GraphContext;
 
   constructor(props: Readonly<ISidebarProps>) {
     super(props);
@@ -96,7 +96,7 @@ class Sidebar extends React.Component<ISidebarProps> {
 
   render() {
     const { entityManager, intl, layout } = this.context;
-    const { isOpen, writeable, searchText, selectedEntities } = this.props;
+    const { isOpen, searchText, selectedEntities } = this.props;
     const selectedGroupings = layout.getSelectedGroupings()
     let contents, searchResultsText;
 
@@ -112,7 +112,6 @@ class Sidebar extends React.Component<ISidebarProps> {
         vertexRef={vertexRef}
         onVertexColorSelected={this.setVertexColor}
         onVertexRadiusSelected={this.setVertexRadius}
-        writeable={writeable}
       />
       searchResultsText = intl.formatMessage(messages.search_found_one);
     } else if (!searchText && selectedGroupings.length === 1) {
@@ -122,8 +121,6 @@ class Sidebar extends React.Component<ISidebarProps> {
         onEntitySelected={this.onEntitySelected}
         onEntityRemoved={this.removeGroupingEntity}
         onColorSelected={this.setGroupingColor}
-        writeable={writeable}
-        intl={intl}
       />
     } else if (selectedEntities.length) {
       contents = <EntityList entities={selectedEntities} onEntitySelected={this.onEntitySelected} />
@@ -153,7 +150,3 @@ class Sidebar extends React.Component<ISidebarProps> {
     )
   }
 }
-
-Sidebar.contextType = GraphContext;
-
-export { Sidebar };

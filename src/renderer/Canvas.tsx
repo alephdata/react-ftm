@@ -7,22 +7,21 @@ import { Point } from '../layout/Point';
 import { Rectangle } from '../layout/Rectangle';
 import { getRefMatrix, applyMatrix } from './utils';
 import { GraphLayout } from '../layout/GraphLayout';
+import { GraphContext } from '../GraphContext';
 import { modes } from '../utils/interactionModes'
 
 
 interface ICanvasProps {
   svgRef: React.RefObject<SVGSVGElement>,
-  viewport: Viewport,
   interactionMode: string,
   selectArea: (area: Rectangle) => any,
   clearSelection: () => any,
-  updateViewport: (viewport: Viewport, transitionSettings?: any) => any,
   animateTransition: boolean,
   actions: any,
-  writeable: boolean,
 }
 
 export class Canvas extends React.Component <ICanvasProps> {
+  static contextType = GraphContext
   selectionRef: React.RefObject<SVGRectElement>
   dragInitial: Point
   dragExtent: Point
@@ -43,7 +42,9 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   componentDidMount() {
-    const { svgRef, writeable } = this.props;
+    const { writeable } = this.context;
+    const { svgRef } = this.props;
+
     this.onResize()
     const svg = svgRef.current;
     if (svg !== null) {
@@ -57,7 +58,8 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   componentWillUnmount() {
-    const { svgRef, writeable } = this.props;
+    const { writeable } = this.context;
+    const { svgRef } = this.props;
 
     const svg = svgRef.current;
     if (svg !== null) {
@@ -70,12 +72,12 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   private onResize() {
-    const { viewport } = this.props;
+    const { updateViewport, viewport } = this.context;
     const svg = this.props.svgRef.current;
     if (svg !== null) {
       const rect = svg.getBoundingClientRect()
       const ratio = rect.height / rect.width
-      this.props.updateViewport(viewport.setRatio(ratio));
+      updateViewport(viewport.setRatio(ratio));
     }
   }
 
@@ -92,7 +94,9 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   private onDragMove(e: DraggableEvent, data: DraggableData) {
-    const { interactionMode, viewport, svgRef } = this.props
+    const { updateViewport, viewport } = this.context;
+    const { interactionMode, svgRef } = this.props;
+
     const matrix = getRefMatrix(svgRef)
     const current = applyMatrix(matrix, data.x, data.y)
     const last = applyMatrix(matrix, data.lastX, data.lastY)
@@ -106,7 +110,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     } else if (offset.x || offset.y) {
       const gridOffset = viewport.config.pixelToGrid(offset)
       const center = viewport.center.subtract(gridOffset)
-      this.props.updateViewport(viewport.setCenter(center));
+      updateViewport(viewport.setCenter(center));
     }
   }
 
@@ -142,7 +146,9 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   onDragEnd(e: DraggableEvent, data: DraggableData) {
-    const { interactionMode, viewport } = this.props
+    const { viewport } = this.context;
+    const { interactionMode } = this.props
+
     if (interactionMode === modes.SELECT) {
       const initial = viewport.config.pixelToGrid(this.dragInitial)
       const extent = viewport.config.pixelToGrid(this.dragExtent)
@@ -170,26 +176,26 @@ export class Canvas extends React.Component <ICanvasProps> {
     event.preventDefault()
     event.stopPropagation()
     const zoomFactor = 1.5;
-    const { viewport } = this.props
+    const { updateViewport, viewport } = this.context
     const direction = event.deltaY < 0 ? -zoomFactor : zoomFactor
     const matrix = getRefMatrix(this.props.svgRef)
     const target = applyMatrix(matrix, event.clientX, event.clientY)
     const gridTarget = viewport.config.pixelToGrid(target)
     const newViewport = viewport.zoomToPoint(gridTarget, direction)
-    this.props.updateViewport(newViewport, {animate: false})
+    updateViewport(newViewport, {animate: false})
   }
 
   private onKeyZoom(event: KeyboardEvent, direction: string) {
     event.preventDefault()
     event.stopPropagation()
+    const { updateViewport, viewport } = this.context
     const zoomFactor = 3
-    const { viewport } = this.props
     const newViewport = viewport.zoomToPoint(viewport.center, direction === 'in' ? -zoomFactor : zoomFactor)
-    this.props.updateViewport(newViewport, {animate: true})
+    updateViewport(newViewport, {animate: true})
   }
 
   private onDoubleClick(event: MouseEvent) {
-    const { viewport } = this.props
+    const { viewport } = this.context
     const matrix = getRefMatrix(this.props.svgRef)
     const target = applyMatrix(matrix, event.clientX, event.clientY)
     const gridTarget = viewport.config.pixelToGrid(target)
@@ -197,18 +203,18 @@ export class Canvas extends React.Component <ICanvasProps> {
     this.props.actions.addVertex({ initialPosition: gridTarget })
   }
 
-  componentWillReceiveProps(nextProps: Readonly<ICanvasProps>): void {
-    this.animationHandler(nextProps.animateTransition, this.props.viewport.viewBox || '' , nextProps.viewport.viewBox || '');
-  }
-
-  animationHandler(animateTransition: boolean, oldViewBox:string, viewBox:string, userDuration?:number) {
-    if (animateTransition && viewBox && oldViewBox && viewBox !== oldViewBox) {
-      this._animateTransition(oldViewBox, viewBox)
-    } else {
-      // @ts-ignore
-      ReactDOM.findDOMNode(this).setAttribute("viewBox", viewBox);
-    }
-  }
+  // componentWillReceiveProps(nextProps: Readonly<ICanvasProps>): void {
+  //   this.animationHandler(nextProps.animateTransition, this.props.viewport.viewBox || '' , nextProps.viewport.viewBox || '');
+  // }
+  //
+  // animationHandler(animateTransition: boolean, oldViewBox:string, viewBox:string, userDuration?:number) {
+  //   if (animateTransition && viewBox && oldViewBox && viewBox !== oldViewBox) {
+  //     this._animateTransition(oldViewBox, viewBox)
+  //   } else {
+  //     // @ts-ignore
+  //     ReactDOM.findDOMNode(this).setAttribute("viewBox", viewBox);
+  //   }
+  // }
 
   _animateTransition(oldViewBox:string, viewBox:string, userDuration?:number) {
     let start = this._now();
@@ -258,7 +264,8 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   render() {
-    const { viewport, interactionMode, svgRef} = this.props
+    const { viewport } = this.context;
+    const { interactionMode, svgRef} = this.props
     const grid = `M ${viewport.config.gridUnit} 0 L 0 0 0 ${viewport.config.gridUnit}`
     const style:React.CSSProperties = {width: "100%", height: "100%", cursor: interactionMode === modes.PAN ? 'grab' : 'crosshair'}
     return (

@@ -14,7 +14,6 @@ import c from 'classnames';
 
 interface ITableViewPanelProps {
   schema: Schema
-  writeable: boolean,
   toggleTableView: () => void
   fitToSelection: () => void
 }
@@ -161,8 +160,8 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
   }
 
   render() {
-    const { layout } = this.context;
-    const { schema, writeable } = this.props;
+    const { layout, writeable } = this.context;
+    const { schema } = this.props;
     const { sort } = this.state;
 
     return (

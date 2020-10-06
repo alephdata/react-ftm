@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { defineMessages, WrappedComponentProps } from 'react-intl';
+import { defineMessages } from 'react-intl';
 import { Menu, MenuDivider, MenuItem, Spinner } from "@blueprintjs/core"
 import c from 'classnames';
 import { modes } from '../utils/interactionModes'
@@ -26,7 +26,7 @@ const messages = defineMessages({
   },
 });
 
-interface IVertexMenuProps extends WrappedComponentProps {
+interface IVertexMenuProps {
   isOpen: boolean
   contents: any
   actions: any
@@ -50,7 +50,8 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
   }
 
   getExpandOptionLabel(propString: string | undefined) {
-    const { contents, intl } = this.props;
+    const { intl } = this.context;
+    const { contents } = this.props;
 
     if (!propString) {
       return { label: intl.formatMessage(messages.expand_all) };
@@ -75,7 +76,8 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
   }
 
   renderExpandOption = ({ count, property }: {count: number, property: string}) => {
-    const { actions, contents, intl } = this.props;
+    const { intl } = this.context;
+    const { actions, contents } = this.props;
 
     const propLabel = this.getExpandOptionLabel(property);
     if (!propLabel) return null;
@@ -91,7 +93,8 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
   }
 
   renderExpand = () => {
-    const { contents, intl } = this.props;
+    const { intl } = this.context;
+    const { contents } = this.props;
     const { expandResults } = contents;
 
     if (!expandResults) {
@@ -109,7 +112,8 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
   }
 
   renderFull = () => {
-    const { actions, contents, intl } = this.props;
+    const { intl } = this.context;
+    const { actions, contents } = this.props;
     const { expandResults } = contents;
 
     return (
@@ -126,7 +130,8 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
   }
 
   render() {
-    const { actions, contents, intl, isOpen } = this.props;
+    const { intl } = this.context;
+    const { actions, contents, isOpen } = this.props;
     if (!isOpen) return null;
     const { anchor, expandResults, position, onlyShowExpand } = contents;
 
