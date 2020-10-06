@@ -14,7 +14,6 @@ interface IGraphRendererProps {
   svgRef: React.RefObject<SVGSVGElement>,
   animateTransition: boolean,
   actions: any,
-  interactionMode: string
 }
 
 export class GraphRenderer extends React.Component<IGraphRendererProps> {
@@ -60,8 +59,8 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   renderGroupings() {
-    const { layout, writeable } = this.context;
-    const { actions, interactionMode } = this.props;
+    const { interactionMode, layout, writeable } = this.context;
+    const { actions } = this.props;
     const groupings = layout.getGroupings();
     return groupings.map((grouping: Grouping) => {
       const vertices = grouping.getVertices()
@@ -72,12 +71,9 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
           config={layout.config}
           grouping={grouping}
           vertices={vertices}
-          highlighted={layout.isGroupingSelected(grouping) || layout.isGroupingMemberSelected(grouping) || layout.selection.length === 0}
-          selected={layout.isGroupingSelected(grouping)}
           selectGrouping={this.selectElement}
           dragSelection={this.dragSelection}
           dropSelection={this.dropSelection}
-          interactionMode={interactionMode}
           actions={actions}
         />
       )
@@ -96,7 +92,6 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
           config={layout.config}
           svgRef={svgRef}
           edge={edge}
-          highlight={layout.isEdgeHighlighted(edge) || layout.selection.length === 0}
           vertex1={vertex1}
           vertex2={vertex2}
           selectEdge={this.selectElement}
@@ -107,23 +102,19 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   renderVertices() {
-    const { entityManager, layout, writeable } = this.context;
-    const { actions, interactionMode } = this.props;
+    const { entityManager, interactionMode, layout, writeable } = this.context;
+    const { actions } = this.props;
     const vertices = layout.getVertices().filter((vertex: Vertex) => !vertex.isHidden())
 
     return vertices.map((vertex: Vertex) =>
       <VertexRenderer
         key={vertex.id}
         config={layout.config}
-        highlighted={layout.isElementSelected(vertex) || layout.selection.length === 0}
-        selected={layout.isElementSelected(vertex)}
         vertex={vertex}
         selectVertex={this.selectElement}
         dragSelection={this.dragSelection}
         dropSelection={this.dropSelection}
-        interactionMode={interactionMode}
         actions={actions}
-        hasExpand={entityManager.hasExpand}
       />
     )
   }
@@ -138,13 +129,13 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   render(){
-    const { svgRef, animateTransition, actions, interactionMode } = this.props;
+    const { interactionMode } = this.context;
+    const { svgRef, animateTransition, actions } = this.props;
 
     return (
       <Canvas
         svgRef={svgRef}
         selectArea={this.selectArea}
-        interactionMode={interactionMode}
         clearSelection={this.clearSelection}
         animateTransition={animateTransition}
         actions={actions}

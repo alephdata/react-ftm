@@ -269,7 +269,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
       const before = layout.getVisibleElementCount();
       entityManager.addEntities(entities as Array<Entity>);
       layout.layout(entityManager.getEntities(), viewport.center);
-      layout.selectByEntities(entities);
+      layout.selectByEntityIds(entities.map((e: Entity) => e.id));
 
       const after = layout.getVisibleElementCount();
       const vDiff = after.vertices - before.vertices;
@@ -360,7 +360,8 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
       updateViewport: this.updateViewport,
       entityManager,
       intl,
-      writeable
+      writeable,
+      interactionMode
     };
 
     const actions = {
@@ -387,7 +388,6 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
             <Toolbar
               actions={actions}
               history={this.history}
-              interactionMode={this.state.interactionMode}
               showEditingButtons={writeable}
               logo={config.logo}
               searchText={searchText}
@@ -409,7 +409,6 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                 svgRef={this.svgRef}
                 animateTransition={animateTransition}
                 actions={actions}
-                interactionMode={interactionMode}
               />
             </div>
             {showSidebar && (
@@ -427,6 +426,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
                   isOpen={tableView}
                   toggleTableView={this.toggleTableView}
                   fitToSelection={this.fitToSelection}
+                  entities={entityManager.getEntities()}
                 />
               </div>
             )}

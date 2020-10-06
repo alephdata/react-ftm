@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { WrappedComponentProps } from 'react-intl';
-
 import { GraphLayout } from "./layout";
 import { Viewport } from "./Viewport";
 import { EntityManager } from "./EntityManager";
@@ -15,6 +14,7 @@ export interface IGraphContext extends WrappedComponentProps  {
   updateViewport: ViewportUpdateHandler,
   entityManager: EntityManager
   writeable: boolean
+  interactionMode: string
 }
 
 export const GraphContext = React.createContext<IGraphContext | undefined>(undefined)

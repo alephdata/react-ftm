@@ -1,6 +1,7 @@
 import React from 'react';
 import { defineMessages, injectIntl } from 'react-intl';
 import { GraphLayout } from '../layout';
+import { GraphContext } from '../GraphContext'
 import { Viewport } from '../Viewport';
 import { GraphUpdateHandler } from '../GraphContext';
 import { SchemaSelect } from '../editors';
@@ -23,6 +24,7 @@ interface ITableViewProps {
   isOpen: boolean,
   toggleTableView: () => void
   fitToSelection: () => void
+  entities: Array<Entity>
 }
 
 interface ITableViewState {
@@ -31,11 +33,12 @@ interface ITableViewState {
 }
 
 export class TableView extends React.Component<ITableViewProps, ITableViewState> {
+  static contextType = GraphContext;
+
   constructor(props: ITableViewProps) {
     super(props);
 
-    const { entityManager } = this.context;
-    const schemata = entityManager.getEntities()
+    const schemata = props.entities
       .map((entity: Entity) => entity.schema)
       .filter((schema: FTMSchema, index: number, list: any) => !schema.isEdge && list.indexOf(schema) === index)
       .sort((a: FTMSchema, b: FTMSchema) => a.label.localeCompare(b.label));

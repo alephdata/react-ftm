@@ -13,7 +13,6 @@ import { modes } from '../utils/interactionModes'
 
 interface ICanvasProps {
   svgRef: React.RefObject<SVGSVGElement>,
-  interactionMode: string,
   selectArea: (area: Rectangle) => any,
   clearSelection: () => any,
   animateTransition: boolean,
@@ -94,8 +93,8 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   private onDragMove(e: DraggableEvent, data: DraggableData) {
-    const { updateViewport, viewport } = this.context;
-    const { interactionMode, svgRef } = this.props;
+    const { interactionMode, updateViewport, viewport } = this.context;
+    const { svgRef } = this.props;
 
     const matrix = getRefMatrix(svgRef)
     const current = applyMatrix(matrix, data.x, data.y)
@@ -146,8 +145,7 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   onDragEnd(e: DraggableEvent, data: DraggableData) {
-    const { viewport } = this.context;
-    const { interactionMode } = this.props
+    const { interactionMode, viewport } = this.context;
 
     if (interactionMode === modes.SELECT) {
       const initial = viewport.config.pixelToGrid(this.dragInitial)
@@ -161,7 +159,8 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   onDragStart(e: DraggableEvent, data: DraggableData) {
-    const { interactionMode, clearSelection, actions } = this.props
+    const { interactionMode } = this.context;
+    const { clearSelection, actions } = this.props
     if (interactionMode === modes.EDGE_DRAW) {
       actions.setInteractionMode()
     }
@@ -264,8 +263,8 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   render() {
-    const { viewport } = this.context;
-    const { interactionMode, svgRef} = this.props
+    const { interactionMode, viewport } = this.context;
+    const { svgRef} = this.props
     const grid = `M ${viewport.config.gridUnit} 0 L 0 0 0 ${viewport.config.gridUnit}`
     const style:React.CSSProperties = {width: "100%", height: "100%", cursor: interactionMode === modes.PAN ? 'grab' : 'crosshair'}
     return (

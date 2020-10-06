@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { GraphLayout } from '../layout';
-import { GraphUpdateHandler } from '../GraphContext';
+import { GraphContext } from '../GraphContext';
 import { TableEditor } from './TableEditor';
 import { EntityManager } from '../EntityManager';
 import { Viewport } from '../Viewport';
@@ -23,7 +23,7 @@ interface ITableViewPanelState {
 }
 
 export class TableViewPanel extends React.Component<ITableViewPanelProps, ITableViewPanelState> {
-  private localEntityManager: EntityManager
+  static contextType = GraphContext;
   private batchedChanges: any = {}
 
   constructor(props: ITableViewPanelProps) {
@@ -32,16 +32,6 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
     this.state = {
       sort: null,
     };
-
-    this.localEntityManager = new EntityManager({
-      model: this.context.entityManager.model,
-      namespace: this.context.entityManager.namespace,
-      entities: this.context.entityManager.getEntities(),
-      createEntity: this.onEntityCreate.bind(this),
-      updateEntity: this.onEntityUpdate.bind(this),
-      getEntitySuggestions: (queryText, schemata) => this.context.entityManager.getEntitySuggestions(true, queryText, schemata),
-      resolveEntityReference: this.context.entityManager.resolveEntityReference,
-    });
 
     this.getEntities = this.getEntities.bind(this);
     this.onColumnSort = this.onColumnSort.bind(this);
@@ -133,7 +123,7 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
       if (this.batchedChanges.created) {
         entityManager.addEntities(this.batchedChanges.created);
         layout.layout(entityManager.getEntities(), viewport.center);
-        layout.selectByEntities(this.batchedChanges.created);
+        layout.selectByEntityIds(this.batchedChanges.created.map((e: Entity) => e.id));
       }
       updateLayout(layout, this.batchedChanges, { modifyHistory: true });
       this.batchedChanges = {};
@@ -153,14 +143,14 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
     });
   }
 
-  onSelectionUpdate(entity: Entity, additional = true, allowUnselect = true) {
+  onSelectionUpdate(entityId: string, additional = true, allowUnselect = true) {
     const { layout, updateLayout } = this.context;
-    layout.selectByEntities([entity], additional, allowUnselect);
+    layout.selectByEntityIds([entityId], additional, allowUnselect);
     updateLayout(layout, null, { clearSearch: true });
   }
 
   render() {
-    const { layout, writeable } = this.context;
+    const { entityManager, layout, writeable } = this.context;
     const { schema } = this.props;
     const { sort } = this.state;
 
@@ -173,7 +163,7 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
         selection={layout.getSelectedEntityIds()}
         updateSelection={this.onSelectionUpdate}
         writeable={writeable}
-        entityManager={this.localEntityManager}
+        entityManager={entityManager}
         updateFinishedCallback={this.propagateToHistory}
         visitEntity={this.visitEntity}
       />

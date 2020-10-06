@@ -124,7 +124,6 @@ const messages = defineMessages({
 interface IToolbarProps {
   actions: any,
   history: History,
-  interactionMode: string,
   showEditingButtons: boolean,
   searchText: string,
   tableView: boolean,
@@ -194,8 +193,8 @@ export class Toolbar extends React.Component<IToolbarProps> {
   }
 
   render() {
-    const { entityManager, intl, layout, updateLayout } = this.context;
-    const { actions, history, interactionMode, showEditingButtons, logo, searchText, tableView } = this.props;
+    const { entityManager, interactionMode, intl, layout, updateLayout } = this.context;
+    const { actions, history, showEditingButtons, logo, searchText, tableView } = this.props;
 
     const vertices = layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()

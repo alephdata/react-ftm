@@ -126,7 +126,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
       }
       entityManager.addEntities([entity]);
       layout.layout(entityManager.getEntities(), center);
-      layout.selectByEntities([entity]);
+      layout.selectByEntityIds([entity.id]);
     } catch (e) {
       this.setState({ isProcessing: false })
       return;

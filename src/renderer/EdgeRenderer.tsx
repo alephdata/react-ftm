@@ -11,7 +11,6 @@ interface IEdgeRendererProps {
   config: GraphConfig,
   vertex1?: Vertex,
   vertex2?: Vertex
-  highlight: boolean,
   svgRef: React.RefObject<SVGSVGElement>,
   selectEdge: (edge: Edge, additional?: boolean) => any,
   dragSelection: (offset: Point, initialPosition?: Point) => any,
@@ -59,11 +58,12 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
 
 
   render() {
-    const { writeable } = this.context;
-    const { edge, vertex1, vertex2, config, highlight, dragSelection, dropSelection, svgRef } = this.props;
+    const { layout, writeable } = this.context;
+    const { edge, vertex1, vertex2, config, dragSelection, dropSelection, svgRef } = this.props;
     if (!vertex1 || !vertex2 || vertex1.hidden || vertex2.hidden) {
       return null;
     }
+    const isHighlighted = layout.isEdgeHighlighted(edge) || layout.selection.length === 0;
     const isEntity = edge.isEntity()
     const isDirected = edge.directed
 
@@ -77,7 +77,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     const lineStyles: React.CSSProperties = {
       pointerEvents:'none'
     }
-    const arrowRef = highlight ?  "url(#arrow)" : "url(#arrow-unselected)"
+    const arrowRef = isHighlighted ?  "url(#arrow)" : "url(#arrow-unselected)"
     return <React.Fragment>
       <g className="edge">
         <path
@@ -89,7 +89,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
           style={clickableLineStyles}
         />
         <path
-          stroke={highlight ? config.EDGE_COLOR : config.UNSELECTED_COLOR}
+          stroke={isHighlighted ? config.EDGE_COLOR : config.UNSELECTED_COLOR}
           strokeWidth='1'
           fill='none'
           d={path}
@@ -98,7 +98,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
           markerEnd={isDirected ? arrowRef : ''}
         />
       </g>
-      { highlight && (
+      { isHighlighted && (
         <EdgeLabelRenderer
           config={config}
           svgRef={svgRef}

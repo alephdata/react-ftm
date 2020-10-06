@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
 import { GraphConfig } from '../GraphConfig';
+import { GraphContext } from '../GraphContext';
 import { GraphElement, Grouping, Point, Rectangle, Vertex } from '../layout'
 import { getRefMatrix, applyMatrix } from './utils';
 import { modes } from '../utils/interactionModes'
@@ -9,12 +10,9 @@ interface IGroupingRendererProps {
   grouping: Grouping
   config: GraphConfig
   vertices: Vertex[]
-  highlighted: boolean
-  selected: boolean
   selectGrouping: (element: Array<GraphElement>, additional?: boolean) => any
   dragSelection: (offset: Point) => any
   dropSelection: () => any
-  interactionMode: string
   actions: any
 }
 
@@ -23,6 +21,7 @@ interface IGroupingRendererState {
 }
 
 export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps, IGroupingRendererState> {
+  static contextType = GraphContext;
   gRef: React.RefObject<SVGGElement>
 
   constructor(props: Readonly<IGroupingRendererProps>) {
@@ -51,7 +50,8 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   onDragEnd(e: DraggableEvent, data: DraggableData) {
-    const { actions, dropSelection, interactionMode } = this.props;
+    const { interactionMode } = this.context;
+    const { actions, dropSelection } = this.props;
     dropSelection()
     if (interactionMode === modes.ITEM_DRAG) {
       actions.setInteractionMode(modes.SELECT)
@@ -71,7 +71,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   onMouseOver() {
-    this.props.interactionMode === modes.ITEM_DRAG && this.setState({hovered: true})
+    this.context.interactionMode === modes.ITEM_DRAG && this.setState({hovered: true})
   }
 
   onMouseOut() {
@@ -79,15 +79,18 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   render() {
-    const { writeable } = this.context;
-    const { config, grouping, interactionMode, selected, highlighted, vertices } = this.props
-    const { hovered } = this.state
+    const { interactionMode, layout, writeable } = this.context;
+    const { config, grouping, vertices } = this.props
+    const { hovered } = this.state;
 
     if (!vertices || vertices.length <= 1) { return null; }
+
     const {x, y, width, height} = grouping.getBoundingRect();
+    const isSelected = layout.isGroupingSelected(grouping);
+    const isHighlighted = isSelected || layout.isGroupingMemberSelected(grouping) || layout.selection.length === 0;
 
     const groupStyle: React.CSSProperties = {
-      cursor: selected && writeable ? 'grab' : 'pointer',
+      cursor: isSelected && writeable ? 'grab' : 'pointer',
     }
     const textStyle: React.CSSProperties = {
       fontSize: "5px",
@@ -100,7 +103,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
       strokeDasharray: "2",
       pointerEvents: interactionMode === modes.ITEM_DRAG ? "none" : "auto"
     }
-    const displayColor = grouping && (highlighted || hovered) ? grouping.color : config.UNSELECTED_COLOR
+    const displayColor = grouping && (isHighlighted || hovered) ? grouping.color : config.UNSELECTED_COLOR
 
     return (
       <DraggableCore
@@ -122,7 +125,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
             width={width}
             height={height}
             fill={displayColor}
-            fillOpacity={highlighted || hovered ? ".1" : ".2"}
+            fillOpacity={isHighlighted || hovered ? ".1" : ".2"}
             style={grouping.id === 'selectedArea' ? selectedAreaStyle : undefined}
           />
           {grouping && (

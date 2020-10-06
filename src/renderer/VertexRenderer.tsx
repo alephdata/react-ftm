@@ -14,14 +14,10 @@ import { modes } from '../utils/interactionModes'
 interface IVertexRendererProps {
   vertex: Vertex
   config: GraphConfig
-  selected: boolean
-  highlighted: boolean
   selectVertex: (vertex: Vertex, additional?: boolean) => any
   dragSelection: (offset: Point) => any
   dropSelection: () => any
-  interactionMode: string
   actions: any
-  hasExpand: boolean
 }
 
 interface IVertexRendererState {
@@ -63,7 +59,8 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   private onDragMove(e: DraggableEvent, data: DraggableData) {
-    const { actions, config, dragSelection, interactionMode } = this.props
+    const { interactionMode } = this.context;
+    const { actions, config, dragSelection } = this.props
     const matrix = getRefMatrix(this.gRef)
     const current = applyMatrix(matrix, data.x, data.y)
     const last = applyMatrix(matrix, data.lastX, data.lastY)
@@ -78,7 +75,9 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   onDragEnd(e: DraggableEvent, data: DraggableData) {
-    const { interactionMode, actions, dropSelection } = this.props;
+    const { interactionMode } = this.context;
+    const { actions, dropSelection } = this.props;
+
     if (interactionMode === modes.ITEM_DRAG) {
       actions.setInteractionMode(modes.SELECT)
     }
@@ -90,10 +89,11 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   onClick(e: any) {
-    const { vertex, selected, selectVertex, interactionMode, actions } = this.props
+    const { interactionMode, layout } = this.context;
+    const { vertex, selectVertex, actions } = this.props
     if (interactionMode === modes.EDGE_DRAW) {
       // can't draw link to self
-      if (selected) {
+      if (layout.isElementSelected(vertex)) {
         actions.setInteractionMode(modes.SELECT)
         return
       } else if (vertex.isEntity()) {
@@ -106,11 +106,12 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   onDoubleClick(e: MouseEvent) {
-    const { actions, hasExpand, vertex } = this.props;
+    const { entityManager } = this.context;
+    const { actions, vertex } = this.props;
     e.preventDefault()
     e.stopPropagation()
     if (vertex.isEntity()) {
-      if (hasExpand) {
+      if (entityManager.hasExpand) {
         actions.showVertexMenu(vertex, new Point(e.clientX, e.clientY));
       } else {
         actions.setInteractionMode(modes.EDGE_DRAW);
@@ -119,7 +120,8 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   onMouseOver() {
-    const { interactionMode, vertex } = this.props;
+    const { interactionMode } = this.context;
+    const { vertex } = this.props;
 
     if (interactionMode === modes.EDGE_DRAW && vertex.isEntity()) {
       this.setState({ hovered: true });
@@ -131,8 +133,11 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   getColor() {
-    const { vertex, config, highlighted } = this.props
-    const { hovered } = this.state
+    const { layout } = this.context;
+    const { vertex, config } = this.props
+    const { hovered } = this.state;
+
+    const highlighted = layout.isElementSelected(vertex) || layout.selection.length === 0;
 
     if (highlighted || hovered) {
       return vertex.color || config.DEFAULT_VERTEX_COLOR
@@ -142,7 +147,8 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   allowPointerEvents() {
-    const { interactionMode, vertex } = this.props;
+    const { interactionMode } = this.context;
+    const { vertex } = this.props;
 
     // sets pointer events to none while dragging in order to detect mouseover on other elements
     if (interactionMode === modes.ITEM_DRAG) {
@@ -156,9 +162,10 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   render() {
-    const { entityManager, writeable } = this.context;
-    const { vertex, config, selected, highlighted, interactionMode } = this.props
+    const { entityManager, layout, interactionMode, writeable } = this.context;
+    const { vertex, config } = this.props
     const { x, y } = config.gridToPixel(vertex.position)
+    const selected = layout.isElementSelected(vertex)
     const isEntity = vertex.isEntity()
     const defaultRadius = isEntity ? config.DEFAULT_VERTEX_RADIUS : config.DEFAULT_VERTEX_RADIUS/2;
     const vertexRadius = (vertex.radius || defaultRadius) * config.gridUnit

@@ -195,8 +195,7 @@ export class GraphLayout {
     this.selectElement(vertices, additional, allowUnselect);
   }
 
-  selectByEntities(entities: Array<Entity>, additional: boolean = false, allowUnselect: boolean = false) {
-    const entityIds = entities.map(e => e.id);
+  selectByEntityIds(entityIds: Array<string>, additional: boolean = false, allowUnselect: boolean = false) {
     this.selectVerticesByFilter(v => (v.entityId !== undefined && entityIds.indexOf(v.entityId) > -1), additional, allowUnselect);
   }
 
