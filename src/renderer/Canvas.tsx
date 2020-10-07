@@ -15,6 +15,7 @@ interface ICanvasProps {
   clearSelection: () => any,
   animateTransition: boolean,
   actions: any,
+  viewBox: any
 }
 
 export class Canvas extends React.Component <ICanvasProps> {
@@ -200,18 +201,18 @@ export class Canvas extends React.Component <ICanvasProps> {
     this.props.actions.addVertex({ initialPosition: gridTarget })
   }
 
-  // componentWillReceiveProps(nextProps: Readonly<ICanvasProps>): void {
-  //   this.animationHandler(nextProps.animateTransition, this.props.viewport.viewBox || '' , nextProps.viewport.viewBox || '');
-  // }
-  //
-  // animationHandler(animateTransition: boolean, oldViewBox:string, viewBox:string, userDuration?:number) {
-  //   if (animateTransition && viewBox && oldViewBox && viewBox !== oldViewBox) {
-  //     this._animateTransition(oldViewBox, viewBox)
-  //   } else {
-  //     // @ts-ignore
-  //     ReactDOM.findDOMNode(this).setAttribute("viewBox", viewBox);
-  //   }
-  // }
+  componentWillReceiveProps(nextProps: Readonly<ICanvasProps>): void {
+    this.animationHandler(nextProps.animateTransition, this.props.viewBox || '' , nextProps.viewBox || '');
+  }
+
+  animationHandler(animateTransition: boolean, oldViewBox:string, viewBox:string, userDuration?:number) {
+    if (animateTransition && viewBox && oldViewBox && viewBox !== oldViewBox) {
+      this._animateTransition(oldViewBox, viewBox)
+    } else {
+      // @ts-ignore
+      ReactDOM.findDOMNode(this).setAttribute("viewBox", viewBox);
+    }
+  }
 
   _animateTransition(oldViewBox:string, viewBox:string, userDuration?:number) {
     const start = this._now();

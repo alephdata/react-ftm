@@ -125,7 +125,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   render(){
-    const { interactionMode } = this.context;
+    const { interactionMode, viewport } = this.context;
     const { svgRef, animateTransition, actions } = this.props;
 
     return (
@@ -135,6 +135,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
         clearSelection={this.clearSelection}
         animateTransition={animateTransition}
         actions={actions}
+        viewBox={viewport.viewBox}
       >
         {interactionMode === modes.EDGE_DRAW &&
           <EdgeDrawer
