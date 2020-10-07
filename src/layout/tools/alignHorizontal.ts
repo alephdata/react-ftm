@@ -1,6 +1,6 @@
 import { forceLink, forceManyBody, forceSimulation, forceY, forceCollide } from "d3-force";
 import { scaleLinear } from 'd3-scale';
-import { Point, Edge, Vertex } from "../";
+import { Point, Edge } from "../";
 import { IPositioningProps, getPositionFromSimulation } from './common';
 import getForceData from './getForceData';
 
@@ -8,7 +8,7 @@ import getForceData from './getForceData';
 const alignHorizontal = (props:IPositioningProps): any => {
   const { center, nodes, links, groupingLinks } = getForceData(props);
 
-  const simulation = forceSimulation(nodes)
+  forceSimulation(nodes)
     .force("collide", forceCollide().radius(5).strength(.01))
     .force('links', forceLink(links).strength(.04))
     .force("y", forceY(center.y).strength(8))

@@ -1,4 +1,4 @@
-import {GraphLayout, IGraphLayoutData} from "./layout";
+import { IGraphLayoutData } from "./layout";
 
 interface IHistoryObject {
   layout: IGraphLayoutData,
@@ -8,10 +8,10 @@ interface IHistoryObject {
 export class History {
   static BACK = -1;
   static FORWARD = 1;
-  isPooling: boolean = false;
+  isPooling = false;
   stack: Array<IHistoryObject> = [];
   current?: IHistoryObject
-  state: number = 0;
+  state = 0;
 
   push(item: IHistoryObject) {
     if (this.isPooling) return undefined;

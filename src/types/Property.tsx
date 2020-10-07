@@ -1,7 +1,6 @@
 import React from 'react';
 import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Values, Value, Property as FTMProperty, Entity as FTMEntity } from "@alephdata/followthemoney";
-import { Classes } from "@blueprintjs/core";
 
 import {
   Country,

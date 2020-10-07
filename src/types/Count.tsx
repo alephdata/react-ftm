@@ -14,7 +14,7 @@ interface ICountProps extends WrappedComponentProps {
 
 class Count extends React.PureComponent<ICountProps> {
   render() {
-    const { count, full = false, className, isPending } = this.props;
+    const { count, full = false, isPending } = this.props;
 
     if (!isPending && count == null) {
       return null;

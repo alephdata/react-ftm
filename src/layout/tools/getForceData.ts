@@ -1,4 +1,4 @@
-import { Edge, GraphLayout, Grouping, Point, Rectangle, Vertex } from "../";
+import { Rectangle } from "../";
 import { IPositioningProps } from './common';
 
 

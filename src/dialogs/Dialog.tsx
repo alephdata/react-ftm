@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Dialog as Bp3Dialog, IconName, Spinner } from '@blueprintjs/core'
-import { Schema } from '@alephdata/followthemoney'
 import c from 'classnames';
 
 import "./Dialog.scss";

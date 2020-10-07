@@ -1,15 +1,11 @@
 import React from 'react';
-import { defineMessages, injectIntl } from 'react-intl';
-import { GraphLayout } from '../layout';
+import { defineMessages } from 'react-intl';
 import { GraphContext } from '../GraphContext'
-import { Viewport } from '../Viewport';
-import { GraphUpdateHandler } from '../GraphContext';
 import { SchemaSelect } from '../editors';
 import { TableViewPanel } from './TableViewPanel';
 import { Button, Drawer, Position, TabId, Tab, Tabs } from "@blueprintjs/core";
 import { Schema as FTMSchema, Entity } from "@alephdata/followthemoney";
 import { Schema } from '../types';
-import c from 'classnames';
 
 import "./TableView.scss"
 
@@ -64,7 +60,7 @@ export class TableView extends React.Component<ITableViewProps, ITableViewState>
   }
 
   render() {
-    const { entityManager, intl, layout, writeable } = this.context;
+    const { entityManager, intl, writeable } = this.context;
     const { isOpen, toggleTableView, fitToSelection } = this.props;
     const { activeTabId, schemata } = this.state;
 

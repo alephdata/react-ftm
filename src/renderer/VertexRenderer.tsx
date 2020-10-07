@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { Colors } from '@blueprintjs/core';
 import { GraphContext } from '../GraphContext';
 import { Point } from '../layout/Point'
 import { Vertex } from '../layout/Vertex'
@@ -72,7 +71,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     }
   }
 
-  onDragEnd(e: DraggableEvent, data: DraggableData) {
+  onDragEnd() {
     const { interactionMode } = this.context;
     const { actions, dropSelection } = this.props;
 
@@ -82,7 +81,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     dropSelection()
   }
 
-  onDragStart(e: DraggableEvent, data: DraggableData) {
+  onDragStart(e: DraggableEvent) {
     this.onClick(e)
   }
 
@@ -160,7 +159,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   render() {
-    const { entityManager, layout, interactionMode, writeable } = this.context;
+    const { entityManager, layout, writeable } = this.context;
     const { vertex } = this.props
     const { x, y } = layout.config.gridToPixel(vertex.position)
     const selected = layout.isElementSelected(vertex)

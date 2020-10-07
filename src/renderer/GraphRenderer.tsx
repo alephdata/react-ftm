@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Viewport } from '../Viewport';
 import { Vertex, Point, Rectangle, Edge, GraphElement, Grouping } from '../layout';
 import { GraphContext } from '../GraphContext'
 import { Canvas } from './Canvas'
@@ -46,7 +45,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     updateLayout(layout)
   }
 
-  selectElement(element: GraphElement | Array<GraphElement>, additional: boolean = false) {
+  selectElement(element: GraphElement | Array<GraphElement>, additional = false) {
     const { layout, updateLayout } = this.context;
     layout.selectElement(element, additional)
     updateLayout(layout, null, { clearSearch: true });
@@ -59,7 +58,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   renderGroupings() {
-    const { interactionMode, layout, writeable } = this.context;
+    const { layout } = this.context;
     const { actions } = this.props;
     const groupings = layout.getGroupings();
     return groupings.map((grouping: Grouping) => {
@@ -80,7 +79,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   renderEdges() {
-    const { layout, writeable } = this.context;
+    const { layout } = this.context;
     const { svgRef } = this.props;
 
     return layout.getEdges().filter((edge: Edge) => !edge.isHidden()).map((edge: Edge) => {
@@ -100,7 +99,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   renderVertices() {
-    const { entityManager, interactionMode, layout, writeable } = this.context;
+    const { layout } = this.context;
     const { actions } = this.props;
     const vertices = layout.getVertices().filter((vertex: Vertex) => !vertex.isHidden())
 

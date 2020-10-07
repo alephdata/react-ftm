@@ -10,7 +10,7 @@ export interface IEmbeddedElementProps {
 
 export const fetchExternalData = (dataURL: string) => {
   return new Promise((resolve, reject) => {
-    const data = fetch(dataURL)
+    fetch(dataURL)
       .then(response => response.json())
       .then(json => resolve(json))
       .catch(error => reject(error));

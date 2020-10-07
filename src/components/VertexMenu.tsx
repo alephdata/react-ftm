@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
 import { Menu, MenuDivider, MenuItem, Spinner } from "@blueprintjs/core"
-import c from 'classnames';
 import { modes } from '../utils/interactionModes'
 import { Count, Schema } from '../types';
 
@@ -113,8 +112,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
 
   renderFull = () => {
     const { intl } = this.context;
-    const { actions, contents } = this.props;
-    const { expandResults } = contents;
+    const { actions } = this.props;
 
     return (
       <>
@@ -130,10 +128,9 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
   }
 
   render() {
-    const { intl } = this.context;
-    const { actions, contents, isOpen } = this.props;
+    const { contents, isOpen } = this.props;
     if (!isOpen) return null;
-    const { anchor, expandResults, position, onlyShowExpand } = contents;
+    const { anchor, position, onlyShowExpand } = contents;
 
     const style = { [anchor]: `${position.y}px`, left: `${position.x}px` };
 

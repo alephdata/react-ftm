@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
-import {Value, Values} from "@alephdata/followthemoney";
-import {ControlGroup, FormGroup, MenuItem, Position, TagInput} from "@blueprintjs/core";
-import {ItemRenderer, MultiSelect} from "@blueprintjs/select";
-import {ITypeEditorProps} from "./common";
-import {highlightText} from "../utils";
+import { Value, Values } from "@alephdata/followthemoney";
+import { ControlGroup, MenuItem, Position } from "@blueprintjs/core";
+import { MultiSelect } from "@blueprintjs/select";
+import { ITypeEditorProps } from "./common";
+import { highlightText } from "../utils";
 
 const messages = defineMessages({
   no_results: {
@@ -37,7 +37,7 @@ class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
     event.stopPropagation();
     const { values } = this.props;
     if (item) {
-      const [countryId, label] = item;
+      const [countryId] = item;
       this.props.onSubmit([...values, ...[countryId]]);
     } else {
       this.props.onSubmit(values);
@@ -68,7 +68,7 @@ class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
     const { fullList, values } = this.props;
 
     const toRemove = Array.from(fullList.entries())
-      .find(([key, val]) => val == valToRemove)
+      .find(([key, val]) => val == valToRemove) // eslint-disable-line @typescript-eslint/no-unused-vars
 
     if (toRemove) {
       const nextPropVals = [...values].filter(key => key !== toRemove[0]);
@@ -107,7 +107,7 @@ class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
           }}
           itemListPredicate={(query, items) => {
             const queryProcessed = query.toLowerCase();
-            return items.filter(([key, label]) => label.toLowerCase().includes(queryProcessed));
+            return items.filter(([key, label]) => label.toLowerCase().includes(queryProcessed)); // eslint-disable-line @typescript-eslint/no-unused-vars
           }}
           selectedItems={selectedOptions}
           noResults={

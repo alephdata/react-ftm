@@ -1,7 +1,6 @@
 import * as React from 'react'
 import c from 'classnames';
 import { Colors } from '@blueprintjs/core';
-import { Vertex } from '../layout'
 
 import './ColorPicker.scss';
 

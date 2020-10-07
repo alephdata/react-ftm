@@ -1,12 +1,9 @@
 import React from 'react'
 import { IEmbeddedElementProps } from './util';
-import { Entity, IEntityDatum } from "@alephdata/followthemoney";
 
 import { EntityManager, GraphConfig, GraphLayout, Viewport, VisGraph } from '../';
 
 const config = new GraphConfig({ editorTheme: "dark", toolbarPosition: 'top' });
-
-interface INetworkDiagramProps extends IEmbeddedElementProps {}
 
 interface INetworkDiagramState {
   layout: GraphLayout,
@@ -15,8 +12,8 @@ interface INetworkDiagramState {
   entityManager: EntityManager
 }
 
-export default class NetworkDiagram extends React.Component <INetworkDiagramProps, INetworkDiagramState> {
-  constructor(props: INetworkDiagramProps) {
+export default class NetworkDiagram extends React.Component <IEmbeddedElementProps, INetworkDiagramState> {
+  constructor(props: IEmbeddedElementProps) {
     super(props)
 
     if (props.data) {
@@ -27,7 +24,6 @@ export default class NetworkDiagram extends React.Component <INetworkDiagramProp
       }
     } else {
       this.state = {
-        // @ts-ignore
         entityManager: new EntityManager(),
         layout: new GraphLayout(config),
         viewport: new Viewport(config)
@@ -38,7 +34,7 @@ export default class NetworkDiagram extends React.Component <INetworkDiagramProp
     this.updateViewport = this.updateViewport.bind(this);
   }
 
-  updateLayout(layout: GraphLayout, historyModified: boolean = false) {
+  updateLayout(layout: GraphLayout, historyModified = false) {
     this.setState({'layout': layout})
 
     if (this.props.config?.writeable && historyModified) {

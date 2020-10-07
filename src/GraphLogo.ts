@@ -1,6 +1,3 @@
-import { Colors } from '@blueprintjs/core';
-import { Point } from './layout/Point';
-
 
 export interface IGraphLogo {
   text?: string,

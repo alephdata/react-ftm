@@ -1,11 +1,10 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
-import { Intent, ControlGroup, InputGroup, Colors } from '@blueprintjs/core'
+import { ControlGroup, InputGroup } from '@blueprintjs/core'
 import { GraphContext, IGraphContext } from '../GraphContext'
-import { ColorPicker } from '../editors'
 import Dialog from './Dialog';
 
-import { Point, Grouping } from '../layout'
+import { Grouping } from '../layout'
 
 const messages = defineMessages({
   title: {
@@ -53,7 +52,7 @@ export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogP
 
   onSubmit(e: React.ChangeEvent<HTMLFormElement>) {
     const { label, color } = this.state
-    const { layout, updateLayout, viewport, updateViewport } = this.context as IGraphContext
+    const { layout, updateLayout } = this.context as IGraphContext
     e.preventDefault()
     this.setState({ isProcessing: true });
 
@@ -71,7 +70,7 @@ export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogP
   }
 
   render() {
-    const { intl, layout } = this.context as IGraphContext
+    const { intl } = this.context as IGraphContext
     const { isOpen, toggleDialog } = this.props
     const { isProcessing } = this.state;
 

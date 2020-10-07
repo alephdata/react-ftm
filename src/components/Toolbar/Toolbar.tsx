@@ -1,33 +1,24 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
 import {
-  AnchorButton,
   Boundary,
   Button,
-  ButtonGroup,
-  Classes,
-  Colors,
   Divider,
-  InputGroup,
-  Intent,
   Menu,
   OverflowList,
   Popover,
-  Tooltip,
 } from "@blueprintjs/core"
 import c from 'classnames';
 import { GraphContext } from '../../GraphContext';
 import { SearchBox } from '../';
-import { filterVerticesByText, modes} from '../../utils';
+import { modes} from '../../utils';
 import {
-  GraphLayout,
   Point,
-  Rectangle,
   centerAround,
   positionSelection,
 } from "../../layout";
 import ToolbarButtonGroup from './ToolbarButtonGroup';
-import { IToolbarButton, IToolbarButtonGroup } from './common';
+import { IToolbarButtonGroup } from './common';
 
 import { History } from '../../History';
 
@@ -192,7 +183,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
 
   render() {
     const { entityManager, interactionMode, intl, layout, updateLayout } = this.context;
-    const { actions, history, showEditingButtons, searchText, tableView } = this.props;
+    const { actions, history, searchText, tableView } = this.props;
 
     const vertices = layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Entity } from '@alephdata/followthemoney';
-import { Button, Menu, MenuItem, Icon } from '@blueprintjs/core'
+import { Menu, Icon } from '@blueprintjs/core'
 import { Schema } from '../types';
 import _ from 'lodash'
 import './EntityList.scss';

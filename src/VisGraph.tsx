@@ -1,14 +1,14 @@
 import * as React from 'react'
 import c from 'classnames';
 import { Entity, IEntityDatum } from "@alephdata/followthemoney";
-import { Button, ButtonGroup, Classes, Position, Tooltip } from '@blueprintjs/core';
+import { Button, ButtonGroup, Tooltip } from '@blueprintjs/core';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { EntityManager } from './EntityManager';
 import { GraphConfig } from './GraphConfig';
 import { GraphRenderer } from './renderer/GraphRenderer'
 import { Edge, GraphLayout, Rectangle, Point, Settings, Vertex } from './layout';
 import { Viewport } from './Viewport';
-import { IGraphContext, GraphContext } from './GraphContext'
+import { GraphContext } from './GraphContext'
 import { Sidebar, TableView, Toolbar, VertexMenu } from './components';
 import { History } from './History';
 import { EdgeCreateDialog, GroupingCreateDialog, SettingsDialog, VertexCreateDialog } from './dialogs';
@@ -66,7 +66,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
 
   constructor(props: IVisGraphProps) {
     super(props)
-    const { config, externalFilterText, layout, viewport, writeable } = props
+    const { externalFilterText, layout, writeable } = props
 
     this.history = new History();
     this.svgRef = React.createRef()
@@ -229,7 +229,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
     }
   }
 
-  async showVertexMenu(vertex: Vertex, position: Point, onlyShowExpand: boolean = false) {
+  async showVertexMenu(vertex: Vertex, position: Point, onlyShowExpand = false) {
     const { entityManager } = this.props;
     const menuSettings = { vertex, position, anchor: 'top', onlyShowExpand };
 
@@ -349,7 +349,7 @@ class VisGraphBase extends React.Component<IVisGraphProps, IVisGraphState> {
   }
 
   render() {
-    const { config, entityManager, intl, layout, locale, viewport, writeable } = this.props;
+    const { config, entityManager, intl, layout, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, settingsDialogOpen, tableView, vertexMenuSettings } = this.state;
     const selectedEntities = entityManager.getEntities(layout.getSelectedEntityIds());
 

@@ -1,4 +1,4 @@
-import {Entity, Property, Values} from "@alephdata/followthemoney";
+import { Values } from "@alephdata/followthemoney";
 
 export interface ITypeEditorProps {
   values: Values

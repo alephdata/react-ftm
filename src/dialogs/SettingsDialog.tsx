@@ -1,13 +1,11 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { Model, PropertyType, IPropertyTypeDatum } from '@alephdata/followthemoney';
-import { defineMessages, FormattedMessage } from 'react-intl';
-import { Intent, FormGroup, ControlGroup, InputGroup, Colors, Checkbox, Dialog, Button } from '@blueprintjs/core'
+import { PropertyType } from '@alephdata/followthemoney';
+import { defineMessages } from 'react-intl';
+import { Intent, FormGroup, Checkbox, Dialog, Button } from '@blueprintjs/core'
 
 import { GraphContext } from '../GraphContext';
-import { EntityManager } from '../EntityManager';
-import { ColorPicker } from '../editors';
-import { Point, Grouping, ISettingsData, Settings } from '../layout'
+import { ISettingsData, Settings } from '../layout'
 
 import './SettingsDialog.scss';
 
@@ -64,7 +62,6 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
 
 
   renderPivotType = (type: PropertyType) => {
-    const { isOpen, settings } = this.props;
     const { pivotTypes } = this.state;
 
     const isSelected = pivotTypes.includes(type.name);

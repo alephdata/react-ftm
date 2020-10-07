@@ -2,7 +2,6 @@ import * as React from 'react'
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
 import { GraphContext } from '../GraphContext';
 import { Point } from '../layout/Point'
-import { Colors } from '@blueprintjs/core';
 import { getRefMatrix, applyMatrix } from './utils';
 
 import './EdgeLabelRenderer.scss'
@@ -78,7 +77,7 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
     }
   }
 
-  onDragEnd(e: DraggableEvent, data: DraggableData) {
+  onDragEnd() {
     this.dragInitial = new Point(0, 0)
     this.props.dropSelection()
   }

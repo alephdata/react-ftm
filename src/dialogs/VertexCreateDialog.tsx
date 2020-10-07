@@ -1,14 +1,12 @@
 import * as React from 'react'
-import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
-import { Alignment, Button, ControlGroup, InputGroup, Intent, Menu, MenuItem, Spinner, Divider } from '@blueprintjs/core'
+import { defineMessages } from 'react-intl';
+import { Alignment, Button, ControlGroup, InputGroup } from '@blueprintjs/core'
 import { Entity as FTMEntity, Schema as FTMSchema, Values } from '@alephdata/followthemoney'
 
 import { GraphContext } from '../GraphContext'
 import { EntitySelect, SchemaSelect } from '../editors'
-import { Entity, Schema } from '../types';
-import { Point } from '../layout'
+import { Schema } from '../types';
 import Dialog from './Dialog'
-import c from 'classnames';
 
 import './VertexCreateDialog.scss';
 
@@ -16,10 +14,6 @@ const messages = defineMessages({
   title: {
     id: 'dialog.vertex_create.title',
     defaultMessage: 'Add entity',
-  },
-  name_placeholder: {
-    id: 'dialog.vertex_create.name_placeholder',
-    defaultMessage: '{schema} name',
   },
   type_placeholder: {
     id: 'dialog.vertex_create.type_placeholder',
@@ -101,10 +95,14 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
     return this.state.schema || entityManager.model.getSchema('Person')
   }
 
+  getCaptionProperty() {
+    return this.getSchema()?.caption[0];
+  }
+
   async onSubmit(values: Values) {
     if (!values || !values.length) return;
     const entityData = values[0];
-    const { entityManager, layout, updateLayout, viewport, updateViewport } = this.context;
+    const { entityManager, layout, updateLayout, viewport } = this.context;
     const { vertexCreateOptions } = this.props;
     const center = vertexCreateOptions?.initialPosition || viewport.center;
     const { query } = this.state
@@ -115,7 +113,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
 
     try {
       if (typeof entityData === 'string') {
-        const captionProperty = schema?.caption[0];
+        const captionProperty = this.getCaptionProperty();
         if (captionProperty) {
           entity = entityManager.createEntity({ schema, properties: { [captionProperty]: query } });
         } else {
@@ -145,12 +143,13 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
   }
 
   render() {
-    const { entityManager, intl, layout } = this.context
+    const { entityManager, intl } = this.context
     const { isOpen, toggleDialog } = this.props;
     const { isFetchingSuggestions, isProcessing, query, suggestions } = this.state;
     const { hasSuggest } = entityManager;
-    const schema = this.getSchema()
-    const placeholder = intl.formatMessage(messages.name_placeholder, { schema: schema.label });
+    const schema = this.getSchema();
+    const captionProperty = this.getCaptionProperty();
+    const placeholder = `${schema.label} ${captionProperty}`;
     const vertexSelectText = schema ? schema.label : intl.formatMessage(messages.type_placeholder);
     const vertexSelectIcon = schema ? <Schema.Icon schema={schema} /> : 'select';
 
@@ -196,6 +195,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
                   onQueryChange={this.onQueryChange}
                   popoverProps={{ usePortal: false }}
                   inputProps={{ large: true }}
+                  placeholder={placeholder}
                   noResultsText={intl.formatMessage(messages.no_results)}
                 />
               )}
@@ -204,6 +204,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
                   autoFocus
                   large
                   fill
+                  placeholder={placeholder}
                   value={query}
                   onChange={(e: any) => this.onQueryChange(e.target.value)}
                 />

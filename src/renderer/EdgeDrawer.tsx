@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { Colors } from '@blueprintjs/core';
-import { GraphConfig } from '../GraphConfig';
-import { Edge, Point } from '../layout'
+import { Point } from '../layout'
 import { getRefMatrix, applyMatrix } from './utils';
 
 
@@ -13,8 +12,6 @@ interface IEdgeDrawerProps {
 interface IEdgeDrawerState {
   targetPoint?: Point
 }
-
-const linkCurveOffset = 20;
 
 export class EdgeDrawer extends React.PureComponent<IEdgeDrawerProps, IEdgeDrawerState>{
 

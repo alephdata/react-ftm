@@ -1,16 +1,10 @@
 import React from 'react';
 import _ from 'lodash';
-import { GraphLayout } from '../layout';
 import { GraphContext } from '../GraphContext';
 import { TableEditor } from './TableEditor';
-import { EntityManager } from '../EntityManager';
-import { Viewport } from '../Viewport';
-import { Classes, Icon } from "@blueprintjs/core";
 import { Entity, IEntityDatum, Schema, Property as FTMProperty } from "@alephdata/followthemoney";
 import { Property } from '../types';
 import { SortType } from './SortType';
-
-import c from 'classnames';
 
 interface ITableViewPanelProps {
   schema: Schema
@@ -60,8 +54,8 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
   sortEntities = (a:Entity, b:Entity, prop: FTMProperty, direction: string) => {
     const { entityManager } = this.context;
 
-    let aRaw = a?.getFirst(prop);
-    let bRaw = b?.getFirst(prop);
+    const aRaw = a?.getFirst(prop);
+    const bRaw = b?.getFirst(prop);
 
     if (!aRaw) return 1;
     if (!bRaw) return -1;
@@ -77,7 +71,7 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
   }
 
   onEntityCreate(entityData: IEntityDatum) {
-    const { entityManager, layout, updateLayout } = this.context;
+    const { entityManager } = this.context;
     const entity = entityManager.createEntity(entityData);
     this.addChangeToBatch('created', entity);
     return entity;
@@ -107,7 +101,7 @@ export class TableViewPanel extends React.Component<ITableViewPanelProps, ITable
   }
 
   visitEntity(entity: Entity | string) {
-    const { entityManager, layout, updateLayout } = this.context;
+    const { entityManager } = this.context;
     const { fitToSelection, toggleTableView } = this.props;
     const entityToSelect = typeof entity === 'string' ? entityManager.getEntity(entity) : entity;
     if (entityToSelect) {

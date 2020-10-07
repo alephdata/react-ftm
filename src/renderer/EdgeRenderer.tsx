@@ -3,7 +3,6 @@ import Bezier from 'bezier-js'
 import { GraphContext } from '../GraphContext';
 import { Edge, Vertex, Point } from '../layout'
 import { EdgeLabelRenderer } from './EdgeLabelRenderer';
-import { Colors } from '@blueprintjs/core';
 
 
 interface IEdgeRendererProps {
@@ -15,8 +14,6 @@ interface IEdgeRendererProps {
   dragSelection: (offset: Point, initialPosition?: Point) => any,
   dropSelection: () => any
 }
-
-const linkCurveOffset = 30;
 
 export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
   static contextType = GraphContext;
@@ -60,7 +57,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
 
 
   render() {
-    const { layout, writeable } = this.context;
+    const { layout } = this.context;
     const { edge, vertex1, vertex2, dragSelection, dropSelection, svgRef } = this.props;
     if (!vertex1 || !vertex2 || vertex1.hidden || vertex2.hidden) {
       return null;

@@ -22,7 +22,7 @@
     "messages": "formatjs extract --out-file i18n/messages.json 'src/**/*.{ts,tsx}'",
     "concat-translations": "node i18n/concatTranslations.js",
     "compile-translations": "formatjs compile-folder i18n/translations i18n/translations",
-    "lint": "eslint . --ext .ts",
+    "lint": "eslint src",
     "prebuild": "rm -f dist/react-ftm.*",
     "build": "webpack --config webpack.prod.js",
     "start": "webpack-dev-server --open --config webpack.dev.js",

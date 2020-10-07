@@ -1,7 +1,5 @@
 import * as React from 'react'
-import c from 'classnames';
 import { Slider } from '@blueprintjs/core';
-import { Vertex } from '../layout'
 import { GraphContext } from '../GraphContext';
 import { Schema as FTMSchema } from "@alephdata/followthemoney";
 import { Schema } from '../types';

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
 import { GraphContext } from '../GraphContext';
-import { GraphElement, Grouping, Point, Rectangle, Vertex } from '../layout'
+import { GraphElement, Grouping, Point, Vertex } from '../layout'
 import { getRefMatrix, applyMatrix } from './utils';
 import { modes } from '../utils/interactionModes'
 
@@ -48,7 +48,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
     }
   }
 
-  onDragEnd(e: DraggableEvent, data: DraggableData) {
+  onDragEnd() {
     const { interactionMode } = this.context;
     const { actions, dropSelection } = this.props;
     dropSelection()
@@ -57,8 +57,8 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
     }
   }
 
-  onDragStart(e: DraggableEvent, data: DraggableData) {
-    this.onClick(e)
+  onDragStart(e: DraggableEvent) {
+    this.onClick(e);
   }
 
   onClick(e: any) {

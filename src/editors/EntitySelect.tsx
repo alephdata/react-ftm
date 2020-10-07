@@ -2,8 +2,8 @@ import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity as FTMEntity } from "@alephdata/followthemoney";
 import { Entity } from '../types';
-import { Alignment, Button, ControlGroup, FormGroup, Menu, MenuItem, Position, Spinner } from "@blueprintjs/core";
-import { ItemListRenderer, ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
+import { Alignment, Button, ControlGroup, Menu, MenuItem, Spinner } from "@blueprintjs/core";
+import { ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
 import { ITypeEditorProps } from "./common";
 
 import './EntitySelect.scss';
@@ -55,7 +55,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
     this.onQueryChange('');
   }
 
-  itemRenderer: ItemRenderer<FTMEntity> = (entity, {handleClick, modifiers, query}) => {
+  itemRenderer: ItemRenderer<FTMEntity> = (entity, { handleClick, modifiers }) => {
     return (
       <MenuItem
         active={modifiers.active}

@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { Button, MenuItem, Alignment, Position } from '@blueprintjs/core';
-import { Select, IItemRendererProps } from '@blueprintjs/select';
-import { Model, Schema as FTMSchema, IconRegistry } from '@alephdata/followthemoney';
+import { MenuItem } from '@blueprintjs/core';
+import { Select } from '@blueprintjs/select';
+import { Model, Schema as FTMSchema } from '@alephdata/followthemoney';
 import { Schema } from '../types';
 
 interface ISelectSchemaProps {

@@ -1,8 +1,6 @@
 import { Vertex } from './Vertex'
-import { Entity, PropertyType, Property, Value } from '@alephdata/followthemoney';
 import { GraphLayout } from './GraphLayout';
 import { Rectangle } from './Rectangle';
-import { Point } from './Point';
 
 
 interface IGroupingData {

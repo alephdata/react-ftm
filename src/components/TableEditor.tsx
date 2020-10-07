@@ -1,13 +1,12 @@
 import React from 'react';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import _ from 'lodash';
-import { GraphUpdateHandler } from '../GraphContext';
 import { PropertyEditor } from '../editors';
 import { Property } from '../types';
 import { EntityManager } from '../EntityManager';
 import { PropertySelect } from '../editors';
-import { Button, Checkbox, Classes, Icon, Intent, Popover, Position, Tooltip } from "@blueprintjs/core";
-import { Entity, Property as FTMProperty, Schema, Value, Values } from "@alephdata/followthemoney";
+import { Button, Checkbox, Classes, Icon, Intent, Tooltip } from "@blueprintjs/core";
+import { Entity, Property as FTMProperty, Schema, Value } from "@alephdata/followthemoney";
 import Datasheet from 'react-datasheet';
 import { SortType } from './SortType';
 import { showErrorToast, validate } from '../utils';
@@ -90,7 +89,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   componentDidUpdate(prevProps: ITableEditorProps, prevState: ITableEditorState) {
-    const { entities, isPending, selection, sort, writeable } = this.props;
+    const { entities, selection, sort, writeable } = this.props;
     const { addedColumns, showTopAddRow } = this.state;
 
     const entitiesDeleted = prevProps.entities.length > entities.length;
@@ -199,7 +198,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   getEntityRows = () => {
-    const { entities, writeable } = this.props;
+    const { entities } = this.props;
     const visibleProps = this.getVisibleProperties();
 
     return entities.map(e => this.getEntityRow(e, visibleProps));
@@ -287,7 +286,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   // Table renderers
 
-  renderValue = ({ cell, row }: Datasheet.ValueViewerProps<CellData, any>) => {
+  renderValue = ({ cell }: Datasheet.ValueViewerProps<CellData, any>) => {
     if (!cell.data) return null;
     const { entity, property } = cell.data;
 
@@ -337,7 +336,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     );
   }
 
-  renderEditor = ({ cell, onCommit, onChange, onKeyDown, onRevert }: Datasheet.DataEditorProps<CellData, any>) => {
+  renderEditor = ({ cell, onCommit, onChange, onRevert }: Datasheet.DataEditorProps<CellData, any>) => {
     const { entityManager, schema } = this.props;
     const { entity, property } = cell.data;
 
@@ -428,7 +427,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   // Change handlers
 
   handleNewRow = (row: number, changes: any) => {
-    const { entities, intl, schema } = this.props;
+    const { intl, schema } = this.props;
     const { entityRows, showTopAddRow } = this.state;
     const visibleProps = this.getVisibleProperties();
     const entityData = { schema, properties: {} };
@@ -458,10 +457,10 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   handleExistingRow = (changes: Datasheet.CellsChangedArgs<CellData, any> | Datasheet.CellAdditionsArgs<CellData>) => {
-    const { intl, schema } = this.props;
+    const { intl } = this.props;
 
     let changedEntity;
-    changes.forEach(({ cell, value, row, col }: any) => {
+    changes.forEach(({ cell, value }: any) => {
       const { entity, property } = cell.data;
       const error = validate({ schema: entity.schema, property, values: value});
 
@@ -485,7 +484,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   onCellsChanged = (changeList: Datasheet.CellsChangedArgs<CellData, any>, outOfBounds: Datasheet.CellAdditionsArgs<CellData>) => {
-    const { entities, updateFinishedCallback } = this.props;
+    const { updateFinishedCallback } = this.props;
     const fullChangeList = outOfBounds ? [...changeList, ...outOfBounds] : changeList;
     const changesByRow = _.groupBy(fullChangeList, c => c.row);
 

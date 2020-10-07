@@ -3,7 +3,6 @@ import {
   Entity,
   Model,
   Namespace,
-  PropertyType,
   Schema,
   IEntityDatum
 } from '@alephdata/followthemoney'
@@ -48,7 +47,7 @@ export class EntityManager {
     this.resolveEntityReference = this.resolveEntityReference.bind(this);
   }
 
-  createEntity(entityData: any) {
+  createEntity(entityData: any): Entity {
     let entity: Entity;
     if (entityData.id) {
       entity = entityData;

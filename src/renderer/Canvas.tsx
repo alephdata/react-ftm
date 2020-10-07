@@ -2,11 +2,9 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom';
 import { Colors } from '@blueprintjs/core';
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { Viewport } from '../Viewport';
 import { Point } from '../layout/Point';
 import { Rectangle } from '../layout/Rectangle';
 import { getRefMatrix, applyMatrix } from './utils';
-import { GraphLayout } from '../layout/GraphLayout';
 import { GraphContext } from '../GraphContext';
 import { modes } from '../utils/interactionModes'
 
@@ -144,7 +142,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     }
   }
 
-  onDragEnd(e: DraggableEvent, data: DraggableData) {
+  onDragEnd() {
     const { interactionMode, viewport } = this.context;
 
     if (interactionMode === modes.SELECT) {
@@ -165,7 +163,7 @@ export class Canvas extends React.Component <ICanvasProps> {
       actions.setInteractionMode()
     }
 
-    this.props.clearSelection()
+    clearSelection()
     const matrix = getRefMatrix(this.props.svgRef)
     this.dragInitial = applyMatrix(matrix, data.x, data.y)
     this.dragExtent = this.dragInitial
@@ -216,25 +214,25 @@ export class Canvas extends React.Component <ICanvasProps> {
   // }
 
   _animateTransition(oldViewBox:string, viewBox:string, userDuration?:number) {
-    let start = this._now();
-    let that = this;
-    let domNode = ReactDOM.findDOMNode(that);
-    let req;
+    const start = this._now();
+    const that = this;
+    const domNode = ReactDOM.findDOMNode(that) as Element;
+    let req:any;
 
-    let oldVb = oldViewBox.split(" ").map(n => parseInt(n, 10));
-    let newVb = viewBox.split(" ").map(n => parseInt(n, 10));
+    const oldVb = oldViewBox.split(" ").map(n => parseInt(n, 10));
+    const newVb = viewBox.split(" ").map(n => parseInt(n, 10));
     let duration:number = userDuration as number;
 
     // if duration not supplied, calculate based on change of size and center
     if (!userDuration) {
-      let wRatio = newVb[2]/oldVb[2];
-      let hRatio = newVb[3]/oldVb[3];
-      let oldCenterX = oldVb[0] + oldVb[2]/2;
-      let oldCenterY = oldVb[1] + oldVb[3]/2;
-      let newCenterX = newVb[0] + newVb[2]/2;
-      let newCenterY = newVb[1] + newVb[3]/2;
-      let ratio = Math.max(wRatio, 1/wRatio, hRatio, 1/hRatio);
-      let dist = Math.floor(Math.sqrt(Math.pow(newCenterX - oldCenterX, 2) + Math.pow(newCenterY - oldCenterY, 2)));
+      const wRatio = newVb[2]/oldVb[2];
+      const hRatio = newVb[3]/oldVb[3];
+      const oldCenterX = oldVb[0] + oldVb[2]/2;
+      const oldCenterY = oldVb[1] + oldVb[3]/2;
+      const newCenterX = newVb[0] + newVb[2]/2;
+      const newCenterY = newVb[1] + newVb[3]/2;
+      const ratio = Math.max(wRatio, 1/wRatio, hRatio, 1/hRatio);
+      const dist = Math.floor(Math.sqrt(Math.pow(newCenterX - oldCenterX, 2) + Math.pow(newCenterY - oldCenterY, 2)));
       duration = 1 - 1/(ratio + Math.log(dist + 1));
       duration = Math.max(0.2, duration);
     }
@@ -242,12 +240,11 @@ export class Canvas extends React.Component <ICanvasProps> {
     const draw = () => {
       req = requestAnimationFrame(draw);
 
-      let time = (that._now() - start);
-      let vb = oldVb.map((part, i) => {
+      const time = (that._now() - start);
+      const vb = oldVb.map((part, i) => {
         return oldVb[i] + (newVb[i] - oldVb[i]) * (time / duration);
       }).join(" ");
 
-      // @ts-ignore
       domNode && domNode.setAttribute("viewBox", vb);
 
       if (time > duration) {

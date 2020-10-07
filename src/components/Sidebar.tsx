@@ -1,11 +1,10 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
 import { Entity } from '@alephdata/followthemoney';
-import { Drawer, Icon, Position } from "@blueprintjs/core";
+import { Drawer } from "@blueprintjs/core";
 import { GraphContext } from '../GraphContext'
 import { EntityList, EntityViewer, GroupingViewer } from "./";
 import { Grouping, Vertex } from '../layout'
-import c from 'classnames';
 
 import './Sidebar.scss';
 
@@ -86,7 +85,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
   }
 
   onEntitySelected(entity:Entity){
-    const { entityManager, layout, updateLayout } = this.context
+    const { layout, updateLayout } = this.context
     const vertexToSelect = layout.getVertexByEntity(entity);
     if(vertexToSelect) {
       layout.selectElement(vertexToSelect)

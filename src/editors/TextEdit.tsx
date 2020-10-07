@@ -1,7 +1,6 @@
 import * as React from 'react'
-import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Values } from "@alephdata/followthemoney";
-import { Button, ControlGroup, FormGroup, InputGroup, TagInput, TextArea, Tooltip } from "@blueprintjs/core";
+import { Button, FormGroup, TagInput, TextArea } from "@blueprintjs/core";
 import { ITypeEditorProps } from "./common";
 
 import "./TextEdit.scss";
@@ -9,14 +8,7 @@ import "./TextEdit.scss";
 const ENTER_KEY = 13;
 const TAB_KEY = 9;
 
-const messages = defineMessages({
-  add_additional: {
-    id: 'editor.text.additional',
-    defaultMessage: 'Add additional values',
-  },
-});
-
-interface ITextEditProps extends ITypeEditorProps, WrappedComponentProps {
+interface ITextEditProps extends ITypeEditorProps {
   onChange: (values: Values) => void
 }
 
@@ -97,7 +89,7 @@ class TextEdit extends React.PureComponent<ITextEditProps, ITextEditState> {
   }
 
   render() {
-    const { intl, onSubmit, values } = this.props;
+    const { onSubmit, values } = this.props;
     const { currMultiInputValue, forceMultiEdit } = this.state;
     const numVals = values.length;
     // don't show multi button if there is no existing input
@@ -165,4 +157,4 @@ class TextEdit extends React.PureComponent<ITextEditProps, ITextEditState> {
   }
 }
 
-export default injectIntl(TextEdit);
+export default TextEdit;

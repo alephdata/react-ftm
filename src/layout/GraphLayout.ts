@@ -1,6 +1,4 @@
-import { Entity, IEntityDatum, Schema } from '@alephdata/followthemoney'
-import { forceSimulation, forceLink, forceCollide } from 'd3-force';
-import { DraggableEvent } from 'react-draggable';
+import { Entity } from '@alephdata/followthemoney'
 import { Vertex } from './Vertex'
 import { Edge } from './Edge'
 import { Grouping } from './Grouping'
@@ -9,7 +7,6 @@ import { Rectangle } from './Rectangle';
 import { forceLayout } from './';
 import { ISettingsData, Settings } from './Settings';
 import { GraphConfig } from '../GraphConfig';
-import { matchText } from "../utils";
 
 export interface IGraphLayoutData {
   vertices: Array<any>
@@ -174,7 +171,7 @@ export class GraphLayout {
       .find((v) => v.entityId === entity.id)
   }
 
-  selectElement(element: GraphElement | Array<GraphElement>, additional: boolean = false, allowUnselect: boolean = false) {
+  selectElement(element: GraphElement | Array<GraphElement>, additional = false, allowUnselect = false) {
     const newSelection = Array.isArray(element) ? element.map(e => e.id) : [element.id]
     const isAlreadySelected = this.isElementSelected(element);
 
@@ -190,12 +187,12 @@ export class GraphLayout {
     }
   }
 
-  selectVerticesByFilter(predicate: VertexPredicate, additional: boolean = false, allowUnselect: boolean = false) {
+  selectVerticesByFilter(predicate: VertexPredicate, additional = false, allowUnselect = false) {
     const vertices = this.getVertices().filter((vertex) => !vertex.isHidden()).filter(predicate);
     this.selectElement(vertices, additional, allowUnselect);
   }
 
-  selectByEntityIds(entityIds: Array<string>, additional: boolean = false, allowUnselect: boolean = false) {
+  selectByEntityIds(entityIds: Array<string>, additional = false, allowUnselect = false) {
     this.selectVerticesByFilter(v => (v.entityId !== undefined && entityIds.indexOf(v.entityId) > -1), additional, allowUnselect);
   }
 
@@ -275,7 +272,7 @@ export class GraphLayout {
       vIds.indexOf(edge.targetId) !== -1;
   }
 
-  applyPositioning(positioningFuncs: any, vertices: Array<Vertex>, maintainFixed: boolean = false) {
+  applyPositioning(positioningFuncs: any, vertices: Array<Vertex>, maintainFixed = false) {
     const { positionVertex, positionEdge } = positioningFuncs;
     const vIds = vertices.map(v => v.id);
     vertices.forEach((v, i) => {

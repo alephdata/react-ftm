@@ -8,7 +8,7 @@ export interface IPositioningProps {
 }
 
 export const getPositionFromSimulation = (nodes: Array<any>) => {
-  return (v:Vertex, i:number) => {
+  return (v:Vertex) => {
     const node = nodes.find(n => n.id === v.id);
     if (node) {
       return new Point(node.x, node.y)

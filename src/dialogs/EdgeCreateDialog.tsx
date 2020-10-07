@@ -130,7 +130,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   }
 
   onReverse() {
-    const { source, target, type } = this.state
+    const { source, target } = this.state
     if (this.isReversible()) {
       this.setState({ source: target, target: source })
     }
@@ -181,17 +181,25 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     }
   }
 
-  async fetchEntitySuggestions(query: string, stateKey: string) {
+  async fetchSourceSuggestions(query: string) {
+    this.setState({ sourceSuggestions: { isProcessing: true, results: [] } });
+    const results = await this.fetchSuggestions(query);
+    this.setState({ sourceSuggestions: { isProcessing: false, results } });
+  }
+
+  async fetchTargetSuggestions(query: string) {
+    this.setState({ targetSuggestions: { isProcessing: true, results: [] } });
+    const results = await this.fetchSuggestions(query);
+    this.setState({ targetSuggestions: { isProcessing: false, results } });
+  }
+
+  async fetchSuggestions(query: string) {
     const { entityManager } = this.props;
-    const { source, target } = this.state;
 
     const schemata = entityManager.model.getSchemata()
       .filter((schema: Schema) => schema.isThing() && !schema.generated && !schema.abstract)
-    // @ts-ignore
-    this.setState({ [stateKey]: { isProcessing: true, results: [] } });
-    const results = await entityManager.getEntitySuggestions(true, query, schemata);
-    // @ts-ignore
-    this.setState({ [stateKey]: { isProcessing: false, results } });
+
+    return await entityManager.getEntitySuggestions(true, query, schemata);
   }
 
   render() {
@@ -219,7 +227,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                     allowMultiple={false}
                     isFetching={sourceSuggestions.isPending}
                     entitySuggestions={sourceSuggestions.results}
-                    onQueryChange={(query: string) => this.fetchEntitySuggestions(query, 'sourceSuggestions')}
+                    onQueryChange={(query: string) => this.fetchSourceSuggestions(query)}
                   />
                 </FormGroup>
               </div>
@@ -241,7 +249,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                     allowMultiple={false}
                     isFetching={targetSuggestions.isPending}
                     entitySuggestions={targetSuggestions.results}
-                    onQueryChange={(query: string) => this.fetchEntitySuggestions(query, 'targetSuggestions')}
+                    onQueryChange={(query: string) => this.fetchTargetSuggestions(query)}
                   />
                 </FormGroup>
               </div>

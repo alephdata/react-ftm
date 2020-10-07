@@ -26,7 +26,7 @@ export class Vertex {
   public color: string
   public radius: number
   public position: Point
-  public garbage: boolean = false;
+  public garbage = false;
 
   constructor(layout: GraphLayout, data: IVertexData) {
     this.layout = layout

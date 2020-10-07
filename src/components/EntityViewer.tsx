@@ -1,11 +1,10 @@
 import * as React from 'react'
-import {Classes, Divider, H2, UL} from '@blueprintjs/core'
-import { Entity as FTMEntity, Property as FTMProperty, Schema as FTMSchema } from '@alephdata/followthemoney';
+import { Classes, Divider, UL } from '@blueprintjs/core'
+import { Entity as FTMEntity, Property as FTMProperty } from '@alephdata/followthemoney';
 import { ColorPicker, PropertyEditor, PropertySelect, RadiusPicker } from '../editors';
 import { Entity, Property, Schema } from '../types';
-import { GraphLayout, Vertex } from '../layout'
+import { Vertex } from '../layout'
 import { GraphContext } from '../GraphContext';
-import { matchText } from "../utils";
 import c from 'classnames';
 
 import './EntityViewer.scss';
@@ -80,7 +79,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   renderProperty(property:FTMProperty){
-    const { entityManager, layout } = this.context;
+    const { entityManager } = this.context;
     const { entity } = this.props;
     const { currEditing } = this.state;
     const isEditable = property?.name === currEditing?.name;
@@ -119,7 +118,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   render() {
-    const { layout, writeable } = this.context;
+    const { writeable } = this.context;
     const { entity, vertexRef } = this.props;
     const { visibleProps } = this.state;
     const availableProperties = this.schemaProperties.filter(p => visibleProps.indexOf(p) < 0);

@@ -1,12 +1,11 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
-import {Classes, Divider, Icon, H2, UL} from '@blueprintjs/core'
-import {Entity, Property} from '@alephdata/followthemoney';
-import { ColorPicker, PropertySelect } from '../editors';
-import { Vertex, Grouping } from '../layout'
+import { Icon } from '@blueprintjs/core'
+import { Entity } from '@alephdata/followthemoney';
+import { ColorPicker } from '../editors';
+import { Grouping } from '../layout'
 import { GraphContext } from '../GraphContext'
-import {EntityList} from "./EntityList";
-import c from 'classnames';
+import { EntityList } from "./EntityList";
 
 import './GroupingViewer.scss';
 
@@ -45,7 +44,7 @@ export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
           <div className='GroupingViewer__title__settings'>
             <ColorPicker
               currSelected={grouping.color}
-              onSelect={(color: string) => this.props.onColorSelected(grouping, color)}
+              onSelect={(color: string) => onColorSelected(grouping, color)}
               swatchShape="square"
             />
           </div>

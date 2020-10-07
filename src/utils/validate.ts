@@ -1,5 +1,5 @@
 import { defineMessages } from 'react-intl';
-import { Schema, Property, Values } from '@alephdata/followthemoney';
+import { Entity, Schema, Property, Values } from '@alephdata/followthemoney';
 
 export const validationMessages = defineMessages({
   invalidDate: {
@@ -26,19 +26,19 @@ export const validationMessages = defineMessages({
 
 function isValidUrl(value: string) {
   try {
-    const testUrl = new URL(value);
+    new URL(value);
   } catch (e) {
     return false;
   }
 
   return true;
-};
+}
 
 function isValidEnumValue(property: Property, value: string) {
   return property.type.values.has(value);
-};
+}
 
-export function validate({ schema, property, values }: { schema: Schema, property: Property, values: Values}) {
+export function validate({ schema, property, values }: { schema: Schema, property: Property, values: Values}): any {
   if (!values || !values.length || (values.length === 1 && values[0] === '')) {
     const isPropRequired = schema.required.indexOf(property.name) > -1;
     return isPropRequired ? validationMessages.required : null;
@@ -57,8 +57,8 @@ export function validate({ schema, property, values }: { schema: Schema, propert
   return null;
 }
 
-export function checkEntityRequiredProps(entityData: any) {
+export function checkEntityRequiredProps(entityData: Entity): any {
   const { schema, properties } = entityData;
 
-  return schema.required.some((propName: string) => !properties.hasOwnProperty(propName)) ? validationMessages.required : null;
+  return schema.required.some((propName: string) => !properties[propName]) ? validationMessages.required : null;
 }

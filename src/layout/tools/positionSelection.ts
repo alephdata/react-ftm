@@ -1,4 +1,4 @@
-import { Edge, GraphLayout, Vertex } from "../";
+import { GraphLayout } from "../";
 import alignCircle from './alignCircle';
 import alignHorizontal from './alignHorizontal';
 import alignVertical from './alignVertical';
@@ -17,7 +17,7 @@ const positionSelection = (layout: GraphLayout, type: string, options?: any) => 
   let vertices;
   let edges;
   let groupings;
-  
+
   if (layout.hasSelection()) {
     vertices = layout.getSelectedVertices().filter(v=>!v.isHidden());
     edges = layout.getSelectionAdjacentEdges();

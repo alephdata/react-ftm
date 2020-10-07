@@ -43,8 +43,7 @@ class PropertySelect extends React.PureComponent<IPropertySelectProps> {
 
   render() {
     const { buttonProps, intl, properties } = this.props;
-    const items = properties
-      .sort((a, b) => a.label > b.label ? 1 : -1);
+
     return (
       <TypedSelect
         popoverProps={{
@@ -57,7 +56,7 @@ class PropertySelect extends React.PureComponent<IPropertySelectProps> {
         filterable={true}
         resetOnSelect={true}
         onItemSelect={this.props.onSelected}
-        items={this.props.properties}
+        items={properties}
       >
         <Button icon='plus' text={intl.formatMessage(messages.add)} fill alignText={Alignment.LEFT} {...buttonProps} />
       </TypedSelect>

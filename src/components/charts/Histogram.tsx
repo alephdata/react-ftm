@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Colors } from "@blueprintjs/core";
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import {
-  BarChart, Bar, Cell, XAxis, Tooltip, Legend, ReferenceArea, ResponsiveContainer,
+  BarChart, Bar, XAxis, Tooltip, ReferenceArea, ResponsiveContainer,
 } from 'recharts';
 import c from 'classnames';
 import Numeric from '../../types/Numeric';
