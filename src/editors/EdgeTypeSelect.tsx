@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { Menu, MenuItem, Icon, Button, Alignment, Position } from '@blueprintjs/core'
 import { Select, IItemListRendererProps, IItemRendererProps } from '@blueprintjs/select';
 
-import { EdgeType, Schema } from '../types';
+import { EdgeType, Schema } from 'types';
 
 const TypedSelect = Select.ofType<EdgeType>()
 

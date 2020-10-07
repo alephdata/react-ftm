@@ -1,4 +1,4 @@
-import { withTranslator } from '../Translator';
+import { withTranslator } from 'util/withTranslator';
 
 import CountBase from './Count';
 import Date from './Date';

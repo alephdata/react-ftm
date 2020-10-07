@@ -4,7 +4,7 @@ import { Value, Values } from "@alephdata/followthemoney";
 import { ControlGroup, MenuItem, Position } from "@blueprintjs/core";
 import { MultiSelect } from "@blueprintjs/select";
 import { ITypeEditorProps } from "./common";
-import { highlightText } from "../utils";
+import { highlightText } from 'util';
 
 const messages = defineMessages({
   no_results: {

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity, Property, Schema, Values } from '@alephdata/followthemoney';
 import { CountrySelect, TopicSelect, EntitySelect, TextEdit } from './';
-import { validate } from '../utils';
+import { validate } from 'util';
 
 const TAB_KEY = 9;
 

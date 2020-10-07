@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Slider } from '@blueprintjs/core';
 import { GraphContext } from '../GraphContext';
 import { Schema as FTMSchema } from "@alephdata/followthemoney";
-import { Schema } from '../types';
+import { Schema } from 'types';
 
 
 interface IRadiusPickerProps {

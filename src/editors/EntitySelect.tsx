@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity as FTMEntity } from "@alephdata/followthemoney";
-import { Entity } from '../types';
+import { Entity } from 'types';
 import { Alignment, Button, ControlGroup, Menu, MenuItem, Spinner } from "@blueprintjs/core";
 import { ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
 import { ITypeEditorProps } from "./common";

@@ -12,8 +12,7 @@ import {
   Topic,
   URL
 } from '.';
-import { ensureArray, wordList } from "../utils";
-import { withTranslator } from '../Translator';
+import { ensureArray, wordList, withTranslator } from 'util';
 
 
 import './Property.scss';

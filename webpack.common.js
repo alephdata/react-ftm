@@ -32,7 +32,11 @@ module.exports = {
     ],
   },
   resolve: {
+    modules: [path.resolve(__dirname, './src'), 'node_modules'],
     extensions: [ '.tsx', '.ts', '.js' ],
+    alias: {
+      reducers: path.resolve(__dirname, './src/reducers')
+    }
   },
   plugins: [
     new CleanWebpackPlugin(),

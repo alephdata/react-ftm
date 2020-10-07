@@ -1,7 +1,7 @@
 import React from 'react'
 import { IEmbeddedElementProps } from './util';
 
-import { EntityManager, GraphConfig, GraphLayout, Viewport, VisGraph } from '../';
+import { EntityManager, GraphConfig, GraphLayout, Viewport, NetworkDiagram } from '../';
 
 const config = new GraphConfig({ editorTheme: "dark", toolbarPosition: 'top' });
 
@@ -62,7 +62,7 @@ export default class NetworkDiagram extends React.Component <IEmbeddedElementPro
     const { entityManager, layout, viewport } = this.state;
 
     return (
-      <VisGraph
+      <NetworkDiagram
         config={config}
         entityManager={entityManager}
         layout={layout}

@@ -1,4 +1,4 @@
-import { withTranslator } from '../Translator';
+import { withTranslator } from 'util';
 
 import ColorPicker from './ColorPicker';
 import EdgeTypeSelect from './EdgeTypeSelect';
