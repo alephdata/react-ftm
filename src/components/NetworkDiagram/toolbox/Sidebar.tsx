@@ -2,8 +2,8 @@ import * as React from 'react'
 import { defineMessages } from 'react-intl';
 import { Entity } from '@alephdata/followthemoney';
 import { Drawer } from "@blueprintjs/core";
-import { GraphContext } from '../GraphContext'
-import { EntityList } from 'components/common/EntityList';
+import { GraphContext } from 'NetworkDiagram/GraphContext'
+import { EntityList } from 'components/common';
 import { EntityViewer, GroupingViewer } from 'components/NetworkDiagram/toolbox';
 import { Grouping, Vertex } from 'components/NetworkDiagram/layout'
 

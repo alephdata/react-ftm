@@ -4,8 +4,8 @@ import { PropertyType } from '@alephdata/followthemoney';
 import { defineMessages } from 'react-intl';
 import { Intent, FormGroup, Checkbox, Dialog, Button } from '@blueprintjs/core'
 
-import { GraphContext } from '../GraphContext';
-import { ISettingsData, Settings } from '../layout'
+import { GraphContext } from 'NetworkDiagram/GraphContext';
+import { ISettingsData, Settings } from 'NetworkDiagram/layout'
 
 import './SettingsDialog.scss';
 

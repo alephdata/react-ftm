@@ -3,9 +3,9 @@ import { defineMessages } from 'react-intl';
 import { Icon } from '@blueprintjs/core'
 import { Entity } from '@alephdata/followthemoney';
 import { ColorPicker } from 'editors';
-import { Grouping } from '../layout'
-import { GraphContext } from '../GraphContext'
-import { EntityList } from "./EntityList";
+import { Grouping } from 'NetworkDiagram/layout'
+import { GraphContext } from 'NetworkDiagram/GraphContext'
+import { EntityList } from "components/common/EntityList";
 
 import './GroupingViewer.scss';
 

@@ -3,10 +3,10 @@ import { defineMessages } from 'react-intl';
 import { Alignment, Button, ControlGroup, InputGroup } from '@blueprintjs/core'
 import { Entity as FTMEntity, Schema as FTMSchema, Values } from '@alephdata/followthemoney'
 
-import { GraphContext } from '../GraphContext'
+import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { EntitySelect, SchemaSelect } from 'editors'
 import { Schema } from 'types';
-import Dialog from './Dialog'
+import { Dialog } from 'components/common'
 
 import './VertexCreateDialog.scss';
 

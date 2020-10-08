@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import NetworkDiagram from './NetworkDiagram';
-import { fetchExternalData, fetchLocalData, IEmbeddedElementConfig } from './util';
+import NetworkDiagramWrapper from 'embed/NetworkDiagramWrapper';
+import { fetchExternalData, fetchLocalData, IEmbeddedElementConfig } from 'embed/util';
 
 export interface IRenderDiagramProps {
   id: string
@@ -22,7 +22,7 @@ export const renderDiagram = async (props: IRenderDiagramProps) => {
   let DiagramElem;
   switch (type) {
     default:
-      DiagramElem = NetworkDiagram
+      DiagramElem = NetworkDiagramWrapper
       break;
   }
 

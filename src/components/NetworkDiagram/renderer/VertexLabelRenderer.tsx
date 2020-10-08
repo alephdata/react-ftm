@@ -1,10 +1,8 @@
 import * as React from 'react'
 import truncateText from 'truncate';
 
-import {
-  Date, Numeric, URL,
-} from 'types';
-import { Point } from '../layout/Point'
+import { Date, Numeric, URL } from 'types';
+import { Point } from 'NetworkDiagram/layout/Point'
 
 const labelTruncate = 30;
 

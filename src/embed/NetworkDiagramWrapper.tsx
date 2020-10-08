@@ -1,7 +1,8 @@
 import React from 'react'
 import { IEmbeddedElementProps } from './util';
 
-import { EntityManager, GraphConfig, GraphLayout, Viewport, NetworkDiagram } from '../';
+import { EntityManager } from 'components/common'
+import { GraphConfig, GraphLayout, Viewport, NetworkDiagram } from 'NetworkDiagram';
 
 const config = new GraphConfig({ editorTheme: "dark", toolbarPosition: 'top' });
 
@@ -12,7 +13,7 @@ interface INetworkDiagramState {
   entityManager: EntityManager
 }
 
-export default class NetworkDiagram extends React.Component <IEmbeddedElementProps, INetworkDiagramState> {
+export default class NetworkDiagramWrapper extends React.Component <IEmbeddedElementProps, INetworkDiagramState> {
   constructor(props: IEmbeddedElementProps) {
     super(props)
 
@@ -69,7 +70,6 @@ export default class NetworkDiagram extends React.Component <IEmbeddedElementPro
         viewport={viewport}
         updateLayout={this.updateLayout}
         updateViewport={this.updateViewport}
-        exportSvg={null}
         locale="en"
         writeable
       />

@@ -1,11 +1,4 @@
 {
-  "baseUrl": ".",
-  "paths": {
-    "*": [
-       "*",
-       "src/*"
-    ]
-  },
   "compilerOptions": {
     "jsx": "react",
     "moduleResolution": "node",

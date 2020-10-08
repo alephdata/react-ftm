@@ -1,4 +1,4 @@
-import { Rectangle } from "../";
+import { Rectangle } from 'NetworkDiagram/layout';
 import { IPositioningProps } from './common';
 
 

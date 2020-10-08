@@ -6,7 +6,7 @@ import {
   Schema,
   IEntityDatum
 } from '@alephdata/followthemoney'
-import { matchText } from 'util';
+import { matchText } from 'utils';
 
 
 export interface IEntityManagerProps {

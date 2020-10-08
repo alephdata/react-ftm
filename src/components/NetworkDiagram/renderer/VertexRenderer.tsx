@@ -1,12 +1,12 @@
 import * as React from 'react'
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { GraphContext } from '../GraphContext';
-import { Point } from '../layout/Point'
-import { Vertex } from '../layout/Vertex'
-import { getRefMatrix, applyMatrix } from 'util';
+import { GraphContext } from 'NetworkDiagram/GraphContext';
+import { Point } from 'NetworkDiagram/layout/Point'
+import { Vertex } from 'NetworkDiagram/layout/Vertex'
+import { getRefMatrix, applyMatrix } from 'NetworkDiagram/renderer/utils';
 import { VertexLabelRenderer } from './VertexLabelRenderer';
-import {IconRenderer} from "./IconRenderer";
-import { modes } from 'util/interactionModes'
+import { IconRenderer } from "./IconRenderer";
+import { modes } from 'NetworkDiagram/utils'
 
 
 interface IVertexRendererProps {

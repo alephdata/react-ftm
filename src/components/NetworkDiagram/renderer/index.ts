@@ -6,4 +6,4 @@ export * from './EdgeLabelRenderer';
 export * from './Canvas';
 export * from './IconRenderer';
 export * from './GroupingRenderer';
-export * from 'util'
+export * from 'utils'

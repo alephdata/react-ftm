@@ -2,7 +2,7 @@ import * as React from 'react'
 import { WrappedComponentProps } from 'react-intl';
 import { GraphLayout } from "./layout";
 import { Viewport } from "./Viewport";
-import { EntityManager } from "./EntityManager";
+import { EntityManager } from "components/common";
 
 export type GraphUpdateHandler = (layout: GraphLayout, entityChanges?: any, options?: any) => void
 export type ViewportUpdateHandler = (viewport: Viewport, transitionSettings?: any) => void

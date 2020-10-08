@@ -32,10 +32,10 @@ module.exports = {
     ],
   },
   resolve: {
-    modules: [path.resolve(__dirname, './src'), 'node_modules'],
+    modules: [path.resolve('src'), 'node_modules'],
     extensions: [ '.tsx', '.ts', '.js' ],
     alias: {
-      reducers: path.resolve(__dirname, './src/reducers')
+      'NetworkDiagram': path.resolve('./src/components/NetworkDiagram')
     }
   },
   plugins: [

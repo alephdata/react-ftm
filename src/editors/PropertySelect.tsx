@@ -3,7 +3,7 @@ import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { ItemPredicate, ItemRenderer, Select } from '@blueprintjs/select';
 import { MenuItem, Button, Position, Alignment } from '@blueprintjs/core';
 import { Property } from '@alephdata/followthemoney';
-import { highlightText, matchText } from 'util';
+import { highlightText, matchText } from 'utils';
 
 const messages = defineMessages({
   add: {

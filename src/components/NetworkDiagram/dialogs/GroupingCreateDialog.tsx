@@ -1,10 +1,9 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
 import { ControlGroup, InputGroup } from '@blueprintjs/core'
-import { GraphContext, IGraphContext } from '../GraphContext'
-import Dialog from './Dialog';
-
-import { Grouping } from '../layout'
+import { GraphContext, IGraphContext } from 'NetworkDiagram/GraphContext'
+import { Dialog } from 'components/common';
+import { Grouping } from 'NetworkDiagram/layout'
 
 const messages = defineMessages({
   title: {

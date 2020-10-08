@@ -1,4 +1,4 @@
-import { GraphLayout, Rectangle, Vertex } from "../";
+import { GraphLayout, Rectangle, Vertex } from 'NetworkDiagram/layout';
 import alignCircle from "./alignCircle";
 
 const RADIUS_SPACING = 8;

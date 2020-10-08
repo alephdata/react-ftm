@@ -1,3 +1,8 @@
-import { NetworkDiagram as NetworkDiagramBase, INetworkDiagramProps } from './NetworkDiagram';
+import { withTranslator } from 'utils'
+import { NetworkDiagram as NetworkDiagramBase } from './NetworkDiagram';
 const NetworkDiagram = withTranslator(NetworkDiagramBase);
-export { NetworkDiagram, INetworkDiagramProps };
+
+export { NetworkDiagram };
+export * from './GraphConfig';
+export * from './Viewport';
+export { GraphLayout } from './layout';

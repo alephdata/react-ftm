@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { Vertex, Point, Rectangle, Edge, GraphElement, Grouping } from '../layout';
-import { GraphContext } from '../GraphContext'
+import { Vertex, Point, Rectangle, Edge, GraphElement, Grouping } from 'NetworkDiagram/layout';
+import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { Canvas } from './Canvas'
 import { EdgeRenderer } from './EdgeRenderer'
 import { EdgeDrawer } from './EdgeDrawer'
 import { VertexRenderer } from './VertexRenderer'
 import { GroupingRenderer } from './GroupingRenderer'
-import { modes } from 'util/interactionModes'
+import { modes } from 'components/NetworkDiagram/utils'
 
 
 interface IGraphRendererProps {

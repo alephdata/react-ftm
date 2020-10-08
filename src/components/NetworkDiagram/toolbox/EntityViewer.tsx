@@ -3,8 +3,8 @@ import { Classes, Divider, UL } from '@blueprintjs/core'
 import { Entity as FTMEntity, Property as FTMProperty } from '@alephdata/followthemoney';
 import { ColorPicker, PropertyEditor, PropertySelect, RadiusPicker } from 'editors';
 import { Entity, Property, Schema } from 'types';
-import { Vertex } from '../layout'
-import { GraphContext } from '../GraphContext';
+import { Vertex } from 'NetworkDiagram/layout'
+import { GraphContext } from 'NetworkDiagram/GraphContext';
 import c from 'classnames';
 
 import './EntityViewer.scss';

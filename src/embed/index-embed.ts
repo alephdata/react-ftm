@@ -1,4 +1,4 @@
-import { renderDiagram } from '../index.ts';
+import { renderDiagram } from 'embed/renderDiagram';
 
 renderDiagram({
   id: 'diagram',

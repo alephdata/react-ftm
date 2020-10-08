@@ -1,6 +1,6 @@
 import React from 'react';
 import { defineMessages } from 'react-intl';
-import { GraphContext } from '../GraphContext'
+import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { SchemaSelect } from 'editors';
 import { TableViewPanel } from './TableViewPanel';
 import { Button, Drawer, Position, TabId, Tab, Tabs } from "@blueprintjs/core";

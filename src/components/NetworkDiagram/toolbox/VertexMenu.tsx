@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
 import { Menu, MenuDivider, MenuItem, Spinner } from "@blueprintjs/core"
-import { modes } from 'components/NetworkDiagram/util/interactionModes'
+import { modes } from 'components/NetworkDiagram/utils'
 import { Count, Schema } from 'types';
 
 import './VertexMenu.scss';

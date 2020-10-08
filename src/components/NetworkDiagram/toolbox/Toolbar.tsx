@@ -9,18 +9,17 @@ import {
   Popover,
 } from "@blueprintjs/core"
 import c from 'classnames';
-import { GraphContext } from '../../GraphContext';
-import { SearchBox } from '../';
-import { modes } from 'util';
 
+import { GraphContext } from 'NetworkDiagram/GraphContext';
+import { IToolbarButtonGroup, ToolbarButtonGroup, SearchBox } from 'NetworkDiagram/toolbox';
+import { modes } from 'NetworkDiagram/utils';
 import {
   Point,
   centerAround,
   positionSelection,
-} from "../../layout";
-import { IToolbarButtonGroup, ToolbarButtonGroup } from './ToolbarButtonGroup';
+} from "NetworkDiagram/layout";
 
-import { History } from '../../History';
+import { History } from 'NetworkDiagram/History';
 
 import './Toolbar.scss';
 

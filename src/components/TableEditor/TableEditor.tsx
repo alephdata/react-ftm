@@ -1,15 +1,14 @@
 import React from 'react';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
+import Datasheet from 'react-datasheet';
 import _ from 'lodash';
-import { PropertyEditor } from 'editors';
-import { Property } from 'types';
-import { EntityManager } from '../EntityManager';
-import { PropertySelect } from 'editors';
 import { Button, Checkbox, Classes, Icon, Intent, Tooltip } from "@blueprintjs/core";
 import { Entity, Property as FTMProperty, Schema, Value } from "@alephdata/followthemoney";
-import Datasheet from 'react-datasheet';
-import { SortType } from './SortType';
-import { showErrorToast, validate } from 'util';
+import { PropertyEditor, PropertySelect } from 'editors';
+import { Property } from 'types';
+import { EntityManager } from 'components/common/EntityManager';
+import { SortType } from 'components/common/types/SortType';
+import { showErrorToast, validate } from 'utils';
 
 import "./TableEditor.scss"
 

@@ -3,18 +3,19 @@ import c from 'classnames';
 import { Entity, IEntityDatum } from "@alephdata/followthemoney";
 import { Button, ButtonGroup, Tooltip } from '@blueprintjs/core';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
-import { EntityManager } from './EntityManager';
-import { GraphConfig } from './GraphConfig';
-import { GraphRenderer } from './renderer/GraphRenderer'
-import { Edge, GraphLayout, Rectangle, Point, Settings, Vertex } from './layout';
-import { Viewport } from './Viewport';
-import { GraphContext } from './GraphContext'
-import { Sidebar, TableView, Toolbar, VertexMenu } from './components';
-import { History } from './History';
-import { GroupingCreateDialog, SettingsDialog, VertexCreateDialog } from './dialogs';
-import { EdgeType } from './types';
-import { EdgeCreateDialog } from 'components/common';
-import { filterVerticesByText, modes, showSuccessToast, showWarningToast } from 'util'
+
+import { EdgeCreateDialog, EntityManager } from 'components/common';
+import { GraphConfig } from 'NetworkDiagram/GraphConfig';
+import { GraphRenderer } from 'NetworkDiagram/renderer'
+import { Edge, GraphLayout, Rectangle, Point, Settings, Vertex } from 'NetworkDiagram/layout';
+import { Viewport } from 'NetworkDiagram/Viewport';
+import { GraphContext } from 'NetworkDiagram/GraphContext'
+import { Sidebar, TableView, Toolbar, VertexMenu } from 'NetworkDiagram/toolbox';
+import { History } from 'NetworkDiagram/History';
+import { GroupingCreateDialog, SettingsDialog, VertexCreateDialog } from 'NetworkDiagram/dialogs';
+import { EdgeType } from 'types';
+import { filterVerticesByText, modes } from 'NetworkDiagram/utils'
+import { showSuccessToast, showWarningToast } from 'utils'
 
 import './NetworkDiagram.scss';
 
@@ -45,7 +46,7 @@ export interface INetworkDiagramProps extends WrappedComponentProps {
   viewport: Viewport,
   updateLayout: (layout:GraphLayout, options?: any) => void,
   updateViewport: (viewport:Viewport) => void
-  exportSvg: (data: any) => void
+  exportSvg?: (data: any) => void
   writeable: boolean
   externalFilterText?: string
 }
@@ -337,7 +338,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     const rect = Rectangle.fromPoints(...points)
     const viewBox = viewport.fitToRect(rect).viewBox;
 
-    if (svgData) {
+    if (svgData && this.props.exportSvg) {
       const svgClone = svgData.cloneNode(true) as HTMLElement
       svgClone.setAttribute("viewBox",viewBox as string)
 

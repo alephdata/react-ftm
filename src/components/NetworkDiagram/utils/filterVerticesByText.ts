@@ -1,4 +1,4 @@
-import { Vertex } from "../layout/Vertex";
+import { Vertex } from "NetworkDiagram/layout/Vertex";
 
 
 export function filterVerticesByText(text: string) {

@@ -1,6 +1,6 @@
 import { forceLink, forceManyBody, forceSimulation, forceCollide, forceX } from "d3-force";
 import { scaleLinear } from 'd3-scale'
-import { Point, Edge } from "../";
+import { Point, Edge } from 'NetworkDiagram/layout';
 import { IPositioningProps, getPositionFromSimulation } from './common';
 import getForceData from './getForceData';
 

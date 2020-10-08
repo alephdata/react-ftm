@@ -1,5 +1,5 @@
 import React from 'react';
-import { wordList } from 'util';
+import { wordList } from 'utils';
 
 
 interface ILabelProps {

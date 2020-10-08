@@ -1,10 +1,10 @@
 import React from 'react';
 import _ from 'lodash';
-import { GraphContext } from '../GraphContext';
-import { TableEditor } from './TableEditor';
+import { GraphContext } from 'NetworkDiagram/GraphContext';
+import { TableEditor } from 'components/TableEditor';
 import { Entity, IEntityDatum, Schema, Property as FTMProperty } from "@alephdata/followthemoney";
 import { Property } from 'types';
-import { SortType } from './SortType';
+import { SortType } from 'components/common/types/SortType';
 
 interface ITableViewPanelProps {
   schema: Schema

@@ -13,7 +13,7 @@ interface IDialogProps {
   className?: string,
 }
 
-class Dialog extends React.Component<IDialogProps> {
+export class Dialog extends React.Component<IDialogProps> {
   render() {
     const { children, className, isProcessing, ...rest} = this.props;
 
@@ -35,5 +35,3 @@ class Dialog extends React.Component<IDialogProps> {
     );
   }
 }
-
-export default Dialog;

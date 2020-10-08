@@ -5,9 +5,7 @@ import { Entity, Schema } from '@alephdata/followthemoney'
 
 import { EdgeTypeSelect, EntitySelect } from 'editors'
 import { EdgeType } from 'types'
-import { EntityManager } from '../EntityManager'
-
-import Dialog from './Dialog';
+import { Dialog, EntityManager } from 'components/common'
 
 const messages = defineMessages({
   add_link: {
