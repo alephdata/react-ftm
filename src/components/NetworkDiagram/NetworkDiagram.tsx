@@ -383,6 +383,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     };
 
     const showSidebar = layout.vertices && layout.vertices.size > 0 && !tableView;
+
     return (
       <GraphContext.Provider value={layoutContext}>
         <div className={c('NetworkDiagram', `toolbar-${config.toolbarPosition}`, `theme-${config.editorTheme}`)}>

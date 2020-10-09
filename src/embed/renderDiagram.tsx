@@ -16,7 +16,7 @@ export const renderDiagram = async (props: IRenderDiagramProps) => {
   if (dataURL) {
     data = await fetchExternalData(dataURL);
   } else {
-    data = fetchLocalData() || require('./sample.vis');
+    data = fetchLocalData() || require('./sample.ftm');
   }
 
   let DiagramElem;

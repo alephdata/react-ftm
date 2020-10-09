@@ -113,6 +113,7 @@ export class EntityManager {
   }
 
   deleteEntity(entityId: string, propagate?: boolean) {
+    this.entities.delete(entityId);
     if (propagate && this.overload?.deleteEntity) {
       this.overload.deleteEntity(entityId);
     }

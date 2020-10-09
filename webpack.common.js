@@ -26,7 +26,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.vis$/,
+        test: /\.(vis|ftm)$/,
         loader: 'json-loader'
       }
     ],
