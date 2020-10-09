@@ -1,5 +1,5 @@
 import React from 'react'
-import { IEmbeddedElementProps } from './util';
+import { IEmbeddedElementProps } from './EmbeddedElement';
 
 import { EntityManager } from 'components/common'
 import { GraphConfig, GraphLayout, Viewport, NetworkDiagram } from 'NetworkDiagram';
@@ -60,7 +60,10 @@ export default class NetworkDiagramWrapper extends React.Component <IEmbeddedEle
   }
 
   render() {
+    const { config } = this.props;
     const { entityManager, layout, viewport } = this.state;
+
+    const writeable = config?.writeable !== undefined ? config.writeable : true;
 
     return (
       <NetworkDiagram
@@ -71,7 +74,7 @@ export default class NetworkDiagramWrapper extends React.Component <IEmbeddedEle
         updateLayout={this.updateLayout}
         updateViewport={this.updateViewport}
         locale="en"
-        writeable
+        writeable={writeable}
       />
     )
   }

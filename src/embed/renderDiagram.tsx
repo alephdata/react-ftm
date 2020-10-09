@@ -1,7 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import NetworkDiagramWrapper from 'embed/NetworkDiagramWrapper';
-import { fetchExternalData, fetchLocalData, IEmbeddedElementConfig } from 'embed/util';
+import TableEditorWrapper from 'embed/TableEditorWrapper';
+
+import { fetchExternalData, fetchLocalData } from 'embed/util';
+import { IEmbeddedElementConfig } from './EmbeddedElement'
 
 export interface IRenderDiagramProps {
   id: string
@@ -21,6 +24,9 @@ export const renderDiagram = async (props: IRenderDiagramProps) => {
 
   let DiagramElem;
   switch (type) {
+    case 'TableEditor':
+      DiagramElem = TableEditorWrapper
+      break;
     default:
       DiagramElem = NetworkDiagramWrapper
       break;

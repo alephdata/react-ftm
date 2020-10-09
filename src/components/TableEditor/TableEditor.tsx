@@ -42,7 +42,6 @@ export interface CellData extends Datasheet.Cell<CellData, any> {
 }
 
 interface ITableEditorProps extends WrappedComponentProps {
-  entities: Array<Entity>
   schema: Schema
   sort: SortType | null
   sortColumn: (field: string) => void
@@ -88,11 +87,14 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   componentDidUpdate(prevProps: ITableEditorProps, prevState: ITableEditorState) {
-    const { entities, selection, sort, writeable } = this.props;
+    const { entityManager, selection, sort, writeable } = this.props;
     const { addedColumns, showTopAddRow } = this.state;
 
-    const entitiesDeleted = prevProps.entities.length > entities.length;
-    const entitiesAdded = prevProps.entities.length < entities.length;
+    const entitiesLength = entityManager.entities.size;
+    const prevEntitiesLength = prevProps.entityManager.entities.size;
+
+    const entitiesDeleted = prevEntitiesLength > entitiesLength;
+    const entitiesAdded = prevEntitiesLength < entitiesLength;
     const sortChanged = prevProps.sort?.field !== sort?.field || prevProps.sort?.direction !== sort?.direction;
     const selectionChanged = prevProps.selection !== selection;
     const topAddRowToggled = prevState.showTopAddRow !== showTopAddRow;
@@ -101,7 +103,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       this.regenerateTable();
       return;
     } else if (entitiesAdded) {
-      this.appendAdditionalEntities(prevProps.entities);
+      this.appendAdditionalEntities(prevProps.entityManager.getEntities());
     } else if (writeable && selectionChanged) {
       this.reflectUpdatedSelection();
     }
@@ -126,8 +128,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   appendAdditionalEntities(prevEntities: Array<Entity>) {
-    const { entities } = this.props;
+    const { entityManager } = this.props;
     const { createdEntityIds } = this.state;
+    const entities = entityManager.getEntities();
     let newEntities = _.differenceBy(entities, prevEntities, e => e.id);
     if (createdEntityIds.length) {
       newEntities = newEntities.filter(e => (createdEntityIds.indexOf(e.id) < 0));
@@ -157,12 +160,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   getVisibleProperties() {
-    const { entities, schema } = this.props;
+    const { entityManager, schema } = this.props;
     const { addedColumns } = this.state;
 
     const requiredProps = schema.required.map(name => schema.getProperty(name));
     const featuredProps = schema.getFeaturedProperties();
-    const filledProps = entities.reduce((acc, entity: Entity) => [...acc, ...entity.getProperties()], [] as FTMProperty[]);
+    const filledProps = entityManager.getEntities()
+      .reduce((acc, entity: Entity) => [...acc, ...entity.getProperties()], [] as FTMProperty[]);
 
     const fullList = _.uniqBy([...requiredProps, ...featuredProps, ...filledProps, ...addedColumns], 'name');
 
@@ -197,10 +201,10 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   getEntityRows = () => {
-    const { entities } = this.props;
+    const { entityManager } = this.props;
     const visibleProps = this.getVisibleProperties();
 
-    return entities.map(e => this.getEntityRow(e, visibleProps));
+    return entityManager.getEntities().map(e => this.getEntityRow(e, visibleProps));
   }
 
   getEntityRow = (entity: Entity, visibleProps: Array<FTMProperty>) => {

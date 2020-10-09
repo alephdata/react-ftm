@@ -1,13 +1,3 @@
-export interface IEmbeddedElementConfig {
-  writeable?: boolean
-  containerProps?: any
-}
-
-export interface IEmbeddedElementProps {
-  data: any
-  config?: IEmbeddedElementConfig
-}
-
 export const fetchExternalData = (dataURL: string) => {
   return new Promise((resolve, reject) => {
     fetch(dataURL)
