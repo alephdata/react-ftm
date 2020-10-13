@@ -1,7 +1,5 @@
 import React from 'react'
-import { IEmbeddedElementProps } from './EmbeddedElement';
-
-import { EntityManager } from 'components/common'
+import { IWrappedElementProps } from 'embed/common';
 import { GraphConfig, GraphLayout, Viewport, NetworkDiagram } from 'NetworkDiagram';
 
 const config = new GraphConfig({ editorTheme: "dark", toolbarPosition: 'top' });
@@ -10,22 +8,19 @@ interface INetworkDiagramState {
   layout: GraphLayout,
   locale?: string,
   viewport: Viewport
-  entityManager: EntityManager
 }
 
-export default class NetworkDiagramWrapper extends React.Component <IEmbeddedElementProps, INetworkDiagramState> {
-  constructor(props: IEmbeddedElementProps) {
+export default class NetworkDiagramWrapper extends React.Component <IWrappedElementProps, INetworkDiagramState> {
+  constructor(props: IWrappedElementProps) {
     super(props)
 
-    if (props.data) {
+    if (props.layoutData) {
       this.state = {
-        entityManager: EntityManager.fromJSON({}, props.data?.entities || props.data?.layout?.entities),
-        layout: GraphLayout.fromJSON(config, props.data.layout),
-        viewport: Viewport.fromJSON(config, props.data.viewport),
+        layout: GraphLayout.fromJSON(config, props.layoutData.layout),
+        viewport: Viewport.fromJSON(config, props.layoutData.viewport),
       }
     } else {
       this.state = {
-        entityManager: new EntityManager(),
         layout: new GraphLayout(config),
         viewport: new Viewport(config)
       }
@@ -38,31 +33,27 @@ export default class NetworkDiagramWrapper extends React.Component <IEmbeddedEle
   updateLayout(layout: GraphLayout, historyModified = false) {
     this.setState({'layout': layout})
 
-    if (this.props.config?.writeable && historyModified) {
-      this.saveToLocalStorage({ layout });
+    if (historyModified) {
+      this.propagateUpdate({ layout });
     }
   }
 
   updateViewport(viewport: Viewport) {
     this.setState({'viewport': viewport})
-    if (this.props.config?.writeable) {
-      this.saveToLocalStorage({ viewport });
-    }
+    this.propagateUpdate({ viewport });
   }
 
-  saveToLocalStorage({ entityManager, layout, viewport }: { entityManager?: EntityManager, layout?: GraphLayout, viewport?: Viewport }) {
-    const graphData = JSON.stringify({
-      entities: entityManager ? entityManager.toJSON() : this.state.entityManager.toJSON(),
+  propagateUpdate({ layout, viewport }: { layout?: GraphLayout, viewport?: Viewport }) {
+    const graphData = {
       layout: layout ? layout.toJSON() : this.state.layout.toJSON(),
       viewport: viewport ? viewport.toJSON() : this.state.viewport.toJSON()
-    })
-    localStorage.setItem('storedGraphData', graphData)
+    };
+    this.props.onUpdate(graphData);
   }
 
   render() {
-    const { entityManager, layout, viewport } = this.state;
-
-    const writeable = this.props.config?.writeable !== undefined ? this.props.config.writeable : true;
+    const { entityManager, writeable } = this.props;
+    const { layout, viewport } = this.state;
 
     return (
       <NetworkDiagram

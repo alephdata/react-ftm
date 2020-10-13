@@ -7,7 +7,7 @@ export const fetchExternalData = (dataURL: string) => {
   })
 }
 
-export const fetchLocalData = () => {
-  const storedData = localStorage.getItem('storedGraphData');
+export const fetchLocalData = (id: string) => {
+  const storedData = localStorage.getItem(id);
   return storedData && JSON.parse(storedData);
 }

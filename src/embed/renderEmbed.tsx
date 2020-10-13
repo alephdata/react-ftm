@@ -1,16 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import NetworkDiagramWrapper from 'embed/NetworkDiagramWrapper';
-import EntityTableWrapper from 'embed/EntityTableWrapper';
 
+import { EmbeddedElement } from 'embed/EmbeddedElement';
 import { fetchExternalData, fetchLocalData } from 'embed/util';
-import { IEmbeddedElementConfig } from './EmbeddedElement'
+
+export interface IRenderEmbedConfig {
+  writeable?: boolean
+  containerProps?: any
+}
 
 export interface IRenderEmbedProps {
   id: string
   type: string
   dataURL?: string
-  config?: IEmbeddedElementConfig
+  config?: IRenderEmbedConfig
 }
 
 export const renderEmbed = async (props: IRenderEmbedProps) => {
@@ -19,17 +22,7 @@ export const renderEmbed = async (props: IRenderEmbedProps) => {
   if (dataURL) {
     data = await fetchExternalData(dataURL);
   } else {
-    data = fetchLocalData() || require('./sample.ftm');
-  }
-
-  let EmbeddedElement;
-  switch (type) {
-    case 'EntityTable':
-      EmbeddedElement = EntityTableWrapper
-      break;
-    default:
-      EmbeddedElement = NetworkDiagramWrapper
-      break;
+    data = fetchLocalData(id) || require('./sample.ftm');
   }
 
   let domElem = document.getElementById(id);
@@ -41,7 +34,7 @@ export const renderEmbed = async (props: IRenderEmbedProps) => {
 
   ReactDOM.render(
     <div {...config?.containerProps}>
-      <EmbeddedElement data={data} config={config} />
+      <EmbeddedElement id={id} data={data} config={config} type={type} />
     </div>,
     domElem
   );
