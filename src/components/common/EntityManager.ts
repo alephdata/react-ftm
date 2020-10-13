@@ -6,6 +6,8 @@ import {
   Schema,
   IEntityDatum
 } from '@alephdata/followthemoney'
+
+import { EntityChanges, EntityChangeUpdate } from 'components/common/types';
 import { matchText } from 'utils';
 
 
@@ -15,7 +17,7 @@ export interface IEntityManagerProps {
   namespace?: Namespace,
   createEntity?: (entity: IEntityDatum) => Entity,
   updateEntity?: (entity: Entity) => void,
-  deleteEntity?: (entityId: string) => void,
+  deleteEntity?: (entity: Entity) => void,
   expandEntity?: (entityId: string, properties?: Array<string>, limit?: number) => Promise<any>
   getEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>,
   resolveEntityReference?: (entityId: string) => Entity | undefined,
@@ -70,6 +72,8 @@ export class EntityManager {
     if (this.overload?.createEntity) {
       this.overload.createEntity(entity);
     }
+
+    this.addEntities([entity]);
     return entity;
   }
 
@@ -95,9 +99,10 @@ export class EntityManager {
 
   removeEntities(entityIds: Array<string>, propagate?: boolean) {
     entityIds.map(id => {
+      const entity = this.getEntity(id);
       this.entities.delete(id);
-      if (propagate) {
-        this.deleteEntity(id, true);
+      if (propagate && entity) {
+        this.deleteEntity(entity, true);
       }
     });
   }
@@ -112,10 +117,10 @@ export class EntityManager {
     return entity;
   }
 
-  deleteEntity(entityId: string, propagate?: boolean) {
-    this.entities.delete(entityId);
+  deleteEntity(entity: Entity, propagate?: boolean) {
+    this.entities.delete(entity.id);
     if (propagate && this.overload?.deleteEntity) {
-      this.overload.deleteEntity(entityId);
+      this.overload.deleteEntity(entity);
     }
   }
 
@@ -155,12 +160,12 @@ export class EntityManager {
   }
 
   // entity changes in the reverse direction require undoing create/delete operations
-  applyEntityChanges(entityChanges: any, factor: number) {
+  applyEntityChanges(entityChanges: EntityChanges, factor: number) {
     const { created, updated, deleted } = entityChanges;
 
-    created && created.forEach((entity: Entity) => factor > 0 ? this.updateEntity(entity) : this.deleteEntity(entity.id));
-    updated && updated.forEach((entity: Entity) => this.updateEntity(entity));
-    deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntity(entity.id) : this.updateEntity(entity));
+    created && created.forEach((entity: Entity) => factor > 0 ? this.createEntity(entity) : this.deleteEntity(entity));
+    updated && updated.forEach(({prev, next}: EntityChangeUpdate) => factor > 0 ? this.updateEntity(next) : this.updateEntity(prev));
+    deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntity(entity) : this.createEntity(entity));
   }
 
   toJSON(): Array<IEntityDatum> {

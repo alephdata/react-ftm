@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Classes, Divider, UL } from '@blueprintjs/core'
-import { Entity as FTMEntity, Property as FTMProperty } from '@alephdata/followthemoney';
+import { Entity as FTMEntity, IEntityDatum, Property as FTMProperty } from '@alephdata/followthemoney';
 import { ColorPicker, PropertyEditor, PropertySelect, RadiusPicker } from 'editors';
 import { Entity, Property, Schema } from 'types';
 import { Vertex } from 'NetworkDiagram/layout'
@@ -12,7 +12,7 @@ import './EntityViewer.scss';
 interface IEntityViewerProps {
   entity: FTMEntity,
   vertexRef?: Vertex,
-  onEntityChanged: (entity: FTMEntity) => void
+  onEntityChanged: (entity: FTMEntity, previousData: IEntityDatum) => void
   onVertexColorSelected: (vertex: Vertex, color: string) => void
   onVertexRadiusSelected: (vertex: Vertex, radius: number) => void
 }
@@ -70,8 +70,8 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     })
   }
 
-  onSubmit(entity: FTMEntity) {
-    this.props.onEntityChanged(entity);
+  onSubmit(entity: FTMEntity, previousData: IEntityDatum) {
+    this.props.onEntityChanged(entity, previousData);
 
     this.setState({
       currEditing: null
@@ -83,6 +83,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     const { entity } = this.props;
     const { currEditing } = this.state;
     const isEditable = property?.name === currEditing?.name;
+    const entityData = entity.toJSON();
 
     return <React.Fragment key={property.name}>
       <li
@@ -99,7 +100,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
             <div>
               <PropertyEditor
                 key={property.name}
-                onSubmit={this.onSubmit}
+                onSubmit={(entity: FTMEntity) => this.onSubmit(entity, entityData)}
                 entity={entity}
                 property={property}
                 fetchEntitySuggestions={(queryText: string, schemata?: Array<Schema>) => entityManager.getEntitySuggestions(true, queryText, schemata)}

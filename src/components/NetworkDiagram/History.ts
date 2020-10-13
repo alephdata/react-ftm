@@ -1,8 +1,10 @@
 import { IGraphLayoutData } from "./layout";
+import { EntityChanges } from 'components/common/types';
+
 
 interface IHistoryObject {
   layout: IGraphLayoutData,
-  entityChanges?: any
+  entityChanges?: EntityChanges
 }
 
 export class History {
@@ -38,6 +40,10 @@ export class History {
     this.state = nextState
     this.current = this.stack[this.state];
     return {layout: this.current.layout, entityChanges};
+  }
+
+  getRevertedDistance(): number {
+    return this.stack.length - this.state;
   }
 
   canGoTo(factor: number): boolean {

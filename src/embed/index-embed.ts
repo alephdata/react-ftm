@@ -1,6 +1,6 @@
-import { renderDiagram } from 'embed/renderDiagram';
+import { renderEmbed } from 'embed/renderEmbed';
 
-// renderDiagram({
+// renderEmbed({
 //   id: 'diagram',
 //   type: 'NetworkDiagram',
 //   dataURL: undefined,
@@ -10,9 +10,9 @@ import { renderDiagram } from 'embed/renderDiagram';
 //   }
 // });
 
-renderDiagram({
+renderEmbed({
   id: 'table',
-  type: 'TableEditor',
+  type: 'EntityTable',
   dataURL: undefined,
   config: {
     writeable: true,

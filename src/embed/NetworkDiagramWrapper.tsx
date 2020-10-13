@@ -60,10 +60,9 @@ export default class NetworkDiagramWrapper extends React.Component <IEmbeddedEle
   }
 
   render() {
-    const { config } = this.props;
     const { entityManager, layout, viewport } = this.state;
 
-    const writeable = config?.writeable !== undefined ? config.writeable : true;
+    const writeable = this.props.config?.writeable !== undefined ? this.props.config.writeable : true;
 
     return (
       <NetworkDiagram

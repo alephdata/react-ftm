@@ -63,8 +63,9 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
     if (validationError) {
       this.setState({ error: validationError });
     } else {
-      entity.properties.set(property, values);
-      this.props.onSubmit(entity)
+      const changed = entity.clone()
+      changed.properties.set(property, values);
+      this.props.onSubmit(changed)
     }
   }
 

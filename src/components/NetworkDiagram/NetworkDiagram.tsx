@@ -14,6 +14,7 @@ import { Sidebar, TableView, Toolbar, VertexMenu } from 'NetworkDiagram/toolbox'
 import { History } from 'NetworkDiagram/History';
 import { GroupingCreateDialog, SettingsDialog, VertexCreateDialog } from 'NetworkDiagram/dialogs';
 import { EdgeType } from 'types';
+import { EntityChanges } from 'components/common/types';
 import { filterVerticesByText, modes } from 'NetworkDiagram/utils'
 import { showSuccessToast, showWarningToast } from 'utils'
 
@@ -140,7 +141,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
       layout.clearSelection();
     }
     this.setState({ searchText });
-    this.updateLayout(layout, null, { modifyHistory: false })
+    this.updateLayout(layout, undefined, { modifyHistory: false })
   }
 
   onSubmitSearch(event: React.FormEvent) {
@@ -149,7 +150,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     event.stopPropagation();
   }
 
-  updateLayout(layout: GraphLayout, entityChanges?: any, options?: any) {
+  updateLayout(layout: GraphLayout, entityChanges?: EntityChanges, options?: any) {
     if (options?.modifyHistory) {
       this.history.push({layout:layout.toJSON(), entityChanges: entityChanges});
     }
@@ -182,7 +183,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
       entityManager.applyEntityChanges(entityChanges, factor);
     }
 
-    this.updateLayout(GraphLayout.fromJSON(config, layout), null, { forceSaveUpdate: true })
+    this.updateLayout(GraphLayout.fromJSON(config, layout), undefined, { forceSaveUpdate: true })
   }
 
   addVertex(options?: any) {
@@ -200,13 +201,14 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
       return;
     }
 
-    const entityChanges: any = {};
+    const entityChanges: EntityChanges = {};
     let edge;
     if (type.property && source) {
-      source.setProperty(type.property, target)
-      entityManager.updateEntity(source);
+      const nextSource = source.clone()
+      nextSource.setProperty(type.property, target)
+      entityManager.updateEntity(nextSource);
       layout.layout(entityManager.getEntities());
-      entityChanges.updated = [source]
+      entityChanges.updated = [{ prev: source, next: nextSource }];
       edge = Edge.fromValue(layout, type.property, sourceVertex, targetVertex)
     }
     if (type.schema && type.schema.edge && source && target) {
@@ -283,7 +285,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
         showWarningToast(intl.formatMessage(messages.expand_none));
       }
 
-      this.updateLayout(layout, {}, { modifyHistory: true })
+      this.updateLayout(layout, undefined, { modifyHistory: true })
     }
   }
 
@@ -303,7 +305,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     if (settings) {
       layout.settings = Settings.fromJSON(settings);
       layout.layout(entityManager.getEntities());
-      this.updateLayout(layout, {}, { modifyHistory: true });
+      this.updateLayout(layout, undefined, { modifyHistory: true });
     }
   }
   fitToSelection() {
@@ -318,8 +320,9 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
   removeSelection() {
     const { entityManager, layout } = this.props;
 
-    const entitiesToRemove = layout.removeSelection();
-    entityManager.removeEntities(entitiesToRemove, true);
+    const idsToRemove = layout.removeSelection();
+    const entitiesToRemove = entityManager.getEntities(idsToRemove);
+    entityManager.removeEntities(idsToRemove, true);
     layout.layout(entityManager.getEntities());
 
     this.updateLayout(layout, { deleted: entitiesToRemove }, { modifyHistory:true })
@@ -328,7 +331,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
   ungroupSelection() {
     const { layout } = this.props
     layout.ungroupSelection()
-    this.updateLayout(layout, null, { modifyHistory:true })
+    this.updateLayout(layout, undefined, { modifyHistory:true })
   }
 
   exportSvg() {
@@ -425,10 +428,9 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
             {tableView && (
               <div className="NetworkDiagram__table">
                 <TableView
-                  isOpen={tableView}
                   toggleTableView={this.toggleTableView}
                   fitToSelection={this.fitToSelection}
-                  entities={entityManager.getEntities()}
+                  key={this.history.getRevertedDistance()}
                 />
               </div>
             )}

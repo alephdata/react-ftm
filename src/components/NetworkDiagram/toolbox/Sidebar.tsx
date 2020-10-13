@@ -35,7 +35,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
 
   constructor(props: Readonly<ISidebarProps>) {
     super(props);
-    this.appendToLayout  = this.appendToLayout.bind(this);
+    this.onEntityChanged  = this.onEntityChanged.bind(this);
     this.onEntitySelected = this.onEntitySelected.bind(this);
     this.removeGroupingEntity = this.removeGroupingEntity.bind(this);
     this.setVertexColor = this.setVertexColor.bind(this)
@@ -43,11 +43,12 @@ export class Sidebar extends React.Component<ISidebarProps> {
     this.setGroupingColor = this.setGroupingColor.bind(this)
   }
 
-  appendToLayout(entity: Entity) {
-    const { layout, entityManager, updateLayout } = this.context
+  onEntityChanged(entity: Entity) {
+    const { layout, entityManager, updateLayout } = this.context;
+    const previousEntity = entityManager.getEntity(entity.id);
     entityManager.updateEntity(entity);
     layout.layout(entityManager.getEntities());
-    updateLayout(layout, { updated: [entity] }, { modifyHistory:true });
+    updateLayout(layout, { updated: [{ prev: previousEntity, next: entity }] }, { modifyHistory:true });
   }
 
   removeGroupingEntity(grouping: Grouping, entity: Entity) {
@@ -101,14 +102,14 @@ export class Sidebar extends React.Component<ISidebarProps> {
     let contents, searchResultsText;
 
     if (selectedEntities.length === 1) {
-      const entity = selectedEntities[0]
+      const entity = selectedEntities[0];
       let vertexRef
       if (!entity.schema.edge) {
         vertexRef = layout.getVertexByEntity(entity)
       }
       contents = <EntityViewer
         entity={entity}
-        onEntityChanged={this.appendToLayout}
+        onEntityChanged={this.onEntityChanged}
         vertexRef={vertexRef}
         onVertexColorSelected={this.setVertexColor}
         onVertexRadiusSelected={this.setVertexRadius}

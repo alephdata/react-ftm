@@ -205,7 +205,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     this.animationHandler(nextProps.animateTransition, this.props.viewBox || '' , nextProps.viewBox || '');
   }
 
-  animationHandler(animateTransition: boolean, oldViewBox:string, viewBox:string, userDuration?:number) {
+  animationHandler(animateTransition: boolean, oldViewBox:string, viewBox:string) {
     if (animateTransition && viewBox && oldViewBox && viewBox !== oldViewBox) {
       this._animateTransition(oldViewBox, viewBox)
     } else {

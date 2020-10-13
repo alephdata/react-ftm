@@ -1,6 +1,8 @@
 import { withTranslator } from 'utils';
+import { EntityTable as EntityTableBase } from './EntityTable';
 import { TableEditor as TableEditorBase } from './TableEditor';
 
+const EntityTable = withTranslator(EntityTableBase);
 const TableEditor = withTranslator(TableEditorBase);
 
-export { TableEditor }
+export { EntityTable, TableEditor }

@@ -1,19 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import NetworkDiagramWrapper from 'embed/NetworkDiagramWrapper';
-import TableEditorWrapper from 'embed/TableEditorWrapper';
+import EntityTableWrapper from 'embed/EntityTableWrapper';
 
 import { fetchExternalData, fetchLocalData } from 'embed/util';
 import { IEmbeddedElementConfig } from './EmbeddedElement'
 
-export interface IRenderDiagramProps {
+export interface IRenderEmbedProps {
   id: string
   type: string
   dataURL?: string
   config?: IEmbeddedElementConfig
 }
 
-export const renderDiagram = async (props: IRenderDiagramProps) => {
+export const renderEmbed = async (props: IRenderEmbedProps) => {
   const { id, type, dataURL, config } = props;
   let data;
   if (dataURL) {
@@ -22,13 +22,13 @@ export const renderDiagram = async (props: IRenderDiagramProps) => {
     data = fetchLocalData() || require('./sample.ftm');
   }
 
-  let DiagramElem;
+  let EmbeddedElement;
   switch (type) {
-    case 'TableEditor':
-      DiagramElem = TableEditorWrapper
+    case 'EntityTable':
+      EmbeddedElement = EntityTableWrapper
       break;
     default:
-      DiagramElem = NetworkDiagramWrapper
+      EmbeddedElement = NetworkDiagramWrapper
       break;
   }
 
@@ -41,7 +41,7 @@ export const renderDiagram = async (props: IRenderDiagramProps) => {
 
   ReactDOM.render(
     <div {...config?.containerProps}>
-      <DiagramElem data={data} config={config} />
+      <EmbeddedElement data={data} config={config} />
     </div>,
     domElem
   );

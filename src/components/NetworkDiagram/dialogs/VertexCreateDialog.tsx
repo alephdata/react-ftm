@@ -122,7 +122,6 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
       } else {
         entity = entityData;
       }
-      entityManager.addEntities([entity]);
       layout.layout(entityManager.getEntities(), center);
       layout.selectByEntityIds([entity.id]);
     } catch (e) {

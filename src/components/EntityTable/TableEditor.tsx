@@ -1,13 +1,13 @@
 import React from 'react';
-import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
+import { defineMessages, injectIntl } from 'react-intl';
 import Datasheet from 'react-datasheet';
 import _ from 'lodash';
 import { Button, Checkbox, Classes, Icon, Intent, Tooltip } from "@blueprintjs/core";
 import { Entity, Property as FTMProperty, Schema, Value } from "@alephdata/followthemoney";
 import { PropertyEditor, PropertySelect } from 'editors';
 import { Property } from 'types';
-import { EntityManager } from 'components/common/EntityManager';
-import { SortType } from 'components/common/types/SortType';
+import { EntityChanges, SortType } from 'components/common/types';
+import { IEntityTableCommonProps } from 'components/EntityTable/common';
 import { showErrorToast, validate } from 'utils';
 
 import "./TableEditor.scss"
@@ -41,17 +41,13 @@ export interface CellData extends Datasheet.Cell<CellData, any> {
   component?: any
 }
 
-interface ITableEditorProps extends WrappedComponentProps {
+interface ITableEditorProps extends IEntityTableCommonProps {
+  entities: Array<Entity>
   schema: Schema
   sort: SortType | null
   sortColumn: (field: string) => void
   selection: Array<string>
   updateSelection: (entityId: string) => void
-  entityManager: EntityManager
-  writeable: boolean
-  isPending?: boolean
-  updateFinishedCallback?: () => void
-  visitEntity?: (entity: Entity | string) => void
 }
 
 interface ITableEditorState {
@@ -87,11 +83,11 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   componentDidUpdate(prevProps: ITableEditorProps, prevState: ITableEditorState) {
-    const { entityManager, selection, sort, writeable } = this.props;
+    const { entities, selection, sort, writeable } = this.props;
     const { addedColumns, showTopAddRow } = this.state;
 
-    const entitiesLength = entityManager.entities.size;
-    const prevEntitiesLength = prevProps.entityManager.entities.size;
+    const entitiesLength = entities.length;
+    const prevEntitiesLength = prevProps.entities.length;
 
     const entitiesDeleted = prevEntitiesLength > entitiesLength;
     const entitiesAdded = prevEntitiesLength < entitiesLength;
@@ -103,7 +99,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       this.regenerateTable();
       return;
     } else if (entitiesAdded) {
-      this.appendAdditionalEntities(prevProps.entityManager.getEntities());
+      this.appendAdditionalEntities(prevProps.entities);
     } else if (writeable && selectionChanged) {
       this.reflectUpdatedSelection();
     }
@@ -128,9 +124,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   appendAdditionalEntities(prevEntities: Array<Entity>) {
-    const { entityManager } = this.props;
+    const { entities } = this.props;
     const { createdEntityIds } = this.state;
-    const entities = entityManager.getEntities();
     let newEntities = _.differenceBy(entities, prevEntities, e => e.id);
     if (createdEntityIds.length) {
       newEntities = newEntities.filter(e => (createdEntityIds.indexOf(e.id) < 0));
@@ -160,12 +155,12 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   getVisibleProperties() {
-    const { entityManager, schema } = this.props;
+    const { entities, schema } = this.props;
     const { addedColumns } = this.state;
 
     const requiredProps = schema.required.map(name => schema.getProperty(name));
     const featuredProps = schema.getFeaturedProperties();
-    const filledProps = entityManager.getEntities()
+    const filledProps = entities
       .reduce((acc, entity: Entity) => [...acc, ...entity.getProperties()], [] as FTMProperty[]);
 
     const fullList = _.uniqBy([...requiredProps, ...featuredProps, ...filledProps, ...addedColumns], 'name');
@@ -201,10 +196,10 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   getEntityRows = () => {
-    const { entityManager } = this.props;
+    const { entities } = this.props;
     const visibleProps = this.getVisibleProperties();
 
-    return entityManager.getEntities().map(e => this.getEntityRow(e, visibleProps));
+    return entities.map(e => this.getEntityRow(e, visibleProps));
   }
 
   getEntityRow = (entity: Entity, visibleProps: Array<FTMProperty>) => {
@@ -457,12 +452,16 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
         showTopAddRow: shouldPrepend ? false : showTopAddRow,
       })
     });
+
+    return entity;
   }
 
   handleExistingRow = (changes: Datasheet.CellsChangedArgs<CellData, any> | Datasheet.CellAdditionsArgs<CellData>) => {
     const { intl } = this.props;
 
-    let changedEntity;
+    let prevEntity: Entity | undefined;
+    let nextEntity: Entity | undefined;
+
     changes.forEach(({ cell, value }: any) => {
       const { entity, property } = cell.data;
       const error = validate({ schema: entity.schema, property, values: value});
@@ -470,19 +469,22 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       if (error) {
         showErrorToast(intl.formatMessage(error));
       } else {
+        prevEntity = prevEntity || entity;
+        nextEntity = nextEntity || entity.clone();
         if (value === "") {
-          entity.properties.set(entity.schema.getProperty(property.name), []);
+          nextEntity && nextEntity.properties.set(entity.schema.getProperty(property.name), []);
           cell.value = "";
         } else {
-          entity.properties.set(entity.schema.getProperty(property.name), value);
+          nextEntity && nextEntity.properties.set(entity.schema.getProperty(property.name), value);
           cell.value = value.map((v:Value) => typeof v === 'string' ? v : v.id);
         }
-        changedEntity = entity;
+        cell.data.entity = nextEntity;
       }
     })
 
-    if (changedEntity) {
-      this.props.entityManager.updateEntity(changedEntity);
+    if (prevEntity && nextEntity) {
+      this.props.entityManager.updateEntity(nextEntity);
+      return { prev: prevEntity, next: nextEntity };
     }
   }
 
@@ -490,18 +492,25 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const { updateFinishedCallback } = this.props;
     const fullChangeList = outOfBounds ? [...changeList, ...outOfBounds] : changeList;
     const changesByRow = _.groupBy(fullChangeList, c => c.row);
+    const entityChanges = {} as EntityChanges;
 
     Object.entries(changesByRow).forEach(([rowIndex, changes]: [string, any]) => {
       const isExisting = changes[0]?.cell?.data?.entity != null;
       if (isExisting) {
-        this.handleExistingRow(changes);
+        const updated = this.handleExistingRow(changes);
+        if (updated) {
+          entityChanges.updated ? entityChanges.updated.push(updated) : entityChanges.updated = [updated]
+        }
       } else {
-        this.handleNewRow(+rowIndex, changes);
+        const created = this.handleNewRow(+rowIndex, changes);
+        if (created) {
+          entityChanges.created ? entityChanges.created.push(created) : entityChanges.created = [created]
+        }
       }
     });
 
     if (updateFinishedCallback) {
-      updateFinishedCallback();
+      updateFinishedCallback(entityChanges);
     }
   }
 

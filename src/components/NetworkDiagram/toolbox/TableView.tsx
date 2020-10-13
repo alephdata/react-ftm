@@ -1,73 +1,65 @@
+import _ from 'lodash';
 import React from 'react';
-import { defineMessages } from 'react-intl';
 import { GraphContext } from 'NetworkDiagram/GraphContext'
-import { SchemaSelect } from 'editors';
-import { TableViewPanel } from './TableViewPanel';
-import { Button, Drawer, Position, TabId, Tab, Tabs } from "@blueprintjs/core";
-import { Schema as FTMSchema, Entity } from "@alephdata/followthemoney";
-import { Schema } from 'types';
+import { EntityChanges } from 'components/common/types';
+import { EntityTable } from 'components/EntityTable';
+import { Button, Drawer, Position } from "@blueprintjs/core";
+import { Entity } from "@alephdata/followthemoney";
 
 import "./TableView.scss"
 
-const messages = defineMessages({
-  add: {
-    id: 'table_editor.add_schema',
-    defaultMessage: 'Add an entity type',
-  },
-});
-
 interface ITableViewProps {
-  isOpen: boolean,
   toggleTableView: () => void
   fitToSelection: () => void
-  entities: Array<Entity>
 }
 
-interface ITableViewState {
-  activeTabId: TabId,
-  schemata: Array<FTMSchema>,
-}
-
-export class TableView extends React.Component<ITableViewProps, ITableViewState> {
+export class TableView extends React.Component<ITableViewProps> {
   static contextType = GraphContext;
 
   constructor(props: ITableViewProps) {
     super(props);
 
-    const schemata = props.entities
-      .map((entity: Entity) => entity.schema)
-      .filter((schema: FTMSchema, index: number, list: any) => !schema.isEdge && list.indexOf(schema) === index)
-      .sort((a: FTMSchema, b: FTMSchema) => a.label.localeCompare(b.label));
-
-    const activeTabId = schemata && schemata.length ? schemata[0].name : 0;
-
-    this.state = {
-      schemata,
-      activeTabId,
-    };
-
-    this.setActiveTab = this.setActiveTab.bind(this);
+    this.onSelectionChange = this.onSelectionChange.bind(this);
+    this.visitEntity = this.visitEntity.bind(this);
+    this.onEntitiesUpdate = this.onEntitiesUpdate.bind(this);
   }
 
-  addSchema(schema: FTMSchema) {
-    const schemata = [...this.state.schemata, ...[schema]]
-      .sort((a, b) => a.label.localeCompare(b.label))
-    this.setState({ schemata, activeTabId: schema.name });
+  onSelectionChange(entityId: string, additional = true, allowUnselect = true) {
+    const { layout, updateLayout } = this.context;
+    layout.selectByEntityIds([entityId], additional, allowUnselect);
+    updateLayout(layout, null, { clearSearch: true });
   }
 
-  setActiveTab(newTabId: TabId) {
-    this.setState({ activeTabId: newTabId });
+  visitEntity(entity: Entity | string) {
+    const { fitToSelection, toggleTableView } = this.props;
+    const entityId = typeof entity === 'string' ? entity : entity.id;
+    if (entityId) {
+      this.onSelectionChange(entityId, false, false);
+      toggleTableView();
+      fitToSelection();
+    }
+  }
+
+  onEntitiesUpdate(entityChanges: EntityChanges) {
+    const { entityManager, layout, updateLayout, viewport } = this.context;
+    if (!_.isEmpty(entityChanges)) {
+      if (entityChanges.created) {
+        layout.layout(entityManager.getEntities(), viewport.center);
+        layout.selectByEntityIds(entityChanges.created.map((e: Entity) => e.id));
+      }
+      layout.layout(entityManager.getEntities());
+      updateLayout(layout, entityChanges, { modifyHistory: true });
+    }
   }
 
   render() {
-    const { entityManager, intl, writeable } = this.context;
-    const { isOpen, toggleTableView, fitToSelection } = this.props;
-    const { activeTabId, schemata } = this.state;
+    const { entityManager, layout, writeable } = this.context;
+    const { toggleTableView } = this.props;
 
     return (
       <Drawer
         className="TableView"
-        isOpen={isOpen}
+        isOpen={true}
         hasBackdrop={false}
         position={Position.BOTTOM}
         autoFocus={false}
@@ -80,40 +72,14 @@ export class TableView extends React.Component<ITableViewProps, ITableViewState>
           minimal
           onClick={toggleTableView}
         />
-        <Tabs
-          renderActiveTabPanelOnly
-          selectedTabId={activeTabId}
-          onChange={this.setActiveTab}
-        >
-          {schemata.map(schema => (
-            <Tab
-              id={schema.name}
-              key={schema.name}
-              title={<Schema.Label schema={schema} icon />}
-              panel={(
-                <TableViewPanel
-                  schema={schema}
-                  toggleTableView={toggleTableView}
-                  fitToSelection={fitToSelection}
-                />
-              )}
-            />
-          ))}
-          {writeable && (
-            <div className="TableView__schemaAdd">
-              <SchemaSelect
-                model={entityManager.model}
-                onSelect={schema => this.addSchema(schema)}
-                optionsFilter={(schema => !schemata.includes(schema))}
-              >
-                <Button
-                  text={intl.formatMessage(messages.add)}
-                  icon="plus"
-                />
-              </SchemaSelect>
-            </div>
-          )}
-        </Tabs>
+        <EntityTable
+          entityManager={entityManager}
+          visitEntity={this.visitEntity}
+          selection={layout.getSelectedEntityIds()}
+          onSelectionChange={this.onSelectionChange}
+          updateFinishedCallback={this.onEntitiesUpdate}
+          writeable={writeable}
+        />
       </Drawer>
     )
   }

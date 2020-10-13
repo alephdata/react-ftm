@@ -1,1 +1,1 @@
-export * from './renderDiagram'
+export * from './renderEmbed'
