@@ -4,7 +4,7 @@ import { PropertyType } from '@alephdata/followthemoney';
 import { defineMessages } from 'react-intl';
 import { Intent, FormGroup, Checkbox, Dialog, Button } from '@blueprintjs/core'
 
-import { GraphContext } from 'NetworkDiagram/GraphContext';
+import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { ISettingsData, Settings } from 'NetworkDiagram/layout'
 
 import './SettingsDialog.scss';
@@ -45,6 +45,12 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
     super(props);
     this.state = { pivotTypes: props.settings.pivotTypes };
     this.togglePivotType = this.togglePivotType.bind(this);
+  }
+
+  componentDidUpdate(prevProps: ISettingsDialogProps) {
+    if (!prevProps.isOpen && this.props.isOpen) {
+      this.setState({ pivotTypes: this.props.settings.pivotTypes });
+    }
   }
 
   togglePivotType(type: string) {
