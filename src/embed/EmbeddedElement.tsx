@@ -43,7 +43,7 @@ export class EmbeddedElement extends React.Component <IEmbeddedElementProps> {
   }
 
   render() {
-    const { config, data, type } = this.props;
+    const { data, type } = this.props;
     const { entities, ...rest } = data;
 
     let Element;
