@@ -124,6 +124,7 @@ class EntityTableBase extends React.Component<IEntityTableProps, IEntityTableSta
                 updateSelection={onSelectionChange}
                 writeable={writeable}
                 entityManager={entityManager}
+                fetchEntitySuggestions={(queryText: string, schemata?: Array<FTMSchema>) => entityManager.getEntitySuggestions(true, queryText, schemata)}
                 updateFinishedCallback={updateFinishedCallback}
                 visitEntity={visitEntity}
                 isPending={isPending}

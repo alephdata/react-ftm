@@ -1,6 +1,6 @@
 import * as React from 'react'
 import c from 'classnames';
-import { Entity, IEntityDatum } from "@alephdata/followthemoney";
+import { Entity, IEntityDatum, Schema } from "@alephdata/followthemoney";
 import { Button, ButtonGroup, Tooltip } from '@blueprintjs/core';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 
@@ -466,6 +466,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
               toggleDialog={this.setInteractionMode}
               onSubmit={this.onEdgeCreate}
               entityManager={entityManager}
+              fetchEntitySuggestions={(queryText: string, schemata?: Array<Schema>) => entityManager.getEntitySuggestions(true, queryText, schemata)}
               intl={intl}
             />
           </>

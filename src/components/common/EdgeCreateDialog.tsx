@@ -40,6 +40,7 @@ interface IEdgeCreateDialogProps extends WrappedComponentProps {
   isOpen: boolean,
   toggleDialog: () => any
   onSubmit: (source: Entity, target: Entity, type: EdgeType) => void
+  fetchEntitySuggestions: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>,
   entityManager: EntityManager
 }
 
@@ -192,12 +193,12 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   }
 
   async fetchSuggestions(query: string) {
-    const { entityManager } = this.props;
+    const { entityManager, fetchEntitySuggestions } = this.props;
 
     const schemata = entityManager.model.getSchemata()
       .filter((schema: Schema) => schema.isThing() && !schema.generated && !schema.abstract)
 
-    return await entityManager.getEntitySuggestions(true, query, schemata);
+    return await fetchEntitySuggestions(query, schemata);
   }
 
   render() {
