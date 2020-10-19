@@ -127,7 +127,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
       contents = <EntityList entities={selectedEntities} onEntitySelected={this.onEntitySelected} />
       searchResultsText = intl.formatMessage(messages.search_found_multiple, { count: selectedEntities.length });
     } else {
-      const entities = entityManager.getEntities()
+      const entities = entityManager.getThingEntities()
       contents = <EntityList entities={entities as Entity[]} onEntitySelected={this.onEntitySelected}/>
       searchResultsText = intl.formatMessage(messages.search_found_none);
     }

@@ -85,6 +85,10 @@ export class EntityManager {
     }
   }
 
+  getThingEntities(): Entity[] {
+    return this.getEntities().filter(e => !e.schema.edge);
+  }
+
   getEntity(entityId: string): Entity | undefined {
     return this.entities.get(entityId);
   }
