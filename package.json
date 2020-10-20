@@ -118,7 +118,7 @@
     "dagre": "^0.8.4",
     "filesize": "^6.1.0",
     "git": "^0.1.5",
-    "moment": "^2.27.0",
+    "moment": "^2.29.0",
     "numeral": "^2.0.6",
     "react-datasheet": "^1.4.8",
     "react-draggable": "^4.4.3",
