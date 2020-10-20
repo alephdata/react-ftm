@@ -114,7 +114,7 @@
   },
   "dependencies": {
     "d3-force": "^2.1.1",
-    "d3-scale": "^3.2.2",
+    "d3-scale": "^3.2.3",
     "dagre": "^0.8.4",
     "filesize": "^6.1.0",
     "git": "^0.1.5",
