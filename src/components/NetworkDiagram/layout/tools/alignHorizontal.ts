@@ -27,9 +27,9 @@ const alignHorizontal = (props:IPositioningProps): any => {
     if (source && target) {
       const x = (source.x + target.x)/2;
       const xDistance = Math.abs(source.x - target.x);
-      const yOffset = i%2 ? yOffsetScale(xDistance) : -yOffsetScale(xDistance);
-
-      return new Point(x, center.y + yOffset);
+      const yOffset = yOffsetScale(xDistance);
+      const y = yOffset ? (center.y + (i%2 ? 1 : -1)*yOffset) : center.y;
+      return new Point(x, y);
     }
   };
 

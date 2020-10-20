@@ -115,11 +115,12 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   }
 
   async onSubmit(e: React.ChangeEvent<HTMLFormElement>) {
-    const { onSubmit } = this.props
+    const { onSubmit, toggleDialog } = this.props
     const { source, target, type } = this.state
     e.preventDefault()
     if (source && target && type && this.isValid()) {
       onSubmit(source, target, type);
+      toggleDialog();
     }
   }
 

@@ -229,7 +229,6 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
       layout.selectElement(edge)
       this.updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
       this.updateLayout(layout, entityChanges, { modifyHistory: true, clearSearch: true });
-      this.setInteractionMode();
     }
   }
 

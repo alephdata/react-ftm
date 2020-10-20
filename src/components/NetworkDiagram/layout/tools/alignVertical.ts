@@ -27,9 +27,10 @@ const alignVertical = (props:IPositioningProps): any => {
     if (source && target) {
       const y = (source.y + target.y)/2;
       const yDistance = Math.abs(source.y - target.y);
-      const xOffset = i%2 ? xOffsetScale(yDistance) : -xOffsetScale(yDistance);
+      const xOffset = xOffsetScale(yDistance);
+      const x = xOffset ? (center.x + (i%2 ? 1 : -1)*xOffset) : center.x;
 
-      return new Point(center.x + xOffset, y);
+      return new Point(x, y);
     }
   };
 
