@@ -133,7 +133,7 @@ class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
       content = (<span className="no-value">{missing}</span>);
     // display urls separated by newline
     } else if (prop.type.name === 'url') {
-      content = vals.map(val => <span style={{ display: 'block' }}>{val}</span>);
+      content = vals.map((val, i) => <span key={i} style={{ display: 'block' }}>{val}</span>);
     } else {
       content = wordList(vals, separator);
     }
