@@ -28,7 +28,8 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
 
   constructor(props: IEntityViewerProps) {
     super(props);
-    this.schemaProperties = props.entity.schema.getEditableProperties();
+    this.schemaProperties = props.entity.schema.getEditableProperties()
+      .sort((a, b) => a.label.localeCompare(b.label));
 
     this.state = {
       visibleProps: this.getVisibleProperties(props),
