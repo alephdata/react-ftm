@@ -209,15 +209,13 @@ export class Canvas extends React.Component <ICanvasProps> {
     if (animateTransition && viewBox && oldViewBox && viewBox !== oldViewBox) {
       this._animateTransition(oldViewBox, viewBox)
     } else {
-      // @ts-ignore
-      ReactDOM.findDOMNode(this).setAttribute("viewBox", viewBox);
+      this.props.svgRef?.current?.setAttribute("viewBox", viewBox);
     }
   }
 
   _animateTransition(oldViewBox:string, viewBox:string, userDuration?:number) {
     const start = this._now();
-    const that = this;
-    const domNode = ReactDOM.findDOMNode(that) as Element;
+    const domNode = ReactDOM.findDOMNode(this) as Element;
     let req:any;
 
     const oldVb = oldViewBox.split(" ").map(n => parseInt(n, 10));
@@ -240,8 +238,7 @@ export class Canvas extends React.Component <ICanvasProps> {
 
     const draw = () => {
       req = requestAnimationFrame(draw);
-
-      const time = (that._now() - start);
+      const time = (this._now() - start);
       const vb = oldVb.map((part, i) => {
         return oldVb[i] + (newVb[i] - oldVb[i]) * (time / duration);
       }).join(" ");
@@ -262,7 +259,7 @@ export class Canvas extends React.Component <ICanvasProps> {
 
   render() {
     const { interactionMode, viewport } = this.context;
-    const { svgRef} = this.props
+    const { svgRef } = this.props
     const grid = `M ${viewport.config.gridUnit} 0 L 0 0 0 ${viewport.config.gridUnit}`
     const style:React.CSSProperties = {width: "100%", height: "100%", cursor: interactionMode === modes.PAN ? 'grab' : 'crosshair'}
     return (

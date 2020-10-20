@@ -43,6 +43,7 @@ export class EmbeddedElement extends React.Component <IEmbeddedElementProps> {
 
   render() {
     const { data, type } = this.props;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { entities, ...rest } = data;
 
     let Element;

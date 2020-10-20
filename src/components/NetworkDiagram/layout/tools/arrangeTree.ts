@@ -1,4 +1,3 @@
-// @ts-ignore
 import * as dagre from 'dagre'
 import { IPositioningProps, getPositionFromSimulation } from './common';
 import getForceData from './getForceData';
