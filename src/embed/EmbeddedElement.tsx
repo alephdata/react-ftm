@@ -25,7 +25,6 @@ export class EmbeddedElement extends React.Component <IEmbeddedElementProps> {
     this.onUpdate = this.onUpdate.bind(this);
   }
 
-
   onUpdate(additionalData?: any) {
     const { id } = this.props;
     if (this.isWriteable()) {
