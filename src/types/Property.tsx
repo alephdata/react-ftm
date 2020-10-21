@@ -8,6 +8,7 @@ import {
   Entity,
   FileSize,
   Language,
+  Transliterate,
   Numeric,
   Topic,
   URL
@@ -50,6 +51,7 @@ interface IPropertyValueProps extends IPropertyCommonProps{
   value:Value
   resolveEntityReference?: (entityId: string) => FTMEntity | undefined
   getEntityLink?: (entity: FTMEntity) => any
+  translitLookup?: any
 }
 
 const getSortValue = ({ prop, resolveEntityReference, value }:IPropertyValueProps) => {
@@ -67,7 +69,7 @@ const getSortValue = ({ prop, resolveEntityReference, value }:IPropertyValueProp
 
 class PropertyValue extends React.PureComponent<IPropertyValueProps> {
   render() {
-    const { getEntityLink, prop, resolveEntityReference, value } = this.props;
+    const { getEntityLink, prop, resolveEntityReference, value, translitLookup } = this.props;
     if (!value) {
       return null;
     }
@@ -102,7 +104,10 @@ class PropertyValue extends React.PureComponent<IPropertyValueProps> {
     if (prop.type.name === 'number' && !isNaN(+value)) {
       return <Numeric num={+value} />;
     }
-    return value;
+    if (prop.type.name === 'name' || prop.type.name === 'address') {
+      return <Transliterate value={value} lookup={translitLookup} />;
+    }
+    return value
   }
 }
 
@@ -114,11 +119,12 @@ interface IPropertyValuesProps extends IPropertyCommonProps{
   missing?: string
   resolveEntityReference?: (entityId: string) => FTMEntity | undefined
   getEntityLink?: (entity: FTMEntity) => any
+  translitLookup?: any
 }
 
 class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
   render() {
-    const { getEntityLink, prop, resolveEntityReference, values, separator = ' · ', missing = '—' } = this.props;
+    const { getEntityLink, prop, resolveEntityReference, values, separator = ' · ', missing = '—', translitLookup } = this.props;
     const vals = ensureArray(values).map(value => (
       <PropertyValue
         key={typeof value === 'string' ? value : value.id}
@@ -126,6 +132,7 @@ class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
         value={value}
         resolveEntityReference={resolveEntityReference}
         getEntityLink={getEntityLink}
+        translitLookup={translitLookup}
       />
     ));
     let content;

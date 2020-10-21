@@ -6,6 +6,7 @@ import EdgeType from './EdgeType';
 import Entity from './Entity';
 import EnumValue from './EnumValue';
 import FileSize from './FileSize';
+import Transliterate from './Transliterate';
 import MIMEType from './MIMEType';
 import NumericBase from './Numeric';
 import Property from './Property';
@@ -24,6 +25,7 @@ export {
   EnumValue as Language,
   EnumValue as Topic,
   FileSize,
+  Transliterate,
   MIMEType,
   Numeric,
   Property,
