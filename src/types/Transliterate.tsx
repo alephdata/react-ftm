@@ -2,7 +2,7 @@ import React from 'react';
 import { Tooltip } from '@blueprintjs/core';
 
 
-// import './Transliterate.scss';
+import './Transliterate.scss';
 
 interface ITransliterateProps {
   value: string

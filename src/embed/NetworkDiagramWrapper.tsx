@@ -2,7 +2,7 @@ import React from 'react'
 import { IWrappedElementProps } from 'embed/common';
 import { GraphConfig, GraphLayout, Viewport, NetworkDiagram } from 'NetworkDiagram';
 
-const config = new GraphConfig({ editorTheme: "dark", toolbarPosition: 'top' });
+const config = new GraphConfig({ editorTheme: "light", toolbarPosition: 'top' });
 
 interface INetworkDiagramState {
   layout: GraphLayout,
