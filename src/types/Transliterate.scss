@@ -1,7 +1,26 @@
 @import "src/variables.scss";
 @import "src/themes.scss";
 
-.Transliterate.bp3-tooltip-indicator {
-  cursor: inherit;
-  border-color: $gray5;
+.Transliterate {
+  &__popover {
+    .bp3-popover-content {
+      padding: 5px !important;
+      background: #fcf8d3 !important;
+      color: $gray1;
+    }
+
+    &__main, &__secondary {
+      display: block;
+    }
+
+    &__secondary {
+      font-size: 10px !important;
+      padding-top: 3px;
+      opacity: .7;
+    }
+  }
+  &.bp3-tooltip-indicator {
+    cursor: inherit;
+    border-color: $gray5;
+  }
 }
