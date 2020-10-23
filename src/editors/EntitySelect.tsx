@@ -62,7 +62,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
         disabled={modifiers.disabled}
         key={entity.id}
         onClick={handleClick}
-        text={<Entity.Label entity={entity} icon />}
+        text={<Entity.Label entity={entity} icon transliterate={false} />}
       />
     );
   }

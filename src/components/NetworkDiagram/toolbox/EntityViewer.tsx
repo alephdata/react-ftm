@@ -111,7 +111,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
           )}
           {!isEditable && (
             <div>
-              <Property.Values prop={property} values={entity.getProperty(property.name)} resolveEntityReference={entityManager.getEntity} />
+              <Property.Values prop={property} values={entity.getProperty(property.name)} resolveEntityReference={entityManager.getEntity} translitLookup={entity.latinized} />
             </div>
           )}
         </div>

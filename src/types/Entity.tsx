@@ -14,12 +14,14 @@ interface IEntityLabelProps  {
   icon?:boolean
   iconSize?: number
   truncate?:number
+  className?: string
+  transliterate?: boolean
 }
 
 class EntityLabel extends React.Component<IEntityLabelProps> {
   render() {
     const {
-      entity, icon = false, iconSize = 16, truncate
+      entity, icon = false, iconSize = 16, truncate, className, transliterate = true
     } = this.props;
     if (!entity || !entity.id || !FTMEntity.isEntity(entity)) {
       return null;
@@ -28,9 +30,11 @@ class EntityLabel extends React.Component<IEntityLabelProps> {
     const caption = entity.getCaption();
     const label = truncate ? truncateText(caption, truncate) : caption;
     return (
-      <span className={c('EntityLabel', { 'bp3-text-muted': !label })} title={caption}>
+      <span className={c('EntityLabel', { 'bp3-text-muted': !label }, className)} title={caption}>
         {icon && <Schema.Icon schema={entity.schema} className="left-icon" size={iconSize} />}
-        <span><Transliterate value={label} lookup={entity.latinized} /></span>
+        <span style={{ display: 'inline-flex', whiteSpace: 'nowrap' }}>
+          <Transliterate value={label} lookup={transliterate && entity.latinized} />
+        </span>
       </span>
     );
   }
