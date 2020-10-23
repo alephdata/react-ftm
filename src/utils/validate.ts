@@ -21,7 +21,7 @@ export const validationMessages = defineMessages({
   },
   invalidPhone: {
     id: 'editor.validation.phone_invalid',
-    defaultMessage: 'Invalid phone number',
+    defaultMessage: 'Invalid phone number: try adding a country code if available',
   },
   required: {
     id: 'editor.validation.required',
