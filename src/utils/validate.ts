@@ -1,5 +1,6 @@
 import { defineMessages } from 'react-intl';
 import { Entity, Schema, Property, Values } from '@alephdata/followthemoney';
+import { PhoneNumberUtil } from 'google-libphonenumber';
 
 export const validationMessages = defineMessages({
   invalidDate: {
@@ -17,6 +18,10 @@ export const validationMessages = defineMessages({
   invalidTopic: {
     id: 'editor.validation.topic_invalid',
     defaultMessage: 'Invalid topic',
+  },
+  invalidPhone: {
+    id: 'editor.validation.phone_invalid',
+    defaultMessage: 'Invalid phone number',
   },
   required: {
     id: 'editor.validation.required',
@@ -38,7 +43,29 @@ function isValidEnumValue(property: Property, value: string) {
   return property.type.values.has(value);
 }
 
-export function validate({ schema, property, values }: { schema: Schema, property: Property, values: Values}): any {
+function isValidPhone(entity: Entity, value: string) {
+  const phoneUtil = PhoneNumberUtil.getInstance();
+
+  // returns true if valid intl number
+  try {
+    const intlParsed = phoneUtil.parse(value);
+    return true;
+  } catch {}
+
+  const countries = entity.getTypeValues('country') as Array<string>;
+  for (let country of countries) {
+    try {
+      const parsed = phoneUtil.parse(value, country);
+      if (phoneUtil.isValidNumberForRegion(parsed, country)) {
+        return true;
+      }
+    } catch {}
+  }
+
+  return false;
+}
+
+export function validate({ entity, property, values, schema }: { entity?: Entity, property: Property, values: Values, schema: Schema }): any {
   if (!values || !values.length || (values.length === 1 && values[0] === '')) {
     const isPropRequired = schema.required.indexOf(property.name) > -1;
     return isPropRequired ? validationMessages.required : null;
@@ -53,6 +80,8 @@ export function validate({ schema, property, values }: { schema: Schema, propert
     return values.some(val => !isValidEnumValue(property, val as string)) ? validationMessages.invalidCountry : null;
   } else if (propType === 'topic') {
     return values.some(val => !isValidEnumValue(property, val as string)) ? validationMessages.invalidTopic : null;
+  } else if (propType === 'phone' && entity !== undefined) {
+    return values.some(val => !isValidPhone(entity, val as string)) ? validationMessages.invalidPhone : null;
   }
   return null;
 }

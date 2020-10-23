@@ -465,7 +465,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     changes.forEach(({ cell, value }: any) => {
       const { entity, property } = cell.data;
-      const error = validate({ schema: entity.schema, property, values: value});
+      const error = validate({ entity, schema: entity.schema, property, values: value});
 
       if (error) {
         showErrorToast(intl.formatMessage(error));

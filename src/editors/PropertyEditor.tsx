@@ -59,7 +59,7 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
     if (overrideStateValues) {
       this.onChange(overrideStateValues);
     }
-    const validationError = validate({ schema: entity.schema, property, values });
+    const validationError = validate({ entity, schema: entity.schema, property, values });
     if (validationError) {
       this.setState({ error: validationError });
     } else {
