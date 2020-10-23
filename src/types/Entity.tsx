@@ -5,7 +5,7 @@ import c from 'classnames';
 import Schema from './Schema';
 import Transliterate from './Transliterate';
 
-interface FTMEntityExtended extends FTMEntity {
+export interface FTMEntityExtended extends FTMEntity {
   latinized?: any
 }
 
@@ -32,7 +32,7 @@ class EntityLabel extends React.Component<IEntityLabelProps> {
     return (
       <span className={c('EntityLabel', { 'bp3-text-muted': !label }, className)} title={caption}>
         {icon && <Schema.Icon schema={entity.schema} className="left-icon" size={iconSize} />}
-        <span style={{ display: 'inline-flex', whiteSpace: 'nowrap' }}>
+        <span>
           <Transliterate value={label} lookup={transliterate && entity.latinized} />
         </span>
       </span>

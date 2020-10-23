@@ -3,7 +3,7 @@ import { withTranslator } from 'utils/withTranslator';
 import CountBase from './Count';
 import Date from './Date';
 import EdgeType from './EdgeType';
-import Entity from './Entity';
+import Entity, { FTMEntityExtended } from './Entity';
 import EnumValue from './EnumValue';
 import FileSize from './FileSize';
 import Transliterate from './Transliterate';
@@ -25,6 +25,7 @@ export {
   EnumValue as Language,
   EnumValue as Topic,
   FileSize,
+  FTMEntityExtended,
   Transliterate,
   MIMEType,
   Numeric,

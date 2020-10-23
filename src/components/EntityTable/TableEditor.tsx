@@ -310,7 +310,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
         values={values}
         prop={property}
         resolveEntityReference={entityManager.resolveEntityReference}
-        translitLookup={entity.latinized}
       />
     );
     const showVisitLink = visitEntity && property.type.name === 'entity' && values.length;

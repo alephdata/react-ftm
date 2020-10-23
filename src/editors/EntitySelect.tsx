@@ -104,7 +104,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
     const { allowMultiple, entitySuggestions, intl, onSubmit, inputProps = {}, popoverProps = {}, buttonProps = {}, values } = this.props;
     const { query } = this.state;
     const buttonText = values.length
-      ? <Entity.Label entity={values[0]} icon />
+      ? <Entity.Label entity={values[0]} icon transliterate={false} />
       : (buttonProps?.placeholder || intl.formatMessage(messages.placeholder));
 
     const filteredSuggestions = entitySuggestions.filter(e => (!values.find(val => val.id === e.id )))
@@ -138,7 +138,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
         )}
         {allowMultiple && (
           <TypedMultiSelect
-            tagRenderer={entity => <Entity.Label entity={entity} icon />}
+            tagRenderer={entity => <Entity.Label entity={entity} icon transliterate={false} />}
             onItemSelect={(entity: FTMEntity) => onSubmit([...values, entity])}
             itemRenderer={this.itemRenderer}
             itemListRenderer={this.itemListRenderer}

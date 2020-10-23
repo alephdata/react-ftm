@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Classes, Divider, UL } from '@blueprintjs/core'
-import { Entity as FTMEntity, IEntityDatum, Property as FTMProperty } from '@alephdata/followthemoney';
+import { IEntityDatum, Property as FTMProperty } from '@alephdata/followthemoney';
 import { ColorPicker, PropertyEditor, PropertySelect, RadiusPicker } from 'editors';
-import { Entity, Property, Schema } from 'types';
+import { Entity, FTMEntityExtended as FTMEntity, Property, Schema } from 'types';
 import { Vertex } from 'NetworkDiagram/layout'
 import { GraphContext } from 'NetworkDiagram/GraphContext';
 import c from 'classnames';
