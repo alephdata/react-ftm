@@ -25,7 +25,6 @@ class Transliterate extends React.PureComponent<ITransliterateProps> {
   }
 
   copyText = (e: any) => {
-    const selection = document.getSelection();
     e.clipboardData.setData('text/plain', this.getTranslitValue());
     e.preventDefault();
   }

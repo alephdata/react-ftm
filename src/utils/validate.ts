@@ -46,20 +46,23 @@ function isValidEnumValue(property: Property, value: string) {
 function isValidPhone(entity: Entity, value: string) {
   const phoneUtil = PhoneNumberUtil.getInstance();
 
-  // returns true if valid intl number
   try {
-    const intlParsed = phoneUtil.parse(value);
+    phoneUtil.parse(value);
     return true;
-  } catch {}
+  } catch {
+    // invalid international number
+  }
 
   const countries = entity.getTypeValues('country') as Array<string>;
-  for (let country of countries) {
+  for (const country of countries) {
     try {
       const parsed = phoneUtil.parse(value, country);
       if (phoneUtil.isValidNumberForRegion(parsed, country)) {
         return true;
       }
-    } catch {}
+    } catch {
+      // invalid regional number
+    }
   }
 
   return false;
