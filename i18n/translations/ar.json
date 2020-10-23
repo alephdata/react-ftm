@@ -19,6 +19,7 @@
   "editor.property_add": "أضف ملكية",
   "editor.validation.country_invalid": "دولة غير متاحة",
   "editor.validation.date_invalid": "تنسيق التاريخ: yyyy-m-d",
+  "editor.validation.phone_invalid": "Invalid phone number: try adding a country code if available",
   "editor.validation.required": "هذه الملكية مطلوبة",
   "editor.validation.topic_invalid": "الموضوع غير متاح",
   "editor.validation.url_invalid": "تنسيق URL غير صحيح",

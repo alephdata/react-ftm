@@ -19,6 +19,7 @@
   "editor.property_add": "Add a property",
   "editor.validation.country_invalid": "Invalid country",
   "editor.validation.date_invalid": "Date format: yyyy-m-d",
+  "editor.validation.phone_invalid": "Invalid phone number: try adding a country code if available",
   "editor.validation.required": "This property is required",
   "editor.validation.topic_invalid": "Invalid topic",
   "editor.validation.url_invalid": "Invalid URL format",

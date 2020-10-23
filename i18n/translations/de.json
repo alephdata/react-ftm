@@ -19,6 +19,7 @@
   "editor.property_add": "Eigenschaft hinzufügen",
   "editor.validation.country_invalid": "Ungültiges Land",
   "editor.validation.date_invalid": "Datumsformat: JJJJ-MM-TT",
+  "editor.validation.phone_invalid": "Invalid phone number: try adding a country code if available",
   "editor.validation.required": "Diese Eigenschaft ist erforderlich",
   "editor.validation.topic_invalid": "Ungültiges Thema",
   "editor.validation.url_invalid": "Ungültiger Link",
