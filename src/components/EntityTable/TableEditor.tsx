@@ -9,6 +9,7 @@ import { Property } from 'types';
 import { EntityChanges, SortType } from 'components/common/types';
 import { IEntityTableCommonProps } from 'components/EntityTable/common';
 import { showErrorToast, validate } from 'utils';
+import { isScrolledIntoView } from 'components/EntityTable/utils';
 
 import "./TableEditor.scss"
 
@@ -285,6 +286,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   // Table renderers
 
+  renderCell = ({ attributesRenderer, updated, editing, ...props}: any) => (
+    // scroll cell into view if selected and not visible
+    <td ref={ref => props.selected && ref && !isScrolledIntoView(ref) && ref.scrollIntoView({behavior: 'smooth', block: 'nearest'})} {...props}>
+      {props.children}
+    </td>
+  )
+
   renderValue = ({ cell }: Datasheet.ValueViewerProps<CellData, any>) => {
     if (!cell.data) return null;
     const { entity, property } = cell.data;
@@ -549,6 +557,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
           valueRenderer={(cell: CellData) => cell.value}
           valueViewer={this.renderValue}
           dataEditor={this.renderEditor}
+          cellRenderer={this.renderCell}
           onCellsChanged={this.onCellsChanged as Datasheet.CellsChangedHandler<CellData, CellData>}
           parsePaste={this.parsePaste as any}
         />
