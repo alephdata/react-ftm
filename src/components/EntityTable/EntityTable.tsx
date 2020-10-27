@@ -20,7 +20,7 @@ const messages = defineMessages({
 
 interface IEntityTableProps extends IEntityTableCommonProps {
   selection?: Array<string>
-  onSelectionChange?: (entityId: string) => void
+  onSelectionChange?: (entityIds: Array<string>, newVal: boolean) => void
 }
 
 interface IEntityTableState {

@@ -11,7 +11,7 @@ import { modes } from 'NetworkDiagram/utils'
 
 interface IVertexRendererProps {
   vertex: Vertex
-  selectVertex: (vertex: Vertex, additional?: boolean) => any
+  selectVertex: (vertex: Vertex, options?: any) => any
   dragSelection: (offset: Point) => any
   dropSelection: () => any
   actions: any
@@ -94,12 +94,12 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
         actions.setInteractionMode(modes.SELECT)
         return
       } else if (vertex.isEntity()) {
-        selectVertex(vertex, true)
+        selectVertex(vertex, { additional: true })
         actions.setInteractionMode(modes.EDGE_CREATE)
         return
       }
     }
-    selectVertex(vertex, e.shiftKey)
+    selectVertex(vertex, { additional: e.shiftKey })
   }
 
   onDoubleClick(e: MouseEvent) {

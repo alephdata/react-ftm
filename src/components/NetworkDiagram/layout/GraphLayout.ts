@@ -171,29 +171,29 @@ export class GraphLayout {
       .find((v) => v.entityId === entity.id)
   }
 
-  selectElement(element: GraphElement | Array<GraphElement>, additional = false, allowUnselect = false) {
+  selectElement(element: GraphElement | Array<GraphElement>, options?: any) {
+    const { additional = false, forceVal = undefined } = options;
     const newSelection = Array.isArray(element) ? element.map(e => e.id) : [element.id]
-    const isAlreadySelected = this.isElementSelected(element);
 
-    if (allowUnselect && isAlreadySelected) {
+    if (forceVal === false) {
       this.selection = this.selection.filter(id => newSelection.indexOf(id) < 0);
     } else {
       if (!additional) {
         this.selection = newSelection
         this.groupings.delete('selectedArea');
-      } else if (!isAlreadySelected) {
+      } else if (forceVal || !this.isElementSelected(element)) {
         this.selection = [...this.selection, ...newSelection]
       }
     }
   }
 
-  selectVerticesByFilter(predicate: VertexPredicate, additional = false, allowUnselect = false) {
+  selectVerticesByFilter(predicate: VertexPredicate, options?: any) {
     const vertices = this.getVertices().filter((vertex) => !vertex.isHidden()).filter(predicate);
-    this.selectElement(vertices, additional, allowUnselect);
+    this.selectElement(vertices, options);
   }
 
-  selectByEntityIds(entityIds: Array<string>, additional = false, allowUnselect = false) {
-    this.selectVerticesByFilter(v => (v.entityId !== undefined && entityIds.indexOf(v.entityId) > -1), additional, allowUnselect);
+  selectByEntityIds(entityIds: Array<string>, options?: any) {
+    this.selectVerticesByFilter(v => (v.entityId !== undefined && entityIds.indexOf(v.entityId) > -1), options);
   }
 
   selectArea(area: Rectangle) {

@@ -10,7 +10,7 @@ interface IEdgeRendererProps {
   vertex1?: Vertex,
   vertex2?: Vertex
   svgRef: React.RefObject<SVGSVGElement>,
-  selectEdge: (edge: Edge, additional?: boolean) => any,
+  selectEdge: (edge: Edge, options?: any) => any,
   dragSelection: (offset: Point, initialPosition?: Point) => any,
   dropSelection: () => any
 }
@@ -25,7 +25,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
 
   onClick(e: React.MouseEvent) {
     const { edge, selectEdge } = this.props;
-    selectEdge(edge, e.shiftKey)
+    selectEdge(edge, { additional: e.shiftKey })
     e.preventDefault()
     e.stopPropagation()
   }

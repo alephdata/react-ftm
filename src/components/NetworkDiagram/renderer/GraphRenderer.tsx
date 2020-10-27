@@ -45,9 +45,9 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     updateLayout(layout)
   }
 
-  selectElement(element: GraphElement | Array<GraphElement>, additional = false) {
+  selectElement(element: GraphElement | Array<GraphElement>, options?: any) {
     const { layout, updateLayout } = this.context;
-    layout.selectElement(element, additional)
+    layout.selectElement(element, options);
     updateLayout(layout, null, { clearSearch: true });
   }
 

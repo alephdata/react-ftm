@@ -48,7 +48,7 @@ interface ITableEditorProps extends IEntityTableCommonProps {
   sort: SortType | null
   sortColumn: (field: string) => void
   selection: Array<string>
-  updateSelection: (entityId: string) => void
+  updateSelection: (entityIds: Array<string>, newVal: boolean) => void
   fetchEntitySuggestions: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>
 }
 
@@ -58,6 +58,7 @@ interface ITableEditorState {
   showTopAddRow: boolean
   entityRows: CellData[][]
   createdEntityIds: string[]
+  lastSelected?: string
 }
 
 class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorState> {
@@ -72,6 +73,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       showTopAddRow: false,
       entityRows: [],
       createdEntityIds: [],
+      lastSelected: props.selection?.[0],
     }
 
     this.toggleTopAddRow = this.toggleTopAddRow.bind(this);
@@ -284,6 +286,18 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     return [...entityLinkPlaceholder, {...getCellBase('checkbox')}, ...addRowCells]
   }
 
+  findRowByEntity = (entityId?: string) => {
+    if (!entityId) { return; }
+    const { entityRows } = this.state;
+    return entityRows.findIndex(row => row[1]?.data?.entity?.id === entityId);
+  }
+
+  findEntityRange = (i0: number, i1: number) => {
+    const [start, end] = [i0, i1].sort();
+    return this.state.entityRows.slice(start, end + 1)
+      .map(row => row[1]?.data?.entity?.id);
+  }
+
   // Table renderers
 
   renderCell = ({ attributesRenderer, updated, editing, ...props}: any) => (
@@ -293,7 +307,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     </td>
   )
 
-  renderValue = ({ cell }: Datasheet.ValueViewerProps<CellData, any>) => {
+  renderValue = ({ cell, row }: Datasheet.ValueViewerProps<CellData, any>) => {
     if (!cell.data) return null;
     const { entity, property } = cell.data;
 
@@ -301,7 +315,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       return this.renderPropValue(cell.data)
     }
     if (entity) {
-      return this.renderCheckbox(cell.data)
+      return this.renderCheckbox(cell.data, row)
     }
     if (property) {
       return <span>—</span>
@@ -409,9 +423,25 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     )
   }
 
-  renderCheckbox = ({ entity, isSelected }: {entity: Entity, isSelected: boolean}) => {
+  renderCheckbox = ({ entity, isSelected }:{entity: Entity, isSelected: boolean}, row: number) => {
     return (
-      <Checkbox checked={isSelected} onChange={() => this.props.updateSelection(entity.id)} />
+      <Checkbox
+        checked={isSelected}
+        onClick={(e) => {
+          const { lastSelected, showTopAddRow } = this.state;
+          const { shiftKey } = e;
+          let newSelection;
+          if (shiftKey && lastSelected !== undefined) {
+            const lastSelectedRow = this.findRowByEntity(lastSelected);
+            if (lastSelectedRow !== undefined && lastSelectedRow >= 0) {
+              const adjustedRow = row - 1 - (showTopAddRow ? 1 : 0);
+              newSelection = this.findEntityRange(adjustedRow, lastSelectedRow);
+            }
+          }
+          this.props.updateSelection(newSelection || [entity.id], !isSelected);
+          this.setState({ lastSelected: entity.id });
+        }}
+      />
     );
   }
 
