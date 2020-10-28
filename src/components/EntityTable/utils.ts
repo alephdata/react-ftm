@@ -1,5 +1,6 @@
-export const isScrolledIntoView = (el:HTMLElement) => {
+export const isScrolledIntoView = (el:HTMLElement, scrollParent: HTMLElement) => {
+  const parent = scrollParent.getBoundingClientRect();
   const { top, bottom, left, right } = el.getBoundingClientRect();
 
-  return (top >= 0 && bottom <= window.innerHeight) && (left >= 0 && right <= window.innerWidth)
+  return (top > parent.top && bottom < parent.bottom) && (left > parent.left && right < parent.right)
 }

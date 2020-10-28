@@ -63,6 +63,8 @@ interface ITableEditorState {
 
 class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorState> {
   private keyDownListener: any;
+  ref: React.RefObject<any>
+
 
   constructor(props:ITableEditorProps) {
     super(props);
@@ -75,6 +77,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       createdEntityIds: [],
       lastSelected: props.selection?.[0],
     }
+
+    this.ref = React.createRef();
 
     this.toggleTopAddRow = this.toggleTopAddRow.bind(this);
     this.onAddColumn = this.onAddColumn.bind(this);
@@ -302,7 +306,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   renderCell = ({ attributesRenderer, updated, editing, ...props}: any) => (
     // scroll cell into view if selected and not visible
-    <td ref={ref => props.selected && ref && !isScrolledIntoView(ref) && ref.scrollIntoView({behavior: 'smooth', block: 'nearest'})} {...props}>
+    <td ref={ref => props.selected && ref && !isScrolledIntoView(ref, this.ref.current) && ref.scrollIntoView({behavior: 'smooth', block: 'nearest'})} {...props}>
       {props.children}
     </td>
   )
@@ -581,7 +585,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const tableData = [headerRow, ...topAddRow, ...entityRows, ...skeletonRows, ...bottomAddRow]
 
     return (
-      <div className="TableEditor">
+      <div className="TableEditor" ref={this.ref}>
         <Datasheet
           data={tableData}
           valueRenderer={(cell: CellData) => cell.value}
