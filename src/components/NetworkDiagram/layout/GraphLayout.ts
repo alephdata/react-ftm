@@ -171,7 +171,7 @@ export class GraphLayout {
       .find((v) => v.entityId === entity.id)
   }
 
-  selectElement(element: GraphElement | Array<GraphElement>, options?: any) {
+  selectElement(element: GraphElement | Array<GraphElement>, options: any = {}) {
     const { additional = false, forceVal = undefined } = options;
     const newSelection = Array.isArray(element) ? element.map(e => e.id) : [element.id]
 
