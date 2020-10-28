@@ -304,6 +304,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   // Table renderers
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   renderCell = ({ attributesRenderer, updated, editing, ...props}: any) => (
     // scroll cell into view if selected and not visible
     <td ref={ref => props.selected && ref && !isScrolledIntoView(ref, this.ref.current) && ref.scrollIntoView({behavior: 'smooth', block: 'nearest'})} {...props}>
