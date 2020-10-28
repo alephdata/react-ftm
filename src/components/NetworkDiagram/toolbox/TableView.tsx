@@ -24,9 +24,9 @@ export class TableView extends React.Component<ITableViewProps> {
     this.onEntitiesUpdate = this.onEntitiesUpdate.bind(this);
   }
 
-  onSelectionChange(entityId: string, additional = true, allowUnselect = true) {
+  onSelectionChange(entityIds: Array<string>, options: any) {
     const { layout, updateLayout } = this.context;
-    layout.selectByEntityIds([entityId], additional, allowUnselect);
+    layout.selectByEntityIds(entityIds, options);
     updateLayout(layout, null, { clearSearch: true });
   }
 
@@ -34,7 +34,7 @@ export class TableView extends React.Component<ITableViewProps> {
     const { fitToSelection, toggleTableView } = this.props;
     const entityId = typeof entity === 'string' ? entity : entity.id;
     if (entityId) {
-      this.onSelectionChange(entityId, false, false);
+      this.onSelectionChange([entityId], { additional: false });
       toggleTableView();
       fitToSelection();
     }
@@ -76,7 +76,7 @@ export class TableView extends React.Component<ITableViewProps> {
           entityManager={entityManager}
           visitEntity={this.visitEntity}
           selection={layout.getSelectedEntityIds()}
-          onSelectionChange={this.onSelectionChange}
+          onSelectionChange={(entityIds: Array<string>, forceVal: boolean) => this.onSelectionChange(entityIds, { forceVal, additional: true})}
           updateFinishedCallback={this.onEntitiesUpdate}
           writeable={writeable}
         />

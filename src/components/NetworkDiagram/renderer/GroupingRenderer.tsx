@@ -8,7 +8,7 @@ import { modes } from 'NetworkDiagram/utils'
 interface IGroupingRendererProps {
   grouping: Grouping
   vertices: Vertex[]
-  selectGrouping: (element: Array<GraphElement>, additional?: boolean) => any
+  selectGrouping: (element: Array<GraphElement>, options?: any) => any
   dragSelection: (offset: Point) => any
   dropSelection: () => any
   actions: any
@@ -65,7 +65,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
     const { grouping, vertices } = this.props
 
     if (grouping.id !== 'selectedArea') {
-      this.props.selectGrouping(vertices, e.shiftKey);
+      this.props.selectGrouping(vertices, { additional: e.shiftKey });
     }
   }
 

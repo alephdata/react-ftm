@@ -9,6 +9,7 @@ import { Property } from 'types';
 import { EntityChanges, SortType } from 'components/common/types';
 import { IEntityTableCommonProps } from 'components/EntityTable/common';
 import { showErrorToast, validate } from 'utils';
+import { isScrolledIntoView } from 'components/EntityTable/utils';
 
 import "./TableEditor.scss"
 
@@ -47,7 +48,7 @@ interface ITableEditorProps extends IEntityTableCommonProps {
   sort: SortType | null
   sortColumn: (field: string) => void
   selection: Array<string>
-  updateSelection: (entityId: string) => void
+  updateSelection: (entityIds: Array<string>, newVal: boolean) => void
   fetchEntitySuggestions: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>
 }
 
@@ -57,10 +58,13 @@ interface ITableEditorState {
   showTopAddRow: boolean
   entityRows: CellData[][]
   createdEntityIds: string[]
+  lastSelected?: string
 }
 
 class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorState> {
   private keyDownListener: any;
+  ref: React.RefObject<any>
+
 
   constructor(props:ITableEditorProps) {
     super(props);
@@ -71,7 +75,10 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       showTopAddRow: false,
       entityRows: [],
       createdEntityIds: [],
+      lastSelected: props.selection?.[0],
     }
+
+    this.ref = React.createRef();
 
     this.toggleTopAddRow = this.toggleTopAddRow.bind(this);
     this.onAddColumn = this.onAddColumn.bind(this);
@@ -283,9 +290,28 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     return [...entityLinkPlaceholder, {...getCellBase('checkbox')}, ...addRowCells]
   }
 
+  findRowByEntity = (entityId?: string) => {
+    if (!entityId) { return; }
+    const { entityRows } = this.state;
+    return entityRows.findIndex(row => row[1]?.data?.entity?.id === entityId);
+  }
+
+  findEntityRange = (i0: number, i1: number) => {
+    const [start, end] = [i0, i1].sort();
+    return this.state.entityRows.slice(start, end + 1)
+      .map(row => row[1]?.data?.entity?.id);
+  }
+
   // Table renderers
 
-  renderValue = ({ cell }: Datasheet.ValueViewerProps<CellData, any>) => {
+  renderCell = ({ attributesRenderer, updated, editing, ...props}: any) => (
+    // scroll cell into view if selected and not visible
+    <td ref={ref => props.selected && ref && !isScrolledIntoView(ref, this.ref.current) && ref.scrollIntoView({behavior: 'smooth', block: 'nearest'})} {...props}>
+      {props.children}
+    </td>
+  )
+
+  renderValue = ({ cell, row }: Datasheet.ValueViewerProps<CellData, any>) => {
     if (!cell.data) return null;
     const { entity, property } = cell.data;
 
@@ -293,7 +319,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       return this.renderPropValue(cell.data)
     }
     if (entity) {
-      return this.renderCheckbox(cell.data)
+      return this.renderCheckbox(cell.data, row)
     }
     if (property) {
       return <span>—</span>
@@ -401,9 +427,25 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     )
   }
 
-  renderCheckbox = ({ entity, isSelected }: {entity: Entity, isSelected: boolean}) => {
+  renderCheckbox = ({ entity, isSelected }:{entity: Entity, isSelected: boolean}, row: number) => {
     return (
-      <Checkbox checked={isSelected} onChange={() => this.props.updateSelection(entity.id)} />
+      <Checkbox
+        checked={isSelected}
+        onClick={(e) => {
+          const { lastSelected, showTopAddRow } = this.state;
+          const { shiftKey } = e;
+          let newSelection;
+          if (shiftKey && lastSelected !== undefined) {
+            const lastSelectedRow = this.findRowByEntity(lastSelected);
+            if (lastSelectedRow !== undefined && lastSelectedRow >= 0) {
+              const adjustedRow = row - 1 - (showTopAddRow ? 1 : 0);
+              newSelection = this.findEntityRange(adjustedRow, lastSelectedRow);
+            }
+          }
+          this.props.updateSelection(newSelection || [entity.id], !isSelected);
+          this.setState({ lastSelected: entity.id });
+        }}
+      />
     );
   }
 
@@ -543,12 +585,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const tableData = [headerRow, ...topAddRow, ...entityRows, ...skeletonRows, ...bottomAddRow]
 
     return (
-      <div className="TableEditor">
+      <div className="TableEditor" ref={this.ref}>
         <Datasheet
           data={tableData}
           valueRenderer={(cell: CellData) => cell.value}
           valueViewer={this.renderValue}
           dataEditor={this.renderEditor}
+          cellRenderer={this.renderCell}
           onCellsChanged={this.onCellsChanged as Datasheet.CellsChangedHandler<CellData, CellData>}
           parsePaste={this.parsePaste as any}
         />
