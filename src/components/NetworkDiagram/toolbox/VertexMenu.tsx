@@ -52,14 +52,14 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
   }
 
   getExpandOptionLabel(propString: string | undefined) {
-    const { intl } = this.context;
+    const { entityManager, intl } = this.context;
     const { contents } = this.props;
 
     if (!propString) {
       return { label: intl.formatMessage(messages.expand_all) };
     }
     const { vertex } = contents;
-    const property = vertex.getEntity()?.schema?.getProperty(propString);
+    const property = entityManager.getEntity(vertex.entityId)?.schema?.getProperty(propString);
     if (property) {
       const schemaForIcon = property.getRange();
       const icon = schemaForIcon ? <Schema.Icon schema={schemaForIcon} /> : null;
@@ -86,6 +86,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
 
     return (
       <MenuItem
+        key={property}
         icon={propLabel.icon || "search-around"}
         onClick={() => actions.expandVertex(contents.vertex, property)}
         text={intl.formatMessage(messages.expand, { property: propLabel.label.toLowerCase() })}
