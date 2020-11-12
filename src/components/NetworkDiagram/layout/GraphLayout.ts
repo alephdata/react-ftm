@@ -119,7 +119,7 @@ export class GraphLayout {
           entity.getProperty(targetProperty).forEach((target) => {
             console.log('GraphLayout generate - source, target', source, target)
             const sourceEntity = source instanceof Entity ? source : entities.find(e => e.id === source);
-            console.log('GraphLayout generate - sourceEntity', sourceEntity)
+            console.log('GraphLayout generate - sourceEntity', sourceEntity, sourceEntity instanceof Entity)
             if (!sourceEntity) { return; }
             const sourceVertex = Vertex.fromValue(this, sourceProperty, sourceEntity)
             console.log('GraphLayout generate - sourceVertex', sourceVertex)

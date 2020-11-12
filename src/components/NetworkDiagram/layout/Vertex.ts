@@ -121,6 +121,7 @@ export class Vertex {
   }
 
   static fromEntity(layout: GraphLayout, entity: Entity): Vertex {
+    console.log('Vertex fromEntity', layout, entity);
     const type = PropertyType.ENTITY;
     if (entity.schema.isEdge) {
       throw new Error("Cannot make vertex from edge entity.")
@@ -138,8 +139,10 @@ export class Vertex {
   }
 
   static fromValue(layout: GraphLayout, property: Property, value: Value): Vertex | null {
+    console.log('Vertex fromValue', layout, property, value, value instanceof Entity);
     if (property.type.name === PropertyType.ENTITY || value instanceof Entity) {
       if (value instanceof Entity) {
+        console.log('Vertex fromValue - calling fromEntity');
         return Vertex.fromEntity(layout, value);
       } else {
         return null;
