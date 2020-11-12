@@ -104,16 +104,6 @@ export class EntityManager {
     console.log('EntityManager addEntities - this.entities is now', this.entities)
   }
 
-  removeEntities(entityIds: Array<string>, propagate?: boolean) {
-    entityIds.map(id => {
-      const entity = this.getEntity(id);
-      this.entities.delete(id);
-      if (propagate && entity) {
-        this.deleteEntity(entity, true);
-      }
-    });
-  }
-
   updateEntity(entity: Entity) {
     this.entities.set(entity.id, entity)
 
@@ -124,11 +114,13 @@ export class EntityManager {
     return entity;
   }
 
-  deleteEntity(entity: Entity, propagate?: boolean) {
-    this.entities.delete(entity.id);
-    if (propagate && this.overload?.deleteEntity) {
-      this.overload.deleteEntity(entity);
-    }
+  deleteEntities(entities: Array<Entity>) {
+    entities.forEach(entity => {
+      this.entities.delete(entity.id);
+      if (this.overload?.deleteEntity) {
+        this.overload.deleteEntity(entity);
+      }
+    })
   }
 
   async expandEntity(entityId: string, properties?: Array<string>, limit?: number) {
@@ -170,9 +162,9 @@ export class EntityManager {
   applyEntityChanges(entityChanges: EntityChanges, factor: number) {
     const { created, updated, deleted } = entityChanges;
 
-    created && created.forEach((entity: Entity) => factor > 0 ? this.createEntity(entity) : this.deleteEntity(entity));
+    created && created.forEach((entity: Entity) => factor > 0 ? this.createEntity(entity) : this.deleteEntities([entity]));
     updated && updated.forEach(({prev, next}: EntityChangeUpdate) => factor > 0 ? this.updateEntity(next) : this.updateEntity(prev));
-    deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntity(entity) : this.createEntity(entity));
+    deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntities([entity]) : this.createEntity(entity));
   }
 
   toJSON(): Array<IEntityDatum> {

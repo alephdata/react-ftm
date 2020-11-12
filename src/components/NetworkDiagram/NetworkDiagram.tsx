@@ -325,7 +325,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
 
     const idsToRemove = layout.removeSelection();
     const entitiesToRemove = entityManager.getEntities(idsToRemove);
-    entityManager.removeEntities(idsToRemove, true);
+    entityManager.deleteEntities(entitiesToRemove);
     layout.layout(entityManager.getEntities());
 
     this.updateLayout(layout, { deleted: entitiesToRemove }, { modifyHistory:true })
