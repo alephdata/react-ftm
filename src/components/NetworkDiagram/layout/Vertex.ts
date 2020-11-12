@@ -140,8 +140,8 @@ export class Vertex {
 
   static fromValue(layout: GraphLayout, property: Property, value: Value): Vertex | null {
     console.log('Vertex fromValue', layout, property, value, value instanceof Entity);
-    if (property.type.name === PropertyType.ENTITY || value instanceof Entity) {
-      if (value instanceof Entity) {
+    if (property.type.name === PropertyType.ENTITY || typeof value !== 'string') {
+      if (typeof value !== 'string') {
         console.log('Vertex fromValue - calling fromEntity');
         return Vertex.fromEntity(layout, value);
       } else {
