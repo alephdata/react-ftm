@@ -271,6 +271,8 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
         .reduce((entities: Array<Entity>, expandObj: any) => ([...entities, ...expandObj.entities]), [])
         .map((entityData: IEntityDatum) => new Entity(entityManager.model, entityData));
 
+      console.log('Network Diagram expandVertex - entities to expand are', entities);
+
       const before = layout.getVisibleElementCount();
       entities.map((e:Entity) => entityManager.createEntity(e));
       layout.layout(entityManager.getEntities(), viewport.center);

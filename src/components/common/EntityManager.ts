@@ -50,6 +50,7 @@ export class EntityManager {
   }
 
   createEntity(entityData: any): Entity {
+    console.log('EntityManager - createEntity', entityData)
     let entity: Entity;
     if (entityData.id) {
       entity = entityData;
