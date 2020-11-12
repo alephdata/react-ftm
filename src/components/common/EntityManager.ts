@@ -50,7 +50,6 @@ export class EntityManager {
   }
 
   createEntity(entityData: any): Entity {
-    console.log('EntityManager - createEntity', entityData)
     let entity: Entity;
     if (entityData.id) {
       entity = entityData;
@@ -99,9 +98,7 @@ export class EntityManager {
   }
 
   addEntities(entities: Array<Entity>) {
-    console.log('EntityManager addEntities - adding entities', entities)
     entities.map(e => this.entities.set(e.id, e));
-    console.log('EntityManager addEntities - this.entities is now', this.entities)
   }
 
   updateEntity(entity: Entity) {
