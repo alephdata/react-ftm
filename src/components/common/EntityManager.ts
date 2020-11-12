@@ -98,7 +98,9 @@ export class EntityManager {
   }
 
   addEntities(entities: Array<Entity>) {
+    console.log('EntityManager addEntities - adding entities', entities)
     entities.map(e => this.entities.set(e.id, e));
+    console.log('EntityManager addEntities - this.entities is now', this.entities)
   }
 
   removeEntities(entityIds: Array<string>, propagate?: boolean) {

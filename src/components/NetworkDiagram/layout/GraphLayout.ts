@@ -103,26 +103,38 @@ export class GraphLayout {
   }
 
   private generate(entities: Array<Entity>): void {
+    console.log('GraphLayout generate - entities are', entities)
     this.edges.forEach(edge => edge.garbage = true);
     this.vertices.forEach(vertex => vertex.garbage = true);
     entities.forEach((entity) => {
       if (entity.schema.edge) {
+        console.log('GraphLayout generate - edge entity', entity)
+
         const sourceProperty = entity.schema.getProperty(entity.schema.edge.source)
         const targetProperty = entity.schema.getProperty(entity.schema.edge.target)
 
+        console.log('GraphLayout generate - sourceProperty, targetProperty', sourceProperty, targetProperty)
+
         entity.getProperty(sourceProperty).forEach((source) => {
           entity.getProperty(targetProperty).forEach((target) => {
+            console.log('GraphLayout generate - source, target', source, target)
             const sourceEntity = source instanceof Entity ? source : entities.find(e => e.id === source);
+            console.log('GraphLayout generate - sourceEntity', sourceEntity)
             if (!sourceEntity) { return; }
             const sourceVertex = Vertex.fromValue(this, sourceProperty, sourceEntity)
+            console.log('GraphLayout generate - sourceVertex', sourceVertex)
             if (!sourceVertex) { return; }
             this.addVertex(sourceVertex)
             const targetEntity = target instanceof Entity ? target : entities.find(e => e.id === target);
+            console.log('GraphLayout generate - targetEntity', targetEntity)
             if (!targetEntity) { return; }
             const targetVertex = Vertex.fromValue(this, targetProperty, targetEntity)
+            console.log('GraphLayout generate - targetVertex', targetVertex)
             if (!targetVertex) { return; }
             this.addVertex(targetVertex)
+            console.log('GraphLayout generate - adding edge', Edge.fromEntity(this, entity, sourceVertex, targetVertex));
             this.addEdge(Edge.fromEntity(this, entity, sourceVertex, targetVertex))
+            console.log('GraphLayout generate - this.edges', this.edges);
           })
         })
       } else {
@@ -155,6 +167,7 @@ export class GraphLayout {
         })
       }
     })
+    console.log('GraphLayout generate - this.edges, this.vertices', this.edges, this.vertices)
     this.edges.forEach(edge => edge.garbage && this.edges.delete(edge.id));
     this.vertices.forEach(vertex => vertex.garbage && this.vertices.delete(vertex.id));
   }
@@ -414,6 +427,7 @@ export class GraphLayout {
     this.generate(entities);
     const vertices = this.getVertices().filter(v => !v.isHidden())
     const edges = this.getEdges();
+    console.log('GraphLayout layout', vertices, edges);
     const groupings = this.getGroupings();
     const positioningFunc = forceLayout({vertices, edges, groupings, options:{ center, maintainFixed: true }});
     this.applyPositioning(positioningFunc, vertices, true);

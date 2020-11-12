@@ -219,10 +219,12 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
           [type.schema.edge.target]: target.id,
         }
       });
+      console.log('Network Diagram - creating edge entity', entity);
       entityManager.addEntities([entity]);
       layout.layout(entityManager.getEntities());
       entityChanges.created = [entity];
       edge = Edge.fromEntity(layout, entity, sourceVertex, targetVertex)
+      console.log('Network Diagram - created edge is', edge);
     }
 
     if (edge) {
@@ -356,6 +358,8 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     const { config, entityManager, intl, layout, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, settingsDialogOpen, tableView, vertexMenuSettings } = this.state;
     const selectedEntities = entityManager.getEntities(layout.getSelectedEntityIds());
+
+    console.log('entities are', entityManager.getEntities(), layout.getVertices(), layout.getEdges());
 
     const layoutContext = {
       layout,
