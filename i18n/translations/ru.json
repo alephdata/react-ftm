@@ -19,7 +19,7 @@
   "editor.property_add": "Добавить свойство",
   "editor.validation.country_invalid": "Неверная страна",
   "editor.validation.date_invalid": "Формат даты: гггг-м-д",
-  "editor.validation.phone_invalid": "Invalid phone number: try adding a country code if available",
+  "editor.validation.phone_invalid": "Некорректный номер телефона: попробуйте добавить двухбуквенный код страны",
   "editor.validation.required": "Эта сущность обязательна",
   "editor.validation.topic_invalid": "Некорректная тема",
   "editor.validation.url_invalid": "Неверный формат ссылки",
