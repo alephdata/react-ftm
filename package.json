@@ -59,7 +59,7 @@
     ]
   },
   "devDependencies": {
-    "@alephdata/followthemoney": "2.1.9",
+    "@alephdata/followthemoney": "2.1.10",
     "@blueprintjs/core": "^3.34.0",
     "@blueprintjs/select": "^3.14.2",
     "@formatjs/cli": "^2.13.2",
