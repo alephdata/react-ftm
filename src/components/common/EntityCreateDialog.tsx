@@ -8,7 +8,7 @@ import { EntitySelect, SchemaSelect } from 'editors'
 import { Schema } from 'types';
 import { Dialog } from 'components/common'
 
-import './VertexCreateDialog.scss';
+import './EntityCreateDialog.scss';
 
 const messages = defineMessages({
   title: {
@@ -25,14 +25,14 @@ const messages = defineMessages({
   },
 });
 
-interface IVertexCreateDialogProps {
+interface IEntityCreateDialogProps {
   isOpen: boolean,
   toggleDialog: () => any,
-  vertexCreateOptions?: any
+  entityCreateOptions?: any
   schema: FTMSchema
 }
 
-interface IVertexCreateDialogState {
+interface IEntityCreateDialogState {
   query: string,
   isProcessing: boolean,
   isFetchingSuggestions: boolean,
@@ -40,7 +40,7 @@ interface IVertexCreateDialogState {
   suggestions: FTMEntity[],
 }
 
-export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps, IVertexCreateDialogState> {
+export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps, IEntityCreateDialogState> {
   static contextType = GraphContext;
 
   constructor(props: any) {
@@ -59,9 +59,9 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
     };
   }
 
-  componentDidUpdate(prevProps: IVertexCreateDialogProps) {
-    const schema = this.props.vertexCreateOptions?.initialSchema;
-    if (schema && prevProps.vertexCreateOptions?.initialSchema !== schema) {
+  componentDidUpdate(prevProps: IEntityCreateDialogProps) {
+    const schema = this.props.entityCreateOptions?.initialSchema;
+    if (schema && prevProps.entityCreateOptions?.initialSchema !== schema) {
       this.setState({
         schema,
       })
@@ -103,8 +103,8 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
     if (!values || !values.length) return;
     const entityData = values[0];
     const { entityManager, layout, updateLayout, viewport } = this.context;
-    const { vertexCreateOptions } = this.props;
-    const center = vertexCreateOptions?.initialPosition || viewport.center;
+    const { entityCreateOptions } = this.props;
+    const center = entityCreateOptions?.initialPosition || viewport.center;
     const { query } = this.state
     const schema = this.getSchema();
     let entity;
@@ -132,7 +132,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
     const vertex = layout.getVertexByEntity(entity)
 
     if (vertex) {
-      if (vertexCreateOptions?.initialPosition) {
+      if (entityCreateOptions?.initialPosition) {
         layout.vertices.set(vertex.id, vertex.snapPosition(center))
       }
       updateLayout(layout, { created: [entity] }, { modifyHistory: true, clearSearch: true });
@@ -152,6 +152,8 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
     const vertexSelectText = schema ? schema.label : intl.formatMessage(messages.type_placeholder);
     const vertexSelectIcon = schema ? <Schema.Icon schema={schema} /> : 'select';
 
+    console.log('in entity create')
+
     return (
       <Dialog
         icon="new-object"
@@ -159,7 +161,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
         isProcessing={isProcessing}
         title={intl.formatMessage(messages.title)}
         onClose={() => toggleDialog()}
-        className="VertexCreateDialog"
+        className="EntityCreateDialog"
       >
         <form onSubmit={(e) => {
           e.preventDefault();
@@ -181,7 +183,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
                   alignText={Alignment.LEFT}
                   icon={vertexSelectIcon}
                   rightIcon="caret-down"
-                  className="VertexCreateDialog__schema-select"
+                  className="EntityCreateDialog__schema-select"
                 />
               </SchemaSelect>
               {hasSuggest && (
@@ -213,7 +215,7 @@ export class VertexCreateDialog extends React.Component<IVertexCreateDialogProps
                 icon="arrow-right"
                 disabled={!query.length}
                 onClick={() => this.onSubmit([query])}
-                className="VertexCreateDialog__submit"
+                className="EntityCreateDialog__submit"
               />
             </ControlGroup>
           </div>

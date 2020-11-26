@@ -4,7 +4,7 @@ import { Entity, IEntityDatum, Schema } from "@alephdata/followthemoney";
 import { Button, ButtonGroup, Tooltip } from '@blueprintjs/core';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 
-import { EdgeCreateDialog, EntityManager } from 'components/common';
+import { EdgeCreateDialog, EntityCreateDialog, EntityManager } from 'components/common';
 import { GraphConfig } from 'NetworkDiagram/GraphConfig';
 import { GraphRenderer } from 'NetworkDiagram/renderer'
 import { Edge, GraphLayout, Rectangle, Point, Settings, Vertex } from 'NetworkDiagram/layout';
@@ -12,7 +12,7 @@ import { Viewport } from 'NetworkDiagram/Viewport';
 import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { Sidebar, TableView, Toolbar, VertexMenu } from 'NetworkDiagram/toolbox';
 import { History } from 'NetworkDiagram/History';
-import { GroupingCreateDialog, SettingsDialog, VertexCreateDialog } from 'NetworkDiagram/dialogs';
+import { GroupingCreateDialog, SettingsDialog } from 'NetworkDiagram/dialogs';
 import { EdgeType } from 'types';
 import { EntityChanges } from 'components/common/types';
 import { filterVerticesByText, modes } from 'NetworkDiagram/utils'
@@ -438,10 +438,10 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
         </div>
         {writeable && (
           <>
-            <VertexCreateDialog
+            <EntityCreateDialog
               isOpen={interactionMode === modes.VERTEX_CREATE}
               toggleDialog={this.setInteractionMode}
-              vertexCreateOptions={this.state.vertexCreateOptions}
+              entityCreateOptions={this.state.vertexCreateOptions}
               schema={entityManager.model.getSchema('Person')}
             />
             <GroupingCreateDialog
