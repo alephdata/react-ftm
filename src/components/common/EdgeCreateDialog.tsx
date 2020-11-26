@@ -63,11 +63,15 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
 
   constructor(props: any) {
     super(props)
+
+    this.types = EdgeType.getAll(props.entityManager.model)
+
     this.onSelectSource = this.onSelectSource.bind(this)
     this.onSelectTarget = this.onSelectTarget.bind(this)
     this.onChangeType = this.onChangeType.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.onReverse = this.onReverse.bind(this)
+
   }
 
   componentDidUpdate(prevProps: IEdgeCreateDialogProps) {
