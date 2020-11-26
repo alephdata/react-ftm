@@ -17,7 +17,7 @@ export interface IEntityManagerProps {
   namespace?: Namespace,
   createEntity?: (entity: IEntityDatum) => Entity,
   updateEntity?: (entity: Entity) => void,
-  deleteEntity?: (entity: Entity) => void,
+  deleteEntity?: (entityId: string) => void,
   expandEntity?: (entityId: string, properties?: Array<string>, limit?: number) => Promise<any>
   getEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>,
   resolveEntityReference?: (entityId: string) => Entity | undefined,
@@ -111,11 +111,11 @@ export class EntityManager {
     return entity;
   }
 
-  deleteEntities(entities: Array<Entity>) {
-    entities.forEach(entity => {
-      this.entities.delete(entity.id);
+  deleteEntities(entityIds: Array<string>) {
+    entityIds.forEach(entityId => {
+      this.entities.delete(entityId);
       if (this.overload?.deleteEntity) {
-        this.overload.deleteEntity(entity);
+        this.overload.deleteEntity(entityId);
       }
     })
   }
@@ -159,9 +159,9 @@ export class EntityManager {
   applyEntityChanges(entityChanges: EntityChanges, factor: number) {
     const { created, updated, deleted } = entityChanges;
 
-    created && created.forEach((entity: Entity) => factor > 0 ? this.createEntity(entity) : this.deleteEntities([entity]));
+    created && created.forEach((entity: Entity) => factor > 0 ? this.createEntity(entity) : this.deleteEntities([entity.id]));
     updated && updated.forEach(({prev, next}: EntityChangeUpdate) => factor > 0 ? this.updateEntity(next) : this.updateEntity(prev));
-    deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntities([entity]) : this.createEntity(entity));
+    deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntities([entity.id]) : this.createEntity(entity));
   }
 
   toJSON(): Array<IEntityDatum> {
