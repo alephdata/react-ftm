@@ -1,9 +1,8 @@
 import * as React from 'react'
-import { defineMessages } from 'react-intl';
+import { defineMessages, WrappedComponentProps } from 'react-intl';
 import { Alignment, Button, ControlGroup, InputGroup } from '@blueprintjs/core'
-import { Entity as FTMEntity, Schema as FTMSchema, Values } from '@alephdata/followthemoney'
+import { Entity, Model, Schema as FTMSchema, Values } from '@alephdata/followthemoney'
 
-import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { EntitySelect, SchemaSelect } from 'editors'
 import { Schema } from 'types';
 import { Dialog } from 'components/common'
@@ -25,33 +24,34 @@ const messages = defineMessages({
   },
 });
 
-interface IEntityCreateDialogProps {
+interface IEntityCreateDialogProps extends WrappedComponentProps {
   isOpen: boolean,
+  onSubmit: (entityData: any) => Promise<Entity | undefined>,
   toggleDialog: () => any,
-  entityCreateOptions?: any
-  schema: FTMSchema
+  schema: FTMSchema,
+  model: Model
+  fetchEntitySuggestions?: (queryText: string, schemata?: Array<FTMSchema>) => Promise<Entity[]>,
 }
 
 interface IEntityCreateDialogState {
-  query: string,
+  inputText: string,
   isProcessing: boolean,
   isFetchingSuggestions: boolean,
   schema: FTMSchema
-  suggestions: FTMEntity[],
+  suggestions: Entity[],
 }
 
 export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps, IEntityCreateDialogState> {
-  static contextType = GraphContext;
-
   constructor(props: any) {
     super(props);
 
     this.onQueryChange = this.onQueryChange.bind(this);
     this.onSchemaSelect = this.onSchemaSelect.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+    this.onInputSubmit = this.onInputSubmit.bind(this);
+    this.onSelectSubmit = this.onSelectSubmit.bind(this);
 
     this.state = {
-      query: '',
+      inputText: '',
       isFetchingSuggestions: false,
       isProcessing: false,
       suggestions: [],
@@ -60,99 +60,68 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
   }
 
   componentDidUpdate(prevProps: IEntityCreateDialogProps) {
-    const schema = this.props.entityCreateOptions?.initialSchema;
-    if (schema && prevProps.entityCreateOptions?.initialSchema !== schema) {
-      this.setState({
-        schema,
-      })
+    const { isOpen, schema } = this.props;
+    if (!prevProps.isOpen && isOpen) {
+      this.setState({ schema });
     }
   }
 
-  onQueryChange(query: string) {
+  onQueryChange(inputText: string) {
     if (!this.state.isProcessing) {
-      this.setState({ query });
-      this.fetchSuggestions(query, [this.state.schema])
+      this.setState({ inputText });
+      this.fetchSuggestions(inputText, [this.state.schema])
     }
   }
 
   onSchemaSelect(schema: FTMSchema) {
     this.setState({ schema });
-    this.fetchSuggestions(this.state.query, [schema])
+    this.fetchSuggestions(this.state.inputText, [schema])
   }
 
-  async fetchSuggestions(query: string, schemata: Array<FTMSchema>) {
-    const { entityManager } = this.context
-    if (entityManager.hasSuggest) {
+  async fetchSuggestions(inputText: string, schemata: Array<FTMSchema>) {
+    const { fetchEntitySuggestions } = this.props;
+    if (fetchEntitySuggestions) {
       this.setState({ isFetchingSuggestions: true });
-      const suggestions = await entityManager.getEntitySuggestions(false, query, schemata);
-      const filteredSuggestions = suggestions.filter((entity: FTMEntity) => !entityManager.hasEntity(entity));
-      this.setState({ isFetchingSuggestions: false, suggestions: filteredSuggestions });
+      const suggestions = await fetchEntitySuggestions(inputText, schemata);
+      this.setState({ isFetchingSuggestions: false, suggestions });
     }
-  }
-
-  getSchema(): FTMSchema {
-    const { entityManager } = this.context
-    return this.state.schema || entityManager.model.getSchema('Person')
   }
 
   getCaptionProperty() {
-    return this.getSchema()?.caption[0];
+    return this.state.schema?.caption[0];
   }
 
-  async onSubmit(values: Values) {
-    if (!values || !values.length) return;
-    const entityData = values[0];
-    const { entityManager, layout, updateLayout, viewport } = this.context;
-    const { entityCreateOptions } = this.props;
-    const center = entityCreateOptions?.initialPosition || viewport.center;
-    const { query } = this.state
-    const schema = this.getSchema();
-    let entity;
-
+  async onInputSubmit() {
     this.setState({ isProcessing: true });
-
-    try {
-      if (typeof entityData === 'string') {
-        const captionProperty = this.getCaptionProperty();
-        if (captionProperty) {
-          entity = entityManager.createEntity({ schema, properties: { [captionProperty]: query } });
-        } else {
-          entity = entityManager.createEntity({ schema });
-        }
-      } else {
-        entity = entityManager.createEntity(entityData);
-      }
-      layout.layout(entityManager.getEntities(), center);
-      layout.selectByEntityIds([entity.id]);
-    } catch (e) {
-      this.setState({ isProcessing: false })
-      return;
+    const { onSubmit } = this.props;
+    const { inputText, schema } = this.state;
+    const captionProperty = this.getCaptionProperty();
+    const entityData = {
+      schema,
+      properties: captionProperty && { [captionProperty]: inputText }
     }
+    await onSubmit(entityData);
+    this.setState({inputText: '', isProcessing: false, suggestions: []})
+    this.props.toggleDialog();
+  }
 
-    const vertex = layout.getVertexByEntity(entity)
-
-    if (vertex) {
-      if (entityCreateOptions?.initialPosition) {
-        layout.vertices.set(vertex.id, vertex.snapPosition(center))
-      }
-      updateLayout(layout, { created: [entity] }, { modifyHistory: true, clearSearch: true });
-      this.setState({query: '', isProcessing: false, suggestions: []})
-      this.props.toggleDialog()
+  async onSelectSubmit(values: Values) {
+    const { onSubmit } = this.props;
+    if (values && values.length) {
+      this.setState({ isProcessing: true });
+      await onSubmit(values[0]);
+      this.setState({inputText: '', isProcessing: false, suggestions: []})
+      this.props.toggleDialog();
     }
   }
 
   render() {
-    const { entityManager, intl } = this.context
-    const { isOpen, toggleDialog } = this.props;
-    const { isFetchingSuggestions, isProcessing, query, suggestions } = this.state;
-    const { hasSuggest } = entityManager;
-    const schema = this.getSchema();
+    const { fetchEntitySuggestions, intl, isOpen, model, onSubmit, toggleDialog } = this.props;
+    const { isFetchingSuggestions, isProcessing, inputText, schema, suggestions } = this.state;
     const captionProperty = this.getCaptionProperty();
     const placeholder = `${schema.label} ${captionProperty}`;
     const vertexSelectText = schema ? schema.label : intl.formatMessage(messages.type_placeholder);
     const vertexSelectIcon = schema ? <Schema.Icon schema={schema} /> : 'select';
-
-    console.log('in entity create')
 
     return (
       <Dialog
@@ -167,12 +136,12 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
           e.preventDefault();
           e.stopPropagation();
           // only allow submit of input on enter when no suggestions are present
-          !suggestions.length && query.length && this.onSubmit([query])
+          !suggestions.length && inputText.length && this.onInputSubmit()
         }}>
           <div className="bp3-dialog-body">
             <ControlGroup fill>
               <SchemaSelect
-                model={entityManager.model}
+                model={model}
                 onSelect={this.onSchemaSelect}
                 optionsFilter={schema => schema.isThing()}
               >
@@ -186,9 +155,9 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
                   className="EntityCreateDialog__schema-select"
                 />
               </SchemaSelect>
-              {hasSuggest && (
+              {fetchEntitySuggestions && (
                 <EntitySelect
-                  onSubmit={this.onSubmit}
+                  onSubmit={this.onSelectSubmit}
                   values={[]}
                   allowMultiple={true}
                   isFetching={isFetchingSuggestions}
@@ -200,21 +169,21 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
                   noResultsText={intl.formatMessage(messages.no_results)}
                 />
               )}
-              {!hasSuggest && (
+              {!fetchEntitySuggestions && (
                 <InputGroup
                   autoFocus
                   large
                   fill
                   placeholder={placeholder}
-                  value={query}
+                  value={inputText}
                   onChange={(e: any) => this.onQueryChange(e.target.value)}
                 />
               )}
               <Button
                 large
                 icon="arrow-right"
-                disabled={!query.length}
-                onClick={() => this.onSubmit([query])}
+                disabled={!inputText.length}
+                onClick={this.onInputSubmit}
                 className="EntityCreateDialog__submit"
               />
             </ControlGroup>

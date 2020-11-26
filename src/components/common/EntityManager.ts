@@ -150,7 +150,7 @@ export class EntityManager {
 
     if (this.overload?.getEntitySuggestions) {
       const suggestions = await this.overload.getEntitySuggestions(queryText, schemata);
-      return suggestions;
+      return suggestions.filter((entity: Entity) => !this.hasEntity(entity));
     }
     return [];
   }

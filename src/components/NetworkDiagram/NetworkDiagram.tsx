@@ -104,6 +104,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     this.showVertexMenu = this.showVertexMenu.bind(this);
     this.toggleSettingsDialog = this.toggleSettingsDialog.bind(this);
     this.expandVertex = this.expandVertex.bind(this);
+    this.onVertexCreate = this.onVertexCreate.bind(this);
     this.onEdgeCreate = this.onEdgeCreate.bind(this);
   }
 
@@ -191,6 +192,27 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
       interactionMode: modes.VERTEX_CREATE,
       vertexCreateOptions: options
     })
+  }
+
+  async onVertexCreate(entityData: any) {
+    const { entityManager, layout, viewport } = this.props;
+    const { vertexCreateOptions } = this.state;
+
+    const entity = entityManager.createEntity(entityData);
+    const center = vertexCreateOptions?.initialPosition || viewport.center;
+
+    layout.layout(entityManager.getEntities(), center);
+    layout.selectByEntityIds([entity.id]);
+
+    const vertex = layout.getVertexByEntity(entity)
+
+    if (vertex) {
+      if (vertexCreateOptions?.initialPosition) {
+        layout.vertices.set(vertex.id, vertex.snapPosition(center))
+      }
+      this.updateLayout(layout, { created: [entity] }, { modifyHistory: true, clearSearch: true });
+      return entity;
+    }
   }
 
   onEdgeCreate(source: Entity, target: Entity, type: EdgeType) {
@@ -440,9 +462,15 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
           <>
             <EntityCreateDialog
               isOpen={interactionMode === modes.VERTEX_CREATE}
+              onSubmit={this.onVertexCreate}
               toggleDialog={this.setInteractionMode}
-              entityCreateOptions={this.state.vertexCreateOptions}
               schema={entityManager.model.getSchema('Person')}
+              model={entityManager.model}
+              fetchEntitySuggestions={entityManager.hasSuggest
+                ? (queryText: string, schemata?: Array<Schema>) => entityManager.getEntitySuggestions(false, queryText, schemata)
+                : undefined
+              }
+              intl={intl}
             />
             <GroupingCreateDialog
               isOpen={interactionMode === modes.GROUPING_CREATE}
