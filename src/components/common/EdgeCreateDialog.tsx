@@ -70,16 +70,10 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     this.onReverse = this.onReverse.bind(this)
   }
 
-  componentDidMount() {
-    const { entityManager, source, target } = this.props
-    this.setState({ source, target })
-    this.types = EdgeType.getAll(entityManager.model)
-  }
-
   componentDidUpdate(prevProps: IEdgeCreateDialogProps) {
-    if (prevProps.source !== this.props.source || prevProps.target !== this.props.target) {
-      const { source, target } = this.props
-      this.setState({ source, target, type: undefined })
+    const { isOpen, source, target } = this.props;
+    if (!prevProps.isOpen && isOpen) {
+      this.setState({ source, target, type: undefined });
     }
   }
 
