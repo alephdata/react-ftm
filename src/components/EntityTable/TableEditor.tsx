@@ -312,6 +312,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     </td>
   )
 
+
   renderValue = ({ cell, row }: Datasheet.ValueViewerProps<CellData, any>) => {
     if (!cell.data) return null;
     const { entity, property } = cell.data;
@@ -332,6 +333,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const { entityManager, visitEntity } = this.props;
 
     const values = entity.getProperty(property.name);
+    console.log('RENDER PROP VALUE', values)
     const cellContents = (
       <Property.Values
         values={values}
@@ -383,6 +385,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
             document.removeEventListener('keydown', this.keyDownListener);
             this.keyDownListener = null;
           }
+          console.log('EDITOR ON COMMIT', entity.getProperty(property));
+
           onCommit(entity.getProperty(property));
         }}
         popoverProps={{ usePortal: false }}
@@ -517,16 +521,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
         nextEntity = entity;
         if (value === "") {
           entity && entity.properties.delete(entity.schema.getProperty(property.name));
-          cell.value = "";
+          cell.value = null;
         } else {
           entity && entity.properties.set(entity.schema.getProperty(property.name), value);
           cell.value = value.map((v:Value) => typeof v === 'string' ? v : v.id);
         }
       }
-      console.log('cell', cell.data.entity);
     })
-
-    console.log('prev, next', prevEntity, nextEntity)
 
     if (prevEntity && nextEntity) {
       this.props.entityManager.updateEntity(nextEntity);
@@ -554,6 +555,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
         }
       }
     });
+
+    // trigger re-render
+    this.setState(({ entityRows}) => ({ entityRows }));
 
     if (updateFinishedCallback) {
       updateFinishedCallback(entityChanges);
