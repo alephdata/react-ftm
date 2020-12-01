@@ -513,18 +513,20 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       if (error) {
         showErrorToast(intl.formatMessage(error));
       } else {
-        prevEntity = prevEntity || entity;
-        nextEntity = nextEntity || entity.clone();
+        prevEntity = prevEntity || entity.clone();
+        nextEntity = entity;
         if (value === "") {
-          nextEntity && nextEntity.properties.set(entity.schema.getProperty(property.name), []);
+          entity && entity.properties.delete(entity.schema.getProperty(property.name));
           cell.value = "";
         } else {
-          nextEntity && nextEntity.properties.set(entity.schema.getProperty(property.name), value);
+          entity && entity.properties.set(entity.schema.getProperty(property.name), value);
           cell.value = value.map((v:Value) => typeof v === 'string' ? v : v.id);
         }
-        cell.data.entity = nextEntity;
       }
+      console.log('cell', cell.data.entity);
     })
+
+    console.log('prev, next', prevEntity, nextEntity)
 
     if (prevEntity && nextEntity) {
       this.props.entityManager.updateEntity(nextEntity);
