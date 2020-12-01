@@ -92,7 +92,7 @@
     "json-loader": "^0.5.7",
     "lodash": "^4.17.20",
     "node-sass": "^4.14.1",
-    "react": "^16.13.1",
+    "react": "^17.0.1",
     "react-countup": "^4.3.3",
     "react-dom": "^16.11.0",
     "rimraf": "^3.0.2",
@@ -112,7 +112,7 @@
   "peerDependencies": {
     "@blueprintjs/core": "^3.23.1",
     "@blueprintjs/select": "^3.12.3",
-    "react": "^16.13.1",
+    "react": "^17.0.1",
     "react-dom": "^16.8.6"
   },
   "dependencies": {
