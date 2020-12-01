@@ -206,7 +206,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   getEntityRows = () => {
     const { entities } = this.props;
     const visibleProps = this.getVisibleProperties();
-
     return entities.map(e => this.getEntityRow(e, visibleProps));
   }
 
@@ -333,7 +332,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const { entityManager, visitEntity } = this.props;
 
     const values = entity.getProperty(property.name);
-    console.log('RENDER PROP VALUE', values)
     const cellContents = (
       <Property.Values
         values={values}
@@ -385,8 +383,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
             document.removeEventListener('keydown', this.keyDownListener);
             this.keyDownListener = null;
           }
-          console.log('EDITOR ON COMMIT', entity.getProperty(property));
-
           onCommit(entity.getProperty(property));
         }}
         popoverProps={{ usePortal: false }}

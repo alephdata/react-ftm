@@ -64,17 +64,17 @@ class EntityTableBase extends React.Component<IEntityTableProps, IEntityTableSta
   }
 
   setActiveSchema(activeSchema: string) {
-    this.setState({ activeSchema });
+    this.setState({ activeSchema, sort: null });
   }
 
   getEntities(schema: FTMSchema) {
     const { entityManager } = this.props;
-    const { sort } = this.state;
+    const { activeSchema, sort } = this.state;
 
     const entities = entityManager.getEntities()
       .filter((e: Entity) => e.schema.name === schema.name);
 
-    if (sort) {
+    if (activeSchema === schema.name && sort) {
       const { field, direction } = sort;
       const property = schema.getProperty(field);
       return entities.sort((a: Entity, b: Entity) => sortEntities(a, b, property, direction, entityManager.getEntity));
