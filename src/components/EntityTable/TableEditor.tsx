@@ -3,9 +3,9 @@ import { defineMessages, injectIntl } from 'react-intl';
 import Datasheet from 'react-datasheet';
 import _ from 'lodash';
 import { Button, Checkbox, Classes, Icon, Intent, Tooltip } from "@blueprintjs/core";
-import { Entity, Property as FTMProperty, Schema, Value } from "@alephdata/followthemoney";
+import { Entity as FTMEntity, Property as FTMProperty, Schema as FTMSchema, Value } from "@alephdata/followthemoney";
 import { PropertyEditor, PropertySelect } from 'editors';
-import { Property } from 'types';
+import { Entity, Schema, Property } from 'types';
 import { EntityChanges, SortType } from 'components/common/types';
 import { IEntityTableCommonProps } from 'components/EntityTable/common';
 import { showErrorToast, validate } from 'utils';
@@ -42,13 +42,13 @@ export interface CellData extends Datasheet.Cell<CellData, any> {
 }
 
 interface ITableEditorProps extends IEntityTableCommonProps {
-  entities: Array<Entity>
-  schema: Schema
+  entities: Array<FTMEntity>
+  schema: FTMSchema
   sort: SortType | null
   sortColumn: (field: string) => void
   selection: Array<string>
   updateSelection: (entityIds: Array<string>, newVal: boolean) => void
-  fetchEntitySuggestions: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>
+  fetchEntitySuggestions: (queryText: string, schemata?: Array<FTMSchema>) => Promise<FTMEntity[]>
 }
 
 interface ITableEditorState {
@@ -130,7 +130,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     });
   }
 
-  appendAdditionalEntities(prevEntities: Array<Entity>) {
+  appendAdditionalEntities(prevEntities: Array<FTMEntity>) {
     const { entities } = this.props;
     const { createdEntityIds } = this.state;
     let newEntities = _.differenceBy(entities, prevEntities, e => e.id);
@@ -168,7 +168,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const requiredProps = schema.required.map(name => schema.getProperty(name));
     const featuredProps = schema.getFeaturedProperties();
     const filledProps = entities
-      .reduce((acc, entity: Entity) => [...acc, ...entity.getProperties()], [] as FTMProperty[]);
+      .reduce((acc, entity: FTMEntity) => [...acc, ...entity.getProperties()], [] as FTMProperty[]);
 
     const fullList = _.uniqBy([...requiredProps, ...featuredProps, ...filledProps, ...addedColumns], 'name');
 
@@ -208,7 +208,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     return entities.map(e => this.getEntityRow(e, visibleProps));
   }
 
-  getEntityRow = (entity: Entity, visibleProps: Array<FTMProperty>) => {
+  getEntityRow = (entity: FTMEntity, visibleProps: Array<FTMProperty>) => {
     const { visitEntity, writeable } = this.props;
 
     const propCells = visibleProps.map(property => {
@@ -235,13 +235,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     }
   }
 
-  getCheckboxCell = (entity: Entity) => {
+  getCheckboxCell = (entity: FTMEntity) => {
     const { selection } = this.props;
     const isSelected = selection.indexOf(entity.id) > -1;
     return { ...getCellBase('checkbox'), data: { entity, isSelected }}
   }
 
-  getEntityLinkCell = (entity?: Entity) => {
+  getEntityLinkCell = (entity?: FTMEntity) => {
     return ({
       ...getCellBase('entity-link'),
       ...(entity ? {component: this.renderEntityLinkButton({ entity })} : {})
@@ -327,36 +327,31 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     return null;
   }
 
-  renderPropValue = ({entity, property}: {entity: Entity, property: FTMProperty}) => {
+  renderPropValue = ({entity, property}: {entity: FTMEntity, property: FTMProperty}) => {
     const { entityManager, visitEntity } = this.props;
 
     const values = entity.getProperty(property.name);
-    const cellContents = (
-      <Property.Values
-        values={values}
-        prop={property}
-        resolveEntityReference={entityManager.resolveEntityReference}
-      />
-    );
     const showVisitLink = visitEntity && property.type.name === 'entity' && values.length;
-    if (showVisitLink) {
-      return (
-        <div className="TableEditor__overflow-container">
-          <Button
-            minimal
-            small
-            rightIcon={<Icon icon="fullscreen" iconSize={12} className="TableEditor__link-cell__icon" />}
-            className="TableEditor__link-cell"
-            onClick={() => visitEntity && visitEntity(values[0])}
-          >
-            {cellContents}
-          </Button>
-        </div>
-      );
-    }
+
     return (
       <div className="TableEditor__overflow-container">
-        {cellContents}
+        <Property.Values
+          values={values}
+          prop={property}
+          resolveEntityReference={entityManager.resolveEntityReference}
+          getEntityLink={showVisitLink ? (ent) => (
+            <Button
+              minimal
+              small
+              icon={<Schema.Icon schema={ent.schema} />}
+              rightIcon={<Icon icon="fullscreen" iconSize={12} className="TableEditor__link-cell__icon" />}
+              className="TableEditor__link-cell"
+              onClick={() => visitEntity && visitEntity(ent)}
+            >
+              <Entity.Label entity={ent} icon={false} />
+            </Button>
+          ) : undefined}
+        />
       </div>
     );
   }
@@ -374,10 +369,10 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     return (
       <PropertyEditor
-        entity={entity || new Entity(entityManager.model, { schema, id: `${Math.random()}` })}
+        entity={entity || new FTMEntity(entityManager.model, { schema, id: `${Math.random()}` })}
         property={property}
         onChange={onChange}
-        onSubmit={(entity:Entity) => {
+        onSubmit={(entity:FTMEntity) => {
           if (this.keyDownListener) {
             document.removeEventListener('keydown', this.keyDownListener);
             this.keyDownListener = null;
@@ -427,7 +422,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     )
   }
 
-  renderCheckbox = ({ entity, isSelected }:{entity: Entity, isSelected: boolean}, row: number) => {
+  renderCheckbox = ({ entity, isSelected }:{entity: FTMEntity, isSelected: boolean}, row: number) => {
     return (
       <Checkbox
         checked={isSelected}
@@ -449,7 +444,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     );
   }
 
-  renderEntityLinkButton = ({ entity }: {entity: Entity}) => {
+  renderEntityLinkButton = ({ entity }: {entity: FTMEntity}) => {
     const { visitEntity } = this.props;
     if (visitEntity == undefined) return null;
 
@@ -502,8 +497,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   handleExistingRow = (changes: Datasheet.CellsChangedArgs<CellData, any> | Datasheet.CellAdditionsArgs<CellData>) => {
     const { intl } = this.props;
 
-    let prevEntity: Entity | undefined;
-    let nextEntity: Entity | undefined;
+    let prevEntity: FTMEntity | undefined;
+    let nextEntity: FTMEntity | undefined;
 
     changes.forEach(({ cell, value }: any) => {
       const { entity, property } = cell.data;
