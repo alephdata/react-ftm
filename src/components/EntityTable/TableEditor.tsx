@@ -37,7 +37,6 @@ const propSort = (a:FTMProperty, b:FTMProperty) => (a.label > b.label ? 1 : -1);
 export interface CellData extends Datasheet.Cell<CellData, any> {
   className: string
   value?: any,
-  displayValue?: any,
   data?: any,
   component?: any
 }
