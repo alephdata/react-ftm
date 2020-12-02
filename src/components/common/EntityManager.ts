@@ -51,13 +51,13 @@ export class EntityManager {
 
   createEntity(entityData: any): Entity {
     let entity: Entity;
-    if (entityData instanceof Entity) {
+    if (entityData.id) {
       entity = entityData;
-    } else if (entityData.id) {
-      entity = new Entity(this.model, entityData);
     } else {
       const { properties, schema } = entityData;
+
       entity = this.model.createEntity(schema, this.namespace);
+
       if (properties) {
         Object.entries(properties).forEach(([prop, value]: [string, any]) => {
           if (Array.isArray(value)) {

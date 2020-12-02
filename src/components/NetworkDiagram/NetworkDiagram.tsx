@@ -287,11 +287,12 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
 
     const expandResults = await entityManager.expandEntity(vertex.entityId, properties);
     if (expandResults) {
+      const before = layout.getVisibleElementCount();
+
       const entityIds = expandResults
         .reduce((entities: Array<Entity>, expandObj: any) => ([...entities, ...expandObj.entities]), [])
         .map((entityData: IEntityDatum) => { entityManager.createEntity(entityData); return entityData.id; });
 
-      const before = layout.getVisibleElementCount();
       layout.layout(entityManager.getEntities(), viewport.center);
       layout.selectByEntityIds(entityIds);
 
