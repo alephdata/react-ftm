@@ -352,7 +352,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
             <Button
               minimal
               small
-              icon={<Schema.Icon schema={ent.schema} />}
+              icon={!!ent?.schema && <Schema.Icon schema={ent.schema} />}
               rightIcon={<Icon icon="fullscreen" iconSize={12} className="TableEditor__link-cell__icon" />}
               className="TableEditor__link-cell"
               onClick={() => visitEntity && visitEntity(ent)}
