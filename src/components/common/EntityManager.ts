@@ -52,7 +52,7 @@ export class EntityManager {
   createEntity(entityData: any): Entity {
     let entity: Entity;
     if (entityData.id) {
-      entity = entityData;
+      entity = this.model.getEntity(entityData);
     } else {
       const { properties, schema } = entityData;
 
