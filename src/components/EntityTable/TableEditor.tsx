@@ -58,6 +58,7 @@ interface ITableEditorState {
   entityRows: CellData[][]
   createdEntityIds: string[]
   lastSelected?: string
+  visibleProps: Array<FTMProperty>
 }
 
 class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorState> {
@@ -74,6 +75,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       showTopAddRow: false,
       entityRows: [],
       createdEntityIds: [],
+      visibleProps: this.getVisibleProperties(),
       lastSelected: props.selection?.[0],
     }
 
@@ -91,7 +93,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   componentDidUpdate(prevProps: ITableEditorProps, prevState: ITableEditorState) {
     const { entities, selection, sort, writeable } = this.props;
-    const { addedColumns, showTopAddRow } = this.state;
+    const { visibleProps, showTopAddRow } = this.state;
 
     const entitiesLength = entities.length;
     const prevEntitiesLength = prevProps.entities.length;
@@ -102,7 +104,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const selectionChanged = prevProps.selection !== selection;
     const topAddRowToggled = prevState.showTopAddRow !== showTopAddRow;
 
-    if (prevState.addedColumns !== addedColumns || sortChanged || entitiesDeleted) {
+    if (visibleProps !== prevState.visibleProps || sortChanged || entitiesDeleted) {
       this.regenerateTable();
       return;
     } else if (entitiesAdded) {
@@ -132,19 +134,24 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   appendAdditionalEntities(prevEntities: Array<FTMEntity>) {
     const { entities } = this.props;
-    const { createdEntityIds } = this.state;
+    const { createdEntityIds, visibleProps } = this.state;
+
     let newEntities = _.differenceBy(entities, prevEntities, e => e.id);
     if (createdEntityIds.length) {
       newEntities = newEntities.filter(e => (createdEntityIds.indexOf(e.id) < 0));
     }
 
     if (newEntities.length) {
-      const visibleProps = this.getVisibleProperties();
-
-      this.setState(({ entityRows }) => ({
-        headerRow: this.getHeaderRow(),
-        entityRows: [...entityRows, ...newEntities.map(e => this.getEntityRow(e, visibleProps))]
-      }));
+      const newVisibleProps = this.getVisibleProperties(newEntities);
+      const addtlProps = _.difference(newVisibleProps, visibleProps);
+      if (addtlProps.length) {
+        this.setState(({ visibleProps }) => ({ visibleProps: [...visibleProps, ...addtlProps] }));
+      } else {
+        this.setState(({ entityRows, visibleProps }) => ({
+          headerRow: this.getHeaderRow(),
+          entityRows: [...entityRows, ...newEntities.map(e => this.getEntityRow(e))]
+        }));
+      }
     }
   }
 
@@ -161,13 +168,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     }));
   }
 
-  getVisibleProperties() {
+  getVisibleProperties(entitiesSubset?: Array<FTMEntity>) {
     const { entities, schema } = this.props;
-    const { addedColumns } = this.state;
+    const addedColumns = this.state?.addedColumns || []
 
     const requiredProps = schema.required.map(name => schema.getProperty(name));
     const featuredProps = schema.getFeaturedProperties();
-    const filledProps = entities
+    const filledProps = (entitiesSubset || entities)
       .reduce((acc, entity: FTMEntity) => [...acc, ...entity.getProperties()], [] as FTMProperty[]);
 
     const fullList = _.uniqBy([...requiredProps, ...featuredProps, ...filledProps, ...addedColumns], 'name');
@@ -177,7 +184,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   getNonVisibleProperties() {
     const { schema } = this.props;
-    const visibleProps = this.getVisibleProperties();
+    const { visibleProps } = this.state;
 
     return schema.getEditableProperties()
       .filter(prop => visibleProps.indexOf(prop) < 0)
@@ -188,7 +195,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   getHeaderRow = () => {
     const { visitEntity, writeable } = this.props;
-    const visibleProps = this.getVisibleProperties();
+    const { visibleProps } = this.state;
 
     const headerCells = visibleProps.map(property => this.getHeaderCell(property));
     const entityLinkPlaceholder = visitEntity != undefined ? [this.getEntityLinkCell()] : [];
@@ -204,12 +211,12 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   getEntityRows = () => {
     const { entities } = this.props;
-    const visibleProps = this.getVisibleProperties();
-    return entities.map(e => this.getEntityRow(e, visibleProps));
+    return entities.map(e => this.getEntityRow(e));
   }
 
-  getEntityRow = (entity: FTMEntity, visibleProps: Array<FTMProperty>) => {
+  getEntityRow = (entity: FTMEntity) => {
     const { visitEntity, writeable } = this.props;
+    const { visibleProps } = this.state;
 
     const propCells = visibleProps.map(property => {
       let values = entity.getProperty(property.name);
@@ -262,7 +269,8 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   getSkeletonRows = () => {
     const { visitEntity, writeable } = this.props;
-    const visibleProps = this.getVisibleProperties();
+    const { visibleProps } = this.state;
+
     const skeletonRowCount = 8;
     const entityLinkPlaceholder = visitEntity != undefined ? [this.getEntityLinkCell()] : [];
     const actionCellPlaceholder = writeable ? [{...getCellBase('checkbox')}] : [];
@@ -277,8 +285,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
   getAddRow = () => {
     const { visitEntity } = this.props;
+    const { visibleProps } = this.state;
+
     const entityLinkPlaceholder = visitEntity != undefined ? [this.getEntityLinkCell()] : [];
-    const visibleProps = this.getVisibleProperties();
 
     const addRowCells = visibleProps.map(property => ({
       ...getCellBase('property'),
@@ -343,7 +352,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
             <Button
               minimal
               small
-              icon={<Schema.Icon schema={ent.schema} />}
+              icon={!!ent?.schema && <Schema.Icon schema={ent.schema} />}
               rightIcon={<Icon icon="fullscreen" iconSize={12} className="TableEditor__link-cell__icon" />}
               className="TableEditor__link-cell"
               onClick={() => visitEntity && visitEntity(ent)}
@@ -437,6 +446,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
               newSelection = this.findEntityRange(adjustedRow, lastSelectedRow);
             }
           }
+
           this.props.updateSelection(newSelection || [entity.id], !isSelected);
           this.setState({ lastSelected: entity.id });
         }}
@@ -465,7 +475,6 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   handleNewRow = (row: number, changes: any) => {
     const { intl, schema } = this.props;
     const { entityRows, showTopAddRow } = this.state;
-    const visibleProps = this.getVisibleProperties();
     const entityData = { schema, properties: {} };
     const shouldPrepend = showTopAddRow && row === 1;
 
@@ -481,7 +490,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     })
 
     const entity = this.props.entityManager.createEntity(entityData);
-    const newEntityRow = this.getEntityRow(entity, visibleProps);
+    const newEntityRow = this.getEntityRow(entity);
 
     this.setState(({ entityRows, createdEntityIds, showTopAddRow }) => {
       return ({
@@ -562,8 +571,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   onAddColumn(newColumn: FTMProperty) {
-    this.setState(({addedColumns}) => ({
+    this.setState(({addedColumns, visibleProps}) => ({
       addedColumns: [...addedColumns, newColumn],
+      visibleProps: [...visibleProps, newColumn]
     }));
   }
 
