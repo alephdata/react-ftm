@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
-import { Value, Values } from "@alephdata/followthemoney";
+import { Value } from "@alephdata/followthemoney";
 import { ControlGroup, MenuItem, Position } from "@blueprintjs/core";
 import { MultiSelect } from "@blueprintjs/select";
 import { ITypeEditorProps } from "./common";
@@ -13,13 +13,13 @@ const messages = defineMessages({
   },
 });
 
-const TypedMultiSelect = MultiSelect.ofType<[string, string]>()
+const TypedMultiSelect = MultiSelect.ofType<string>()
 
 interface IEnumValueSelectProps extends ITypeEditorProps, WrappedComponentProps {
-  fullList:Map<string, string>
+  fullList: Map<string, string>
 }
 
-class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
+class EnumValueSelect extends React.Component<IEnumValueSelectProps> {
   private inputRef: HTMLInputElement | null = null;
 
   constructor(props: any) {
@@ -32,84 +32,56 @@ class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
     this.inputRef && this.inputRef.focus();
   }
 
-  onChange(item: any, event: any) {
+  onChange(item: string, event: any) {
     event.preventDefault();
     event.stopPropagation();
     const { values } = this.props;
     if (item) {
-      const [countryId] = item;
-      this.props.onSubmit([...values, ...[countryId]]);
+      this.props.onSubmit([...values, item as Value]);
     } else {
       this.props.onSubmit(values);
     }
   }
 
-  getAvailableOptions() {
-    const { fullList, values } = this.props;
-
-    const optionsMap = new Map(fullList)
-    values.forEach((valKey: any) => optionsMap.delete(valKey))
-
-    return Array.from(optionsMap.entries())
-      .sort((a, b) => a[1] > b[1] ? 1 : -1);
-  }
-
-  getIdLabelPairs() {
-    const { fullList, values } = this.props;
-
-    return values.map((valKey: any) => {
-      const countryLabel = fullList.get(valKey)
-      return [valKey, countryLabel] as [string, string]
-    })
-  }
-
-  // blueprint function returns the tag label instead of the tag id
-  onRemove(valToRemove: Value) {
-    const { fullList, values } = this.props;
-
-    const toRemove = Array.from(fullList.entries())
-      .find(([key, val]) => val == valToRemove) // eslint-disable-line @typescript-eslint/no-unused-vars
-
-    if (toRemove) {
-      const nextPropVals = [...values].filter(key => key !== toRemove[0]);
-      this.props.onSubmit(nextPropVals as unknown as Values)
-    }
+  onRemove(item: string) {
+    const { values } = this.props;
+    this.props.onSubmit(values.filter(v => v !== item));
   }
 
   render() {
-    const { inputProps = {}, intl, popoverProps = {} } = this.props;
-
-    const availableOptions = this.getAvailableOptions();
-    const selectedOptions = this.getIdLabelPairs();
+    const { inputProps = {}, popoverProps = {}, intl, fullList, values } = this.props;
+    const optionsMap = new Map(fullList);
+    const options = Array.from(optionsMap.keys());
+    const getLabel = (key: string) => optionsMap.get(key) || '';
 
     return (
       <ControlGroup vertical fill >
         <TypedMultiSelect
-          tagRenderer={i => i[1]}
+          tagRenderer={getLabel}
           onItemSelect={this.onChange}
-          itemRenderer={([key, label], {handleClick, modifiers, query}) => (
+          onRemove={this.onRemove}
+          itemRenderer={(key, { handleClick, modifiers, query }) => (
             <MenuItem
               active={modifiers.active}
               disabled={modifiers.disabled}
               key={key}
               onClick={handleClick}
-              text={highlightText(label, query)}
+              text={highlightText(getLabel(key), query)}
             />
           )}
-          items={availableOptions}
+          items={options}
           popoverProps={{ minimal: true, position: Position.BOTTOM_LEFT, ...popoverProps }}
           tagInputProps={{
             inputRef: (ref) => this.inputRef = ref,
-            tagProps: {interactive: false, minimal: true},
-            onRemove: this.onRemove,
+            tagProps: { interactive: false, minimal: true },
             placeholder: '',
             ...inputProps
           }}
-          itemListPredicate={(query, items) => {
+          itemPredicate={(query, item) => {
             const queryProcessed = query.toLowerCase();
-            return items.filter(([key, label]) => label.toLowerCase().includes(queryProcessed)); // eslint-disable-line @typescript-eslint/no-unused-vars
+            return getLabel(item).toLowerCase().includes(queryProcessed); // eslint-disable-line @typescript-eslint/no-unused-vars
           }}
-          selectedItems={selectedOptions}
+          selectedItems={values as [string]}
           noResults={
             <MenuItem disabled text={intl.formatMessage(messages.no_results)} />
           }
@@ -117,7 +89,7 @@ class EnumValueSelect extends React.PureComponent<IEnumValueSelectProps> {
           resetOnSelect
           fill
         />
-      </ControlGroup>
+      </ControlGroup >
     )
   }
 }
