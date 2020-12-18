@@ -92,7 +92,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   componentDidUpdate(prevProps: ITableEditorProps, prevState: ITableEditorState) {
-    const { entities, selection, sort, writeable } = this.props;
+    const { entities, schema, selection, sort, writeable } = this.props;
     const { visibleProps, showTopAddRow } = this.state;
 
     const entitiesLength = entities.length;
@@ -104,7 +104,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const selectionChanged = prevProps.selection !== selection;
     const topAddRowToggled = prevState.showTopAddRow !== showTopAddRow;
 
-    if (visibleProps !== prevState.visibleProps || sortChanged || entitiesDeleted) {
+    if (prevProps.schema !== schema || visibleProps !== prevState.visibleProps || sortChanged || entitiesDeleted) {
       this.regenerateTable();
       return;
     } else if (entitiesAdded) {
