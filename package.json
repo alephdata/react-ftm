@@ -96,7 +96,7 @@
     "react-countup": "^4.3.3",
     "react-dom": "^16.11.0",
     "rimraf": "^3.0.2",
-    "sass": "^1.29.0",
+    "sass": "^1.32.0",
     "sass-loader": "^10.1.0",
     "style-loader": "^2.0.0",
     "ts-jest": "^25.2.1",
