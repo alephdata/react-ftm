@@ -32,7 +32,7 @@ const getCellBase = (type: string) => ({
   ...(type !== 'property' ? readOnlyCellProps : {})
 })
 
-const propSort = (a:FTMProperty, b:FTMProperty) => (a.label > b.label ? 1 : -1);
+const propSort = (a: FTMProperty, b: FTMProperty) => (a.label > b.label ? 1 : -1);
 
 export interface CellData extends Datasheet.Cell<CellData, any> {
   className: string
@@ -66,7 +66,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   ref: React.RefObject<any>
 
 
-  constructor(props:ITableEditorProps) {
+  constructor(props: ITableEditorProps) {
     super(props);
 
     this.state = {
@@ -221,7 +221,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const propCells = visibleProps.map(property => {
       let values = entity.getProperty(property.name);
       if (property.type.name === 'entity') {
-        values = values.map((v:Value) => typeof v === 'string' ? v : v.id);
+        values = values.map((v: Value) => typeof v === 'string' ? v : v.id);
       }
 
       return ({
@@ -245,13 +245,13 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   getCheckboxCell = (entity: FTMEntity) => {
     const { selection } = this.props;
     const isSelected = selection.indexOf(entity.id) > -1;
-    return { ...getCellBase('checkbox'), data: { entity, isSelected }}
+    return { ...getCellBase('checkbox'), data: { entity, isSelected } }
   }
 
   getEntityLinkCell = (entity?: FTMEntity) => {
     return ({
       ...getCellBase('entity-link'),
-      ...(entity ? {component: this.renderEntityLinkButton({ entity })} : {})
+      ...(entity ? { component: this.renderEntityLinkButton({ entity }) } : {})
     })
   }
 
@@ -273,7 +273,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     const skeletonRowCount = 8;
     const entityLinkPlaceholder = visitEntity != undefined ? [this.getEntityLinkCell()] : [];
-    const actionCellPlaceholder = writeable ? [{...getCellBase('checkbox')}] : [];
+    const actionCellPlaceholder = writeable ? [{ ...getCellBase('checkbox') }] : [];
     const skeletonRow = [
       ...entityLinkPlaceholder,
       ...actionCellPlaceholder,
@@ -294,7 +294,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       data: { entity: null, property }
     }));
 
-    return [...entityLinkPlaceholder, {...getCellBase('checkbox')}, ...addRowCells]
+    return [...entityLinkPlaceholder, { ...getCellBase('checkbox') }, ...addRowCells]
   }
 
   findRowByEntity = (entityId?: string) => {
@@ -312,9 +312,9 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   // Table renderers
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  renderCell = ({ attributesRenderer, updated, editing, ...props}: any) => (
+  renderCell = ({ attributesRenderer, updated, editing, ...props }: any) => (
     // scroll cell into view if selected and not visible
-    <td ref={ref => props.selected && ref && !isScrolledIntoView(ref, this.ref.current) && ref.scrollIntoView({behavior: 'smooth', block: 'nearest'})} {...props}>
+    <td ref={ref => props.selected && ref && !isScrolledIntoView(ref, this.ref.current) && ref.scrollIntoView({ behavior: 'smooth', block: 'nearest' })} {...props}>
       {props.children}
     </td>
   )
@@ -336,7 +336,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     return null;
   }
 
-  renderPropValue = ({entity, property}: {entity: FTMEntity, property: FTMProperty}) => {
+  renderPropValue = ({ entity, property }: { entity: FTMEntity, property: FTMProperty }) => {
     const { entityManager, visitEntity } = this.props;
 
     const values = entity.getProperty(property.name);
@@ -372,7 +372,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     if (!property) return null;
 
     if (!this.keyDownListener) {
-      this.keyDownListener = (e:any) => { if (e.which === ESC_KEY) onRevert() };
+      this.keyDownListener = (e: any) => { if (e.which === ESC_KEY) onRevert() };
       document.addEventListener('keydown', this.keyDownListener);
     }
 
@@ -381,7 +381,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
         entity={entity || new FTMEntity(entityManager.model, { schema, id: `${Math.random()}` })}
         property={property}
         onChange={onChange}
-        onSubmit={(entity:FTMEntity) => {
+        onSubmit={(entity: FTMEntity) => {
           if (this.keyDownListener) {
             document.removeEventListener('keydown', this.keyDownListener);
             this.keyDownListener = null;
@@ -426,12 +426,12 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       <PropertySelect
         properties={this.getNonVisibleProperties()}
         onSelected={this.onAddColumn}
-        buttonProps={{minimal: true, intent: Intent.PRIMARY }}
+        buttonProps={{ minimal: true, intent: Intent.PRIMARY }}
       />
     )
   }
 
-  renderCheckbox = ({ entity, isSelected }:{entity: FTMEntity, isSelected: boolean}, row: number) => {
+  renderCheckbox = ({ entity, isSelected }: { entity: FTMEntity, isSelected: boolean }, row: number) => {
     return (
       <Checkbox
         checked={isSelected}
@@ -454,7 +454,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     );
   }
 
-  renderEntityLinkButton = ({ entity }: {entity: FTMEntity}) => {
+  renderEntityLinkButton = ({ entity }: { entity: FTMEntity }) => {
     const { visitEntity } = this.props;
     if (visitEntity == undefined) return null;
 
@@ -511,7 +511,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     changes.forEach(({ cell, value }: any) => {
       const { entity, property } = cell.data;
-      const error = validate({ entity, schema: entity.schema, property, values: value});
+      const error = validate({ entity, schema: entity.schema, property, values: value });
 
       if (error) {
         showErrorToast(intl.formatMessage(error));
@@ -523,7 +523,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
           cell.value = null;
         } else {
           entity && entity.properties.set(entity.schema.getProperty(property.name), value);
-          cell.value = value.map((v:Value) => typeof v === 'string' ? v : v.id);
+          cell.value = value.map((v: Value) => typeof v === 'string' ? v : v.id);
         }
       }
     })
@@ -556,7 +556,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     });
 
     // trigger re-render
-    this.setState(({ entityRows}) => ({ entityRows }));
+    this.setState(({ entityRows }) => ({ entityRows }));
 
     if (updateFinishedCallback) {
       updateFinishedCallback(entityChanges);
@@ -571,7 +571,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   onAddColumn(newColumn: FTMProperty) {
-    this.setState(({addedColumns, visibleProps}) => ({
+    this.setState(({ addedColumns, visibleProps }) => ({
       addedColumns: [...addedColumns, newColumn],
       visibleProps: [...visibleProps, newColumn]
     }));
