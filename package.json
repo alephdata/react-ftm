@@ -82,7 +82,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "coveralls": "^3.0.11",
     "css-loader": "^5.0.1",
-    "eslint": "^7.16.0",
+    "eslint": "^7.17.0",
     "eslint-import-resolver-webpack": "^0.13.0",
     "eslint-plugin-import": "^2.22.1",
     "hoist-non-react-statics": "^3.3.2",
