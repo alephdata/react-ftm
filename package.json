@@ -71,7 +71,7 @@
     "@types/jest": "^26.0.19",
     "@types/node": "^14.14.17",
     "@types/node-sass": "^4.11.0",
-    "@types/numeral": "^0.0.28",
+    "@types/numeral": "^0.0.29",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/recharts": "^1.8.17",
