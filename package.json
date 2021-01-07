@@ -62,7 +62,7 @@
     "@alephdata/followthemoney": "2.2.2",
     "@blueprintjs/core": "3.36.0",
     "@blueprintjs/select": "3.15.0",
-    "@formatjs/cli": "^2.13.16",
+    "@formatjs/cli": "^3.0.1",
     "@types/bezier-js": "0.0.8",
     "@types/classnames": "^2.2.11",
     "@types/d3": "^6.2.0",
