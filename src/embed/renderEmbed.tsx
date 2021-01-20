@@ -12,17 +12,21 @@ export interface IRenderEmbedConfig {
 export interface IRenderEmbedProps {
   id: string
   type: string
+  data?: any
   dataURL?: string
   config?: IRenderEmbedConfig
 }
 
 export const renderEmbed = async (props: IRenderEmbedProps) => {
-  const { id, type, dataURL, config } = props;
-  let data;
-  if (dataURL) {
-    data = await fetchExternalData(dataURL);
+  const { id, type, data, dataURL, config } = props;
+  let embedData;
+
+  if (data) {
+    embedData = data;
+  } else if (dataURL) {
+    embedData = await fetchExternalData(dataURL);
   } else {
-    data = fetchLocalData(id) || require('./sample.ftm');
+    embedData = fetchLocalData(id) || require('./sample.ftm');
   }
 
   let domElem = document.getElementById(id);
@@ -34,7 +38,7 @@ export const renderEmbed = async (props: IRenderEmbedProps) => {
 
   ReactDOM.render(
     <div {...config?.containerProps}>
-      <EmbeddedElement id={id} data={data} config={config} type={type} />
+      <EmbeddedElement id={id} data={embedData} config={config} type={type} />
     </div>,
     domElem
   );
