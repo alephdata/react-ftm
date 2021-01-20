@@ -8,7 +8,7 @@ import { EdgeLabelRenderer } from './EdgeLabelRenderer';
 interface IEdgeRendererProps {
   edge: Edge,
   vertex1?: Vertex,
-  vertex2?: Vertex
+  vertex2?: Vertex,
   svgRef: React.RefObject<SVGSVGElement>,
   selectEdge: (edge: Edge, options?: any) => any,
   dragSelection: (offset: Point, initialPosition?: Point) => any,
@@ -37,10 +37,10 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
     if (edge.labelPosition) {
       const curveGenerator = Bezier.quadraticFromPoints(vertex1, layout.config.gridToPixel(edge.labelPosition), vertex2, .5);
       // location of control point:
-      const {x, y} = curveGenerator.points[1]
+      const { x, y } = curveGenerator.points[1]
 
       return {
-        path:"M" + vertex1.x + " " + vertex1.y + " Q " + x + " " + y + " " + vertex2.x + " " + vertex2.y,
+        path: "M" + vertex1.x + " " + vertex1.y + " Q " + x + " " + y + " " + vertex2.x + " " + vertex2.y,
         center: edge.labelPosition
       }
     } else {
@@ -49,7 +49,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
       const mpy = (vertex2.y + vertex1.y) * 0.5;
 
       return {
-        path:"M" + vertex1.x + " " + vertex1.y + " L " + vertex2.x + " " + vertex2.y,
+        path: "M" + vertex1.x + " " + vertex1.y + " L " + vertex2.x + " " + vertex2.y,
         center: layout.config.pixelToGrid(new Point(mpx, mpy))
       }
     }
@@ -68,15 +68,15 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
 
     const vertex1Position = layout.config.gridToPixel(vertex1.position)
     const vertex2Position = layout.config.gridToPixel(vertex2.position)
-    const {path, center} = this.generatePath(vertex1Position, vertex2Position)
+    const { path, center } = this.generatePath(vertex1Position, vertex2Position)
 
     const clickableLineStyles: React.CSSProperties = {
       cursor: 'pointer'
     }
     const lineStyles: React.CSSProperties = {
-      pointerEvents:'none'
+      pointerEvents: 'none'
     }
-    const arrowRef = isHighlighted ?  "url(#arrow)" : "url(#arrow-unselected)"
+    const arrowRef = isHighlighted ? "url(#arrow)" : "url(#arrow-unselected)"
     return <React.Fragment>
       <g className="edge">
         <path
@@ -97,7 +97,7 @@ export class EdgeRenderer extends React.PureComponent<IEdgeRendererProps>{
           markerEnd={isDirected ? arrowRef : ''}
         />
       </g>
-      { isHighlighted && (
+      {isHighlighted && (
         <EdgeLabelRenderer
           svgRef={svgRef}
           center={center}

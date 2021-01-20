@@ -14,7 +14,7 @@ const TypedSelect = Select.ofType<FTMSchema>();
 
 const itemRenderer = (schema: FTMSchema, { handleClick }: { handleClick: any }) => (
   <MenuItem
-    key={schema.label}
+    key={schema.name}
     text={<Schema.Label schema={schema} icon />}
     onClick={handleClick}
   />
@@ -34,7 +34,7 @@ class SchemaSelect extends React.PureComponent<ISelectSchemaProps> {
         filterable={false}
         itemRenderer={itemRenderer}
         onItemSelect={onSelect}
-        popoverProps={{ minimal: true}}
+        popoverProps={{ minimal: true }}
         className="SchemaSelect"
       >
         {this.props.children}
