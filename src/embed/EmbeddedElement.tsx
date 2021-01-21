@@ -26,23 +26,18 @@ export class EmbeddedElement extends React.Component <IEmbeddedElementProps> {
   }
 
   onUpdate(additionalData?: any) {
-    const { id } = this.props;
-    if (this.isWriteable()) {
-      const diagramData = JSON.stringify({
+    const { id, config } = this.props;
+    if (config?.writeable) {
+      const updatedData = JSON.stringify({
         entities: this.entityManager.toJSON(),
         ...additionalData
       })
-      localStorage.setItem(id, diagramData)
+      localStorage.setItem(id, updatedData)
     }
   }
 
-  isWriteable(): boolean {
-    const { config } = this.props;
-    return config?.writeable !== undefined ? config.writeable : true;
-  }
-
   render() {
-    const { data, type } = this.props;
+    const { config, data, type } = this.props;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { entities, ...rest } = data;
 
@@ -60,7 +55,7 @@ export class EmbeddedElement extends React.Component <IEmbeddedElementProps> {
       <Element
         entityManager={this.entityManager}
         onUpdate={this.onUpdate}
-        writeable={this.isWriteable()}
+        writeable={config?.writeable}
         layoutData={rest}
       />
     )

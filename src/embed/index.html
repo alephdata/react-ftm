@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{{ title }}</title>
+  </head>
+  <body>
+    <%= htmlWebpackPlugin.tags.bodyTags %>
+    <script>
+      window.reactFTM.renderEmbed({
+        id: 'react-ftm_embedded-element',
+        type: 'NetworkDiagram',
+        data: {{ data }},
+        config: {
+          containerProps: { style: { height: '100vh', width: '100vw' } }
+        }
+      });
+    </script>
+  </body>
+</html>
