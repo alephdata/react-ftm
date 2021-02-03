@@ -84,7 +84,7 @@ export class Histogram extends React.Component<IHistogramProps, IHistogramState>
             <Tooltip
               offset={15}
               separator=": "
-              formatter={value => <Numeric num={+value} />}
+              formatter={(value: any) => <Numeric num={+value} />}
             />
             <Bar dataKey={dataPropName} fill={Colors.BLUE2} />
             {selectStart && selectEnd && (

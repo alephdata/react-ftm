@@ -116,7 +116,7 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
   }
 
   render() {
-    const { fetchEntitySuggestions, intl, isOpen, model, onSubmit, toggleDialog } = this.props;
+    const { fetchEntitySuggestions, intl, isOpen, model, toggleDialog } = this.props;
     const { isFetchingSuggestions, isProcessing, inputText, schema, suggestions } = this.state;
     const captionProperty = this.getCaptionProperty();
     const placeholder = `${schema.label} ${captionProperty}`;

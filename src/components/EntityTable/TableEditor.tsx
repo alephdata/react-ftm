@@ -147,7 +147,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
       if (addtlProps.length) {
         this.setState(({ visibleProps }) => ({ visibleProps: [...visibleProps, ...addtlProps] }));
       } else {
-        this.setState(({ entityRows, visibleProps }) => ({
+        this.setState(({ entityRows }) => ({
           headerRow: this.getHeaderRow(),
           entityRows: [...entityRows, ...newEntities.map(e => this.getEntityRow(e))]
         }));
