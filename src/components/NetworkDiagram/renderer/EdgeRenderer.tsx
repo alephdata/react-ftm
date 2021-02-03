@@ -1,5 +1,6 @@
 import * as React from 'react'
-import Bezier from 'bezier-js'
+// @ts-ignore 
+import { Bezier } from 'bezier-js'
 import { GraphContext } from 'NetworkDiagram/GraphContext';
 import { Edge, Vertex, Point } from 'NetworkDiagram/layout'
 import { EdgeLabelRenderer } from './EdgeLabelRenderer';
