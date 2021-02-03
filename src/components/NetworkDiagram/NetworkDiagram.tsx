@@ -1,6 +1,6 @@
 import * as React from 'react'
 import c from 'classnames';
-import { Entity, IEntityDatum, Schema } from "@alephdata/followthemoney";
+import { Entity, Schema } from "@alephdata/followthemoney";
 import { Button, ButtonGroup, Tooltip } from '@blueprintjs/core';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 

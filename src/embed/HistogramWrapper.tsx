@@ -19,7 +19,7 @@ export default class HistogramWrapper extends React.Component {
     return (
       <Histogram
         data={sampleData}
-        onSelect={() => {}}
+        onSelect={(selected: any) => console.log(selected)}
         dataPropName="count"
         containerProps={{ height: 200 }}
       />
