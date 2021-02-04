@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
@@ -35,10 +36,19 @@ module.exports = {
     extensions: [ '.tsx', '.ts', '.js' ],
     alias: {
       'NetworkDiagram': path.resolve('./src/components/NetworkDiagram')
+    },
+    fallback: {
+      buffer: 'buffer',
+      crypto: 'crypto-browserify',
+      stream: 'stream-browserify',
     }
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
+    })
   ],
   output: {
     filename: '[name].js',
