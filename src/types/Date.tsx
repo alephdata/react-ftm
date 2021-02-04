@@ -1,6 +1,5 @@
 import React from 'react';
 import _ from 'lodash';
-import moment from 'moment';
 
 
 interface IEarliestProps {
@@ -34,7 +33,8 @@ class Date extends React.PureComponent<IDateProps> {
     }
     const [date, time] = dateString.split("T");
     if (showTime && time) {
-      const formattedTime = moment(dateString).format("H:mm");
+      const [hours, minutes] = time.split(":");
+      const formattedTime = `${+hours}:${minutes}`;
       return `${date} ${formattedTime}`;
     }
     return date;
