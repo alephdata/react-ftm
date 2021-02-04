@@ -1,7 +1,10 @@
 import React from 'react';
 import { defineMessages, injectIntl } from 'react-intl';
 import Datasheet from 'react-datasheet';
-import _ from 'lodash';
+import difference from 'lodash/difference';
+import differenceBy from 'lodash/differenceBy';
+import groupBy from 'lodash/groupBy';
+import uniqBy from 'lodash/uniqBy';
 import { Button, Checkbox, Classes, Icon, Intent, Tooltip } from "@blueprintjs/core";
 import { Entity as FTMEntity, Property as FTMProperty, Schema as FTMSchema, Value } from "@alephdata/followthemoney";
 import { PropertyEditor, PropertySelect } from 'editors';
@@ -136,14 +139,14 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const { entities } = this.props;
     const { createdEntityIds, visibleProps } = this.state;
 
-    let newEntities = _.differenceBy(entities, prevEntities, e => e.id);
+    let newEntities = differenceBy(entities, prevEntities, e => e.id);
     if (createdEntityIds.length) {
       newEntities = newEntities.filter(e => (createdEntityIds.indexOf(e.id) < 0));
     }
 
     if (newEntities.length) {
       const newVisibleProps = this.getVisibleProperties(newEntities);
-      const addtlProps = _.difference(newVisibleProps, visibleProps);
+      const addtlProps = difference(newVisibleProps, visibleProps);
       if (addtlProps.length) {
         this.setState(({ visibleProps }) => ({ visibleProps: [...visibleProps, ...addtlProps] }));
       } else {
@@ -177,7 +180,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
     const filledProps = (entitiesSubset || entities)
       .reduce((acc, entity: FTMEntity) => [...acc, ...entity.getProperties()], [] as FTMProperty[]);
 
-    const fullList = _.uniqBy([...requiredProps, ...featuredProps, ...filledProps, ...addedColumns], 'name');
+    const fullList = uniqBy([...requiredProps, ...featuredProps, ...filledProps, ...addedColumns], 'name');
 
     return fullList.filter(prop => (!prop.stub && !prop.hidden));
   }
@@ -537,7 +540,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   onCellsChanged = (changeList: Datasheet.CellsChangedArgs<CellData, any>, outOfBounds: Datasheet.CellAdditionsArgs<CellData>) => {
     const { updateFinishedCallback } = this.props;
     const fullChangeList = outOfBounds ? [...changeList, ...outOfBounds] : changeList;
-    const changesByRow = _.groupBy(fullChangeList, c => c.row);
+    const changesByRow = groupBy(fullChangeList, c => c.row);
     const entityChanges = {} as EntityChanges;
 
     Object.entries(changesByRow).forEach(([rowIndex, changes]: [string, any]) => {

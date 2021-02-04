@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import React from 'react';
+import isEmpty from 'lodash/isEmpty'
 import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { EntityChanges } from 'components/common/types';
 import { EntityTable } from 'components/EntityTable';
@@ -42,7 +42,7 @@ export class TableView extends React.Component<ITableViewProps> {
 
   onEntitiesUpdate(entityChanges: EntityChanges) {
     const { entityManager, layout, updateLayout, viewport } = this.context;
-    if (!_.isEmpty(entityChanges)) {
+    if (!isEmpty(entityChanges)) {
       if (entityChanges.created) {
         layout.layout(entityManager.getEntities(), viewport.center);
         layout.selectByEntityIds(entityChanges.created.map((e: Entity) => e.id));

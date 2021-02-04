@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import min from 'lodash/min';
 
 
 interface IEarliestProps {
@@ -9,7 +9,7 @@ interface IEarliestProps {
 class Earliest extends React.PureComponent<IEarliestProps> {
   render() {
     const { values } = this.props;
-    const earliest = _.min(values);
+    const earliest = min(values);
     if (earliest) {
       return <Date value={earliest.toString()} />;
     } else {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import _ from 'lodash';
+import sortBy from 'lodash/sortBy'
 import { PropertyType } from '@alephdata/followthemoney';
 import { defineMessages } from 'react-intl';
 import { Intent, FormGroup, Checkbox, Dialog, Button } from '@blueprintjs/core'
@@ -88,7 +88,7 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
 
     const matchableTypes = Object.values(entityManager.model.types as Array<PropertyType>)
       .filter((t:PropertyType) => t.matchable);
-    const typeOptions = _.sortBy(matchableTypes, ['label']);
+    const typeOptions = sortBy(matchableTypes, ['label']);
 
     return (
       <Dialog
