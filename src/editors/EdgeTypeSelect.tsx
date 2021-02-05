@@ -1,5 +1,5 @@
 import * as React from 'react'
-import _ from 'lodash';
+import partition from 'lodash/partition';
 import { Menu, MenuItem, Icon, Button, Alignment, Position } from '@blueprintjs/core'
 import { Select, IItemListRendererProps, IItemRendererProps } from '@blueprintjs/select';
 
@@ -29,7 +29,7 @@ class EdgeTypeSelect extends React.PureComponent<IEdgeTypeSelectProps> {
 
   renderEdgeTypeList = (props: IItemListRendererProps<EdgeType>) => {
     const { items, itemsParentRef, renderItem } = props;
-    const [propertyEdgeTypes, entityEdgeTypes] = _.partition(
+    const [propertyEdgeTypes, entityEdgeTypes] = partition(
       items,
       (et: EdgeType) => et.isPropertyEdgeType()
     );
