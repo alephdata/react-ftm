@@ -13,6 +13,8 @@ module.exports = merge(common, {
     new HtmlWebpackPlugin({
       chunks: ['react-ftm-embed'],
       template: './src/embed/index.html',
+      scriptLoading: 'blocking',
+      minify: false
     }),
   ],
 });
