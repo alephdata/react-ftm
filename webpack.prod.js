@@ -8,7 +8,7 @@ module.exports = merge(common, {
     'react-ftm-embed': './src/embed/index.ts'
   },
   mode: 'production',
-  devtool: 'source-map',
+  devtool: false,
   plugins: [
     new HtmlWebpackPlugin({
       chunks: ['react-ftm-embed'],
