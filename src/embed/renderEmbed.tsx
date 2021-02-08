@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { EmbeddedElement } from 'embed/EmbeddedElement';
-import { fetchExternalData, fetchLocalData } from 'embed/util';
+import { fetchExternalData } from 'embed/util';
 
 export interface IRenderEmbedConfig {
   writeable?: boolean
@@ -12,17 +12,22 @@ export interface IRenderEmbedConfig {
 export interface IRenderEmbedProps {
   id: string
   type: string
+  data?: any
   dataURL?: string
   config?: IRenderEmbedConfig
 }
 
 export const renderEmbed = async (props: IRenderEmbedProps) => {
-  const { id, type, dataURL, config } = props;
-  let data;
-  if (dataURL) {
-    data = await fetchExternalData(dataURL);
+  const { id, type, data, dataURL, config } = props;
+  let embedData;
+
+  if (data) {
+    embedData = data;
+  } else if (dataURL) {
+    embedData = await fetchExternalData(dataURL);
   } else {
-    data = fetchLocalData(id) || require('./sample.ftm');
+    console.error('React-FTM Embed Error: no data or dataUrl provided');
+    return;
   }
 
   let domElem = document.getElementById(id);
@@ -34,7 +39,7 @@ export const renderEmbed = async (props: IRenderEmbedProps) => {
 
   ReactDOM.render(
     <div {...config?.containerProps}>
-      <EmbeddedElement id={id} data={data} config={config} type={type} />
+      <EmbeddedElement id={id} data={embedData} config={config} type={type} />
     </div>,
     domElem
   );

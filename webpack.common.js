@@ -6,7 +6,6 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
   entry: {
     'react-ftm': './src/index.ts',
-    embed: './src/embed/index-embed.ts'
   },
   module: {
     rules: [
@@ -46,7 +45,6 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin(),
     new webpack.ProvidePlugin({
       process: 'process/browser',
       Buffer: ['buffer', 'Buffer'],
@@ -57,5 +55,5 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     library: 'reactFTM',
     libraryTarget: 'umd'
-  },
+  }
 };

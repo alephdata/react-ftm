@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import partition from 'lodash/partition'
 import { defaultModel, Entity, Model } from '@alephdata/followthemoney';
 
 const rtlLangs = [
@@ -27,7 +27,7 @@ export function isEntityRtl(entity: Entity, systemLang: string, customModel?: Mo
     return isLangRtl(systemLang);
   }
 
-  const [rtl, ltr] = _.partition(entLangs, isLangRtl);
+  const [rtl, ltr] = partition(entLangs, isLangRtl);
 
   if (rtl.length === 0) {
     return false;

@@ -1,10 +1,11 @@
-import _ from 'lodash'
+import isNil from 'lodash/isNil'
+import castArray from 'lodash/castArray'
 import { Values } from '@alephdata/followthemoney';
 
 
 export function ensureArray(values: Values) {
-  if (_.isNil(values)) {
+  if (isNil(values)) {
     return [];
   }
-  return _.castArray(values);
+  return castArray(values);
 }
