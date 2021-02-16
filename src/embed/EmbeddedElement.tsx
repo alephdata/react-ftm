@@ -1,5 +1,10 @@
 import React from 'react'
+import { createReducer } from 'redux-act';
+import { combineReducers, createStore } from 'redux';
+import { Provider } from 'react-redux';
+import { defaultModel, Model } from '@alephdata/followthemoney'
 
+import { LocalStorageEntityContext } from 'contexts/EntityContext';
 import NetworkDiagramWrapper from 'embed/NetworkDiagramWrapper';
 import EntityTableWrapper from 'embed/EntityTableWrapper';
 // import HistogramWrapper from 'embed/HistogramWrapper';
@@ -56,13 +61,24 @@ export class EmbeddedElement extends React.Component <IEmbeddedElementProps> {
         break;
     }
 
+    const store = createStore(
+      combineReducers({
+        model: createReducer({}, new Model(defaultModel)),
+        locale: createReducer({}, 'en'),
+        entities: createReducer({}, data.entities)
+      }),
+    );
+
     return (
-      <Element
-        entityManager={this.entityManager}
-        onUpdate={this.onUpdate}
-        writeable={config?.writeable}
-        layoutData={rest}
-      />
+      <Provider store={store} >
+        <Element
+          entityManager={this.entityManager}
+          entityContext={new LocalStorageEntityContext()}
+          onUpdate={this.onUpdate}
+          writeable={config?.writeable}
+          layoutData={rest}
+        />
+      </Provider>
     )
   }
 }
