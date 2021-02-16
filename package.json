@@ -74,6 +74,7 @@
     "@types/numeral": "^2.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "@types/react-redux": "^7.1.16",
     "@types/recharts": "^1.8.18",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
@@ -129,7 +130,10 @@
     "react-datasheet": "^1.4.8",
     "react-draggable": "^4.4.3",
     "react-intl": "^5.11.0",
+    "react-redux": "^7.2.2",
     "recharts": "^2.0.4",
+    "redux": "^4.0.5",
+    "redux-act": "^1.8.0",
     "save-dev": "0.0.1-security",
     "truncate": "^2.1.0"
   },
