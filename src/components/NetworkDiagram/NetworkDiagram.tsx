@@ -1,10 +1,13 @@
 import * as React from 'react'
+import { compose } from 'redux';
+import { connect, ConnectedProps } from 'react-redux';
 import c from 'classnames';
 import { Entity, Schema } from "@alephdata/followthemoney";
 import { Button, ButtonGroup, Tooltip } from '@blueprintjs/core';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 
 import { EdgeCreateDialog, EntityCreateDialog, EntityManager } from 'components/common';
+import { IEntityContext } from 'contexts/EntityContext';
 import { GraphConfig } from 'NetworkDiagram/GraphConfig';
 import { GraphRenderer } from 'NetworkDiagram/renderer'
 import { Edge, GraphLayout, Rectangle, Point, Settings, Vertex } from 'NetworkDiagram/layout';
@@ -43,6 +46,7 @@ export interface INetworkDiagramProps extends WrappedComponentProps {
   config: GraphConfig,
   locale?: string
   entityManager: EntityManager
+  entityContext: IEntityContext
   layout: GraphLayout,
   viewport: Viewport,
   updateLayout: (layout:GraphLayout, options?: any) => void,
@@ -62,12 +66,12 @@ interface INetworkDiagramState {
   vertexMenuSettings: any,
 }
 
-class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkDiagramState> {
+class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFromRedux, INetworkDiagramState> {
   state: INetworkDiagramState;
   history: History;
   svgRef: React.RefObject<SVGSVGElement>
 
-  constructor(props: INetworkDiagramProps) {
+  constructor(props: INetworkDiagramProps & PropsFromRedux) {
     super(props)
     const { externalFilterText, layout, writeable } = props
 
@@ -109,7 +113,9 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
   }
 
   componentDidMount() {
-    const { externalFilterText } = this.props;
+    const { entities, externalFilterText } = this.props;
+
+    this.fetchIfNeeded();
 
     if (externalFilterText) {
       this.onChangeSearch(externalFilterText);
@@ -122,6 +128,14 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     if (externalFilterText !== undefined && prevProps.externalFilterText !== externalFilterText) {
       this.onChangeSearch(externalFilterText);
     }
+  }
+
+  fetchIfNeeded() {
+    // const { entities } = this.props;
+
+    // if (entities.shouldLoad) {
+    //   this.props.fetchEntities();
+    // }
   }
 
   onZoom(factor: number) {
@@ -375,7 +389,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
   }
 
   render() {
-    const { config, entityManager, intl, layout, viewport, writeable } = this.props;
+    const { config, entityManager, intl, layout, model, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, settingsDialogOpen, tableView, vertexMenuSettings } = this.state;
     const selectedEntities = entityManager.getEntities(layout.getSelectedEntityIds());
 
@@ -389,6 +403,8 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
       writeable,
       interactionMode
     };
+
+    console.log('in net diagram, model is', model)
 
     const actions = {
       addVertex: this.addVertex,
@@ -463,8 +479,8 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
               isOpen={interactionMode === modes.VERTEX_CREATE}
               onSubmit={this.onVertexCreate}
               toggleDialog={this.setInteractionMode}
-              schema={entityManager.model.getSchema('Person')}
-              model={entityManager.model}
+              schema={model.getSchema('Person')}
+              model={model}
               fetchEntitySuggestions={entityManager.hasSuggest
                 ? (queryText: string, schemata?: Array<Schema>) => entityManager.getEntitySuggestions(false, queryText, schemata)
                 : undefined
@@ -503,4 +519,29 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
   }
 }
 
-export const NetworkDiagram = injectIntl(NetworkDiagramBase);
+// export const NetworkDiagram = injectIntl(NetworkDiagram);
+
+const mapStateToProps = (state: any, ownProps: INetworkDiagramProps) => {
+  console.log('in map state', state, ownProps);
+  const { entityContext } = ownProps;
+  return ({
+    model: entityContext.selectModel(state),
+    entities: entityContext.selectEntities(state)
+  });
+}
+
+const mapDispatchToProps = (dispatch: any, ownProps: INetworkDiagramProps) => {
+  console.log('in dispatch', dispatch, ownProps);
+  const { entityContext } = ownProps;
+
+  return ({
+    fetchEntities: () => console.log('fetching')
+  })
+}
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+export const NetworkDiagram = connector(
+  injectIntl(NetworkDiagramBase)
+);

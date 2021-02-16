@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { IWrappedElementProps } from 'embed/common';
 import { GraphConfig, GraphLayout, Viewport, NetworkDiagram } from 'NetworkDiagram';
 
@@ -46,13 +47,14 @@ export default class NetworkDiagramWrapper extends React.Component <IWrappedElem
   }
 
   render() {
-    const { entityManager, writeable } = this.props;
+    const { entityContext, entityManager, writeable } = this.props;
     const { layout, viewport } = this.state;
 
     return (
       <NetworkDiagram
         config={config}
         entityManager={entityManager}
+        entityContext={entityContext}
         layout={layout}
         viewport={viewport}
         updateLayout={this.updateLayout}
