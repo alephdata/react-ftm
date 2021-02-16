@@ -13,17 +13,11 @@ interface INetworkDiagramState {
 export default class NetworkDiagramWrapper extends React.Component <IWrappedElementProps, INetworkDiagramState> {
   constructor(props: IWrappedElementProps) {
     super(props)
+    const { layoutData } = props;
 
-    if (props.layoutData) {
-      this.state = {
-        layout: GraphLayout.fromJSON(config, props.layoutData.layout),
-        viewport: Viewport.fromJSON(config, props.layoutData.viewport),
-      }
-    } else {
-      this.state = {
-        layout: new GraphLayout(config),
-        viewport: new Viewport(config)
-      }
+    this.state = {
+      layout: layoutData?.layout ? GraphLayout.fromJSON(config, layoutData.layout) : new GraphLayout(config),
+      viewport: layoutData?.viewport ? Viewport.fromJSON(config, layoutData.viewport) : new Viewport(config),
     }
 
     this.updateLayout = this.updateLayout.bind(this);
