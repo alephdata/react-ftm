@@ -13,20 +13,14 @@ export interface IRenderEmbedProps {
   id: string
   type: string
   data?: any
-  dataURL?: string
   config?: IRenderEmbedConfig
 }
 
 export const renderEmbed = async (props: IRenderEmbedProps) => {
-  const { id, type, data, dataURL, config } = props;
-  let embedData;
+  const { id, type, data, config } = props;
 
-  if (data) {
-    embedData = data;
-  } else if (dataURL) {
-    embedData = await fetchExternalData(dataURL);
-  } else {
-    console.error('React-FTM Embed Error: no data or dataUrl provided');
+  if (!data) {
+    console.error('React-FTM Embed Error: no data provided');
     return;
   }
 
@@ -39,7 +33,7 @@ export const renderEmbed = async (props: IRenderEmbedProps) => {
 
   ReactDOM.render(
     <div {...config?.containerProps}>
-      <EmbeddedElement id={id} data={embedData} config={config} type={type} />
+      <EmbeddedElement id={id} data={data} config={config} type={type} />
     </div>,
     domElem
   );
