@@ -1,11 +1,12 @@
 import React from 'react';
 import { IntlProvider } from 'react-intl';
+import { connect } from 'react-redux';
 import translations from 'translations/translations.json';
 
 export function withTranslator<T>(
   WrappedComponent: React.ComponentType<T>
 ) {
-  return class extends React.Component<any> {
+  const Component = class extends React.Component<any> {
     render() {
       const { locale, ...rest } = this.props;
 
@@ -15,13 +16,19 @@ export function withTranslator<T>(
 
       return (
         <IntlProvider
-          locale={modifiedLocale || "en"}
-          key={locale || "en"}
-          messages={translations[locale || "en"]}
+          locale={modifiedLocale}
+          key={locale}
+          messages={translations[locale]}
         >
           <WrappedComponent {...(rest as T)} />
         </IntlProvider>
       );
     }
   };
+
+  return connect(mapStateToProps)(Component);
 }
+
+const mapStateToProps = (state: any, ownProps: any) => ({
+  locale: ownProps.entityContext?.selectLocale(state) || "en",
+});

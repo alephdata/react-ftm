@@ -12,7 +12,6 @@ import { matchText } from 'utils';
 
 
 export interface IEntityManagerProps {
-  model?: Model,
   entities: Array<IEntityDatum>
   namespace?: Namespace,
   createEntity?: (entity: IEntityDatum) => Entity,
@@ -24,7 +23,6 @@ export interface IEntityManagerProps {
 }
 
 export class EntityManager {
-  public readonly model: Model
   public readonly namespace?: Namespace
   public readonly hasExpand: boolean = false
   public readonly hasSuggest: boolean = false
@@ -33,14 +31,11 @@ export class EntityManager {
 
   constructor(props?: IEntityManagerProps) {
     if (props) {
-      const { model, namespace, ...rest } = props;
-      this.model = model || new Model(defaultModel)
+      const { namespace, ...rest } = props;
       this.namespace = namespace
       this.overload = rest;
       this.hasExpand = this.overload.expandEntity !== undefined;
       this.hasSuggest = this.overload.getEntitySuggestions !== undefined;
-    } else {
-      this.model = new Model(defaultModel);
     }
 
     this.getEntity = this.getEntity.bind(this);
@@ -50,13 +45,14 @@ export class EntityManager {
   }
 
   createEntity(entityData: any): Entity {
+    const model = new Model(defaultModel);
     let entity: Entity;
     if (entityData.id) {
-      entity = this.model.getEntity(entityData);
+      entity = model.getEntity(entityData);
     } else {
       const { properties, schema } = entityData;
 
-      entity = this.model.createEntity(schema, this.namespace);
+      entity = model.createEntity(schema, this.namespace);
 
       if (properties) {
         Object.entries(properties).forEach(([prop, value]: [string, any]) => {
@@ -170,8 +166,9 @@ export class EntityManager {
 
   static fromJSON(props: any, entitiesData: Array<IEntityDatum>): EntityManager {
     const entityManager = new EntityManager(props);
+    const model = new Model(defaultModel);
 
-    const entities = entitiesData.map((entityDatum: IEntityDatum) => new Entity(entityManager.model, entityDatum));
+    const entities = entitiesData.map((entityDatum: IEntityDatum) => new Entity(model, entityDatum));
 
     entityManager.addEntities(entities);
 

@@ -7,7 +7,6 @@ const config = new GraphConfig({ editorTheme: "light", toolbarPosition: 'top' })
 
 interface INetworkDiagramState {
   layout: GraphLayout,
-  locale?: string,
   viewport: Viewport
 }
 
@@ -59,7 +58,6 @@ export default class NetworkDiagramWrapper extends React.Component <IWrappedElem
         viewport={viewport}
         updateLayout={this.updateLayout}
         updateViewport={this.updateViewport}
-        locale="en"
         writeable={writeable}
       />
     )

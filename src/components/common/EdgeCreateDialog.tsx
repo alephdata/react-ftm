@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { defineMessages, WrappedComponentProps } from 'react-intl';
 import { FormGroup, Intent, Button } from '@blueprintjs/core'
-import { Entity, Schema } from '@alephdata/followthemoney'
+import { Entity, Model, Schema } from '@alephdata/followthemoney'
 
 import { EdgeTypeSelect, EntitySelect } from 'editors'
 import { EdgeType } from 'types'
-import { Dialog, EntityManager } from 'components/common'
+import { Dialog } from 'components/common'
 
 const messages = defineMessages({
   add_link: {
@@ -41,7 +41,7 @@ interface IEdgeCreateDialogProps extends WrappedComponentProps {
   toggleDialog: () => any
   onSubmit: (source: Entity, target: Entity, type: EdgeType) => void
   fetchEntitySuggestions: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>,
-  entityManager: EntityManager
+  model: Model
 }
 
 interface IEdgeCreateDialogState {
@@ -64,7 +64,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   constructor(props: any) {
     super(props)
 
-    this.types = EdgeType.getAll(props.entityManager.model)
+    this.types = EdgeType.getAll(props.model)
 
     this.onSelectSource = this.onSelectSource.bind(this)
     this.onSelectTarget = this.onSelectTarget.bind(this)
@@ -192,9 +192,9 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   }
 
   async fetchSuggestions(query: string) {
-    const { entityManager, fetchEntitySuggestions } = this.props;
+    const { fetchEntitySuggestions, model } = this.props;
 
-    const schemata = entityManager.model.getSchemata()
+    const schemata = model.getSchemata()
       .filter((schema: Schema) => schema.isThing() && !schema.generated && !schema.abstract)
 
     return await fetchEntitySuggestions(query, schemata);

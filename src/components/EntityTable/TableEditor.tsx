@@ -1,4 +1,6 @@
 import React from 'react';
+import { compose } from 'redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { defineMessages, injectIntl } from 'react-intl';
 import Datasheet from 'react-datasheet';
 import difference from 'lodash/difference';
@@ -64,12 +66,12 @@ interface ITableEditorState {
   visibleProps: Array<FTMProperty>
 }
 
-class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorState> {
+class TableEditorBase extends React.Component<ITableEditorProps & PropsFromRedux, ITableEditorState> {
   private keyDownListener: any;
   ref: React.RefObject<any>
 
 
-  constructor(props: ITableEditorProps) {
+  constructor(props: ITableEditorProps & PropsFromRedux) {
     super(props);
 
     this.state = {
@@ -369,7 +371,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 
   renderEditor = ({ cell, onCommit, onChange, onRevert }: Datasheet.DataEditorProps<CellData, any>) => {
-    const { entityManager, fetchEntitySuggestions, schema } = this.props;
+    const { entityManager, fetchEntitySuggestions, model, schema } = this.props;
     const { entity, property } = cell.data;
 
     if (!property) return null;
@@ -381,7 +383,7 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
 
     return (
       <PropertyEditor
-        entity={entity || new FTMEntity(entityManager.model, { schema, id: `${Math.random()}` })}
+        entity={entity || new FTMEntity(model, { schema, id: `${Math.random()}` })}
         property={property}
         onChange={onChange}
         onSubmit={(entity: FTMEntity) => {
@@ -610,4 +612,17 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
   }
 }
 
-export const TableEditor = injectIntl(TableEditorBase);
+const mapStateToProps = (state: any, ownProps: ITableEditorProps) => {
+  console.log('in map state', state, ownProps);
+  const { entityContext } = ownProps;
+  return ({
+    model: entityContext.selectModel(state),
+  });
+}
+
+const connector = connect(mapStateToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+export const TableEditor = connector(
+  injectIntl(TableEditorBase)
+);

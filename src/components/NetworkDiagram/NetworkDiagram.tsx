@@ -44,7 +44,6 @@ const messages = defineMessages({
 
 export interface INetworkDiagramProps extends WrappedComponentProps {
   config: GraphConfig,
-  locale?: string
   entityManager: EntityManager
   entityContext: IEntityContext
   layout: GraphLayout,
@@ -501,6 +500,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
               isOpen={settingsDialogOpen}
               settings={layout.settings}
               toggleDialog={this.toggleSettingsDialog}
+              model={model}
             />
             <EdgeCreateDialog
               source={selectedEntities?.[0]}
@@ -508,7 +508,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
               isOpen={interactionMode === modes.EDGE_CREATE}
               toggleDialog={this.setInteractionMode}
               onSubmit={this.onEdgeCreate}
-              entityManager={entityManager}
+              model={model}
               fetchEntitySuggestions={(queryText: string, schemata?: Array<Schema>) => entityManager.getEntitySuggestions(true, queryText, schemata)}
               intl={intl}
             />
@@ -518,8 +518,6 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     );
   }
 }
-
-// export const NetworkDiagram = injectIntl(NetworkDiagram);
 
 const mapStateToProps = (state: any, ownProps: INetworkDiagramProps) => {
   console.log('in map state', state, ownProps);

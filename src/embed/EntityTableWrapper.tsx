@@ -2,6 +2,7 @@ import React from 'react'
 import { IWrappedElementProps } from 'embed/common';
 import { EntityTable } from 'components/EntityTable';
 
+
 interface IEntityTableState {
   selection: Array<string>
 }
@@ -27,10 +28,11 @@ export default class EntityTableWrapper extends React.Component <IWrappedElement
   }
 
   render() {
-    const { entityManager, onUpdate, writeable } = this.props;
+    const { entityContext, entityManager, onUpdate, writeable } = this.props;
     return (
       <EntityTable
         entityManager={entityManager}
+        entityContext={entityContext}
         writeable={writeable}
         updateFinishedCallback={() => onUpdate()}
         selection={this.state.selection}

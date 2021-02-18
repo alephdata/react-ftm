@@ -1,6 +1,6 @@
 import * as React from 'react';
 import sortBy from 'lodash/sortBy'
-import { PropertyType } from '@alephdata/followthemoney';
+import { Model, PropertyType } from '@alephdata/followthemoney';
 import { defineMessages } from 'react-intl';
 import { Intent, FormGroup, Checkbox, Dialog, Button } from '@blueprintjs/core'
 
@@ -30,6 +30,7 @@ const messages = defineMessages({
 
 interface ISettingsDialogProps {
   isOpen: boolean
+  model: Model
   toggleDialog: (settings?: ISettingsData) => void
   settings: Settings
 }
@@ -82,11 +83,11 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
   }
 
   render() {
-    const { entityManager, intl } = this.context;
-    const { isOpen, toggleDialog } = this.props;
+    const { intl } = this.context;
+    const { isOpen, model, toggleDialog } = this.props;
     const { pivotTypes } = this.state;
 
-    const matchableTypes = Object.values(entityManager.model.types as Array<PropertyType>)
+    const matchableTypes = Object.values(model.types)
       .filter((t:PropertyType) => t.matchable);
     const typeOptions = sortBy(matchableTypes, ['label']);
 

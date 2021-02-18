@@ -1,4 +1,6 @@
 import React from 'react';
+import { compose } from 'redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { defineMessages, injectIntl } from 'react-intl';
 import { Button, Tab, Tabs } from "@blueprintjs/core";
 import { Schema as FTMSchema, Entity } from "@alephdata/followthemoney";
@@ -29,8 +31,8 @@ interface IEntityTableState {
   sort: SortType | null
 }
 
-class EntityTableBase extends React.Component<IEntityTableProps, IEntityTableState> {
-  constructor(props: IEntityTableProps) {
+class EntityTableBase extends React.Component<IEntityTableProps & PropsFromRedux, IEntityTableState> {
+  constructor(props: IEntityTableProps & PropsFromRedux) {
     super(props);
 
     const schemata = this.getSchemata();
@@ -100,7 +102,7 @@ class EntityTableBase extends React.Component<IEntityTableProps, IEntityTableSta
   }
 
   render() {
-    const { entityManager, intl, isPending, onSelectionChange, selection, updateFinishedCallback, visitEntity, writeable } = this.props;
+    const { entityContext, entityManager, intl, isPending, model, onSelectionChange, selection, updateFinishedCallback, visitEntity, writeable } = this.props;
     const { activeSchema, sort, schemata } = this.state;
 
     return (
@@ -124,6 +126,7 @@ class EntityTableBase extends React.Component<IEntityTableProps, IEntityTableSta
                 updateSelection={onSelectionChange}
                 writeable={writeable}
                 entityManager={entityManager}
+                entityContext={entityContext}
                 fetchEntitySuggestions={(queryText: string, schemata?: Array<FTMSchema>) => entityManager.getEntitySuggestions(true, queryText, schemata)}
                 updateFinishedCallback={updateFinishedCallback}
                 visitEntity={visitEntity}
@@ -135,7 +138,7 @@ class EntityTableBase extends React.Component<IEntityTableProps, IEntityTableSta
         {writeable && (
           <div className="TableView__schemaAdd">
             <SchemaSelect
-              model={entityManager.model}
+              model={model}
               onSelect={schema => this.addSchema(schema)}
               optionsFilter={(schema => !schemata.includes(schema))}
             >
@@ -151,4 +154,17 @@ class EntityTableBase extends React.Component<IEntityTableProps, IEntityTableSta
   }
 }
 
-export const EntityTable = injectIntl(EntityTableBase);
+const mapStateToProps = (state: any, ownProps: IEntityTableProps) => {
+  console.log('in map state', state, ownProps);
+  const { entityContext } = ownProps;
+  return ({
+    model: entityContext.selectModel(state),
+  });
+}
+
+const connector = connect(mapStateToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+export const EntityTable = connector(
+  injectIntl(EntityTableBase)
+);
