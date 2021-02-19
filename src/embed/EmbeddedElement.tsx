@@ -1,17 +1,15 @@
 import React from 'react'
-import { createReducer } from 'redux-act';
-import { combineReducers, createStore } from 'redux';
-import { Provider } from 'react-redux';
 import { defaultModel, Model } from '@alephdata/followthemoney'
 
-import { LocalStorageEntityContext } from 'contexts/EntityContext';
 import NetworkDiagramWrapper from 'embed/NetworkDiagramWrapper';
 import EntityTableWrapper from 'embed/EntityTableWrapper';
 // import HistogramWrapper from 'embed/HistogramWrapper';
 
+import { IEntityContext } from 'contexts/EntityContext';
 import { EntityManager } from 'components/common'
 
 export interface IEmbeddedElementProps {
+  entityContext: IEntityContext
   id: string
   data: any
   type: string
@@ -44,7 +42,7 @@ export class EmbeddedElement extends React.Component <IEmbeddedElementProps> {
   }
 
   render() {
-    const { config, data, type } = this.props;
+    const { config, data, entityContext, type } = this.props;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { entities, ...rest } = data;
 
@@ -61,24 +59,14 @@ export class EmbeddedElement extends React.Component <IEmbeddedElementProps> {
         break;
     }
 
-    const store = createStore(
-      combineReducers({
-        model: createReducer({}, new Model(defaultModel)),
-        locale: createReducer({}, 'en'),
-        entities: createReducer({}, data.entities)
-      }),
-    );
-
     return (
-      <Provider store={store} >
-        <Element
-          entityManager={this.entityManager}
-          entityContext={new LocalStorageEntityContext()}
-          onUpdate={this.onUpdate}
-          writeable={config?.writeable}
-          layoutData={rest}
-        />
-      </Provider>
+      <Element
+        entityManager={this.entityManager}
+        entityContext={entityContext}
+        onUpdate={this.onUpdate}
+        writeable={config?.writeable}
+        layoutData={rest}
+      />
     )
   }
 }

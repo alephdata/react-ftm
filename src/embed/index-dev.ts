@@ -1,5 +1,5 @@
 import 'index.scss';
-import { renderEmbed } from 'embed/renderEmbed';
+import { renderDev } from 'embed/renderDev';
 import { fetchLocalData } from 'embed/util';
 
 const id = 'dev';
@@ -10,6 +10,6 @@ const config = {
 };
 
 
-renderEmbed({ id, type: 'NetworkDiagram', data, config });
+renderDev({ id, type: 'NetworkDiagram', data, config });
 
 // renderEmbed({ id, type: 'EntityTable', data, config });

@@ -1,30 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createReducer } from 'redux-act';
-import { combineReducers, createStore } from 'redux';
+import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import {
-  defaultModel,
-  Model,
-} from '@alephdata/followthemoney';
 
 import { LocalStorageEntityContext } from 'contexts/LocalStorageEntityContext';
+import { createLocalStorageReducer } from 'reducers/localStorageReducer'
 import { EmbeddedElement } from 'embed/EmbeddedElement';
 import { fetchExternalData } from 'embed/util';
 
-export interface IRenderEmbedConfig {
+export interface IRenderDevConfig {
   writeable?: boolean
   containerProps?: any
 }
 
-export interface IRenderEmbedProps {
+export interface IRenderDevProps {
   id: string
   type: string
   data?: any
-  config?: IRenderEmbedConfig
+  config?: IRenderDevConfig
 }
 
-export const renderEmbed = (props: IRenderEmbedProps) => {
+export const renderDev = (props: IRenderDevProps) => {
   const { id, type, data, config } = props;
 
   if (!data) {
@@ -38,12 +34,9 @@ export const renderEmbed = (props: IRenderEmbedProps) => {
     domElem.setAttribute('id', id);
     document.body.appendChild(domElem);
   }
+
   const store = createStore(
-    combineReducers({
-      model: createReducer({}, new Model(defaultModel)),
-      locale: createReducer({}, 'en'),
-      entities: createReducer({}, data.entities)
-    }),
+    createLocalStorageReducer(data)
   );
   const entityContext = new LocalStorageEntityContext();
 

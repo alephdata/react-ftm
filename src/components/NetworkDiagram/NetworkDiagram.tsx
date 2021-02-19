@@ -2,7 +2,7 @@ import * as React from 'react'
 import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import c from 'classnames';
-import { Entity, Schema } from "@alephdata/followthemoney";
+import { Entity, IEntityDatum, Model, Schema } from "@alephdata/followthemoney";
 import { Button, ButtonGroup, Tooltip } from '@blueprintjs/core';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 
@@ -208,7 +208,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   }
 
   async onVertexCreate(entityData: any) {
-    const { entityManager, layout, viewport } = this.props;
+    const { entityManager, layout, model, viewport } = this.props;
     const { vertexCreateOptions } = this.state;
 
     const entity = entityManager.createEntity(entityData);
@@ -218,6 +218,9 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     layout.selectByEntityIds([entity.id]);
 
     const vertex = layout.getVertexByEntity(entity)
+
+    console.log('calling createEntity');
+    this.props.createEntity(model, entityData);
 
     if (vertex) {
       if (vertexCreateOptions?.initialPosition) {
@@ -530,10 +533,11 @@ const mapStateToProps = (state: any, ownProps: INetworkDiagramProps) => {
 
 const mapDispatchToProps = (dispatch: any, ownProps: INetworkDiagramProps) => {
   console.log('in dispatch', dispatch, ownProps);
-  const { entityContext } = ownProps;
+  const { createEntity } = ownProps.entityContext;
 
   return ({
-    fetchEntities: () => console.log('fetching')
+    createEntity: (model: Model, entityData: IEntityDatum) => dispatch(createEntity(model, entityData))
+
   })
 }
 
