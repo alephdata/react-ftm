@@ -507,9 +507,8 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
               isOpen={interactionMode === modes.EDGE_CREATE}
               toggleDialog={this.setInteractionMode}
               onSubmit={this.onEdgeCreate}
-              model={model}
-              fetchEntitySuggestions={(queryText: string, schemata?: Array<Schema>) => entityManager.getEntitySuggestions(true, queryText, schemata)}
               intl={intl}
+              entityContext={entityContext}
             />
           </>
         )}

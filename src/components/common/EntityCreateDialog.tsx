@@ -147,11 +147,17 @@ class EntityCreateDialogBase extends React.Component<IEntityCreateDialogProps & 
                 <EntitySuggest
                   onSubmit={this.onSelectSubmit}
                   onQueryChange={this.onQueryChange}
-                  placeholder={placeholder}
                   queryText={inputText}
-                  schema={schema}
-                  noResultsText={intl.formatMessage(messages.no_results)}
+                  schemata={[schema]}
                   entityContext={entityContext}
+                  entitySelectProps={{
+                    placeholder,
+                    noResultsText: intl.formatMessage(messages.no_results),
+                    allowMultiple: true,
+                    popoverProps: { usePortal: false },
+                    inputProps: { large: true },
+                    values: []
+                  }}
                 />
               )}
               {!hasSuggest && (

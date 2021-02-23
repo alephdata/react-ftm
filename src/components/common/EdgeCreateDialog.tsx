@@ -1,9 +1,12 @@
 import * as React from 'react'
-import { defineMessages, WrappedComponentProps } from 'react-intl';
+import { compose } from 'redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { FormGroup, Intent, Button } from '@blueprintjs/core'
-import { Entity, Model, Schema } from '@alephdata/followthemoney'
+import { Entity, Model, Schema, Values } from '@alephdata/followthemoney'
 
-import { EdgeTypeSelect, EntitySelect } from 'editors'
+import { IEntityContext } from 'contexts/EntityContext';
+import { EdgeTypeSelect, EntitySuggest } from 'editors'
 import { EdgeType } from 'types'
 import { Dialog } from 'components/common'
 
@@ -40,28 +43,27 @@ interface IEdgeCreateDialogProps extends WrappedComponentProps {
   isOpen: boolean,
   toggleDialog: () => any
   onSubmit: (source: Entity, target: Entity, type: EdgeType) => void
-  fetchEntitySuggestions: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>,
-  model: Model
+  entityContext: IEntityContext
 }
 
 interface IEdgeCreateDialogState {
+  sourceQueryText: string
+  targetQueryText: string
   source?: Entity
   target?: Entity
-  sourceSuggestions: any
-  targetSuggestions: any
   type?: EdgeType
   isProcessing: boolean
 }
 
-export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IEdgeCreateDialogState> {
+class EdgeCreateDialogBase extends React.Component<IEdgeCreateDialogProps & PropsFromRedux, IEdgeCreateDialogState> {
   types: EdgeType[] = []
   state: IEdgeCreateDialogState = {
     isProcessing: false,
-    sourceSuggestions: { isPending: false, results: [] },
-    targetSuggestions: { isPending: false, results: [] },
+    sourceQueryText: '',
+    targetQueryText: ''
   }
 
-  constructor(props: any) {
+  constructor(props: IEdgeCreateDialogProps & PropsFromRedux) {
     super(props)
 
     this.types = EdgeType.getAll(props.model)
@@ -71,7 +73,6 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     this.onChangeType = this.onChangeType.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.onReverse = this.onReverse.bind(this)
-
   }
 
   componentDidUpdate(prevProps: IEdgeCreateDialogProps) {
@@ -179,30 +180,9 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     }
   }
 
-  async fetchSourceSuggestions(query: string) {
-    this.setState({ sourceSuggestions: { isProcessing: true, results: [] } });
-    const results = await this.fetchSuggestions(query);
-    this.setState({ sourceSuggestions: { isProcessing: false, results } });
-  }
-
-  async fetchTargetSuggestions(query: string) {
-    this.setState({ targetSuggestions: { isProcessing: true, results: [] } });
-    const results = await this.fetchSuggestions(query);
-    this.setState({ targetSuggestions: { isProcessing: false, results } });
-  }
-
-  async fetchSuggestions(query: string) {
-    const { fetchEntitySuggestions, model } = this.props;
-
-    const schemata = model.getSchemata()
-      .filter((schema: Schema) => schema.isThing() && !schema.generated && !schema.abstract)
-
-    return await fetchEntitySuggestions(query, schemata);
-  }
-
   render() {
-    const { intl, isOpen, toggleDialog } = this.props
-    const { isProcessing, source, target, type, sourceSuggestions, targetSuggestions } = this.state
+    const { entityContext, intl, isOpen, suggestionSchemata, toggleDialog } = this.props
+    const { isProcessing, source, target, type, sourceQueryText, targetQueryText } = this.state
     const types = this.getTypes()
 
     return (
@@ -219,13 +199,17 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
             <div style={{flex: 1, display: 'flex', flexFlow: 'row'}}>
               <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
                 <FormGroup label={intl.formatMessage(messages.source)} helperText={this.getSourceLabel()}>
-                  <EntitySelect
+                  <EntitySuggest
                     onSubmit={(selected: Array<Entity>) => this.onSelectSource(selected?.[0])}
-                    values={source ? [source] : []}
-                    allowMultiple={false}
-                    isFetching={sourceSuggestions.isPending}
-                    entitySuggestions={sourceSuggestions.results}
-                    onQueryChange={(query: string) => this.fetchSourceSuggestions(query)}
+                    onQueryChange={(query: string) => this.setState({ sourceQueryText: query })}
+                    queryText={sourceQueryText}
+                    schemata={suggestionSchemata}
+                    entityContext={entityContext}
+                    suggestLocalEntities={true}
+                    entitySelectProps={{
+                      values: source ? [source] : [],
+                      allowMultiple: false
+                    }}
                   />
                 </FormGroup>
               </div>
@@ -241,13 +225,17 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
               </div>
               <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
                 <FormGroup label={intl.formatMessage(messages.target)} helperText={this.getTargetLabel()}>
-                  <EntitySelect
+                  <EntitySuggest
                     onSubmit={(selected: Array<Entity>) => this.onSelectTarget(selected?.[0])}
-                    values={target ? [target] : []}
-                    allowMultiple={false}
-                    isFetching={targetSuggestions.isPending}
-                    entitySuggestions={targetSuggestions.results}
-                    onQueryChange={(query: string) => this.fetchTargetSuggestions(query)}
+                    onQueryChange={(query: string) => this.setState({ targetQueryText: query })}
+                    queryText={targetQueryText}
+                    schemata={suggestionSchemata}
+                    entityContext={entityContext}
+                    suggestLocalEntities={true}
+                    entitySelectProps={{
+                      values: target ? [target] : [],
+                      allowMultiple: false
+                    }}
                   />
                 </FormGroup>
               </div>
@@ -277,3 +265,20 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     );
   }
 }
+
+const mapStateToProps = (state: any, ownProps: IEdgeCreateDialogProps) => {
+  const { entityContext } = ownProps;
+  const model = entityContext.selectModel(state);
+  return ({
+    model,
+    suggestionSchemata: model.getSchemata()
+      .filter((schema: Schema) => schema.isThing() && !schema.generated && !schema.abstract)
+  });
+}
+
+const connector = connect(mapStateToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+export const EdgeCreateDialog = connector(
+  injectIntl(EdgeCreateDialogBase)
+);

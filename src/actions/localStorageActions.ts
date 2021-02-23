@@ -3,6 +3,7 @@ import {
   Entity,
   Model,
   IEntityDatum,
+  Schema,
 } from '@alephdata/followthemoney';
 
 
@@ -28,3 +29,5 @@ export const createEntity = createAction('CREATE_ENTITY', (model: Model, entityD
 export const updateEntity = createAction('UPDATE_ENTITY', (entityData: IEntityDatum) => entityData)
 
 export const deleteEntity = createAction('DELETE_ENTITY', (entityId: string) => entityId)
+
+export const queryEntities = createAction('QUERY_ENTITIES', (queryText: string, schemata?: Array<Schema>) => ({ queryText, schemata }))

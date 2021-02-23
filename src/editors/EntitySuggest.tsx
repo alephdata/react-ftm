@@ -8,13 +8,13 @@ import { EntitySelect } from 'editors'
 import { Dialog } from 'components/common'
 
 interface IEntitySuggestProps  {
-  onSubmit: (values: Values) => void
+  onSubmit: (values: Array<Entity>) => void
   onQueryChange: (queryText: string) => void
-  placeholder: string
-  noResultsText: string
   queryText: string
-  schema: Schema
+  schemata: Array<Schema>
   entityContext: IEntityContext
+  entitySelectProps: any
+  suggestLocalEntities?: boolean
 }
 
 export class EntitySuggest extends React.Component<IEntitySuggestProps & PropsFromRedux> {
@@ -27,49 +27,52 @@ export class EntitySuggest extends React.Component<IEntitySuggestProps & PropsFr
   }
 
   fetchIfNeeded() {
-    const { queryEntitySuggest, queryText, schema, suggestions } = this.props;
+    const { fetchSuggestions, queryText, schemata, suggestions } = this.props;
 
-    if (!!queryEntitySuggest && suggestions.shouldLoad) {
-      queryEntitySuggest(queryText, [schema]);
+    if (!!fetchSuggestions && suggestions?.shouldLoad) {
+      fetchSuggestions(queryText, schemata);
     }
   }
 
   render() {
-    const { onQueryChange, onSubmit, placeholder, noResultsText, suggestions } = this.props;
+    const { onQueryChange, onSubmit, entitySelectProps, suggestions } = this.props;
+
+    if (!suggestions) { return null }
 
     return (
       <EntitySelect
         onSubmit={onSubmit}
-        values={[]}
-        allowMultiple={true}
         isFetching={suggestions.isPending}
-        entitySuggestions={suggestions}
+        entitySuggestions={suggestions.results}
         onQueryChange={onQueryChange}
-        popoverProps={{ usePortal: false }}
-        inputProps={{ large: true }}
-        placeholder={placeholder}
-        noResultsText={noResultsText}
+        {...entitySelectProps}
       />
     );
   }
 }
 
 const mapStateToProps = (state: any, ownProps: IEntitySuggestProps) => {
-  console.log('in map state', state, ownProps);
-  const { entityContext, queryText, schema } = ownProps;
-  const { selectEntitySuggestResult } = entityContext;
-  if (!selectEntitySuggestResult) { return ({}) }
+  const { entityContext, queryText, schemata } = ownProps;
+  const { selectEntitiesResult } = entityContext;
   return ({
-    suggestions: selectEntitySuggestResult(state, queryText, [schema])
+    suggestions: selectEntitiesResult(state, queryText, schemata)
   });
 }
 
 const mapDispatchToProps = (dispatch: any, ownProps: IEntitySuggestProps) => {
-  const { queryEntitySuggest } = ownProps.entityContext;
-  if (!queryEntitySuggest) { return ({}) }
-  return ({
-    queryEntitySuggest: (queryText: string, schemata?: Array<Schema>) => dispatch(queryEntitySuggest(queryText, schemata))
-  })
+  const { entityContext, suggestLocalEntities } = ownProps;
+  const { queryEntities, queryEntitySuggest } = entityContext;
+  if (suggestLocalEntities) {
+    return ({
+      fetchSuggestions: (queryText: string, schemata?: Array<Schema>) => dispatch(queryEntities(queryText, schemata))
+    })
+  } else if (!!queryEntitySuggest) {
+    return ({
+      fetchSuggestions: (queryText: string, schemata?: Array<Schema>) => dispatch(queryEntitySuggest(queryText, schemata))
+    })
+  } else {
+    return {}
+  }
 }
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
