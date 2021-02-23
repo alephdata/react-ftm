@@ -3,6 +3,7 @@ import { withTranslator } from 'utils';
 import ColorPicker from './ColorPicker';
 import EdgeTypeSelect from './EdgeTypeSelect';
 import EntitySelectBase from './EntitySelect';
+import EntitySuggest from './EntitySuggest';
 import EnumValueSelectBase from './EnumValueSelect';
 import PropertyEditorBase from './PropertyEditor';
 import PropertySelectBase from './PropertySelect';
@@ -20,6 +21,7 @@ export {
   ColorPicker,
   EdgeTypeSelect,
   EntitySelect,
+  EntitySuggest,
   EnumValueSelect as CountrySelect,
   EnumValueSelect as LanguageSelect,
   EnumValueSelect as TopicSelect,

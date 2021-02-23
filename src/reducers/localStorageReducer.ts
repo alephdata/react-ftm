@@ -29,6 +29,6 @@ export const createLocalStorageReducer = (data: any) => {
   return combineReducers({
     model: createReducer({}, new Model(defaultModel)),
     locale: createReducer({}, 'de'),
-    entities: entitiesReducer
+    entities: entitiesReducer,
   });
 }

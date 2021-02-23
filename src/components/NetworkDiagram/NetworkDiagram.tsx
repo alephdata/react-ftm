@@ -391,7 +391,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   }
 
   render() {
-    const { config, entityManager, intl, layout, model, viewport, writeable } = this.props;
+    const { config, entityContext, entityManager, intl, layout, model, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, settingsDialogOpen, tableView, vertexMenuSettings } = this.state;
     const selectedEntities = entityManager.getEntities(layout.getSelectedEntityIds());
 
@@ -482,11 +482,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
               onSubmit={this.onVertexCreate}
               toggleDialog={this.setInteractionMode}
               schema={model.getSchema('Person')}
-              model={model}
-              fetchEntitySuggestions={entityManager.hasSuggest
-                ? (queryText: string, schemata?: Array<Schema>) => entityManager.getEntitySuggestions(false, queryText, schemata)
-                : undefined
-              }
+              entityContext={entityContext}
               intl={intl}
             />
             <GroupingCreateDialog
@@ -527,7 +523,7 @@ const mapStateToProps = (state: any, ownProps: INetworkDiagramProps) => {
   const { entityContext } = ownProps;
   return ({
     model: entityContext.selectModel(state),
-    entities: entityContext.selectEntities(state)
+    entities: entityContext.selectEntities(state),
   });
 }
 
@@ -536,8 +532,7 @@ const mapDispatchToProps = (dispatch: any, ownProps: INetworkDiagramProps) => {
   const { createEntity } = ownProps.entityContext;
 
   return ({
-    createEntity: (model: Model, entityData: IEntityDatum) => dispatch(createEntity(model, entityData))
-
+    createEntity: (model: Model, entityData: IEntityDatum) => dispatch(createEntity(model, entityData)),
   })
 }
 

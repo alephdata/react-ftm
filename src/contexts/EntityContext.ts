@@ -16,4 +16,7 @@ export interface IEntityContext {
   deleteEntity: (entityId: string) => void,
 	selectEntity: (state: any, entityId: string) => Entity | null
 	selectEntities: (state: any) => Array<Entity>
+
+  queryEntitySuggest?: (queryText: string, schemata?: Array<Schema>) => void
+	selectEntitySuggestResult?: (state: any, queryText: string, schemata?: Array<Schema>) => Array<Entity>
 }

@@ -1,9 +1,12 @@
 import * as React from 'react'
-import { defineMessages, WrappedComponentProps } from 'react-intl';
+import { compose } from 'redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Alignment, Button, ControlGroup, InputGroup } from '@blueprintjs/core'
 import { Entity, Model, Schema as FTMSchema, Values } from '@alephdata/followthemoney'
 
-import { EntitySelect, SchemaSelect } from 'editors'
+import { IEntityContext } from 'contexts/EntityContext';
+import { EntitySuggest, SchemaSelect } from 'editors'
 import { Schema } from 'types';
 import { Dialog } from 'components/common'
 
@@ -29,20 +32,17 @@ interface IEntityCreateDialogProps extends WrappedComponentProps {
   onSubmit: (entityData: any) => Promise<Entity | undefined>,
   toggleDialog: () => any,
   schema: FTMSchema,
-  model: Model
-  fetchEntitySuggestions?: (queryText: string, schemata?: Array<FTMSchema>) => Promise<Entity[]>,
+  entityContext: IEntityContext
 }
 
 interface IEntityCreateDialogState {
   inputText: string,
   isProcessing: boolean,
-  isFetchingSuggestions: boolean,
   schema: FTMSchema
-  suggestions: Entity[],
 }
 
-export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps, IEntityCreateDialogState> {
-  constructor(props: any) {
+class EntityCreateDialogBase extends React.Component<IEntityCreateDialogProps & PropsFromRedux, IEntityCreateDialogState> {
+  constructor(props: IEntityCreateDialogProps & PropsFromRedux) {
     super(props);
 
     this.onQueryChange = this.onQueryChange.bind(this);
@@ -52,9 +52,7 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
 
     this.state = {
       inputText: '',
-      isFetchingSuggestions: false,
       isProcessing: false,
-      suggestions: [],
       schema: props.schema
     };
   }
@@ -69,22 +67,11 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
   onQueryChange(inputText: string) {
     if (!this.state.isProcessing) {
       this.setState({ inputText });
-      this.fetchSuggestions(inputText, [this.state.schema])
     }
   }
 
   onSchemaSelect(schema: FTMSchema) {
     this.setState({ schema });
-    this.fetchSuggestions(this.state.inputText, [schema])
-  }
-
-  async fetchSuggestions(inputText: string, schemata: Array<FTMSchema>) {
-    const { fetchEntitySuggestions } = this.props;
-    if (fetchEntitySuggestions) {
-      this.setState({ isFetchingSuggestions: true });
-      const suggestions = await fetchEntitySuggestions(inputText, schemata);
-      this.setState({ isFetchingSuggestions: false, suggestions });
-    }
   }
 
   getCaptionProperty() {
@@ -101,7 +88,7 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
       properties: captionProperty && { [captionProperty]: inputText }
     }
     await onSubmit(entityData);
-    this.setState({inputText: '', isProcessing: false, suggestions: []})
+    this.setState({inputText: '', isProcessing: false })
     this.props.toggleDialog();
   }
 
@@ -110,18 +97,19 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
     if (values && values.length) {
       this.setState({ isProcessing: true });
       await onSubmit(values[0]);
-      this.setState({inputText: '', isProcessing: false, suggestions: []})
+      this.setState({inputText: '', isProcessing: false })
       this.props.toggleDialog();
     }
   }
 
   render() {
-    const { fetchEntitySuggestions, intl, isOpen, model, toggleDialog } = this.props;
-    const { isFetchingSuggestions, isProcessing, inputText, schema, suggestions } = this.state;
+    const { intl, isOpen, model, entityContext, toggleDialog } = this.props;
+    const { isProcessing, inputText, schema } = this.state;
     const captionProperty = this.getCaptionProperty();
     const placeholder = `${schema.label} ${captionProperty}`;
     const vertexSelectText = schema ? schema.label : intl.formatMessage(messages.type_placeholder);
     const vertexSelectIcon = schema ? <Schema.Icon schema={schema} /> : 'select';
+    const hasSuggest = !!entityContext.queryEntitySuggest;
 
     return (
       <Dialog
@@ -136,7 +124,7 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
           e.preventDefault();
           e.stopPropagation();
           // only allow submit of input on enter when no suggestions are present
-          !suggestions.length && inputText.length && this.onInputSubmit()
+          !hasSuggest && inputText.length && this.onInputSubmit()
         }}>
           <div className="bp3-dialog-body">
             <ControlGroup fill>
@@ -155,21 +143,18 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
                   className="EntityCreateDialog__schema-select"
                 />
               </SchemaSelect>
-              {fetchEntitySuggestions && (
-                <EntitySelect
+              {hasSuggest && (
+                <EntitySuggest
                   onSubmit={this.onSelectSubmit}
-                  values={[]}
-                  allowMultiple={true}
-                  isFetching={isFetchingSuggestions}
-                  entitySuggestions={suggestions}
                   onQueryChange={this.onQueryChange}
-                  popoverProps={{ usePortal: false }}
-                  inputProps={{ large: true }}
                   placeholder={placeholder}
+                  queryText={inputText}
+                  schema={schema}
                   noResultsText={intl.formatMessage(messages.no_results)}
+                  entityContext={entityContext}
                 />
               )}
-              {!fetchEntitySuggestions && (
+              {!hasSuggest && (
                 <InputGroup
                   autoFocus
                   large
@@ -193,3 +178,17 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
     );
   }
 }
+
+const mapStateToProps = (state: any, ownProps: IEntityCreateDialogProps) => {
+  const { entityContext } = ownProps;
+  return ({
+    model: entityContext.selectModel(state),
+  });
+}
+
+const connector = connect(mapStateToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+export const EntityCreateDialog = connector(
+  injectIntl(EntityCreateDialogBase)
+);
