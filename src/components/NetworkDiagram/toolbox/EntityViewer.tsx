@@ -80,7 +80,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   renderProperty(property:FTMProperty){
-    const { entityManager } = this.context;
+    const { entityContext, entityManager } = this.context;
     const { entity } = this.props;
     const { currEditing } = this.state;
     const isEditable = property?.name === currEditing?.name;
@@ -104,8 +104,8 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
                 onSubmit={(entity: FTMEntity) => this.onSubmit(entity, entityData)}
                 entity={entity}
                 property={property}
-                fetchEntitySuggestions={(queryText: string, schemata?: Array<Schema>) => entityManager.getEntitySuggestions(true, queryText, schemata)}
                 resolveEntityReference={entityManager.getEntity}
+                entityContext={entityContext}
               />
             </div>
           )}

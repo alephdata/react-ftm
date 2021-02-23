@@ -53,7 +53,6 @@ interface ITableEditorProps extends IEntityTableCommonProps {
   sortColumn: (field: string) => void
   selection: Array<string>
   updateSelection: (entityIds: Array<string>, newVal: boolean) => void
-  fetchEntitySuggestions: (queryText: string, schemata?: Array<FTMSchema>) => Promise<FTMEntity[]>
 }
 
 interface ITableEditorState {
@@ -371,7 +370,7 @@ class TableEditorBase extends React.Component<ITableEditorProps & PropsFromRedux
   }
 
   renderEditor = ({ cell, onCommit, onChange, onRevert }: Datasheet.DataEditorProps<CellData, any>) => {
-    const { entityManager, fetchEntitySuggestions, model, schema } = this.props;
+    const { entityContext, entityManager, model, schema } = this.props;
     const { entity, property } = cell.data;
 
     if (!property) return null;
@@ -394,7 +393,7 @@ class TableEditorBase extends React.Component<ITableEditorProps & PropsFromRedux
           onCommit(entity.getProperty(property));
         }}
         popoverProps={{ usePortal: false }}
-        fetchEntitySuggestions={fetchEntitySuggestions}
+        entityContext={entityContext}
         resolveEntityReference={entityManager.resolveEntityReference}
       />
     );

@@ -401,12 +401,11 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
       viewport,
       updateViewport: this.updateViewport,
       entityManager,
+      entityContext,
       intl,
       writeable,
       interactionMode
     };
-
-    console.log('in net diagram, model is', model)
 
     const actions = {
       addVertex: this.addVertex,

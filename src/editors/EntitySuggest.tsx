@@ -15,6 +15,7 @@ interface IEntitySuggestProps  {
   entityContext: IEntityContext
   entitySelectProps: any
   suggestLocalEntities?: boolean
+  filterSuggestions?: (e: Entity) => boolean
 }
 
 export class EntitySuggest extends React.Component<IEntitySuggestProps & PropsFromRedux> {
@@ -35,7 +36,7 @@ export class EntitySuggest extends React.Component<IEntitySuggestProps & PropsFr
   }
 
   render() {
-    const { onQueryChange, onSubmit, entitySelectProps, suggestions } = this.props;
+    const { onQueryChange, onSubmit, entitySelectProps, filterSuggestions, suggestions } = this.props;
 
     if (!suggestions) { return null }
 
@@ -43,7 +44,7 @@ export class EntitySuggest extends React.Component<IEntitySuggestProps & PropsFr
       <EntitySelect
         onSubmit={onSubmit}
         isFetching={suggestions.isPending}
-        entitySuggestions={suggestions.results}
+        entitySuggestions={filterSuggestions ? suggestions.results.filter(filterSuggestions) : suggestions.results}
         onQueryChange={onQueryChange}
         {...entitySelectProps}
       />
@@ -54,9 +55,7 @@ export class EntitySuggest extends React.Component<IEntitySuggestProps & PropsFr
 const mapStateToProps = (state: any, ownProps: IEntitySuggestProps) => {
   const { entityContext, queryText, schemata } = ownProps;
   const { selectEntitiesResult } = entityContext;
-  return ({
-    suggestions: selectEntitiesResult(state, queryText, schemata)
-  });
+  return ({ suggestions: selectEntitiesResult(state, queryText, schemata) });
 }
 
 const mapDispatchToProps = (dispatch: any, ownProps: IEntitySuggestProps) => {

@@ -53,7 +53,7 @@ export class TableView extends React.Component<ITableViewProps> {
   }
 
   render() {
-    const { entityManager, layout, writeable } = this.context;
+    const { entityContext, entityManager, layout, writeable } = this.context;
     const { toggleTableView } = this.props;
 
     return (
@@ -73,6 +73,7 @@ export class TableView extends React.Component<ITableViewProps> {
           onClick={toggleTableView}
         />
         <EntityTable
+          entityContext={entityContext}
           entityManager={entityManager}
           visitEntity={this.visitEntity}
           selection={layout.getSelectedEntityIds()}

@@ -18,14 +18,12 @@ export interface IEntityManagerProps {
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
   expandEntity?: (entityId: string, properties?: Array<string>, limit?: number) => Promise<any>
-  getEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>,
   resolveEntityReference?: (entityId: string) => Entity | undefined,
 }
 
 export class EntityManager {
   public readonly namespace?: Namespace
   public readonly hasExpand: boolean = false
-  public readonly hasSuggest: boolean = false
   entities = new Map<string, Entity>()
   private overload: any = {}
 
@@ -35,12 +33,10 @@ export class EntityManager {
       this.namespace = namespace
       this.overload = rest;
       this.hasExpand = this.overload.expandEntity !== undefined;
-      this.hasSuggest = this.overload.getEntitySuggestions !== undefined;
     }
 
     this.getEntity = this.getEntity.bind(this);
     this.getEntities = this.getEntities.bind(this);
-    this.getEntitySuggestions = this.getEntitySuggestions.bind(this);
     this.resolveEntityReference = this.resolveEntityReference.bind(this);
   }
 
@@ -127,28 +123,6 @@ export class EntityManager {
     if (this.overload?.resolveEntityReference) {
       return this.overload.resolveEntityReference(entityId);
     }
-  }
-
-  async getEntitySuggestions(local: boolean, queryText: string, schemata?: Array<Schema>) {
-    if (local) {
-      const predicate = (e: Entity) => {
-        const schemaMatch = !schemata || e.schema.isAny(schemata);
-        const textMatch = matchText(e.getCaption() || '', queryText);
-        return schemaMatch && textMatch;
-      }
-
-      const entities = this.getEntities()
-        .filter(predicate)
-        .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
-
-      return new Promise((resolve) => resolve(entities));
-    }
-
-    if (this.overload?.getEntitySuggestions) {
-      const suggestions = await this.overload.getEntitySuggestions(queryText, schemata);
-      return suggestions.filter((entity: Entity) => !this.hasEntity(entity));
-    }
-    return [];
   }
 
   // entity changes in the reverse direction require undoing create/delete operations

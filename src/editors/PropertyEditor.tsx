@@ -1,7 +1,9 @@
 import * as React from 'react'
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity, Property, Schema, Values } from '@alephdata/followthemoney';
-import { CountrySelect, TopicSelect, EntitySelect, TextEdit } from './';
+
+import { IEntityContext } from 'contexts/EntityContext';
+import { CountrySelect, TopicSelect, EntitySuggest, TextEdit } from './';
 import { validate } from 'utils';
 
 const TAB_KEY = 9;
@@ -11,15 +13,15 @@ interface IPropertyEditorProps extends WrappedComponentProps {
   property: Property,
   onSubmit: (entity: Entity) => void
   onChange?: (values: Values) => void
-  fetchEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>
+  entityContext: IEntityContext
   resolveEntityReference?: (entityId: string) => Entity | undefined,
   popoverProps?: any
 }
 
 interface IPropertyEditorState {
+  entitiesQueryText: string
   values: Values,
   error: any | null,
-  entitySuggestions: { isPending: boolean, results: Array<Entity> }
 }
 
 class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEditorState> {
@@ -38,12 +40,10 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
     }
 
     this.state = {
-      entitySuggestions: { isPending: false, results: [] },
+      entitiesQueryText: '',
       values,
       error: null,
     };
-
-    this.fetchEntitySuggestions = this.fetchEntitySuggestions.bind(this)
   }
 
   onChange = (values: Values) => {
@@ -69,20 +69,9 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
     }
   }
 
-  async fetchEntitySuggestions(query: string) {
-    const { entity, property } = this.props;
-    if (this.props.fetchEntitySuggestions) {
-      const entityId = entity.id;
-      this.setState({ entitySuggestions: { isPending: true, results: [] }});
-      const suggestions = await this.props.fetchEntitySuggestions(query, [property.getRange()]);
-      suggestions.filter(e => e.id !== entityId);
-      this.setState({ entitySuggestions: { isPending: false, results: suggestions }});
-    }
-  }
-
   render() {
-    const { entity, intl, property, popoverProps } = this.props;
-    const { entitySuggestions, error, values } = this.state;
+    const { entity, entityContext, intl, property, popoverProps } = this.props;
+    const { entitiesQueryText, error, values } = this.state;
     const propType = property.type;
 
     const commonProps = {
@@ -97,18 +86,20 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
     } else if (propType.name === 'topic') {
       content = <TopicSelect fullList={propType.values} {...commonProps} />;
     } else if (propType.name === 'entity') {
-      const filteredSuggestions = entitySuggestions.results
-        ? entitySuggestions.results.filter(e => (e.id !== entity.id))
-        : [];
-
       content = (
-        <EntitySelect
-          {...commonProps}
-          allowMultiple={!entity.schema.isEdge}
-          values={values as Array<Entity>}
-          isFetching={entitySuggestions.isPending}
-          entitySuggestions={filteredSuggestions}
-          onQueryChange={this.fetchEntitySuggestions}
+        <EntitySuggest
+          onSubmit={this.onSubmit}
+          onQueryChange={(queryText: string) => this.setState({ entitiesQueryText: queryText })}
+          queryText={entitiesQueryText}
+          schemata={[property.getRange()]}
+          entityContext={entityContext}
+          filterSuggestions={(e: Entity) => (e.id !== entity.id)}
+          suggestLocalEntities
+          entitySelectProps={{
+            allowMultiple: !entity.schema.isEdge,
+            popoverProps,
+            values
+          }}
         />
       );
     } else {

@@ -127,7 +127,6 @@ class EntityTableBase extends React.Component<IEntityTableProps & PropsFromRedux
                 writeable={writeable}
                 entityManager={entityManager}
                 entityContext={entityContext}
-                fetchEntitySuggestions={(queryText: string, schemata?: Array<FTMSchema>) => entityManager.getEntitySuggestions(true, queryText, schemata)}
                 updateFinishedCallback={updateFinishedCallback}
                 visitEntity={visitEntity}
                 isPending={isPending}
