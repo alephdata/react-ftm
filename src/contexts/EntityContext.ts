@@ -5,12 +5,25 @@ import {
   IEntityDatum,
 	Schema
 } from '@alephdata/followthemoney';
-// import { selectResult } from 'contexts/util';
 
-type EntityResultType = {
-  isPending: boolean
+type ResultType = {
   shouldLoad: boolean
+  isPending: boolean
+  isError: boolean
+}
+
+type EntityResultType = ResultType & {
   results: Array<Entity>
+}
+
+type EntityExpandObjectType = {
+  count: number
+  property: string
+  entities: Array<Entity>
+}
+
+type EntityExpandResultType = ResultType & {
+  results: Array<EntityExpandObjectType>
 }
 
 export interface IEntityContext {
@@ -26,4 +39,7 @@ export interface IEntityContext {
   queryEntities: (queryText: string, schemata?: Array<Schema>) => void
   queryEntitySuggest?: (queryText: string, schemata?: Array<Schema>) => void
 	selectEntitiesResult: (state: any, queryText: string, schemata?: Array<Schema>) => EntityResultType
+
+  queryEntityExpand?: (entityId: string, properties?: Array<string>, limit?: number) => void
+  selectEntityExpandResult?: (state: any, entityId: string, properties?: Array<string>, limit?: number) => EntityExpandResultType
 }
