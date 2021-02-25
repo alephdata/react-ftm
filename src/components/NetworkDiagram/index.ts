@@ -6,4 +6,4 @@ export { NetworkDiagram, NetworkDiagram as VisGraph };
 export * from './GraphConfig';
 export * from './Viewport';
 export { GraphLayout } from './layout';
-export { exportSvg } from 'util';
+export { exportSvg } from './utils';

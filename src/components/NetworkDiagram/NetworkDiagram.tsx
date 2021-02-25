@@ -49,7 +49,7 @@ export interface INetworkDiagramProps extends WrappedComponentProps {
   updateViewport: (viewport:Viewport) => void
   writeable: boolean
   externalFilterText?: string
-  svgRef: React.RefObject<SVGSVGElement>
+  svgRef?: React.RefObject<SVGSVGElement>
 }
 
 interface INetworkDiagramState {
@@ -86,7 +86,6 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     };
 
     this.addVertex = this.addVertex.bind(this)
-    this.exportSvg = this.exportSvg.bind(this);
     this.fitToSelection = this.fitToSelection.bind(this)
     this.navigateHistory = this.navigateHistory.bind(this);
     this.onZoom = this.onZoom.bind(this);
@@ -371,7 +370,6 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
 
     const actions = {
       addVertex: this.addVertex,
-      exportSvg: this.exportSvg,
       navigateHistory: this.navigateHistory,
       removeSelection: this.removeSelection,
       setInteractionMode: this.setInteractionMode,
