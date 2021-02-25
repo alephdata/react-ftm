@@ -47,9 +47,9 @@ export interface INetworkDiagramProps extends WrappedComponentProps {
   viewport: Viewport,
   updateLayout: (layout:GraphLayout, options?: any) => void,
   updateViewport: (viewport:Viewport) => void
-  exportSvg?: (data: any) => void
   writeable: boolean
   externalFilterText?: string
+  svgRef: React.RefObject<SVGSVGElement>
 }
 
 interface INetworkDiagramState {
@@ -65,14 +65,12 @@ interface INetworkDiagramState {
 class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkDiagramState> {
   state: INetworkDiagramState;
   history: History;
-  svgRef: React.RefObject<SVGSVGElement>
 
   constructor(props: INetworkDiagramProps) {
     super(props)
     const { externalFilterText, layout, writeable } = props
 
     this.history = new History();
-    this.svgRef = React.createRef()
 
     if (layout) {
       this.history.push({ layout:layout.toJSON() });
@@ -355,27 +353,8 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     this.updateLayout(layout, undefined, { modifyHistory:true })
   }
 
-  exportSvg() {
-    const {layout, viewport} = this.props
-    const svgData = this.svgRef.current
-    const points = layout.getVertices().filter((v) => !v.isHidden()).map((v) => v.position)
-    const rect = Rectangle.fromPoints(...points)
-    const viewBox = viewport.fitToRect(rect).viewBox;
-
-    if (svgData && this.props.exportSvg) {
-      const svgClone = svgData.cloneNode(true) as HTMLElement
-      svgClone.setAttribute("viewBox",viewBox as string)
-
-      const canvas = svgClone.querySelector("#canvas-handle")
-      canvas && canvas.setAttribute('fill', 'none');
-
-      const svgBlob = new XMLSerializer().serializeToString(svgClone)
-      this.props.exportSvg(svgBlob)
-    }
-  }
-
   render() {
-    const { config, entityManager, intl, layout, viewport, writeable } = this.props;
+    const { config, entityManager, intl, layout, svgRef, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, settingsDialogOpen, tableView, vertexMenuSettings } = this.state;
     const selectedEntities = entityManager.getEntities(layout.getSelectedEntityIds());
 
@@ -432,7 +411,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
                 </ButtonGroup>
               </div>
               <GraphRenderer
-                svgRef={this.svgRef}
+                svgRef={svgRef}
                 animateTransition={animateTransition}
                 actions={actions}
               />
