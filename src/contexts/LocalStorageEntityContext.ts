@@ -48,6 +48,7 @@ export class LocalStorageEntityContext {
 
     return ({
       isPending: false,
+      isError: false,
       shouldLoad: false,
       results
     })

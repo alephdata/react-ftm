@@ -12,7 +12,7 @@ type ResultType = {
   isError: boolean
 }
 
-type EntityResultType = ResultType & {
+type EntitiesResultType = ResultType & {
   results: Array<Entity>
 }
 
@@ -34,11 +34,11 @@ export interface IEntityContext {
   updateEntity: (entity: IEntityDatum) => void,
   deleteEntity: (entityId: string) => void,
 	selectEntity: (state: any, entityId: string) => Entity | null
-	selectEntities: (state: any) => Array<Entity>
+	selectEntities: (state: any) => EntitiesResultType
 
   queryEntities: (queryText: string, schemata?: Array<Schema>) => void
   queryEntitySuggest?: (queryText: string, schemata?: Array<Schema>) => void
-	selectEntitiesResult: (state: any, queryText: string, schemata?: Array<Schema>) => EntityResultType
+	selectEntitiesResult: (state: any, queryText: string, schemata?: Array<Schema>) => EntitiesResultType
 
   queryEntityExpand?: (entityId: string, properties?: Array<string>, limit?: number) => void
   selectEntityExpandResult?: (state: any, entityId: string, properties?: Array<string>, limit?: number) => EntityExpandResultType
