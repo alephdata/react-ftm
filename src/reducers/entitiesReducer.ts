@@ -9,9 +9,8 @@ import {
 
 import { createEntity, deleteEntity, updateEntity } from 'actions/localStorageActions'
 
-
-export const createLocalStorageReducer = (data: any) => {
-  const entitiesReducer = createReducer({}, data.entities);
+const createEntitiesReducer = (entities: Array<IEntityDatum>) => {
+  const entitiesReducer = createReducer({}, entities);
 
   entitiesReducer
     .on(createEntity, (state: Array<IEntityDatum>, entityData: IEntityDatum) => {
@@ -25,10 +24,7 @@ export const createLocalStorageReducer = (data: any) => {
         id: entityId
       });
     })
-
-  return combineReducers({
-    model: createReducer({}, new Model(defaultModel)),
-    locale: createReducer({}, 'de'),
-    entities: entitiesReducer,
-  });
+  return entitiesReducer;
 }
+
+export default createEntitiesReducer;

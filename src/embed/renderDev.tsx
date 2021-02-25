@@ -4,7 +4,7 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 
 import { LocalStorageEntityContext } from 'contexts/LocalStorageEntityContext';
-import { createLocalStorageReducer } from 'reducers/localStorageReducer'
+import createEntitiesReducer from 'reducers/entitiesReducer'
 import { EmbeddedElement } from 'embed/EmbeddedElement';
 import { fetchExternalData } from 'embed/util';
 
@@ -36,7 +36,11 @@ export const renderDev = (props: IRenderDevProps) => {
   }
 
   const store = createStore(
-    createLocalStorageReducer(data)
+    combineReducers({
+      model: createReducer({}, new Model(defaultModel)),
+      locale: createReducer({}, 'en'),
+      entities: createEntitiesReducer(data.entities),
+    });
   );
   const entityContext = new LocalStorageEntityContext();
 

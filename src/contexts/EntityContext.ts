@@ -5,26 +5,7 @@ import {
   IEntityDatum,
 	Schema
 } from '@alephdata/followthemoney';
-
-type ResultType = {
-  shouldLoad: boolean
-  isPending: boolean
-  isError: boolean
-}
-
-type EntitiesResultType = ResultType & {
-  results: Array<Entity>
-}
-
-type EntityExpandObjectType = {
-  count: number
-  property: string
-  entities: Array<Entity>
-}
-
-type EntityExpandResultType = ResultType & {
-  results: Array<EntityExpandObjectType>
-}
+import { EntitiesResultType, EntityExpandResultType } from 'contexts/util'
 
 export interface IEntityContext {
   selectModel: (state: any) => Model,

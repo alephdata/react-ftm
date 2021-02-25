@@ -55,6 +55,6 @@ export class LocalStorageEntityContext {
   }
 
   // TODO: Delete this
-  queryEntitySuggest = queryEntities
+  // queryEntitySuggest = queryEntities
 
 }
