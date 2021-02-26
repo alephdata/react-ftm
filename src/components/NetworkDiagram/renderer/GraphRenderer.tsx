@@ -10,13 +10,14 @@ import { modes } from 'components/NetworkDiagram/utils'
 
 
 interface IGraphRendererProps {
-  svgRef: React.RefObject<SVGSVGElement>,
+  svgRef?: React.RefObject<SVGSVGElement>,
   animateTransition: boolean,
   actions: any,
 }
 
 export class GraphRenderer extends React.Component<IGraphRendererProps> {
   static contextType = GraphContext;
+  private svgRef: React.RefObject<SVGSVGElement>;
 
   constructor(props: any) {
     super(props)
@@ -25,6 +26,8 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     this.dragSelection = this.dragSelection.bind(this);
     this.dropSelection = this.dropSelection.bind(this);
     this.clearSelection = this.clearSelection.bind(this);
+
+    this.svgRef = props.svgRef || React.createRef()
   }
 
   dragSelection(offset: Point, initialPosition?: Point) {
@@ -80,14 +83,13 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
 
   renderEdges() {
     const { layout } = this.context;
-    const { svgRef } = this.props;
 
     return layout.getEdges().filter((edge: Edge) => !edge.isHidden()).map((edge: Edge) => {
       const vertex1 = layout.vertices.get(edge.sourceId);
       const vertex2 = layout.vertices.get(edge.targetId);
       return  <EdgeRenderer
           key={edge.id}
-          svgRef={svgRef}
+          svgRef={this.svgRef}
           edge={edge}
           vertex1={vertex1}
           vertex2={vertex2}
@@ -130,7 +132,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
 
     return (
       <Canvas
-        svgRef={svgRef}
+        svgRef={this.svgRef}
         selectArea={this.selectArea}
         clearSelection={this.clearSelection}
         animateTransition={animateTransition}
@@ -139,7 +141,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
       >
         {interactionMode === modes.EDGE_DRAW &&
           <EdgeDrawer
-            svgRef={svgRef}
+            svgRef={this.svgRef}
             sourcePoint={this.getEdgeCreateSourcePoint()}/>
         }
         {this.renderGroupings()}
