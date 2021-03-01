@@ -50,9 +50,9 @@ export interface INetworkDiagramProps extends WrappedComponentProps {
   viewport: Viewport,
   updateLayout: (layout:GraphLayout, options?: any) => void,
   updateViewport: (viewport:Viewport) => void
-  exportSvg?: (data: any) => void
   writeable: boolean
   externalFilterText?: string
+  svgRef?: React.RefObject<SVGSVGElement>
 }
 
 interface INetworkDiagramState {
@@ -68,14 +68,12 @@ interface INetworkDiagramState {
 class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFromRedux, INetworkDiagramState> {
   state: INetworkDiagramState;
   history: History;
-  svgRef: React.RefObject<SVGSVGElement>
 
   constructor(props: INetworkDiagramProps & PropsFromRedux) {
     super(props)
     const { externalFilterText, layout, writeable } = props
 
     this.history = new History();
-    this.svgRef = React.createRef()
 
     if (layout) {
       this.history.push({ layout:layout.toJSON() });
@@ -91,7 +89,6 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     };
 
     this.addVertex = this.addVertex.bind(this)
-    this.exportSvg = this.exportSvg.bind(this);
     this.fitToSelection = this.fitToSelection.bind(this)
     this.navigateHistory = this.navigateHistory.bind(this);
     this.onZoom = this.onZoom.bind(this);
@@ -208,26 +205,31 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   }
 
   async onVertexCreate(entityData: any) {
-    const { entityManager, layout, model, viewport } = this.props;
+    const { entities, entityManager, layout, model, viewport } = this.props;
     const { vertexCreateOptions } = this.state;
 
-    const entity = entityManager.createEntity(entityData);
-    const center = vertexCreateOptions?.initialPosition || viewport.center;
+    console.log('calling createEntity', entities);
+    const entity = this.props.createEntity(model, entityData)?.payload;
 
-    layout.layout(entityManager.getEntities(), center);
-    layout.selectByEntityIds([entity.id]);
+    if (entity) {
+      console.log('CREATED', entity, entities);
 
-    const vertex = layout.getVertexByEntity(entity)
+      const center = vertexCreateOptions?.initialPosition || viewport.center;
 
-    console.log('calling createEntity');
-    this.props.createEntity(model, entityData);
+      layout.layout([...entities, entity], center);
+      layout.selectByEntityIds([entity.id]);
 
-    if (vertex) {
-      if (vertexCreateOptions?.initialPosition) {
-        layout.vertices.set(vertex.id, vertex.snapPosition(center))
+      const vertex = layout.getVertexByEntity(entity)
+
+      console.log('vertex!', vertex);
+
+      if (vertex) {
+        if (vertexCreateOptions?.initialPosition) {
+          layout.vertices.set(vertex.id, vertex.snapPosition(center))
+        }
+        this.updateLayout(layout, { created: [entity] }, { modifyHistory: true, clearSearch: true });
+        return entity;
       }
-      this.updateLayout(layout, { created: [entity] }, { modifyHistory: true, clearSearch: true });
-      return entity;
     }
   }
 
@@ -371,27 +373,8 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     this.updateLayout(layout, undefined, { modifyHistory:true })
   }
 
-  exportSvg() {
-    const {layout, viewport} = this.props
-    const svgData = this.svgRef.current
-    const points = layout.getVertices().filter((v) => !v.isHidden()).map((v) => v.position)
-    const rect = Rectangle.fromPoints(...points)
-    const viewBox = viewport.fitToRect(rect).viewBox;
-
-    if (svgData && this.props.exportSvg) {
-      const svgClone = svgData.cloneNode(true) as HTMLElement
-      svgClone.setAttribute("viewBox",viewBox as string)
-
-      const canvas = svgClone.querySelector("#canvas-handle")
-      canvas && canvas.setAttribute('fill', 'none');
-
-      const svgBlob = new XMLSerializer().serializeToString(svgClone)
-      this.props.exportSvg(svgBlob)
-    }
-  }
-
   render() {
-    const { config, entityContext, entityManager, intl, layout, model, viewport, writeable } = this.props;
+    const { config, entityContext, entityManager, intl, layout, model, svgRef, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, settingsDialogOpen, tableView, vertexMenuSettings } = this.state;
     const selectedEntities = entityManager.getEntities(layout.getSelectedEntityIds());
 
@@ -409,7 +392,6 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
 
     const actions = {
       addVertex: this.addVertex,
-      exportSvg: this.exportSvg,
       navigateHistory: this.navigateHistory,
       removeSelection: this.removeSelection,
       setInteractionMode: this.setInteractionMode,
@@ -424,6 +406,8 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     };
 
     const showSidebar = layout.vertices && layout.vertices.size > 0 && !tableView;
+
+    console.log(layout);
 
     return (
       <GraphContext.Provider value={layoutContext}>
@@ -449,7 +433,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
                 </ButtonGroup>
               </div>
               <GraphRenderer
-                svgRef={this.svgRef}
+                svgRef={svgRef}
                 animateTransition={animateTransition}
                 actions={actions}
               />
@@ -517,7 +501,6 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
 }
 
 const mapStateToProps = (state: any, ownProps: INetworkDiagramProps) => {
-  console.log('in map state', state, ownProps);
   const { entityContext } = ownProps;
   return ({
     model: entityContext.selectModel(state),
@@ -526,7 +509,6 @@ const mapStateToProps = (state: any, ownProps: INetworkDiagramProps) => {
 }
 
 const mapDispatchToProps = (dispatch: any, ownProps: INetworkDiagramProps) => {
-  console.log('in dispatch', dispatch, ownProps);
   const { createEntity } = ownProps.entityContext;
 
   return ({

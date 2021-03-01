@@ -38,7 +38,13 @@ class PropertyReverse extends React.PureComponent<IPropertyReverseProps> {
   render() {
     const { prop } = this.props;
     if (!prop.hasReverse) {
-      return <FormattedMessage id="property.inverse" defaultMessage="'{label}' of …" values={prop} />;
+      return <FormattedMessage
+        id="property.inverse"
+        defaultMessage="'{label}' of …"
+        values={{
+          label: <PropertyName prop={prop} />
+        }}
+      />;
     }
     const reverseProp = prop.getReverse();
     return reverseProp.label;
