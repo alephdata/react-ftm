@@ -76,7 +76,7 @@
     "@types/react-dom": "^17.0.0",
     "@types/recharts": "^1.8.18",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
-    "@typescript-eslint/parser": "^4.14.1",
+    "@typescript-eslint/parser": "^4.15.2",
     "bezier-js": "^2.1.6",
     "buffer": "^4.9.2",
     "classnames": "^2.2.6",
