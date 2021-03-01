@@ -101,13 +101,14 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   renderVertices() {
-    const { layout } = this.context;
+    const { entityContext, layout } = this.context;
     const { actions } = this.props;
     const vertices = layout.getVertices().filter((vertex: Vertex) => !vertex.isHidden())
 
     return vertices.map((vertex: Vertex) =>
       <VertexRenderer
         key={vertex.id}
+        entityContext={entityContext}
         vertex={vertex}
         selectVertex={this.selectElement}
         dragSelection={this.dragSelection}

@@ -9,7 +9,7 @@ import {
 
 export const createEntity = createAction('CREATE_ENTITY', (model: Model, entityData: IEntityDatum) => {
   if (entityData.id) {
-    return entityData;
+    return model.getEntity(entityData);
   } else {
     const { properties, schema } = entityData;
     const entity = model.createEntity(schema);
@@ -22,11 +22,11 @@ export const createEntity = createAction('CREATE_ENTITY', (model: Model, entityD
         }
       });
     }
-    return entity.toJSON();
+    return entity;
   }
 });
 
-export const updateEntity = createAction('UPDATE_ENTITY', (entityData: IEntityDatum) => entityData)
+export const updateEntity = createAction('UPDATE_ENTITY', (entity: Entity) => entity)
 
 export const deleteEntity = createAction('DELETE_ENTITY', (entityId: string) => entityId)
 

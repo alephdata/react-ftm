@@ -612,7 +612,6 @@ class TableEditorBase extends React.Component<ITableEditorProps & PropsFromRedux
 }
 
 const mapStateToProps = (state: any, ownProps: ITableEditorProps) => {
-  console.log('in map state', state, ownProps);
   const { entityContext } = ownProps;
   return ({
     model: entityContext.selectModel(state),

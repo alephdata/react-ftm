@@ -1,5 +1,9 @@
 import * as React from 'react'
+import { compose } from 'redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
+
+import { IEntityContext } from 'contexts/EntityContext';
 import { GraphContext } from 'NetworkDiagram/GraphContext';
 import { Point } from 'NetworkDiagram/layout/Point'
 import { Vertex } from 'NetworkDiagram/layout/Vertex'
@@ -11,6 +15,7 @@ import { modes } from 'NetworkDiagram/utils'
 
 interface IVertexRendererProps {
   vertex: Vertex
+  entityContext: IEntityContext
   selectVertex: (vertex: Vertex, options?: any) => any
   dragSelection: (offset: Point) => any
   dropSelection: () => any
@@ -21,11 +26,11 @@ interface IVertexRendererState {
   hovered: boolean
 }
 
-export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IVertexRendererState> {
+export class VertexRendererBase extends React.PureComponent<IVertexRendererProps & PropsFromRedux, IVertexRendererState> {
   static contextType = GraphContext;
   gRef: React.RefObject<SVGGElement>
 
-  constructor(props: Readonly<IVertexRendererProps>) {
+  constructor(props: Readonly<IVertexRendererProps & PropsFromRedux>) {
     super(props)
 
     this.state = { hovered: false }
@@ -103,12 +108,11 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   onDoubleClick(e: MouseEvent) {
-    const { entityManager } = this.context;
-    const { actions, vertex } = this.props;
+    const { actions, allowExpand, vertex } = this.props;
     e.preventDefault()
     e.stopPropagation()
     if (vertex.isEntity()) {
-      if (entityManager.hasExpand) {
+      if (allowExpand) {
         actions.showVertexMenu(vertex, new Point(e.clientX, e.clientY));
       } else {
         actions.setInteractionMode(modes.EDGE_DRAW);
@@ -159,8 +163,8 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   render() {
-    const { entityManager, layout, writeable } = this.context;
-    const { vertex } = this.props
+    const { layout, writeable } = this.context;
+    const { entity, vertex } = this.props
     const { x, y } = layout.config.gridToPixel(vertex.position)
     const selected = layout.isElementSelected(vertex)
     const isEntity = vertex.isEntity()
@@ -175,6 +179,8 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
       pointerEvents: this.allowPointerEvents() ? 'auto' : 'none',
     }
 
+    console.log('entity', entity);
+    
     return (
       <DraggableCore
         handle='.handle'
@@ -191,9 +197,23 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
             onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}
             />
           <VertexLabelRenderer center={labelPosition} label={vertex.label} type={vertex.type} onClick={this.onClick} color={vertexColor}/>
-          <IconRenderer entity={entityManager.getEntity(vertex.entityId)} radius={vertexRadius}/>
+          {entity && <IconRenderer entity={entity} radius={vertexRadius}/>}
         </g>
       </DraggableCore>
     );
   }
 }
+
+const mapStateToProps = (state: any, ownProps: IVertexRendererProps) => {
+  const { entityContext, vertex } = ownProps;
+  const { entityId } = vertex;
+  return ({
+    allowExpand: !!entityId && !!entityContext.queryEntityExpand,
+    entity: entityId && entityContext.selectEntity(state, entityId),
+  });
+}
+
+const connector = connect(mapStateToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+export const VertexRenderer = connector(VertexRendererBase);

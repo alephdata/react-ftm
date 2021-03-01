@@ -22,17 +22,11 @@ export class LocalStorageEntityContext {
   deleteEntity = deleteEntity
 
 	selectEntity = (state: any, entityId: string) => {
-		const { entities } = state;
-		const model = this.selectModel(state);
-		if (!model || !entityId || !has(entities, entityId)) {
-			return null;
-		}
-		return model.getEntity(entities[entityId]);
+		return state.entities.find((e: Entity) => e.id === entityId);
 	}
 
 	selectEntities = (state: any) => {
-		const model = this.selectModel(state);
-		return state.entities.map((eData: IEntityDatum) => model.getEntity(eData));
+		return state.entities;
 	}
 
   queryEntities = queryEntities

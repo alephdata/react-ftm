@@ -154,7 +154,6 @@ class EntityTableBase extends React.Component<IEntityTableProps & PropsFromRedux
 }
 
 const mapStateToProps = (state: any, ownProps: IEntityTableProps) => {
-  console.log('in map state', state, ownProps);
   const { entityContext } = ownProps;
   return ({
     model: entityContext.selectModel(state),

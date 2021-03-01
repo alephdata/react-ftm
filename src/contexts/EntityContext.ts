@@ -11,11 +11,11 @@ export interface IEntityContext {
   selectModel: (state: any) => Model,
 	selectLocale: (state: any) => string,
 
-	createEntity: (model: Model, entity: IEntityDatum) => void,
-  updateEntity: (entity: IEntityDatum) => void,
+	createEntity: (model: Model, entityData: IEntityDatum) => void,
+  updateEntity: (entity: Entity) => void,
   deleteEntity: (entityId: string) => void,
 	selectEntity: (state: any, entityId: string) => Entity | null
-	selectEntities: (state: any) => EntitiesResultType
+	selectEntities: (state: any) => Array<Entity>
 
   queryEntities: (queryText: string, schemata?: Array<Schema>) => void
   queryEntitySuggest?: (queryText: string, schemata?: Array<Schema>) => void

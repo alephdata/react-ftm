@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore } from 'redux';
+import { createReducer } from 'redux-act';
+import { combineReducers, createStore } from 'redux';
 import { Provider } from 'react-redux';
+import { defaultModel, Model, IEntityDatum } from '@alephdata/followthemoney';
 
 import { LocalStorageEntityContext } from 'contexts/LocalStorageEntityContext';
 import createEntitiesReducer from 'reducers/entitiesReducer'
@@ -35,12 +37,15 @@ export const renderDev = (props: IRenderDevProps) => {
     document.body.appendChild(domElem);
   }
 
+  const model = new Model(defaultModel);
+  const entities = data.entities?.map((eData: IEntityDatum) => model.getEntity(eData))
+
   const store = createStore(
     combineReducers({
-      model: createReducer({}, new Model(defaultModel)),
+      model: createReducer({}, model),
       locale: createReducer({}, 'en'),
-      entities: createEntitiesReducer(data.entities),
-    });
+      entities: createEntitiesReducer(entities),
+    })
   );
   const entityContext = new LocalStorageEntityContext();
 
