@@ -1,4 +1,5 @@
 import has from 'lodash/has'
+import includes from 'lodash/includes'
 import {
   Entity,
   Model,
@@ -25,8 +26,13 @@ export class LocalStorageEntityContext {
 		return state.entities.find((e: Entity) => e.id === entityId);
 	}
 
-	selectEntities = (state: any) => {
-		return state.entities;
+	selectEntities = (state: any, ids?: Array<string>) => {
+    const entities = state.entities;
+    if (ids) {
+      return entities.filter((e: Entity) => includes(ids, e.id)) as Entity[];
+    } else {
+      return entities;
+    }
 	}
 
   queryEntities = queryEntities

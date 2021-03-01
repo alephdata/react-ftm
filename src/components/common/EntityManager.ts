@@ -14,7 +14,6 @@ import { matchText } from 'utils';
 export interface IEntityManagerProps {
   entities: Array<IEntityDatum>
   namespace?: Namespace,
-  createEntity?: (entity: IEntityDatum) => Entity,
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
   expandEntity?: (entityId: string, properties?: Array<string>, limit?: number) => Promise<any>
@@ -38,35 +37,6 @@ export class EntityManager {
     this.getEntity = this.getEntity.bind(this);
     this.getEntities = this.getEntities.bind(this);
     this.resolveEntityReference = this.resolveEntityReference.bind(this);
-  }
-
-  createEntity(entityData: any): Entity {
-    const model = new Model(defaultModel);
-    let entity: Entity;
-    if (entityData.id) {
-      entity = model.getEntity(entityData);
-    } else {
-      const { properties, schema } = entityData;
-
-      entity = model.createEntity(schema, this.namespace);
-
-      if (properties) {
-        Object.entries(properties).forEach(([prop, value]: [string, any]) => {
-          if (Array.isArray(value)) {
-            value.forEach(v => entity.setProperty(prop, v));
-          } else {
-            entity.setProperty(prop, value);
-          }
-        });
-      }
-    }
-
-    if (this.overload?.createEntity) {
-      this.overload.createEntity(entity);
-    }
-
-    this.addEntities([entity]);
-    return entity;
   }
 
   getEntities(ids?: Array<string>): Entity[] {
@@ -129,9 +99,9 @@ export class EntityManager {
   applyEntityChanges(entityChanges: EntityChanges, factor: number) {
     const { created, updated, deleted } = entityChanges;
 
-    created && created.forEach((entity: Entity) => factor > 0 ? this.createEntity(entity) : this.deleteEntities([entity.id]));
+    // created && created.forEach((entity: Entity) => factor > 0 ? this.createEntity(entity) : this.deleteEntities([entity.id]));
     updated && updated.forEach(({prev, next}: EntityChangeUpdate) => factor > 0 ? this.updateEntity(next) : this.updateEntity(prev));
-    deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntities([entity.id]) : this.createEntity(entity));
+    // deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntities([entity.id]) : this.createEntity(entity));
   }
 
   toJSON(): Array<IEntityDatum> {

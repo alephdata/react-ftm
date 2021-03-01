@@ -1,7 +1,11 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
+import { compose } from 'redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { Entity } from '@alephdata/followthemoney';
 import { Drawer } from "@blueprintjs/core";
+
+import { IEntityContext } from 'contexts/EntityContext';
 import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { EntityList } from 'components/common';
 import { EntityViewer, GroupingViewer } from 'components/NetworkDiagram/toolbox';
@@ -25,15 +29,16 @@ const messages = defineMessages({
 });
 
 export interface ISidebarProps {
+  entityContext: IEntityContext
   searchText: string,
   isOpen: boolean
-  selectedEntities: Array<Entity>
+  selectedEntityIds: Array<string>
 }
 
-export class Sidebar extends React.Component<ISidebarProps> {
+export class SidebarBase extends React.Component<ISidebarProps & PropsFromRedux> {
   static contextType = GraphContext;
 
-  constructor(props: Readonly<ISidebarProps>) {
+  constructor(props: Readonly<ISidebarProps & PropsFromRedux>) {
     super(props);
     this.onEntityChanged  = this.onEntityChanged.bind(this);
     this.onEntitySelected = this.onEntitySelected.bind(this);
@@ -96,8 +101,8 @@ export class Sidebar extends React.Component<ISidebarProps> {
   }
 
   render() {
-    const { entityManager, intl, layout } = this.context;
-    const { isOpen, searchText, selectedEntities } = this.props;
+    const { entityContext, intl, layout } = this.context;
+    const { entities, isOpen, searchText, selectedEntities } = this.props;
     const selectedGroupings = layout.getSelectedGroupings()
     let contents, searchResultsText;
 
@@ -119,6 +124,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
       const grouping = selectedGroupings[0]
       contents = <GroupingViewer
         grouping={grouping}
+        entityContext={entityContext}
         onEntitySelected={this.onEntitySelected}
         onEntityRemoved={this.removeGroupingEntity}
         onColorSelected={this.setGroupingColor}
@@ -127,8 +133,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
       contents = <EntityList entities={selectedEntities} onEntitySelected={this.onEntitySelected} />
       searchResultsText = intl.formatMessage(messages.search_found_multiple, { count: selectedEntities.length });
     } else {
-      const entities = entityManager.getThingEntities()
-      contents = <EntityList entities={entities as Entity[]} onEntitySelected={this.onEntitySelected}/>
+      contents = <EntityList entities={entities} onEntitySelected={this.onEntitySelected}/>
       searchResultsText = intl.formatMessage(messages.search_found_none);
     }
 
@@ -151,3 +156,17 @@ export class Sidebar extends React.Component<ISidebarProps> {
     )
   }
 }
+
+
+const mapStateToProps = (state: any, ownProps: ISidebarProps) => {
+  const { entityContext, selectedEntityIds } = ownProps;
+  return ({
+    entities: entityContext.selectEntities(state),
+    selectedEntities: entityContext.selectEntities(state, selectedEntityIds)
+  });
+}
+
+const connector = connect(mapStateToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+export const Sidebar = connector(SidebarBase);

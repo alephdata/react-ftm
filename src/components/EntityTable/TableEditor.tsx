@@ -8,7 +8,7 @@ import differenceBy from 'lodash/differenceBy';
 import groupBy from 'lodash/groupBy';
 import uniqBy from 'lodash/uniqBy';
 import { Button, Checkbox, Classes, Icon, Intent, Tooltip } from "@blueprintjs/core";
-import { Entity as FTMEntity, Property as FTMProperty, Schema as FTMSchema, Value } from "@alephdata/followthemoney";
+import { Entity as FTMEntity, Model, Property as FTMProperty, Schema as FTMSchema, Value } from "@alephdata/followthemoney";
 import { PropertyEditor, PropertySelect } from 'editors';
 import { Entity, Schema, Property } from 'types';
 import { EntityChanges, SortType } from 'components/common/types';
@@ -477,7 +477,7 @@ class TableEditorBase extends React.Component<ITableEditorProps & PropsFromRedux
   // Change handlers
 
   handleNewRow = (row: number, changes: any) => {
-    const { intl, schema } = this.props;
+    const { intl, model, schema } = this.props;
     const { entityRows, showTopAddRow } = this.state;
     const entityData = { schema, properties: {} };
     const shouldPrepend = showTopAddRow && row === 1;
@@ -493,7 +493,7 @@ class TableEditorBase extends React.Component<ITableEditorProps & PropsFromRedux
       }
     })
 
-    const entity = this.props.entityManager.createEntity(entityData);
+    const entity = this.props.createEntity(model, entityData)?.payload;
     const newEntityRow = this.getEntityRow(entity);
 
     this.setState(({ entityRows, createdEntityIds, showTopAddRow }) => {
@@ -618,7 +618,15 @@ const mapStateToProps = (state: any, ownProps: ITableEditorProps) => {
   });
 }
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = (dispatch: any, ownProps: ITableEditorProps) => {
+  const { createEntity } = ownProps.entityContext;
+
+  return ({
+    createEntity: (model: Model, entityData: any) => dispatch(createEntity(model, entityData)),
+  })
+}
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>
 
 export const TableEditor = connector(

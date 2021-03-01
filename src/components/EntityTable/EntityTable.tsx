@@ -44,15 +44,15 @@ class EntityTableBase extends React.Component<IEntityTableProps & PropsFromRedux
       sort: null,
     };
 
-    this.getEntities = this.getEntities.bind(this);
+    this.getSchemaEntities = this.getSchemaEntities.bind(this);
     this.onColumnSort = this.onColumnSort.bind(this);
     this.setActiveSchema = this.setActiveSchema.bind(this);
   }
 
   getSchemata() {
-    const { entityManager } = this.props;
+    const { entities } = this.props;
 
-    return entityManager.getEntities()
+    return entities
       .map((entity: Entity) => entity.schema)
       .filter((schema: FTMSchema, index: number, list: any) => !schema.isEdge && list.indexOf(schema) === index)
       .sort((a: FTMSchema, b: FTMSchema) => a.label.localeCompare(b.label));
@@ -69,11 +69,11 @@ class EntityTableBase extends React.Component<IEntityTableProps & PropsFromRedux
     this.setState({ activeSchema, sort: null });
   }
 
-  getEntities(schema: FTMSchema) {
+  getSchemaEntities(schema: FTMSchema) {
     const { entityManager } = this.props;
     const { activeSchema, sort } = this.state;
 
-    const entities = entityManager.getEntities()
+    const entities = this.props.entities
       .filter((e: Entity) => e.schema.name === schema.name);
 
     if (activeSchema === schema.name && sort) {
@@ -118,7 +118,7 @@ class EntityTableBase extends React.Component<IEntityTableProps & PropsFromRedux
             title={<Schema.Label schema={schema} icon />}
             panel={(
               <TableEditor
-                entities={this.getEntities(schema)}
+                entities={this.getSchemaEntities(schema)}
                 schema={schema}
                 sort={sort}
                 selection={selection}
@@ -157,6 +157,7 @@ const mapStateToProps = (state: any, ownProps: IEntityTableProps) => {
   const { entityContext } = ownProps;
   return ({
     model: entityContext.selectModel(state),
+    entities: entityContext.selectEntities(state)
   });
 }
 

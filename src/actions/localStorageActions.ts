@@ -7,7 +7,7 @@ import {
 } from '@alephdata/followthemoney';
 
 
-export const createEntity = createAction('CREATE_ENTITY', (model: Model, entityData: IEntityDatum) => {
+export const createEntity = createAction('CREATE_ENTITY', (model: Model, entityData: any) => {
   if (entityData.id) {
     return model.getEntity(entityData);
   } else {

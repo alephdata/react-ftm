@@ -178,8 +178,6 @@ export class VertexRendererBase extends React.PureComponent<IVertexRendererProps
       cursor: selected && writeable ? 'grab' : 'pointer',
       pointerEvents: this.allowPointerEvents() ? 'auto' : 'none',
     }
-
-    console.log('entity', entity);
     
     return (
       <DraggableCore

@@ -38,7 +38,7 @@ const messages = defineMessages({
 });
 
 interface IEdgeCreateDialogProps extends WrappedComponentProps {
-  source: Entity
+  source?: Entity
   target?: Entity
   isOpen: boolean,
   toggleDialog: () => any
@@ -57,16 +57,19 @@ interface IEdgeCreateDialogState {
 
 class EdgeCreateDialogBase extends React.Component<IEdgeCreateDialogProps & PropsFromRedux, IEdgeCreateDialogState> {
   types: EdgeType[] = []
-  state: IEdgeCreateDialogState = {
-    isProcessing: false,
-    sourceQueryText: '',
-    targetQueryText: ''
-  }
 
   constructor(props: IEdgeCreateDialogProps & PropsFromRedux) {
     super(props)
 
-    this.types = EdgeType.getAll(props.model)
+    this.types = EdgeType.getAll(props.model);
+
+    this.state = {
+      source: props.source,
+      target: props.target,
+      isProcessing: false,
+      sourceQueryText: '',
+      targetQueryText: ''
+    }
 
     this.onSelectSource = this.onSelectSource.bind(this)
     this.onSelectTarget = this.onSelectTarget.bind(this)
@@ -183,7 +186,9 @@ class EdgeCreateDialogBase extends React.Component<IEdgeCreateDialogProps & Prop
   render() {
     const { entityContext, intl, isOpen, suggestionSchemata, toggleDialog } = this.props
     const { isProcessing, source, target, type, sourceQueryText, targetQueryText } = this.state
-    const types = this.getTypes()
+    const types = this.getTypes();
+
+    console.log('in edge create', source, target)
 
     return (
       <Dialog

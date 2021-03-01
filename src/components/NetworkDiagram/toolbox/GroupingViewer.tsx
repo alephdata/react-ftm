@@ -1,7 +1,11 @@
 import * as React from 'react'
+import { compose } from 'redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { defineMessages } from 'react-intl';
 import { Icon } from '@blueprintjs/core'
 import { Entity } from '@alephdata/followthemoney';
+
+import { IEntityContext } from 'contexts/EntityContext';
 import { ColorPicker } from 'editors';
 import { Grouping } from 'NetworkDiagram/layout'
 import { GraphContext } from 'NetworkDiagram/GraphContext'
@@ -17,18 +21,19 @@ const messages = defineMessages({
 });
 
 interface IGroupingViewerProps {
-  grouping: Grouping,
+  grouping: Grouping
+  entityContext: IEntityContext
   onEntitySelected: (entity:Entity) => void
   onEntityRemoved: (grouping: Grouping, entity:Entity) => void
   onColorSelected: (grouping: Grouping, color: string) => void
 }
 
-export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
+export class GroupingViewerBase extends React.PureComponent<IGroupingViewerProps & PropsFromRedux> {
   static contextType = GraphContext;
 
   render() {
-    const { entityManager, intl, writeable } = this.context;
-    const { grouping, onEntitySelected, onEntityRemoved, onColorSelected } = this.props;
+    const { intl, writeable } = this.context;
+    const { entities, grouping, onEntitySelected, onEntityRemoved, onColorSelected } = this.props;
     return (
       <div className='GroupingViewer'>
         <div className='GroupingViewer__title'>
@@ -50,7 +55,7 @@ export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
           </div>
         </div>
         <EntityList
-          entities={entityManager.getEntities(grouping.getEntityIds())}
+          entities={entities}
           onEntitySelected={onEntitySelected}
           onEntityRemoved={writeable ? (entity => onEntityRemoved(grouping, entity)) : undefined}
         />
@@ -58,3 +63,15 @@ export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
     )
   }
 }
+
+const mapStateToProps = (state: any, ownProps: IGroupingViewerProps) => {
+  const { entityContext, grouping } = ownProps;
+  return ({
+    entities: entityContext.selectEntities(state, grouping.getEntityIds())
+  });
+}
+
+const connector = connect(mapStateToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+export const GroupingViewer = connector(GroupingViewerBase);

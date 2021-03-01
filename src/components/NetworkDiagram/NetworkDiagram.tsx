@@ -208,20 +208,15 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     const { entities, entityManager, layout, model, viewport } = this.props;
     const { vertexCreateOptions } = this.state;
 
-    console.log('calling createEntity', entities);
     const entity = this.props.createEntity(model, entityData)?.payload;
 
     if (entity) {
-      console.log('CREATED', entity, entities);
-
       const center = vertexCreateOptions?.initialPosition || viewport.center;
 
       layout.layout([...entities, entity], center);
       layout.selectByEntityIds([entity.id]);
 
       const vertex = layout.getVertexByEntity(entity)
-
-      console.log('vertex!', vertex);
 
       if (vertex) {
         if (vertexCreateOptions?.initialPosition) {
@@ -234,7 +229,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   }
 
   onEdgeCreate(source: Entity, target: Entity, type: EdgeType) {
-    const { entityManager, layout, viewport } = this.props;
+    const { entityManager, entities, layout, model, viewport } = this.props;
     const sourceVertex = layout.getVertexByEntity(source);
     const targetVertex = layout.getVertexByEntity(target);
     if (!sourceVertex || !targetVertex) {
@@ -252,15 +247,15 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
       edge = Edge.fromValue(layout, type.property, sourceVertex, targetVertex)
     }
     if (type.schema && type.schema.edge && source && target) {
-      const entity = entityManager.createEntity({
+      const entityData = {
         schema: type.schema,
         properties: {
           [type.schema.edge.source]: source.id,
           [type.schema.edge.target]: target.id,
         }
-      });
-      entityManager.addEntities([entity]);
-      layout.layout(entityManager.getEntities());
+      };
+      const entity = this.props.createEntity(model, entityData)?.payload;
+      layout.layout([...entities, entity]);
       entityChanges.created = [entity];
       edge = Edge.fromEntity(layout, entity, sourceVertex, targetVertex)
     }
@@ -299,7 +294,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
 
   async expandVertex(vertex: Vertex, properties: Array<string>) {
     if (!vertex.entityId) return;
-    const { entityManager, intl, layout, viewport } = this.props;
+    const { entityManager, entities, intl, layout, model, viewport } = this.props;
 
     this.setState({ vertexMenuSettings: null });
 
@@ -307,12 +302,12 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     if (expandResults) {
       const before = layout.getVisibleElementCount();
 
-      const entityIds = expandResults
+      const addedEntities = expandResults
         .reduce((entities: Array<Entity>, expandObj: any) => ([...entities, ...expandObj.entities]), [])
-        .map((entity: Entity) => { entityManager.createEntity(entity); return entity.id; });
+        .map((entity: Entity) => { return this.props.createEntity(model, entity)?.payload; });
 
-      layout.layout(entityManager.getEntities(), viewport.center);
-      layout.selectByEntityIds(entityIds);
+      layout.layout([...entities, ...addedEntities], viewport.center);
+      layout.selectByEntityIds(addedEntities.map((e: Entity) => e.id));
 
       const after = layout.getVisibleElementCount();
       const vDiff = after.vertices - before.vertices;
@@ -373,10 +368,28 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     this.updateLayout(layout, undefined, { modifyHistory:true })
   }
 
+  renderEdgeCreate() {
+    const { entityContext, intl, layout, resolveEntityId } = this.props;
+    const { interactionMode } = this.state;
+
+    const [ sourceId, targetId ] = layout.getSelectedEntityIds();
+
+    return (
+      <EdgeCreateDialog
+        source={resolveEntityId(sourceId)}
+        target={resolveEntityId(targetId)}
+        isOpen={true}
+        toggleDialog={this.setInteractionMode}
+        onSubmit={this.onEdgeCreate}
+        intl={intl}
+        entityContext={entityContext}
+      />
+    );
+  }
+
   render() {
-    const { config, entityContext, entityManager, intl, layout, model, svgRef, viewport, writeable } = this.props;
+    const { config, entities, entityContext, entityManager, intl, layout, model, resolveEntityId, svgRef, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, settingsDialogOpen, tableView, vertexMenuSettings } = this.state;
-    const selectedEntities = entityManager.getEntities(layout.getSelectedEntityIds());
 
     const layoutContext = {
       layout,
@@ -406,8 +419,6 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     };
 
     const showSidebar = layout.vertices && layout.vertices.size > 0 && !tableView;
-
-    console.log(layout);
 
     return (
       <GraphContext.Provider value={layoutContext}>
@@ -441,9 +452,10 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
             {showSidebar && (
               <div className="NetworkDiagram__sidebar">
                 <Sidebar
+                  entityContext={entityContext}
                   searchText={searchText}
                   isOpen={showSidebar}
-                  selectedEntities={selectedEntities}
+                  selectedEntityIds={layout.getSelectedEntityIds()}
                 />
               </div>
             )}
@@ -484,15 +496,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
               toggleDialog={this.toggleSettingsDialog}
               model={model}
             />
-            <EdgeCreateDialog
-              source={selectedEntities?.[0]}
-              target={selectedEntities?.[1]}
-              isOpen={interactionMode === modes.EDGE_CREATE}
-              toggleDialog={this.setInteractionMode}
-              onSubmit={this.onEdgeCreate}
-              intl={intl}
-              entityContext={entityContext}
-            />
+            {interactionMode === modes.EDGE_CREATE && this.renderEdgeCreate()}
           </>
         )}
       </GraphContext.Provider>
@@ -501,10 +505,12 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
 }
 
 const mapStateToProps = (state: any, ownProps: INetworkDiagramProps) => {
-  const { entityContext } = ownProps;
+  const { entityContext, layout } = ownProps;
+
   return ({
     model: entityContext.selectModel(state),
     entities: entityContext.selectEntities(state),
+    resolveEntityId: (id: any) => entityContext.selectEntity(state, id)
   });
 }
 
@@ -512,7 +518,7 @@ const mapDispatchToProps = (dispatch: any, ownProps: INetworkDiagramProps) => {
   const { createEntity } = ownProps.entityContext;
 
   return ({
-    createEntity: (model: Model, entityData: IEntityDatum) => dispatch(createEntity(model, entityData)),
+    createEntity: (model: Model, entityData: any) => dispatch(createEntity(model, entityData)),
   })
 }
 
