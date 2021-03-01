@@ -128,7 +128,7 @@
     "numeral": "^2.0.6",
     "react-datasheet": "^1.4.9",
     "react-draggable": "^4.4.3",
-    "react-intl": "^5.11.0",
+    "react-intl": "^5.13.2",
     "recharts": "^2.0.4",
     "save-dev": "0.0.1-security",
     "truncate": "^2.1.0"
