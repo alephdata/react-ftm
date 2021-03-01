@@ -100,7 +100,7 @@
     "rimraf": "^3.0.2",
     "sass": "^1.32.8",
     "sass-loader": "^11.0.1",
-    "stream-browserify": "^2.0.2",
+    "stream-browserify": "^3.0.0",
     "style-loader": "^2.0.0",
     "ts-jest": "^26.5.2",
     "ts-loader": "^8.0.17",
