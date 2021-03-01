@@ -2,6 +2,7 @@ import * as React from 'react'
 import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import includes from 'lodash/includes'
+import findIndex from 'lodash/findIndex'
 import c from 'classnames';
 import { Entity, IEntityDatum, Model, Schema } from "@alephdata/followthemoney";
 import { Button, ButtonGroup, Tooltip } from '@blueprintjs/core';
@@ -230,7 +231,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   }
 
   onEdgeCreate(source: Entity, target: Entity, type: EdgeType) {
-    const { entityManager, entities, layout, model, viewport } = this.props;
+    const { createEntity, entityManager, entities, layout, model, viewport, updateEntity } = this.props;
     const sourceVertex = layout.getVertexByEntity(source);
     const targetVertex = layout.getVertexByEntity(target);
     if (!sourceVertex || !targetVertex) {
@@ -242,8 +243,10 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     if (type.property && source) {
       const nextSource = source.clone()
       nextSource.setProperty(type.property, target)
-      entityManager.updateEntity(nextSource);
-      layout.layout(entityManager.getEntities());
+      updateEntity(nextSource);
+      const index = findIndex(entities, { id: nextSource.id })
+      entities.splice(index, 1, nextSource);
+      layout.layout(entities);
       entityChanges.updated = [{ prev: source, next: nextSource }];
       edge = Edge.fromValue(layout, type.property, sourceVertex, targetVertex)
     }
@@ -255,7 +258,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
           [type.schema.edge.target]: target.id,
         }
       };
-      const entity = this.props.createEntity(model, entityData)?.payload;
+      const entity = createEntity(model, entityData)?.payload;
       layout.layout([...entities, entity]);
       entityChanges.created = [entity];
       edge = Edge.fromEntity(layout, entity, sourceVertex, targetVertex)
@@ -518,11 +521,12 @@ const mapStateToProps = (state: any, ownProps: INetworkDiagramProps) => {
 }
 
 const mapDispatchToProps = (dispatch: any, ownProps: INetworkDiagramProps) => {
-  const { createEntity, deleteEntity } = ownProps.entityContext;
+  const { createEntity, deleteEntity, updateEntity } = ownProps.entityContext;
 
   return ({
     createEntity: (model: Model, entityData: any) => dispatch(createEntity(model, entityData)),
     deleteEntity: (entityId: string) => dispatch(deleteEntity(entityId)),
+    updateEntity: (entity: Entity) => dispatch(updateEntity(entity)),
   })
 }
 

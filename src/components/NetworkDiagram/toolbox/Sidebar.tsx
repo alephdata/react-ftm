@@ -2,6 +2,7 @@ import * as React from 'react'
 import { defineMessages } from 'react-intl';
 import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
+import findIndex from 'lodash/findIndex'
 import { Entity } from '@alephdata/followthemoney';
 import { Drawer } from "@blueprintjs/core";
 
@@ -50,9 +51,13 @@ export class SidebarBase extends React.Component<ISidebarProps & PropsFromRedux>
 
   onEntityChanged(entity: Entity) {
     const { layout, entityManager, updateLayout } = this.context;
+    const { entities, updateEntity } = this.props;
+
     const previousEntity = entityManager.getEntity(entity.id);
-    entityManager.updateEntity(entity);
-    layout.layout(entityManager.getEntities());
+    updateEntity(entity);
+    const index = findIndex(entities, { id: entity.id })
+    entities.splice(index, 1, entity);
+    layout.layout(entities);
     updateLayout(layout, { updated: [{ prev: previousEntity, next: entity }] }, { modifyHistory:true });
   }
 
@@ -166,7 +171,15 @@ const mapStateToProps = (state: any, ownProps: ISidebarProps) => {
   });
 }
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = (dispatch: any, ownProps: ISidebarProps) => {
+  const { updateEntity } = ownProps.entityContext;
+
+  return ({
+    updateEntity: (entity: Entity) => dispatch(updateEntity(entity)),
+  })
+}
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>
 
 export const Sidebar = connector(SidebarBase);

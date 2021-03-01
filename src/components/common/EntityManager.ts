@@ -14,7 +14,6 @@ import { matchText } from 'utils';
 export interface IEntityManagerProps {
   entities: Array<IEntityDatum>
   namespace?: Namespace,
-  updateEntity?: (entity: Entity) => void,
   expandEntity?: (entityId: string, properties?: Array<string>, limit?: number) => Promise<any>
   resolveEntityReference?: (entityId: string) => Entity | undefined,
 }
@@ -62,16 +61,6 @@ export class EntityManager {
     entities.map(e => this.entities.set(e.id, e));
   }
 
-  updateEntity(entity: Entity) {
-    this.entities.set(entity.id, entity)
-
-    if (this.overload?.updateEntity) {
-      this.overload.updateEntity(entity);
-    }
-
-    return entity;
-  }
-
   async expandEntity(entityId: string, properties?: Array<string>, limit?: number) {
     if (this.overload?.expandEntity) {
       const expandResults = await this.overload.expandEntity(entityId, properties, limit);
@@ -90,7 +79,7 @@ export class EntityManager {
     const { created, updated, deleted } = entityChanges;
 
     // created && created.forEach((entity: Entity) => factor > 0 ? this.createEntity(entity) : this.deleteEntities([entity.id]));
-    updated && updated.forEach(({prev, next}: EntityChangeUpdate) => factor > 0 ? this.updateEntity(next) : this.updateEntity(prev));
+    // updated && updated.forEach(({prev, next}: EntityChangeUpdate) => factor > 0 ? this.updateEntity(next) : this.updateEntity(prev));
     // deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntities([entity.id]) : this.createEntity(entity));
   }
 

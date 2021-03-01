@@ -533,7 +533,7 @@ class TableEditorBase extends React.Component<ITableEditorProps & PropsFromRedux
     })
 
     if (prevEntity && nextEntity) {
-      this.props.entityManager.updateEntity(nextEntity);
+      this.props.updateEntity(nextEntity);
       return { prev: prevEntity, next: nextEntity };
     }
   }
@@ -619,10 +619,11 @@ const mapStateToProps = (state: any, ownProps: ITableEditorProps) => {
 }
 
 const mapDispatchToProps = (dispatch: any, ownProps: ITableEditorProps) => {
-  const { createEntity } = ownProps.entityContext;
+  const { createEntity, updateEntity } = ownProps.entityContext;
 
   return ({
     createEntity: (model: Model, entityData: any) => dispatch(createEntity(model, entityData)),
+    updateEntity: (entity: FTMEntity) => dispatch(updateEntity(entity)),
   })
 }
 
