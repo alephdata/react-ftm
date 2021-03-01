@@ -126,7 +126,7 @@
     "git": "^0.1.5",
     "google-libphonenumber": "^3.2.14",
     "numeral": "^2.0.6",
-    "react-datasheet": "^1.4.8",
+    "react-datasheet": "^1.4.9",
     "react-draggable": "^4.4.3",
     "react-intl": "^5.11.0",
     "recharts": "^2.0.4",
