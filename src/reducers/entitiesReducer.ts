@@ -20,9 +20,8 @@ const createEntitiesReducer = (entities: Array<Entity>) => {
       return state;
     })
     .on(deleteEntity, (state: Array<Entity>, entityId: string) => {
-      return remove(state, {
-        id: entityId
-      });
+      remove(state, { id: entityId });
+      return state;
     })
   return entitiesReducer;
 }

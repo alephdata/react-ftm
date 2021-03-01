@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
+import includes from 'lodash/includes'
 import c from 'classnames';
 import { Entity, IEntityDatum, Model, Schema } from "@alephdata/followthemoney";
 import { Button, ButtonGroup, Tooltip } from '@blueprintjs/core';
@@ -352,14 +353,16 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   }
 
   removeSelection() {
-    const { entityManager, layout } = this.props;
+    const { deleteEntity, entities, layout } = this.props;
 
     const idsToRemove = layout.removeSelection();
-    const entitiesToRemove = entityManager.getEntities(idsToRemove);
-    entityManager.deleteEntities(idsToRemove);
-    layout.layout(entityManager.getEntities());
+    // const entitiesToRemove = entityManager.getEntities(idsToRemove);
 
-    this.updateLayout(layout, { deleted: entitiesToRemove }, { modifyHistory:true })
+    idsToRemove.map(deleteEntity)
+    layout.layout(entities.filter((e: Entity) => !includes(idsToRemove, e.id)));
+
+    // this.updateLayout(layout, { deleted: entitiesToRemove }, { modifyHistory:true })
+    this.updateLayout(layout, {}, { modifyHistory:true })
   }
 
   ungroupSelection() {
@@ -515,10 +518,11 @@ const mapStateToProps = (state: any, ownProps: INetworkDiagramProps) => {
 }
 
 const mapDispatchToProps = (dispatch: any, ownProps: INetworkDiagramProps) => {
-  const { createEntity } = ownProps.entityContext;
+  const { createEntity, deleteEntity } = ownProps.entityContext;
 
   return ({
     createEntity: (model: Model, entityData: any) => dispatch(createEntity(model, entityData)),
+    deleteEntity: (entityId: string) => dispatch(deleteEntity(entityId)),
   })
 }
 

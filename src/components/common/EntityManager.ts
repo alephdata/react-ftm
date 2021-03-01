@@ -15,7 +15,6 @@ export interface IEntityManagerProps {
   entities: Array<IEntityDatum>
   namespace?: Namespace,
   updateEntity?: (entity: Entity) => void,
-  deleteEntity?: (entityId: string) => void,
   expandEntity?: (entityId: string, properties?: Array<string>, limit?: number) => Promise<any>
   resolveEntityReference?: (entityId: string) => Entity | undefined,
 }
@@ -71,15 +70,6 @@ export class EntityManager {
     }
 
     return entity;
-  }
-
-  deleteEntities(entityIds: Array<string>) {
-    entityIds.forEach(entityId => {
-      this.entities.delete(entityId);
-      if (this.overload?.deleteEntity) {
-        this.overload.deleteEntity(entityId);
-      }
-    })
   }
 
   async expandEntity(entityId: string, properties?: Array<string>, limit?: number) {
