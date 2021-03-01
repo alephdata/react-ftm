@@ -1,4 +1,6 @@
 import React from 'react'
+import { compose } from 'redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { defaultModel, Model } from '@alephdata/followthemoney'
 
 import NetworkDiagramWrapper from 'embed/NetworkDiagramWrapper';
@@ -16,10 +18,10 @@ export interface IEmbeddedElementProps {
   config?: any
 }
 
-export class EmbeddedElement extends React.Component <IEmbeddedElementProps> {
+class EmbeddedElementBase extends React.Component <IEmbeddedElementProps & PropsFromRedux> {
   private entityManager: EntityManager
 
-  constructor(props: IEmbeddedElementProps) {
+  constructor(props: IEmbeddedElementProps & PropsFromRedux) {
     super(props)
     if (props.data) {
       this.entityManager = EntityManager.fromJSON({}, props.data?.entities || props.data?.layout?.entities);
@@ -31,10 +33,10 @@ export class EmbeddedElement extends React.Component <IEmbeddedElementProps> {
   }
 
   onUpdate(additionalData?: any) {
-    const { id, config } = this.props;
+    const { id, config, entities } = this.props;
     if (config?.writeable) {
       const updatedData = JSON.stringify({
-        entities: this.entityManager.toJSON(),
+        entities,
         ...additionalData
       })
       localStorage.setItem(id, updatedData)
@@ -70,3 +72,16 @@ export class EmbeddedElement extends React.Component <IEmbeddedElementProps> {
     )
   }
 }
+
+const mapStateToProps = (state: any, ownProps: IEmbeddedElementProps) => {
+  const { entityContext } = ownProps;
+
+  return ({
+    entities: entityContext.selectEntities(state),
+  });
+}
+
+const connector = connect(mapStateToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+export const EmbeddedElement = connector(EmbeddedElementBase)
