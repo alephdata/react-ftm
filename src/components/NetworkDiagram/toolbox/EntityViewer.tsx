@@ -84,7 +84,6 @@ export class EntityViewer extends React.Component<IEntityViewerProps, IEntityVie
   }
 
   renderProperty(property:FTMProperty){
-    const { entityManager } = this.context;
     const { entity, entityContext } = this.props;
     const { currEditing } = this.state;
     const isEditable = property?.name === currEditing?.name;

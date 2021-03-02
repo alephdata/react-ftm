@@ -28,10 +28,9 @@ export default class EntityTableWrapper extends React.Component <IWrappedElement
   }
 
   render() {
-    const { entityContext, entityManager, onUpdate, writeable } = this.props;
+    const { entityContext, onUpdate, writeable } = this.props;
     return (
       <EntityTable
-        entityManager={entityManager}
         entityContext={entityContext}
         writeable={writeable}
         updateFinishedCallback={() => onUpdate()}

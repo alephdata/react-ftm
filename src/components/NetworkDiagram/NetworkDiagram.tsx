@@ -8,7 +8,7 @@ import { Entity, IEntityDatum, Model, Schema } from "@alephdata/followthemoney";
 import { Button, ButtonGroup, Tooltip } from '@blueprintjs/core';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 
-import { EdgeCreateDialog, EntityCreateDialog, EntityManager } from 'components/common';
+import { EdgeCreateDialog, EntityCreateDialog } from 'components/common';
 import { IEntityContext } from 'contexts/EntityContext';
 import { GraphConfig } from 'NetworkDiagram/GraphConfig';
 import { GraphRenderer } from 'NetworkDiagram/renderer'
@@ -34,7 +34,6 @@ const messages = defineMessages({
 
 export interface INetworkDiagramProps extends WrappedComponentProps {
   config: GraphConfig,
-  entityManager: EntityManager
   entityContext: IEntityContext
   layout: GraphLayout,
   viewport: Viewport,
@@ -175,12 +174,12 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   }
 
   navigateHistory(factor:number) {
-    const { config, entityManager } = this.props;
+    const { config } = this.props;
 
     const { layout, entityChanges } = this.history.go(factor);
 
     if (entityChanges) {
-      entityManager.applyEntityChanges(entityChanges, factor);
+      // entityManager.applyEntityChanges(entityChanges, factor);
     }
 
     this.updateLayout(GraphLayout.fromJSON(config, layout), undefined, { forceSaveUpdate: true })
@@ -194,7 +193,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   }
 
   async onVertexCreate(entityData: any) {
-    const { entities, entityManager, layout, model, viewport } = this.props;
+    const { entities, layout, model, viewport } = this.props;
     const { vertexCreateOptions } = this.state;
 
     const entity = this.props.createEntity(model, entityData)?.payload;
@@ -218,7 +217,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   }
 
   onEdgeCreate(source: Entity, target: Entity, type: EdgeType) {
-    const { createEntity, entityManager, entities, layout, model, viewport, updateEntity } = this.props;
+    const { createEntity, entities, layout, model, viewport, updateEntity } = this.props;
     const sourceVertex = layout.getVertexByEntity(source);
     const targetVertex = layout.getVertexByEntity(target);
     if (!sourceVertex || !targetVertex) {
@@ -285,13 +284,13 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   }
 
   toggleSettingsDialog(settings?: any) {
-    const { entityManager, layout } = this.props;
+    const { entities, layout } = this.props;
 
     this.setState(({ settingsDialogOpen }) => ({ settingsDialogOpen: !settingsDialogOpen }));
 
     if (settings) {
       layout.settings = Settings.fromJSON(settings);
-      layout.layout(entityManager.getEntities());
+      layout.layout(entities);
       this.updateLayout(layout, undefined, { modifyHistory: true });
     }
   }
@@ -357,7 +356,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   }
 
   render() {
-    const { config, entities, entityContext, entityManager, intl, layout, model, svgRef, viewport, writeable } = this.props;
+    const { config, entities, entityContext, intl, layout, model, svgRef, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, settingsDialogOpen, tableView, vertexMenuSettings } = this.state;
 
     const layoutContext = {
@@ -365,7 +364,6 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
       updateLayout: this.updateLayout,
       viewport,
       updateViewport: this.updateViewport,
-      entityManager,
       entityContext,
       intl,
       writeable,

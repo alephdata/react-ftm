@@ -41,19 +41,19 @@ export class TableView extends React.Component<ITableViewProps> {
   }
 
   onEntitiesUpdate(entityChanges: EntityChanges) {
-    const { entityManager, layout, updateLayout, viewport } = this.context;
-    if (!isEmpty(entityChanges)) {
-      if (entityChanges.created) {
-        layout.layout(entityManager.getEntities(), viewport.center);
-        layout.selectByEntityIds(entityChanges.created.map((e: Entity) => e.id));
-      }
-      layout.layout(entityManager.getEntities());
-      updateLayout(layout, entityChanges, { modifyHistory: true });
-    }
+    // const { entityManager, layout, updateLayout, viewport } = this.context;
+    // if (!isEmpty(entityChanges)) {
+    //   if (entityChanges.created) {
+    //     layout.layout(entityManager.getEntities(), viewport.center);
+    //     layout.selectByEntityIds(entityChanges.created.map((e: Entity) => e.id));
+    //   }
+    //   layout.layout(entityManager.getEntities());
+    //   updateLayout(layout, entityChanges, { modifyHistory: true });
+    // }
   }
 
   render() {
-    const { entityContext, entityManager, layout, writeable } = this.context;
+    const { entityContext, layout, writeable } = this.context;
     const { toggleTableView } = this.props;
 
     return (
@@ -74,7 +74,6 @@ export class TableView extends React.Component<ITableViewProps> {
         />
         <EntityTable
           entityContext={entityContext}
-          entityManager={entityManager}
           visitEntity={this.visitEntity}
           selection={layout.getSelectedEntityIds()}
           onSelectionChange={(entityIds: Array<string>, forceVal: boolean) => this.onSelectionChange(entityIds, { forceVal, additional: true})}

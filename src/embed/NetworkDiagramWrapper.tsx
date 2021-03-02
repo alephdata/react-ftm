@@ -46,13 +46,12 @@ export default class NetworkDiagramWrapper extends React.Component <IWrappedElem
   }
 
   render() {
-    const { entityContext, entityManager, writeable } = this.props;
+    const { entityContext, writeable } = this.props;
     const { layout, viewport } = this.state;
 
     return (
       <NetworkDiagram
         config={config}
-        entityManager={entityManager}
         entityContext={entityContext}
         layout={layout}
         viewport={viewport}

@@ -102,7 +102,7 @@ class EntityTableBase extends React.Component<IEntityTableProps & PropsFromRedux
   }
 
   render() {
-    const { entityContext, entityManager, intl, isPending, model, onSelectionChange, selection, updateFinishedCallback, visitEntity, writeable } = this.props;
+    const { entityContext, intl, isPending, model, onSelectionChange, selection, updateFinishedCallback, visitEntity, writeable } = this.props;
     const { activeSchema, sort, schemata } = this.state;
 
     return (
@@ -125,7 +125,6 @@ class EntityTableBase extends React.Component<IEntityTableProps & PropsFromRedux
                 sortColumn={this.onColumnSort}
                 updateSelection={onSelectionChange}
                 writeable={writeable}
-                entityManager={entityManager}
                 entityContext={entityContext}
                 updateFinishedCallback={updateFinishedCallback}
                 visitEntity={visitEntity}

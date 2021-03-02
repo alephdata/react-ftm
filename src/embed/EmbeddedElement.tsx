@@ -8,7 +8,6 @@ import EntityTableWrapper from 'embed/EntityTableWrapper';
 // import HistogramWrapper from 'embed/HistogramWrapper';
 
 import { IEntityContext } from 'contexts/EntityContext';
-import { EntityManager } from 'components/common'
 
 export interface IEmbeddedElementProps {
   entityContext: IEntityContext
@@ -19,15 +18,8 @@ export interface IEmbeddedElementProps {
 }
 
 class EmbeddedElementBase extends React.Component <IEmbeddedElementProps & PropsFromRedux> {
-  private entityManager: EntityManager
-
   constructor(props: IEmbeddedElementProps & PropsFromRedux) {
     super(props)
-    if (props.data) {
-      this.entityManager = EntityManager.fromJSON({}, props.data?.entities || props.data?.layout?.entities);
-    } else {
-      this.entityManager = new EntityManager();
-    }
 
     this.onUpdate = this.onUpdate.bind(this);
   }
@@ -63,7 +55,6 @@ class EmbeddedElementBase extends React.Component <IEmbeddedElementProps & Props
 
     return (
       <Element
-        entityManager={this.entityManager}
         entityContext={entityContext}
         onUpdate={this.onUpdate}
         writeable={config?.writeable}

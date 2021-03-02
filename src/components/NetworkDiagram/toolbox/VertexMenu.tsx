@@ -110,13 +110,13 @@ export class VertexMenuBase extends React.Component<IVertexMenuProps & PropsFrom
   }
 
   getExpandOptionLabel(propString: string | undefined) {
-    const { entityManager, intl } = this.context;
-    const { entityId } = this.props;
+    const { intl } = this.context;
+    const { entity } = this.props;
 
     if (!propString) {
       return { label: intl.formatMessage(messages.expand_all) };
     }
-    const property = entityManager.getEntity(entityId)?.schema?.getProperty(propString);
+    const property = entity?.schema?.getProperty(propString);
     if (property) {
       const schemaForIcon = property.getRange();
       const icon = schemaForIcon ? <Schema.Icon schema={schemaForIcon} /> : null;
@@ -206,11 +206,12 @@ export class VertexMenuBase extends React.Component<IVertexMenuProps & PropsFrom
 
 const mapStateToProps = (state: any, ownProps: IVertexMenuProps) => {
   const { contents, entityContext } = ownProps;
-  const { selectEntities, selectEntityExpandResult, selectModel } = entityContext;
+  const { selectEntities, selectEntity, selectEntityExpandResult, selectModel } = entityContext;
   const entityId = contents.vertex?.entityId;
 
   return ({
     entityId,
+    entity: entityId && selectEntity(state, entityId),
     expandResult: entityId && !!selectEntityExpandResult && selectEntityExpandResult(state, entityId),
     model: selectModel(state),
     entities: selectEntities(state),
