@@ -11,6 +11,7 @@ import { createAction } from 'redux-act'
 import { matchText } from 'utils';
 import { IEntityContext } from 'contexts/EntityContext';
 import { createEntity, deleteEntity, updateEntity, queryEntities, queryEntityExpand } from 'actions/localStorageActions';
+import { loadComplete, loadState } from 'contexts/util';
 
 export interface ILocalStorageEntityContext extends IEntityContext {}
 
@@ -46,12 +47,7 @@ export class LocalStorageEntityContext {
     const results = this.selectEntities(state)
       .filter(predicate);
 
-    return ({
-      isPending: false,
-      isError: false,
-      shouldLoad: false,
-      results
-    })
+    return loadComplete({ results });
   }
 
   // TODO: Delete this

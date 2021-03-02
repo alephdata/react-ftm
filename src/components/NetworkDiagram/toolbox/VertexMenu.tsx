@@ -3,11 +3,13 @@ import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import { defineMessages } from 'react-intl';
 import { Menu, MenuDivider, MenuItem, Spinner } from "@blueprintjs/core"
+import { Model, Entity } from "@alephdata/followthemoney";
 
 import { IEntityContext } from 'contexts/EntityContext';
 import { modes } from 'components/NetworkDiagram/utils'
 import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { Count, Schema } from 'types';
+import { showSuccessToast, showWarningToast } from 'utils'
 
 import './VertexMenu.scss';
 
@@ -28,6 +30,19 @@ const messages = defineMessages({
     id: 'vertex_menu.expand_none',
     defaultMessage: 'No additional links found',
   },
+  expand_success: {
+    id: 'toasts.expand_success',
+    defaultMessage: `Successfully added {vertices} new
+      {vertices, plural, one {node} other {nodes}}
+      and {edges} new
+      {edges, plural, one {link} other {links}}
+      to the diagram`,
+  },
+  expand_no_effect: {
+    id: 'toasts.expand_no_effect',
+    defaultMessage: 'All expansion results are already present in the diagram',
+  },
+
 });
 
 interface IVertexMenuProps {
@@ -44,6 +59,7 @@ export class VertexMenuBase extends React.Component<IVertexMenuProps & PropsFrom
   constructor(props: Readonly<IVertexMenuProps & PropsFromRedux>) {
     super(props);
     this.handleClickOutside = this.handleClickOutside.bind(this);
+    this.onExpand = this.onExpand.bind(this);
   }
 
   componentDidMount() {
@@ -56,22 +72,51 @@ export class VertexMenuBase extends React.Component<IVertexMenuProps & PropsFrom
   }
 
   fetchIfNeeded() {
-    const { entityId, expandResults, queryEntityExpand } = this.props;
+    const { entityId, expandResult, queryEntityExpand } = this.props;
 
-    if (!!entityId && !!queryEntityExpand && expandResults?.shouldLoad) {
+    if (!!entityId && !!queryEntityExpand && expandResult?.shouldLoad) {
       queryEntityExpand(entityId, undefined, 0);
+    }
+  }
+
+  async onExpand (property: string) {
+    const { intl, layout, updateLayout, viewport } = this.context;
+    const { createEntity, entities, entityId, model, queryEntityExpand } = this.props;
+    if (!queryEntityExpand) { return null; }
+
+    const result = await queryEntityExpand(entityId, [property]);
+    if (result) {
+      const before = layout.getVisibleElementCount();
+
+      const addedEntities = result
+        .reduce((entities: Array<Entity>, expandObj: any) => ([...entities, ...expandObj.entities]), [])
+        .map((entity: Entity) => { return createEntity(model, entity)?.payload; });
+
+      layout.layout([...entities, ...addedEntities], viewport.center);
+      layout.selectByEntityIds(addedEntities.map((e: Entity) => e.id));
+
+      const after = layout.getVisibleElementCount();
+      const vDiff = after.vertices - before.vertices;
+      const eDiff = after.edges - before.edges;
+
+      if (vDiff || eDiff) {
+        showSuccessToast(intl.formatMessage(messages.expand_success, { vertices: vDiff, edges: eDiff }));
+      } else {
+        showWarningToast(intl.formatMessage(messages.expand_no_effect));
+      }
+
+      updateLayout(layout, undefined, { modifyHistory: true })
     }
   }
 
   getExpandOptionLabel(propString: string | undefined) {
     const { entityManager, intl } = this.context;
-    const { contents } = this.props;
+    const { entityId } = this.props;
 
     if (!propString) {
       return { label: intl.formatMessage(messages.expand_all) };
     }
-    const { vertex } = contents;
-    const property = entityManager.getEntity(vertex.entityId)?.schema?.getProperty(propString);
+    const property = entityManager.getEntity(entityId)?.schema?.getProperty(propString);
     if (property) {
       const schemaForIcon = property.getRange();
       const icon = schemaForIcon ? <Schema.Icon schema={schemaForIcon} /> : null;
@@ -91,7 +136,7 @@ export class VertexMenuBase extends React.Component<IVertexMenuProps & PropsFrom
 
   renderExpandOption = ({ count, property }: {count: number, property: string}) => {
     const { intl } = this.context;
-    const { contents, entityId, queryEntityExpand } = this.props;
+    const { entityId, queryEntityExpand } = this.props;
 
     const propLabel = this.getExpandOptionLabel(property);
     if (!propLabel || !entityId || !queryEntityExpand) return null;
@@ -100,7 +145,7 @@ export class VertexMenuBase extends React.Component<IVertexMenuProps & PropsFrom
       <MenuItem
         key={property}
         icon={propLabel.icon || "search-around"}
-        onClick={() => queryEntityExpand(entityId, [property])}
+        onClick={() => this.onExpand(property)}
         text={intl.formatMessage(messages.expand, { property: propLabel.label.toLowerCase() })}
         labelElement={<Count count={count} />}
       />
@@ -109,33 +154,31 @@ export class VertexMenuBase extends React.Component<IVertexMenuProps & PropsFrom
 
   renderExpand = () => {
     const { intl } = this.context;
-    const { contents, expandResults } = this.props;
+    const { contents, expandResult } = this.props;
 
-    console.log('expandResults', expandResults);
-
-    if (!expandResults) {
+    if (expandResult.isPending || !expandResult.results) {
       return <Spinner size={Spinner.SIZE_SMALL} />;
     }
 
-    const totalCount = expandResults.reduce(((totalCount: number, obj: any) => totalCount + obj.count), 0);
+    const totalCount = expandResult.results.reduce(((totalCount: number, obj: any) => totalCount + obj.count), 0);
     if (!totalCount) {
       return <div className="error-text">{intl.formatMessage(messages.expand_none)}</div>;
     }
 
     const allOption = { count: totalCount, property: null};
 
-    return [allOption, ...expandResults].map(this.renderExpandOption);
+    return [allOption, ...expandResult.results].map(this.renderExpandOption);
   }
 
   renderFull = () => {
     const { intl } = this.context;
-    const { setInteractionMode } = this.props;
+    const { setInteractionMode, toggleMenu } = this.props;
 
     return (
       <>
         <MenuItem
           icon="new-link"
-          onClick={() => setInteractionMode(modes.EDGE_DRAW)}
+          onClick={() => { setInteractionMode(modes.EDGE_DRAW); toggleMenu(); }}
           text={intl.formatMessage(messages.add_link)}
         />
         <MenuDivider />
@@ -163,19 +206,22 @@ export class VertexMenuBase extends React.Component<IVertexMenuProps & PropsFrom
 
 const mapStateToProps = (state: any, ownProps: IVertexMenuProps) => {
   const { contents, entityContext } = ownProps;
-  const { selectEntityExpandResult } = entityContext;
+  const { selectEntities, selectEntityExpandResult, selectModel } = entityContext;
   const entityId = contents.vertex?.entityId;
 
   return ({
     entityId,
-    expandResults: entityId && !!selectEntityExpandResult && selectEntityExpandResult(state, entityId)
+    expandResult: entityId && !!selectEntityExpandResult && selectEntityExpandResult(state, entityId),
+    model: selectModel(state),
+    entities: selectEntities(state),
   });
 }
 
 const mapDispatchToProps = (dispatch: any, ownProps: IVertexMenuProps) => {
-  const { queryEntityExpand } = ownProps.entityContext;
+  const { createEntity, queryEntityExpand } = ownProps.entityContext;
 
   return ({
+    createEntity: (model: Model, entityData: any) => dispatch(createEntity(model, entityData)),
     queryEntityExpand: queryEntityExpand
       ? (entityId: string, properties?: Array<string>, limit?: number) => dispatch(queryEntityExpand(entityId, properties, limit))
       : undefined,

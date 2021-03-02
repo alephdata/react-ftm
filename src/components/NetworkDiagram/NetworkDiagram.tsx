@@ -30,18 +30,6 @@ const messages = defineMessages({
     id: 'tooltips.fit_to_selection',
     defaultMessage: 'Fit view to selection',
   },
-  expand_success: {
-    id: 'toasts.expand_success',
-    defaultMessage: `Successfully added {vertices} new
-      {vertices, plural, one {node} other {nodes}}
-      and {edges} new
-      {edges, plural, one {link} other {links}}
-      to the diagram`,
-  },
-  expand_none: {
-    id: 'toasts.expand_none',
-    defaultMessage: 'All expansion results are already present in the diagram',
-  },
 });
 
 export interface INetworkDiagramProps extends WrappedComponentProps {
@@ -282,48 +270,11 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     this.setState({
       vertexMenuSettings: menuSettings,
     })
-    // if (vertex.entityId && queryEntityExpand) {
-    //   const expandResults = await queryEntityExpand(vertex.entityId, undefined, 0);
-    //   this.setState(({vertexMenuSettings}) => ({
-    //     vertexMenuSettings: vertexMenuSettings ? { ...menuSettings, expandResults } : null,
-    //   }))
-    // }
   }
 
   hideVertexMenu() {
     this.setState({ vertexMenuSettings: null });
   }
-
-  // async expandVertex(vertex: Vertex, properties: Array<string>) {
-  //   const { queryEntityExpand, entities, intl, layout, model, viewport } = this.props;
-  //   if (!queryEntityExpand || !vertex.entityId) return;
-  //
-  //   this.setState({ vertexMenuSettings: null });
-  //
-  //   const expandResults = await queryEntityExpand(vertex.entityId, properties);
-  //   if (expandResults) {
-  //     const before = layout.getVisibleElementCount();
-  //
-  //     const addedEntities = expandResults
-  //       .reduce((entities: Array<Entity>, expandObj: any) => ([...entities, ...expandObj.entities]), [])
-  //       .map((entity: Entity) => { return this.props.createEntity(model, entity)?.payload; });
-  //
-  //     layout.layout([...entities, ...addedEntities], viewport.center);
-  //     layout.selectByEntityIds(addedEntities.map((e: Entity) => e.id));
-  //
-  //     const after = layout.getVisibleElementCount();
-  //     const vDiff = after.vertices - before.vertices;
-  //     const eDiff = after.edges - before.edges;
-  //
-  //     if (vDiff || eDiff) {
-  //       showSuccessToast(intl.formatMessage(messages.expand_success, { vertices: vDiff, edges: eDiff }));
-  //     } else {
-  //       showWarningToast(intl.formatMessage(messages.expand_none));
-  //     }
-  //
-  //     this.updateLayout(layout, undefined, { modifyHistory: true })
-  //   }
-  // }
 
   setInteractionMode(newMode?: string) {
     this.setState({ interactionMode: newMode || modes.SELECT, vertexCreateOptions: null })
@@ -528,7 +479,7 @@ const mapStateToProps = (state: any, ownProps: INetworkDiagramProps) => {
 }
 
 const mapDispatchToProps = (dispatch: any, ownProps: INetworkDiagramProps) => {
-  const { createEntity, deleteEntity, queryEntityExpand, updateEntity } = ownProps.entityContext;
+  const { createEntity, deleteEntity, updateEntity } = ownProps.entityContext;
 
   return ({
     createEntity: (model: Model, entityData: any) => dispatch(createEntity(model, entityData)),
