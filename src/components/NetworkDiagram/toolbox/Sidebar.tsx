@@ -51,15 +51,14 @@ class SidebarBase extends React.Component<ISidebarProps & PropsFromRedux> {
 
   onEntityChanged(entity: Entity) {
     const { layout, updateLayout } = this.context;
-    const { entities, updateEntity } = this.props;
+    const { entities, resolveEntityReference, updateEntity } = this.props;
 
-    // const previousEntity = entityManager.getEntity(entity.id);
+    const previousEntity = resolveEntityReference(entity.id);
     updateEntity(entity);
     const index = findIndex(entities, { id: entity.id })
     entities.splice(index, 1, entity);
     layout.layout(entities);
-    updateLayout(layout, undefined, { modifyHistory:true })
-    // updateLayout(layout, { updated: [{ prev: previousEntity, next: entity }] }, { modifyHistory:true });
+    updateLayout(layout, { updated: [{ prev: previousEntity, next: entity }] }, { modifyHistory:true });
   }
 
   removeGroupingEntity(grouping: Grouping, entity: Entity) {
@@ -170,7 +169,7 @@ const mapStateToProps = (state: any, ownProps: ISidebarProps) => {
   return ({
     entities: entityContext.selectEntities(state),
     selectedEntities: entityContext.selectEntities(state, selectedEntityIds),
-    // resolveEntityReference: (id: any) => entityContext.selectEntity(state, id)
+    resolveEntityReference: (id: any) => entityContext.selectEntity(state, id)
   });
 }
 

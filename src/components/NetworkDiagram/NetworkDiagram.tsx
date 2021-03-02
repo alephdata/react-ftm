@@ -19,7 +19,7 @@ import { Sidebar, TableView, Toolbar, VertexMenu } from 'NetworkDiagram/toolbox'
 import { History } from 'NetworkDiagram/History';
 import { GroupingCreateDialog, SettingsDialog } from 'NetworkDiagram/dialogs';
 import { EdgeType } from 'types';
-import { EntityChanges } from 'components/common/types';
+import { EntityChanges, EntityChangeUpdate } from 'components/common/types';
 import { filterVerticesByText, modes } from 'NetworkDiagram/utils'
 import { showSuccessToast, showWarningToast } from 'utils'
 
@@ -174,12 +174,16 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   }
 
   navigateHistory(factor:number) {
-    const { config } = this.props;
+    const { config, createEntity, deleteEntity, model, updateEntity } = this.props;
 
     const { layout, entityChanges } = this.history.go(factor);
 
     if (entityChanges) {
-      // entityManager.applyEntityChanges(entityChanges, factor);
+      const { created, updated, deleted } = entityChanges;
+
+      created && created.forEach((entity: Entity) => factor > 0 ? createEntity(model, entity) : deleteEntity(entity.id));
+      updated && updated.forEach(({prev, next}: EntityChangeUpdate) => factor > 0 ? updateEntity(next) : updateEntity(prev));
+      deleted && deleted.forEach((entity: Entity) => factor > 0 ? deleteEntity(entity.id) : createEntity(model, entity));
     }
 
     this.updateLayout(GraphLayout.fromJSON(config, layout), undefined, { forceSaveUpdate: true })
@@ -304,16 +308,17 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   }
 
   removeSelection() {
-    const { deleteEntity, entities, layout } = this.props;
+    const { deleteEntity, entities, layout, resolveEntityReference } = this.props;
 
     const idsToRemove = layout.removeSelection();
-    // const entitiesToRemove = entityManager.getEntities(idsToRemove);
+    const entitiesToRemove = idsToRemove
+      .map(resolveEntityReference)
+      .filter((e: any) => e !== undefined);
 
     idsToRemove.map(deleteEntity)
     layout.layout(entities.filter((e: Entity) => !includes(idsToRemove, e.id)));
 
-    // this.updateLayout(layout, { deleted: entitiesToRemove }, { modifyHistory:true })
-    this.updateLayout(layout, {}, { modifyHistory:true })
+    this.updateLayout(layout, { deleted: entitiesToRemove as Array<Entity> }, { modifyHistory:true })
   }
 
   ungroupSelection() {
@@ -358,6 +363,8 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   render() {
     const { config, entities, entityContext, intl, layout, model, svgRef, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, settingsDialogOpen, tableView, vertexMenuSettings } = this.state;
+
+    console.log('entities', entities);
 
     const layoutContext = {
       layout,
@@ -429,6 +436,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
             {tableView && (
               <div className="NetworkDiagram__table">
                 <TableView
+                  entityContext={entityContext}
                   toggleTableView={this.toggleTableView}
                   fitToSelection={this.fitToSelection}
                   key={this.history.getRevertedDistance()}

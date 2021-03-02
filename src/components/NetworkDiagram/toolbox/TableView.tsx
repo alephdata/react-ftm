@@ -1,5 +1,9 @@
 import React from 'react';
+import { compose } from 'redux';
+import { connect, ConnectedProps } from 'react-redux';
 import isEmpty from 'lodash/isEmpty'
+
+import { IEntityContext } from 'contexts/EntityContext';
 import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { EntityChanges } from 'components/common/types';
 import { EntityTable } from 'components/EntityTable';
@@ -9,14 +13,15 @@ import { Entity } from "@alephdata/followthemoney";
 import "./TableView.scss"
 
 interface ITableViewProps {
+  entityContext: IEntityContext
   toggleTableView: () => void
   fitToSelection: () => void
 }
 
-export class TableView extends React.Component<ITableViewProps> {
+class TableViewBase extends React.Component<ITableViewProps & PropsFromRedux> {
   static contextType = GraphContext;
 
-  constructor(props: ITableViewProps) {
+  constructor(props: ITableViewProps & PropsFromRedux) {
     super(props);
 
     this.onSelectionChange = this.onSelectionChange.bind(this);
@@ -41,20 +46,21 @@ export class TableView extends React.Component<ITableViewProps> {
   }
 
   onEntitiesUpdate(entityChanges: EntityChanges) {
-    // const { entityManager, layout, updateLayout, viewport } = this.context;
-    // if (!isEmpty(entityChanges)) {
-    //   if (entityChanges.created) {
-    //     layout.layout(entityManager.getEntities(), viewport.center);
-    //     layout.selectByEntityIds(entityChanges.created.map((e: Entity) => e.id));
-    //   }
-    //   layout.layout(entityManager.getEntities());
-    //   updateLayout(layout, entityChanges, { modifyHistory: true });
-    // }
+    const { layout, updateLayout, viewport } = this.context;
+    const { entities } = this.props;
+    if (!isEmpty(entityChanges)) {
+      if (entityChanges.created) {
+        layout.layout(entities, viewport.center);
+        layout.selectByEntityIds(entityChanges.created.map((e: Entity) => e.id));
+      }
+      layout.layout();
+      updateLayout(layout, entityChanges, { modifyHistory: true });
+    }
   }
 
   render() {
-    const { entityContext, layout, writeable } = this.context;
-    const { toggleTableView } = this.props;
+    const { layout, writeable } = this.context;
+    const { entityContext, toggleTableView } = this.props;
 
     return (
       <Drawer
@@ -84,3 +90,16 @@ export class TableView extends React.Component<ITableViewProps> {
     )
   }
 }
+
+const mapStateToProps = (state: any, ownProps: ITableViewProps) => {
+  const { entityContext } = ownProps;
+
+  return ({
+    entities: entityContext.selectEntities(state),
+  });
+}
+
+const connector = connect(mapStateToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+export const TableView = connector(TableViewBase)
