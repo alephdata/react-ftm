@@ -10,7 +10,7 @@ import { createAction } from 'redux-act'
 
 import { matchText } from 'utils';
 import { IEntityContext } from 'contexts/EntityContext';
-import { createEntity, deleteEntity, updateEntity, queryEntities } from 'actions/localStorageActions';
+import { createEntity, deleteEntity, updateEntity, queryEntities, queryEntityExpand } from 'actions/localStorageActions';
 
 export interface ILocalStorageEntityContext extends IEntityContext {}
 
@@ -56,5 +56,13 @@ export class LocalStorageEntityContext {
 
   // TODO: Delete this
   // queryEntitySuggest = queryEntities
-
+  queryEntityExpand = queryEntityExpand
+  selectEntityExpandResult = (state: any, entityId: string, properties?: Array<string>, limit?: number) => {
+    return ({
+      isPending: false,
+      isError: false,
+      shouldLoad: false,
+      results: []
+    })
+  }
 }

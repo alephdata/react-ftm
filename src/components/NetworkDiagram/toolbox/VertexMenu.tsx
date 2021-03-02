@@ -1,7 +1,10 @@
 import * as React from 'react'
+import { compose } from 'redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { defineMessages } from 'react-intl';
 import { Menu, MenuDivider, MenuItem, Spinner } from "@blueprintjs/core"
 
+import { IEntityContext } from 'contexts/EntityContext';
 import { modes } from 'components/NetworkDiagram/utils'
 import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { Count, Schema } from 'types';
@@ -28,27 +31,36 @@ const messages = defineMessages({
 });
 
 interface IVertexMenuProps {
-  isOpen: boolean
   contents: any
-  actions: any
-  hideMenu: any
+  setInteractionMode: any
+  entityContext: IEntityContext
+  toggleMenu: any
 }
 
-export class VertexMenu extends React.Component<IVertexMenuProps> {
+export class VertexMenuBase extends React.Component<IVertexMenuProps & PropsFromRedux> {
   static contextType = GraphContext;
   private menuRef: any | null = null;
 
-  constructor(props: Readonly<IVertexMenuProps>) {
+  constructor(props: Readonly<IVertexMenuProps & PropsFromRedux>) {
     super(props);
     this.handleClickOutside = this.handleClickOutside.bind(this);
   }
 
   componentDidMount() {
+    this.fetchIfNeeded();
     document.addEventListener('mousedown', this.handleClickOutside);
   }
 
   componentWillUnmount() {
     document.removeEventListener('mousedown', this.handleClickOutside);
+  }
+
+  fetchIfNeeded() {
+    const { entityId, expandResults, queryEntityExpand } = this.props;
+
+    if (!!entityId && !!queryEntityExpand && expandResults?.shouldLoad) {
+      queryEntityExpand(entityId, undefined, 0);
+    }
   }
 
   getExpandOptionLabel(propString: string | undefined) {
@@ -68,27 +80,27 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
   }
 
   handleClickOutside(e: MouseEvent) {
-    const { hideMenu } = this.props;
+    const { toggleMenu } = this.props;
     const target = e.target as Element;
     if (target && this.menuRef && !this.menuRef.contains(target)) {
       e.preventDefault();
       e.stopPropagation();
-      hideMenu();
+      toggleMenu();
     }
   }
 
   renderExpandOption = ({ count, property }: {count: number, property: string}) => {
     const { intl } = this.context;
-    const { actions, contents } = this.props;
+    const { contents, entityId, queryEntityExpand } = this.props;
 
     const propLabel = this.getExpandOptionLabel(property);
-    if (!propLabel) return null;
+    if (!propLabel || !entityId || !queryEntityExpand) return null;
 
     return (
       <MenuItem
         key={property}
         icon={propLabel.icon || "search-around"}
-        onClick={() => actions.expandVertex(contents.vertex, property)}
+        onClick={() => queryEntityExpand(entityId, [property])}
         text={intl.formatMessage(messages.expand, { property: propLabel.label.toLowerCase() })}
         labelElement={<Count count={count} />}
       />
@@ -97,8 +109,9 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
 
   renderExpand = () => {
     const { intl } = this.context;
-    const { contents } = this.props;
-    const { expandResults } = contents;
+    const { contents, expandResults } = this.props;
+
+    console.log('expandResults', expandResults);
 
     if (!expandResults) {
       return <Spinner size={Spinner.SIZE_SMALL} />;
@@ -116,13 +129,13 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
 
   renderFull = () => {
     const { intl } = this.context;
-    const { actions } = this.props;
+    const { setInteractionMode } = this.props;
 
     return (
       <>
         <MenuItem
           icon="new-link"
-          onClick={() => actions.setInteractionMode(modes.EDGE_DRAW)}
+          onClick={() => setInteractionMode(modes.EDGE_DRAW)}
           text={intl.formatMessage(messages.add_link)}
         />
         <MenuDivider />
@@ -132,8 +145,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
   }
 
   render() {
-    const { contents, isOpen } = this.props;
-    if (!isOpen) return null;
+    const { contents } = this.props;
     const { anchor, position, onlyShowExpand } = contents;
 
     const style = { [anchor]: `${position.y}px`, left: `${position.x}px` };
@@ -148,3 +160,29 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
     );
   }
 }
+
+const mapStateToProps = (state: any, ownProps: IVertexMenuProps) => {
+  const { contents, entityContext } = ownProps;
+  const { selectEntityExpandResult } = entityContext;
+  const entityId = contents.vertex?.entityId;
+
+  return ({
+    entityId,
+    expandResults: entityId && !!selectEntityExpandResult && selectEntityExpandResult(state, entityId)
+  });
+}
+
+const mapDispatchToProps = (dispatch: any, ownProps: IVertexMenuProps) => {
+  const { queryEntityExpand } = ownProps.entityContext;
+
+  return ({
+    queryEntityExpand: queryEntityExpand
+      ? (entityId: string, properties?: Array<string>, limit?: number) => dispatch(queryEntityExpand(entityId, properties, limit))
+      : undefined,
+  })
+}
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+export const VertexMenu = connector(VertexMenuBase)

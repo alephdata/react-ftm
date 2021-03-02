@@ -9,7 +9,11 @@ import {
   Popover,
 } from "@blueprintjs/core"
 import c from 'classnames';
+import { compose } from 'redux';
+import { connect, ConnectedProps } from 'react-redux';
 
+
+import { IEntityContext } from 'contexts/EntityContext';
 import { GraphContext } from 'NetworkDiagram/GraphContext';
 import { IToolbarButtonGroup, ToolbarButtonGroup, SearchBox } from 'NetworkDiagram/toolbox';
 import { modes } from 'NetworkDiagram/utils';
@@ -116,12 +120,13 @@ interface IToolbarProps {
   showEditingButtons: boolean,
   searchText: string,
   tableView: boolean,
+  entityContext: IEntityContext
 }
 
-export class Toolbar extends React.Component<IToolbarProps> {
+class ToolbarBase extends React.Component<IToolbarProps & PropsFromRedux> {
   static contextType = GraphContext;
 
-  constructor(props: Readonly<IToolbarProps>) {
+  constructor(props: Readonly<IToolbarProps & PropsFromRedux>) {
     super(props);
     this.onSetInteractionMode = this.onSetInteractionMode.bind(this)
     this.onPosition = this.onPosition.bind(this)
@@ -181,13 +186,13 @@ export class Toolbar extends React.Component<IToolbarProps> {
   }
 
   render() {
-    const { entityManager, interactionMode, intl, layout, updateLayout } = this.context;
-    const { actions, history, searchText, tableView } = this.props;
+    const { interactionMode, intl, layout, updateLayout } = this.context;
+    const { actions, allowExpand, history, searchText, tableView } = this.props;
 
     const vertices = layout.getSelectedVertices()
     const hasSelection = layout.hasSelection()
     const canAddEdge = vertices.length > 0 && vertices.length <= 2
-    const canExpandSelection = entityManager.hasExpand && layout.getSelectedVertices().length === 1
+    const canExpandSelection = allowExpand && layout.getSelectedVertices().length === 1
     const canGroupSelection = layout.getSelectedVertices().length > 1
     const canUngroupSelection = layout.getSelectedGroupings().length >= 1
     const showSearch = layout.vertices && layout.vertices.size > 0;
@@ -231,7 +236,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
           disabled: !hasSelection,
           writeableOnly: true,
         },
-        ...(entityManager.hasExpand ? (
+        ...(allowExpand ? (
           [{
             helpText: intl.formatMessage(messages.tooltip_expand),
             icon: "search-around",
@@ -372,3 +377,16 @@ export class Toolbar extends React.Component<IToolbarProps> {
     </div>
   }
 }
+
+const mapStateToProps = (state: any, ownProps: IToolbarProps) => {
+  const { entityContext } = ownProps;
+
+  return ({
+    allowExpand: !!entityContext.queryEntityExpand,
+  });
+}
+
+const connector = connect(mapStateToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+export const Toolbar = connector(ToolbarBase)

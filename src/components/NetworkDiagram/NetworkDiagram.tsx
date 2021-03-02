@@ -105,7 +105,6 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     this.hideVertexMenu = this.hideVertexMenu.bind(this);
     this.showVertexMenu = this.showVertexMenu.bind(this);
     this.toggleSettingsDialog = this.toggleSettingsDialog.bind(this);
-    this.expandVertex = this.expandVertex.bind(this);
     this.onVertexCreate = this.onVertexCreate.bind(this);
     this.onEdgeCreate = this.onEdgeCreate.bind(this);
   }
@@ -271,8 +270,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     }
   }
 
-  async showVertexMenu(vertex: Vertex, position: Point, onlyShowExpand = false) {
-    const { entityManager } = this.props;
+  showVertexMenu(vertex: Vertex, position: Point, onlyShowExpand = false) {
     const menuSettings = { vertex, position, anchor: 'top', onlyShowExpand };
 
     const docHeight = document.body.clientHeight;
@@ -284,48 +282,48 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     this.setState({
       vertexMenuSettings: menuSettings,
     })
-    if (vertex.entityId) {
-      const expandResults = await entityManager.expandEntity(vertex.entityId, undefined, 0);
-      this.setState(({vertexMenuSettings}) => ({
-        vertexMenuSettings: vertexMenuSettings ? { ...menuSettings, expandResults } : null,
-      }))
-    }
+    // if (vertex.entityId && queryEntityExpand) {
+    //   const expandResults = await queryEntityExpand(vertex.entityId, undefined, 0);
+    //   this.setState(({vertexMenuSettings}) => ({
+    //     vertexMenuSettings: vertexMenuSettings ? { ...menuSettings, expandResults } : null,
+    //   }))
+    // }
   }
 
   hideVertexMenu() {
     this.setState({ vertexMenuSettings: null });
   }
 
-  async expandVertex(vertex: Vertex, properties: Array<string>) {
-    if (!vertex.entityId) return;
-    const { entityManager, entities, intl, layout, model, viewport } = this.props;
-
-    this.setState({ vertexMenuSettings: null });
-
-    const expandResults = await entityManager.expandEntity(vertex.entityId, properties);
-    if (expandResults) {
-      const before = layout.getVisibleElementCount();
-
-      const addedEntities = expandResults
-        .reduce((entities: Array<Entity>, expandObj: any) => ([...entities, ...expandObj.entities]), [])
-        .map((entity: Entity) => { return this.props.createEntity(model, entity)?.payload; });
-
-      layout.layout([...entities, ...addedEntities], viewport.center);
-      layout.selectByEntityIds(addedEntities.map((e: Entity) => e.id));
-
-      const after = layout.getVisibleElementCount();
-      const vDiff = after.vertices - before.vertices;
-      const eDiff = after.edges - before.edges;
-
-      if (vDiff || eDiff) {
-        showSuccessToast(intl.formatMessage(messages.expand_success, { vertices: vDiff, edges: eDiff }));
-      } else {
-        showWarningToast(intl.formatMessage(messages.expand_none));
-      }
-
-      this.updateLayout(layout, undefined, { modifyHistory: true })
-    }
-  }
+  // async expandVertex(vertex: Vertex, properties: Array<string>) {
+  //   const { queryEntityExpand, entities, intl, layout, model, viewport } = this.props;
+  //   if (!queryEntityExpand || !vertex.entityId) return;
+  //
+  //   this.setState({ vertexMenuSettings: null });
+  //
+  //   const expandResults = await queryEntityExpand(vertex.entityId, properties);
+  //   if (expandResults) {
+  //     const before = layout.getVisibleElementCount();
+  //
+  //     const addedEntities = expandResults
+  //       .reduce((entities: Array<Entity>, expandObj: any) => ([...entities, ...expandObj.entities]), [])
+  //       .map((entity: Entity) => { return this.props.createEntity(model, entity)?.payload; });
+  //
+  //     layout.layout([...entities, ...addedEntities], viewport.center);
+  //     layout.selectByEntityIds(addedEntities.map((e: Entity) => e.id));
+  //
+  //     const after = layout.getVisibleElementCount();
+  //     const vDiff = after.vertices - before.vertices;
+  //     const eDiff = after.edges - before.edges;
+  //
+  //     if (vDiff || eDiff) {
+  //       showSuccessToast(intl.formatMessage(messages.expand_success, { vertices: vDiff, edges: eDiff }));
+  //     } else {
+  //       showWarningToast(intl.formatMessage(messages.expand_none));
+  //     }
+  //
+  //     this.updateLayout(layout, undefined, { modifyHistory: true })
+  //   }
+  // }
 
   setInteractionMode(newMode?: string) {
     this.setState({ interactionMode: newMode || modes.SELECT, vertexCreateOptions: null })
@@ -374,6 +372,20 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     this.updateLayout(layout, undefined, { modifyHistory:true })
   }
 
+  renderVertexMenu() {
+    const { entityContext } = this.props;
+    const { vertexMenuSettings } = this.state;
+
+    return (
+      <VertexMenu
+        entityContext={entityContext}
+        contents={vertexMenuSettings}
+        setInteractionMode={this.setInteractionMode}
+        toggleMenu={this.hideVertexMenu}
+      />
+    );
+  }
+
   renderEdgeCreate() {
     const { entityContext, intl, layout, resolveEntityReference } = this.props;
     const { interactionMode } = this.state;
@@ -419,7 +431,6 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
       onChangeSearch: this.onChangeSearch,
       onSubmitSearch: this.onSubmitSearch,
       showVertexMenu: this.showVertexMenu,
-      expandVertex: this.expandVertex,
       fitToSelection: this.fitToSelection,
       toggleSettingsDialog: this.toggleSettingsDialog,
     };
@@ -436,6 +447,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
               showEditingButtons={writeable}
               searchText={searchText}
               tableView={tableView}
+              entityContext={entityContext}
             />
           </div>
           <div className={c("NetworkDiagram__content", { 'sidebar-open': showSidebar, 'table-open': tableView })}>
@@ -490,18 +502,13 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
               isOpen={interactionMode === modes.GROUPING_CREATE}
               toggleDialog={this.setInteractionMode}
             />
-            <VertexMenu
-              isOpen={vertexMenuSettings !== null && interactionMode !== modes.EDGE_DRAW}
-              contents={vertexMenuSettings}
-              actions={actions}
-              hideMenu={this.hideVertexMenu}
-            />
             <SettingsDialog
               isOpen={settingsDialogOpen}
               settings={layout.settings}
               toggleDialog={this.toggleSettingsDialog}
               model={model}
             />
+            {vertexMenuSettings !== null && interactionMode !== modes.EDGE_DRAW && this.renderVertexMenu()}
             {interactionMode === modes.EDGE_CREATE && this.renderEdgeCreate()}
           </>
         )}
@@ -521,7 +528,7 @@ const mapStateToProps = (state: any, ownProps: INetworkDiagramProps) => {
 }
 
 const mapDispatchToProps = (dispatch: any, ownProps: INetworkDiagramProps) => {
-  const { createEntity, deleteEntity, updateEntity } = ownProps.entityContext;
+  const { createEntity, deleteEntity, queryEntityExpand, updateEntity } = ownProps.entityContext;
 
   return ({
     createEntity: (model: Model, entityData: any) => dispatch(createEntity(model, entityData)),

@@ -14,7 +14,6 @@ import { matchText } from 'utils';
 export interface IEntityManagerProps {
   entities: Array<IEntityDatum>
   namespace?: Namespace,
-  expandEntity?: (entityId: string, properties?: Array<string>, limit?: number) => Promise<any>
 }
 
 export class EntityManager {
@@ -59,12 +58,6 @@ export class EntityManager {
     entities.map(e => this.entities.set(e.id, e));
   }
 
-  async expandEntity(entityId: string, properties?: Array<string>, limit?: number) {
-    if (this.overload?.expandEntity) {
-      const expandResults = await this.overload.expandEntity(entityId, properties, limit);
-      return expandResults;
-    }
-  }
 
   // entity changes in the reverse direction require undoing create/delete operations
   applyEntityChanges(entityChanges: EntityChanges, factor: number) {
