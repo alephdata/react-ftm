@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Vertex, Point, Rectangle, Edge, GraphElement, Grouping } from 'NetworkDiagram/layout';
+import { IEntityContext } from 'contexts/EntityContext';
 import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { Canvas } from './Canvas'
 import { EdgeRenderer } from './EdgeRenderer'
@@ -10,6 +11,7 @@ import { modes } from 'components/NetworkDiagram/utils'
 
 
 interface IGraphRendererProps {
+  entityContext: IEntityContext
   svgRef?: React.RefObject<SVGSVGElement>,
   animateTransition: boolean,
   actions: any,
@@ -101,8 +103,8 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   }
 
   renderVertices() {
-    const { entityContext, layout } = this.context;
-    const { actions } = this.props;
+    const { layout } = this.context;
+    const { actions, entityContext } = this.props;
     const vertices = layout.getVertices().filter((vertex: Vertex) => !vertex.isHidden())
 
     return vertices.map((vertex: Vertex) =>

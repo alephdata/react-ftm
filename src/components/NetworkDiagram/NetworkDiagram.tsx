@@ -369,7 +369,6 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
       updateLayout: this.updateLayout,
       viewport,
       updateViewport: this.updateViewport,
-      entityContext,
       intl,
       writeable,
       interactionMode
@@ -416,6 +415,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
                 </ButtonGroup>
               </div>
               <GraphRenderer
+                entityContext={entityContext}
                 svgRef={svgRef}
                 animateTransition={animateTransition}
                 actions={actions}
@@ -473,12 +473,12 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
 }
 
 const mapStateToProps = (state: any, ownProps: INetworkDiagramProps) => {
-  const { entityContext, layout } = ownProps;
+  const { selectModel, selectEntity, selectEntities } = ownProps.entityContext;
 
   return ({
-    model: entityContext.selectModel(state),
-    entities: entityContext.selectEntities(state),
-    resolveEntityReference: (id: any) => entityContext.selectEntity(state, id)
+    model: selectModel(state),
+    entities: selectEntities(state),
+    resolveEntityReference: (id: any) => selectEntity(state, id)
   });
 }
 
