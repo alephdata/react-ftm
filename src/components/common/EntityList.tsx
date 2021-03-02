@@ -47,9 +47,10 @@ export class EntityList extends React.PureComponent<IEntityListProps>{
 
   render() {
     const { entities } = this.props;
-    entities
+    const processed = entities
+      .filter(e => !e.schema.edge)
       .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
-    const entityGroups = groupBy(entities, (e:Entity) => e.schema.plural)
+    const entityGroups = groupBy(processed, (e:Entity) => e.schema.plural)
 
     return <Menu className="EntityList">
       {Object.entries(entityGroups).map(([key, values]:any) => {
