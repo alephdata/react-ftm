@@ -188,8 +188,6 @@ class EdgeCreateDialogBase extends React.Component<IEdgeCreateDialogProps & Prop
     const { isProcessing, source, target, type, sourceQueryText, targetQueryText } = this.state
     const types = this.getTypes();
 
-    console.log('in edge create', source, target)
-
     return (
       <Dialog
         icon="new-link"

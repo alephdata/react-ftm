@@ -49,16 +49,4 @@ export class LocalStorageEntityContext {
 
     return loadComplete({ results });
   }
-
-  // TODO: Delete this
-  // queryEntitySuggest = queryEntities
-  queryEntityExpand = queryEntityExpand
-  selectEntityExpandResult = (state: any, entityId: string, properties?: Array<string>, limit?: number) => {
-    return ({
-      isPending: false,
-      isError: false,
-      shouldLoad: false,
-      results: []
-    })
-  }
 }

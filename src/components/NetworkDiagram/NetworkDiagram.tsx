@@ -364,8 +364,6 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     const { config, entities, entityContext, intl, layout, model, svgRef, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, settingsDialogOpen, tableView, vertexMenuSettings } = this.state;
 
-    console.log('entities', entities);
-
     const layoutContext = {
       layout,
       updateLayout: this.updateLayout,

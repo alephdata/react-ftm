@@ -37,8 +37,6 @@ export const renderDev = (props: IRenderDevProps) => {
     document.body.appendChild(domElem);
   }
 
-  console.log(data.entities);
-
   const model = new Model(defaultModel);
   const entities = data.entities?.map((eData: IEntityDatum) => model.getEntity(eData))
 
