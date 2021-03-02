@@ -3,6 +3,8 @@ import { Classes, Divider, UL } from '@blueprintjs/core'
 import { IEntityDatum, Property as FTMProperty } from '@alephdata/followthemoney';
 import { ColorPicker, PropertyEditor, PropertySelect, RadiusPicker } from 'editors';
 import { Entity, FTMEntityExtended as FTMEntity, Property, Schema } from 'types';
+
+import { IEntityContext } from 'contexts/EntityContext';
 import { Vertex } from 'NetworkDiagram/layout'
 import { GraphContext } from 'NetworkDiagram/GraphContext';
 import c from 'classnames';
@@ -11,6 +13,7 @@ import './EntityViewer.scss';
 
 interface IEntityViewerProps {
   entity: FTMEntity,
+  entityContext: IEntityContext
   vertexRef?: Vertex,
   onEntityChanged: (entity: FTMEntity, previousData: IEntityDatum) => void
   onVertexColorSelected: (vertex: Vertex, color: string) => void
@@ -22,7 +25,8 @@ interface IEntityViewerState {
   currEditing: FTMProperty | null
 }
 
-export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntityViewerState> {
+
+export class EntityViewer extends React.Component<IEntityViewerProps, IEntityViewerState> {
   static contextType = GraphContext;
   private schemaProperties: FTMProperty[];
 
@@ -80,8 +84,8 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   renderProperty(property:FTMProperty){
-    const { entityContext, entityManager } = this.context;
-    const { entity } = this.props;
+    const { entityManager } = this.context;
+    const { entity, entityContext } = this.props;
     const { currEditing } = this.state;
     const isEditable = property?.name === currEditing?.name;
     const entityData = entity.toJSON();
@@ -104,14 +108,13 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
                 onSubmit={(entity: FTMEntity) => this.onSubmit(entity, entityData)}
                 entity={entity}
                 property={property}
-                resolveEntityReference={entityManager.getEntity}
                 entityContext={entityContext}
               />
             </div>
           )}
           {!isEditable && (
             <div>
-              <Property.Values prop={property} values={entity.getProperty(property.name)} resolveEntityReference={entityManager.getEntity} translitLookup={entity.latinized} />
+              <Property.Values prop={property} values={entity.getProperty(property.name)} translitLookup={entity.latinized} />
             </div>
           )}
         </div>

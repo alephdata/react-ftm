@@ -15,7 +15,6 @@ export interface IEntityManagerProps {
   entities: Array<IEntityDatum>
   namespace?: Namespace,
   expandEntity?: (entityId: string, properties?: Array<string>, limit?: number) => Promise<any>
-  resolveEntityReference?: (entityId: string) => Entity | undefined,
 }
 
 export class EntityManager {
@@ -34,7 +33,6 @@ export class EntityManager {
 
     this.getEntity = this.getEntity.bind(this);
     this.getEntities = this.getEntities.bind(this);
-    this.resolveEntityReference = this.resolveEntityReference.bind(this);
   }
 
   getEntities(ids?: Array<string>): Entity[] {
@@ -65,12 +63,6 @@ export class EntityManager {
     if (this.overload?.expandEntity) {
       const expandResults = await this.overload.expandEntity(entityId, properties, limit);
       return expandResults;
-    }
-  }
-
-  resolveEntityReference(entityId: string) {
-    if (this.overload?.resolveEntityReference) {
-      return this.overload.resolveEntityReference(entityId);
     }
   }
 

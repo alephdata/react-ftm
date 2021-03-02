@@ -36,7 +36,7 @@ export interface ISidebarProps {
   selectedEntityIds: Array<string>
 }
 
-export class SidebarBase extends React.Component<ISidebarProps & PropsFromRedux> {
+class SidebarBase extends React.Component<ISidebarProps & PropsFromRedux> {
   static contextType = GraphContext;
 
   constructor(props: Readonly<ISidebarProps & PropsFromRedux>) {
@@ -119,6 +119,7 @@ export class SidebarBase extends React.Component<ISidebarProps & PropsFromRedux>
       }
       contents = <EntityViewer
         entity={entity}
+        entityContext={entityContext}
         onEntityChanged={this.onEntityChanged}
         vertexRef={vertexRef}
         onVertexColorSelected={this.setVertexColor}

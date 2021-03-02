@@ -375,15 +375,15 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   }
 
   renderEdgeCreate() {
-    const { entityContext, intl, layout, resolveEntityId } = this.props;
+    const { entityContext, intl, layout, resolveEntityReference } = this.props;
     const { interactionMode } = this.state;
 
     const [ sourceId, targetId ] = layout.getSelectedEntityIds();
 
     return (
       <EdgeCreateDialog
-        source={resolveEntityId(sourceId)}
-        target={resolveEntityId(targetId)}
+        source={resolveEntityReference(sourceId)}
+        target={resolveEntityReference(targetId)}
         isOpen={true}
         toggleDialog={this.setInteractionMode}
         onSubmit={this.onEdgeCreate}
@@ -394,7 +394,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   }
 
   render() {
-    const { config, entities, entityContext, entityManager, intl, layout, model, resolveEntityId, svgRef, viewport, writeable } = this.props;
+    const { config, entities, entityContext, entityManager, intl, layout, model, svgRef, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, settingsDialogOpen, tableView, vertexMenuSettings } = this.state;
 
     const layoutContext = {
@@ -516,7 +516,7 @@ const mapStateToProps = (state: any, ownProps: INetworkDiagramProps) => {
   return ({
     model: entityContext.selectModel(state),
     entities: entityContext.selectEntities(state),
-    resolveEntityId: (id: any) => entityContext.selectEntity(state, id)
+    resolveEntityReference: (id: any) => entityContext.selectEntity(state, id)
   });
 }
 

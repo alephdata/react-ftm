@@ -70,7 +70,7 @@ class EntityTableBase extends React.Component<IEntityTableProps & PropsFromRedux
   }
 
   getSchemaEntities(schema: FTMSchema) {
-    const { entityManager } = this.props;
+    const { resolveEntityReference } = this.props;
     const { activeSchema, sort } = this.state;
 
     const entities = this.props.entities
@@ -79,7 +79,7 @@ class EntityTableBase extends React.Component<IEntityTableProps & PropsFromRedux
     if (activeSchema === schema.name && sort) {
       const { field, direction } = sort;
       const property = schema.getProperty(field);
-      return entities.sort((a: Entity, b: Entity) => sortEntities(a, b, property, direction, entityManager.getEntity));
+      return entities.sort((a: Entity, b: Entity) => sortEntities(a, b, property, direction, resolveEntityReference));
     } else {
       return entities;
     }
@@ -157,7 +157,8 @@ const mapStateToProps = (state: any, ownProps: IEntityTableProps) => {
   const { entityContext } = ownProps;
   return ({
     model: entityContext.selectModel(state),
-    entities: entityContext.selectEntities(state)
+    entities: entityContext.selectEntities(state),
+    resolveEntityReference: (id: any) => entityContext.selectEntity(state, id)
   });
 }
 

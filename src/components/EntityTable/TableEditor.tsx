@@ -341,7 +341,7 @@ class TableEditorBase extends React.Component<ITableEditorProps & PropsFromRedux
   }
 
   renderPropValue = ({ entity, property }: { entity: FTMEntity, property: FTMProperty }) => {
-    const { entityManager, visitEntity } = this.props;
+    const { visitEntity } = this.props;
 
     const values = entity.getProperty(property.name);
     const showVisitLink = visitEntity && property.type.name === 'entity' && values.length;
@@ -351,7 +351,6 @@ class TableEditorBase extends React.Component<ITableEditorProps & PropsFromRedux
         <Property.Values
           values={values}
           prop={property}
-          resolveEntityReference={entityManager.resolveEntityReference}
           getEntityLink={showVisitLink ? (ent) => (
             <Button
               minimal
@@ -370,7 +369,7 @@ class TableEditorBase extends React.Component<ITableEditorProps & PropsFromRedux
   }
 
   renderEditor = ({ cell, onCommit, onChange, onRevert }: Datasheet.DataEditorProps<CellData, any>) => {
-    const { entityContext, entityManager, model, schema } = this.props;
+    const { entityContext, model, schema } = this.props;
     const { entity, property } = cell.data;
 
     if (!property) return null;
@@ -394,7 +393,6 @@ class TableEditorBase extends React.Component<ITableEditorProps & PropsFromRedux
         }}
         popoverProps={{ usePortal: false }}
         entityContext={entityContext}
-        resolveEntityReference={entityManager.resolveEntityReference}
       />
     );
   }

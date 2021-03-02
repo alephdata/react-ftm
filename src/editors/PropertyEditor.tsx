@@ -1,4 +1,6 @@
 import * as React from 'react'
+import { compose } from 'redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity, Property, Schema, Values } from '@alephdata/followthemoney';
 
@@ -14,7 +16,6 @@ interface IPropertyEditorProps extends WrappedComponentProps {
   onSubmit: (entity: Entity) => void
   onChange?: (values: Values) => void
   entityContext: IEntityContext
-  resolveEntityReference?: (entityId: string) => Entity | undefined,
   popoverProps?: any
 }
 
@@ -24,8 +25,8 @@ interface IPropertyEditorState {
   error: any | null,
 }
 
-class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEditorState> {
-  constructor(props:IPropertyEditorProps) {
+class PropertyEditor extends React.Component<IPropertyEditorProps & PropsFromRedux, IPropertyEditorState> {
+  constructor(props:IPropertyEditorProps & PropsFromRedux) {
     super(props);
     const { entity, property, resolveEntityReference } = props;
 
@@ -121,4 +122,16 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
   }
 }
 
-export default injectIntl(PropertyEditor);
+const mapStateToProps = (state: any, ownProps: IPropertyEditorProps) => {
+  const { entityContext } = ownProps;
+  return ({
+    resolveEntityReference: (id: any) => entityContext.selectEntity(state, id)
+  });
+}
+
+const connector = connect(mapStateToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+export default connector(
+  injectIntl(PropertyEditor)
+);
