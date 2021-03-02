@@ -1,5 +1,4 @@
 import React from 'react';
-import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import { defineMessages, injectIntl } from 'react-intl';
 import Datasheet from 'react-datasheet';

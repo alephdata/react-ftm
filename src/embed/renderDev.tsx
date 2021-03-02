@@ -8,7 +8,6 @@ import { defaultModel, Model, IEntityDatum } from '@alephdata/followthemoney';
 import { LocalStorageEntityContext } from 'contexts/LocalStorageEntityContext';
 import createEntitiesReducer from 'reducers/entitiesReducer'
 import { EmbeddedElement } from 'embed/EmbeddedElement';
-import { fetchExternalData } from 'embed/util';
 
 export interface IRenderDevConfig {
   writeable?: boolean

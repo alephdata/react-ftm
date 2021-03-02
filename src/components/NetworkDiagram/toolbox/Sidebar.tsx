@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
-import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import findIndex from 'lodash/findIndex'
 import { Entity } from '@alephdata/followthemoney';

@@ -1,10 +1,4 @@
-import has from 'lodash/has'
-import {
-  Entity,
-  Model,
-  IEntityDatum,
-	Schema
-} from '@alephdata/followthemoney';
+import { Entity, Model, Schema } from '@alephdata/followthemoney';
 import { EntitiesResultType, EntityExpandResultType } from 'contexts/util'
 
 export interface IEntityContext {

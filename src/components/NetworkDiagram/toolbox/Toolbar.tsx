@@ -9,7 +9,6 @@ import {
   Popover,
 } from "@blueprintjs/core"
 import c from 'classnames';
-import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 
 

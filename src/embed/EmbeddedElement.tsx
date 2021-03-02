@@ -1,7 +1,5 @@
 import React from 'react'
-import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
-import { defaultModel, Model } from '@alephdata/followthemoney'
 
 import NetworkDiagramWrapper from 'embed/NetworkDiagramWrapper';
 import EntityTableWrapper from 'embed/EntityTableWrapper';

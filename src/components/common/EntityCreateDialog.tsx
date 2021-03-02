@@ -1,9 +1,8 @@
 import * as React from 'react'
-import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Alignment, Button, ControlGroup, InputGroup } from '@blueprintjs/core'
-import { Entity, Model, Schema as FTMSchema, Values } from '@alephdata/followthemoney'
+import { Entity, Schema as FTMSchema, Values } from '@alephdata/followthemoney'
 
 import { IEntityContext } from 'contexts/EntityContext';
 import { EntitySuggest, SchemaSelect } from 'editors'

@@ -1,19 +1,12 @@
-import has from 'lodash/has'
 import includes from 'lodash/includes'
 import {
   Entity,
-  Model,
-  IEntityDatum,
 	Schema
 } from '@alephdata/followthemoney';
-import { createAction } from 'redux-act'
 
 import { matchText } from 'utils';
-import { IEntityContext } from 'contexts/EntityContext';
-import { createEntity, deleteEntity, updateEntity, queryEntities, queryEntityExpand } from 'actions/localStorageActions';
-import { loadComplete, loadState } from 'contexts/util';
-
-export interface ILocalStorageEntityContext extends IEntityContext {}
+import { createEntity, deleteEntity, updateEntity, queryEntities } from 'actions/localStorageActions';
+import { loadComplete } from 'contexts/util';
 
 export class LocalStorageEntityContext {
 	selectModel = (state: any) => state.model

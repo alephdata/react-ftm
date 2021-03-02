@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
 
@@ -178,7 +177,7 @@ export class VertexRendererBase extends React.PureComponent<IVertexRendererProps
       cursor: selected && writeable ? 'grab' : 'pointer',
       pointerEvents: this.allowPointerEvents() ? 'auto' : 'none',
     }
-    
+
     return (
       <DraggableCore
         handle='.handle'

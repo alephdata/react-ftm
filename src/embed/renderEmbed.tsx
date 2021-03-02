@@ -10,7 +10,6 @@ import {
 
 import { LocalStorageEntityContext } from 'contexts/LocalStorageEntityContext';
 import { EmbeddedElement } from 'embed/EmbeddedElement';
-import { fetchExternalData } from 'embed/util';
 
 export interface IRenderEmbedConfig {
   writeable?: boolean

@@ -1,12 +1,7 @@
 import remove from 'lodash/remove';
 import findIndex from 'lodash/findIndex';
 import { createReducer } from 'redux-act';
-import {
-  defaultModel,
-  IEntityDatum,
-  Entity,
-  Model,
-} from '@alephdata/followthemoney';
+import { Entity } from '@alephdata/followthemoney';
 
 import { createEntity, deleteEntity, updateEntity } from 'actions/localStorageActions'
 

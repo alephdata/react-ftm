@@ -1,11 +1,9 @@
 import * as React from 'react'
-import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
-import { Entity, Model, Schema, Values } from '@alephdata/followthemoney'
+import { Entity, Schema } from '@alephdata/followthemoney'
 
 import { IEntityContext } from 'contexts/EntityContext';
 import { EntitySelect } from 'editors'
-import { Dialog } from 'components/common'
 
 interface IEntitySuggestProps  {
   onSubmit: (values: Array<Entity>) => void
@@ -65,7 +63,7 @@ const mapDispatchToProps = (dispatch: any, ownProps: IEntitySuggestProps) => {
     return ({
       fetchSuggestions: (queryText: string, schemata?: Array<Schema>) => dispatch(queryEntities(queryText, schemata))
     })
-  } else if (!!queryEntitySuggest) {
+  } else if (queryEntitySuggest) {
     return ({
       fetchSuggestions: (queryText: string, schemata?: Array<Schema>) => dispatch(queryEntitySuggest(queryText, schemata))
     })

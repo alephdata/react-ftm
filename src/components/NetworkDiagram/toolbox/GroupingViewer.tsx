@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import { defineMessages } from 'react-intl';
 import { Icon } from '@blueprintjs/core'

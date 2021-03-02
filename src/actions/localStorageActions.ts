@@ -1,10 +1,5 @@
 import { createAction } from 'redux-act'
-import {
-  Entity,
-  Model,
-  IEntityDatum,
-  Schema,
-} from '@alephdata/followthemoney';
+import { Entity, Model, Schema } from '@alephdata/followthemoney';
 
 
 export const createEntity = createAction('CREATE_ENTITY', (model: Model, entityData: any) => {

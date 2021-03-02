@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import { defineMessages } from 'react-intl';
 import { Menu, MenuDivider, MenuItem, Spinner } from "@blueprintjs/core"
@@ -154,7 +153,7 @@ export class VertexMenuBase extends React.Component<IVertexMenuProps & PropsFrom
 
   renderExpand = () => {
     const { intl } = this.context;
-    const { contents, expandResult } = this.props;
+    const { expandResult } = this.props;
 
     if (expandResult.isPending || !expandResult.results) {
       return <Spinner size={Spinner.SIZE_SMALL} />;

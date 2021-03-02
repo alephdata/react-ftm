@@ -1,10 +1,9 @@
 import * as React from 'react'
-import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import includes from 'lodash/includes'
 import findIndex from 'lodash/findIndex'
 import c from 'classnames';
-import { Entity, IEntityDatum, Model, Schema } from "@alephdata/followthemoney";
+import { Entity, Model } from "@alephdata/followthemoney";
 import { Button, ButtonGroup, Tooltip } from '@blueprintjs/core';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 
@@ -21,7 +20,6 @@ import { GroupingCreateDialog, SettingsDialog } from 'NetworkDiagram/dialogs';
 import { EdgeType } from 'types';
 import { EntityChanges, EntityChangeUpdate } from 'components/common/types';
 import { filterVerticesByText, modes } from 'NetworkDiagram/utils'
-import { showSuccessToast, showWarningToast } from 'utils'
 
 import './NetworkDiagram.scss';
 
@@ -97,9 +95,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   }
 
   componentDidMount() {
-    const { entities, externalFilterText } = this.props;
-
-    this.fetchIfNeeded();
+    const { externalFilterText } = this.props;
 
     if (externalFilterText) {
       this.onChangeSearch(externalFilterText);
@@ -112,14 +108,6 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     if (externalFilterText !== undefined && prevProps.externalFilterText !== externalFilterText) {
       this.onChangeSearch(externalFilterText);
     }
-  }
-
-  fetchIfNeeded() {
-    // const { entities } = this.props;
-
-    // if (entities.shouldLoad) {
-    //   this.props.fetchEntities();
-    // }
   }
 
   onZoom(factor: number) {
@@ -343,7 +331,6 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
 
   renderEdgeCreate() {
     const { entityContext, intl, layout, resolveEntityReference } = this.props;
-    const { interactionMode } = this.state;
 
     const [ sourceId, targetId ] = layout.getSelectedEntityIds();
 
@@ -361,7 +348,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
   }
 
   render() {
-    const { config, entities, entityContext, intl, layout, model, svgRef, viewport, writeable } = this.props;
+    const { config, entityContext, intl, layout, model, svgRef, viewport, writeable } = this.props;
     const { animateTransition, interactionMode, searchText, settingsDialogOpen, tableView, vertexMenuSettings } = this.state;
 
     const layoutContext = {

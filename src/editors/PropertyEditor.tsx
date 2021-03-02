@@ -1,8 +1,7 @@
 import * as React from 'react'
-import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
-import { Entity, Property, Schema, Values } from '@alephdata/followthemoney';
+import { Entity, Property, Values } from '@alephdata/followthemoney';
 
 import { IEntityContext } from 'contexts/EntityContext';
 import { CountrySelect, TopicSelect, EntitySuggest, TextEdit } from './';
