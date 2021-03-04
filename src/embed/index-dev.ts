@@ -1,11 +1,9 @@
 import 'index.scss';
-import { Entity } from '@alephdata/followthemoney';
 import { renderEmbed } from 'embed/renderEmbed';
 import { fetchLocalData, setLocalData } from 'embed/util';
 
 
 const id = 'dev';
-
 let data = fetchLocalData(id);
 if (!data) {
   data = require('./sample.ftm');

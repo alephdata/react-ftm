@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { createReducer } from 'redux-act';
 import { combineReducers, createStore } from 'redux';
 import { Provider } from 'react-redux';
-import { defaultModel, Entity, Model, IEntityDatum } from '@alephdata/followthemoney';
+import { defaultModel, Model, IEntityDatum } from '@alephdata/followthemoney';
 
 import { LocalStorageEntityContext } from 'contexts/LocalStorageEntityContext';
 import createEntitiesReducer from 'reducers/entitiesReducer'
