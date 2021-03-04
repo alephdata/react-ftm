@@ -51,7 +51,7 @@ class EntityTableBase extends React.Component<IEntityTableProps & PropsFromRedux
   getSchemata() {
     const { entities } = this.props;
 
-    return entities
+    return entities.results
       .map((entity: Entity) => entity.schema)
       .filter((schema: FTMSchema, index: number, list: any) => !schema.isEdge && list.indexOf(schema) === index)
       .sort((a: FTMSchema, b: FTMSchema) => a.label.localeCompare(b.label));
@@ -72,7 +72,7 @@ class EntityTableBase extends React.Component<IEntityTableProps & PropsFromRedux
     const { resolveEntityReference } = this.props;
     const { activeSchema, sort } = this.state;
 
-    const entities = this.props.entities
+    const entities = this.props.entities.results
       .filter((e: Entity) => e.schema.name === schema.name);
 
     if (activeSchema === schema.name && sort) {

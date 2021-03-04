@@ -25,6 +25,4 @@ export const updateEntity = createAction('UPDATE_ENTITY', (entity: Entity) => en
 
 export const deleteEntity = createAction('DELETE_ENTITY', (entityId: string) => entityId)
 
-export const queryEntities = createAction('QUERY_ENTITIES', (queryText: string, schemata?: Array<Schema>) => ({ queryText, schemata }))
-
-export const queryEntityExpand = createAction('QUERY_ENTITY_EXPAND', (entityId: string, properties?: Array<string>, limit?: number) => ({ entityId, properties, limit }))
+export const queryEntities = createAction('QUERY_ENTITIES', (queryText?: string, schemata?: Array<Schema>) => ({ queryText, schemata }))

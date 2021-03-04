@@ -26,7 +26,7 @@ class EmbeddedElementBase extends React.Component <IEmbeddedElementProps & Props
     const { id, config, entities } = this.props;
     if (config?.writeable) {
       const updatedData = JSON.stringify({
-        entities,
+        entities: entities.results,
         ...additionalData
       })
       localStorage.setItem(id, updatedData)

@@ -12,4 +12,4 @@ const config = {
 
 renderDev({ id, type: 'NetworkDiagram', data, config });
 
-// renderEmbed({ id, type: 'EntityTable', data, config });
+// renderDev({ id, type: 'EntityTable', data, config });

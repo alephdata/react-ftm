@@ -91,7 +91,7 @@ export class VertexMenuBase extends React.Component<IVertexMenuProps & PropsFrom
         .reduce((entities: Array<Entity>, expandObj: any) => ([...entities, ...expandObj.entities]), [])
         .map((entity: Entity) => { return createEntity(model, entity)?.payload; });
 
-      layout.layout([...entities, ...addedEntities], viewport.center);
+      layout.layout([...entities.results, ...addedEntities], viewport.center);
       layout.selectByEntityIds(addedEntities.map((e: Entity) => e.id));
 
       const after = layout.getVisibleElementCount();

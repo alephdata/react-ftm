@@ -54,9 +54,9 @@ class SidebarBase extends React.Component<ISidebarProps & PropsFromRedux> {
 
     const previousEntity = resolveEntityReference(entity.id);
     updateEntity(entity);
-    const index = findIndex(entities, { id: entity.id })
-    entities.splice(index, 1, entity);
-    layout.layout(entities);
+    const index = findIndex(entities.results, { id: entity.id })
+    entities.results.splice(index, 1, entity);
+    layout.layout(entities.results);
     updateLayout(layout, { updated: [{ prev: previousEntity, next: entity }] }, { modifyHistory:true });
   }
 
@@ -138,7 +138,7 @@ class SidebarBase extends React.Component<ISidebarProps & PropsFromRedux> {
       contents = <EntityList entities={selectedEntities} onEntitySelected={this.onEntitySelected} />
       searchResultsText = intl.formatMessage(messages.search_found_multiple, { count: selectedEntities.length });
     } else {
-      contents = <EntityList entities={entities} onEntitySelected={this.onEntitySelected}/>
+      contents = <EntityList entities={entities.results} onEntitySelected={this.onEntitySelected}/>
       searchResultsText = intl.formatMessage(messages.search_found_none);
     }
 
@@ -167,8 +167,10 @@ const mapStateToProps = (state: any, ownProps: ISidebarProps) => {
   const { entityContext, selectedEntityIds } = ownProps;
   return ({
     entities: entityContext.selectEntities(state),
-    selectedEntities: entityContext.selectEntities(state, selectedEntityIds),
-    resolveEntityReference: (id: any) => entityContext.selectEntity(state, id)
+    resolveEntityReference: (id: any) => entityContext.selectEntity(state, id),
+    selectedEntities: selectedEntityIds
+      .map((id: string) => entityContext.selectEntity(state, id))
+      .filter((e?: Entity) => e != undefined) as Array<Entity>,
   });
 }
 

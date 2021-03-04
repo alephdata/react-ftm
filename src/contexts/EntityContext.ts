@@ -9,11 +9,12 @@ export interface IEntityContext {
   updateEntity: (entity: Entity) => void,
   deleteEntity: (entityId: string) => void,
 	selectEntity: (state: any, entityId: string) => Entity | undefined
-	selectEntities: (state: any, ids?: Array<string>) => Array<Entity>
 
-  queryEntities: (queryText: string, schemata?: Array<Schema>) => void
+  queryEntities: (queryText?: string, schemata?: Array<Schema>) => void
+  selectEntities: (state: any, queryText?: string, schemata?: Array<Schema>) => EntitiesResultType
+
   queryEntitySuggest?: (queryText: string, schemata?: Array<Schema>) => void
-	selectEntitiesResult: (state: any, queryText: string, schemata?: Array<Schema>) => EntitiesResultType
+	selectEntitySuggestResult?: (state: any, queryText: string, schemata?: Array<Schema>) => EntitiesResultType
 
   queryEntityExpand?: (entityId: string, properties?: Array<string>, limit?: number) => void
   selectEntityExpandResult?: (state: any, entityId: string, properties?: Array<string>, limit?: number) => EntityExpandResultType

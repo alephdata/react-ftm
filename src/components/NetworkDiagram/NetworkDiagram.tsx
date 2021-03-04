@@ -193,7 +193,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
     if (entity) {
       const center = vertexCreateOptions?.initialPosition || viewport.center;
 
-      layout.layout([...entities, entity], center);
+      layout.layout([...entities.results, entity], center);
       layout.selectByEntityIds([entity.id]);
 
       const vertex = layout.getVertexByEntity(entity)
@@ -222,9 +222,9 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
       const nextSource = source.clone()
       nextSource.setProperty(type.property, target)
       updateEntity(nextSource);
-      const index = findIndex(entities, { id: nextSource.id })
-      entities.splice(index, 1, nextSource);
-      layout.layout(entities);
+      const index = findIndex(entities.results, { id: nextSource.id })
+      entities.results.splice(index, 1, nextSource);
+      layout.layout(entities.results);
       entityChanges.updated = [{ prev: source, next: nextSource }];
       edge = Edge.fromValue(layout, type.property, sourceVertex, targetVertex)
     }
@@ -237,7 +237,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
         }
       };
       const entity = createEntity(model, entityData)?.payload;
-      layout.layout([...entities, entity]);
+      layout.layout([...entities.results, entity]);
       entityChanges.created = [entity];
       edge = Edge.fromEntity(layout, entity, sourceVertex, targetVertex)
     }
@@ -282,7 +282,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
 
     if (settings) {
       layout.settings = Settings.fromJSON(settings);
-      layout.layout(entities);
+      layout.layout(entities.results);
       this.updateLayout(layout, undefined, { modifyHistory: true });
     }
   }
@@ -304,7 +304,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps & PropsFro
       .filter((e: any) => e !== undefined);
 
     idsToRemove.map(deleteEntity)
-    layout.layout(entities.filter((e: Entity) => !includes(idsToRemove, e.id)));
+    layout.layout(entities.results.filter((e: Entity) => !includes(idsToRemove, e.id)));
 
     this.updateLayout(layout, { deleted: entitiesToRemove as Array<Entity> }, { modifyHistory:true })
   }

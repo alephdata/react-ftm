@@ -66,7 +66,9 @@ export class GroupingViewerBase extends React.PureComponent<IGroupingViewerProps
 const mapStateToProps = (state: any, ownProps: IGroupingViewerProps) => {
   const { entityContext, grouping } = ownProps;
   return ({
-    entities: entityContext.selectEntities(state, grouping.getEntityIds())
+    entities: grouping.getEntityIds()
+      .map((id: string) => entityContext.selectEntity(state, id))
+      .filter((e?: Entity) => e !== undefined) as Array<Entity>
   });
 }
 

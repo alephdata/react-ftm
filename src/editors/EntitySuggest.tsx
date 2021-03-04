@@ -52,8 +52,8 @@ export class EntitySuggest extends React.Component<IEntitySuggestProps & PropsFr
 
 const mapStateToProps = (state: any, ownProps: IEntitySuggestProps) => {
   const { entityContext, queryText, schemata } = ownProps;
-  const { selectEntitiesResult } = entityContext;
-  return ({ suggestions: selectEntitiesResult(state, queryText, schemata) });
+  const { selectEntities } = entityContext;
+  return ({ suggestions: selectEntities(state, queryText, schemata) });
 }
 
 const mapDispatchToProps = (dispatch: any, ownProps: IEntitySuggestProps) => {

@@ -20,26 +20,18 @@ export class LocalStorageEntityContext {
 		return state.entities.find((e: Entity) => e.id === entityId);
 	}
 
-	selectEntities = (state: any, ids?: Array<string>) => {
-    const entities = state.entities;
-    if (ids) {
-      return entities.filter((e: Entity) => includes(ids, e.id)) as Entity[];
-    } else {
-      return entities;
-    }
-	}
-
   queryEntities = queryEntities
-  selectEntitiesResult = (state: any, queryText: string, schemata?: Array<Schema>) => {
-    const predicate = (e: Entity) => {
-      const schemaMatch = !schemata || e.schema.isAny(schemata);
-      const textMatch = matchText(e.getCaption() || '', queryText);
-      return schemaMatch && textMatch;
+  selectEntities = (state: any, queryText?: string, schemata?: Array<Schema>) => {
+    const { entities } = state;
+    if (!queryText && !schemata) {
+      return loadComplete({ results: entities });
+    } else {
+      const predicate = (e: Entity) => {
+        const schemaMatch = !schemata || e.schema.isAny(schemata);
+        const textMatch = !queryText || matchText(e.getCaption() || '', queryText);
+        return schemaMatch && textMatch;
+      }
+      return loadComplete({ results: entities.filter(predicate) });
     }
-
-    const results = this.selectEntities(state)
-      .filter(predicate);
-
-    return loadComplete({ results });
   }
 }
