@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect, ConnectedProps } from 'react-redux';
+import { Entity } from '@alephdata/followthemoney';
 
 import NetworkDiagramWrapper from 'embed/NetworkDiagramWrapper';
 import EntityTableWrapper from 'embed/EntityTableWrapper';
@@ -13,30 +14,14 @@ export interface IEmbeddedElementProps {
   data: any
   type: string
   config?: any
+  onUpdate?: (entities: Array<Entity>, layoutData: any) => void
 }
 
 class EmbeddedElementBase extends React.Component <IEmbeddedElementProps & PropsFromRedux> {
-  constructor(props: IEmbeddedElementProps & PropsFromRedux) {
-    super(props)
-
-    this.onUpdate = this.onUpdate.bind(this);
-  }
-
-  onUpdate(additionalData?: any) {
-    const { id, config, entities } = this.props;
-    if (config?.writeable) {
-      const updatedData = JSON.stringify({
-        entities: entities.results,
-        ...additionalData
-      })
-      localStorage.setItem(id, updatedData)
-    }
-  }
-
   render() {
-    const { config, data, entityContext, type } = this.props;
+    const { config, data, entities, entityContext, onUpdate, type } = this.props;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { entities, ...rest } = data;
+    const { e, ...rest } = data;
 
     let Element;
     switch (type) {
@@ -51,10 +36,12 @@ class EmbeddedElementBase extends React.Component <IEmbeddedElementProps & Props
         break;
     }
 
+    console.log('in embeddedelement', entities);
+
     return (
       <Element
         entityContext={entityContext}
-        onUpdate={this.onUpdate}
+        onUpdate={onUpdate ? (layoutData: any) => onUpdate(entities.results, layoutData) : undefined}
         writeable={config?.writeable}
         layoutData={rest}
       />
