@@ -28,21 +28,13 @@ export default class NetworkDiagramWrapper extends React.Component <IWrappedElem
     this.setState({'layout': layout})
 
     if (historyModified) {
-      this.propagateUpdate({ layout });
+      this.props.onUpdate({ layout: layout.toJSON() });
     }
   }
 
   updateViewport(viewport: Viewport) {
-    this.setState({'viewport': viewport})
-    this.propagateUpdate({ viewport });
-  }
-
-  propagateUpdate({ layout, viewport }: { layout?: GraphLayout, viewport?: Viewport }) {
-    const graphData = {
-      layout: layout ? layout.toJSON() : this.state.layout.toJSON(),
-      viewport: viewport ? viewport.toJSON() : this.state.viewport.toJSON()
-    };
-    this.props.onUpdate(graphData);
+    this.setState({'viewport': viewport});
+    this.props.onUpdate({ viewport: viewport.toJSON() });
   }
 
   render() {

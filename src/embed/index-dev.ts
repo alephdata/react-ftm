@@ -5,12 +5,18 @@ import { fetchLocalData, setLocalData } from 'embed/util';
 
 
 const id = 'dev';
-const data = fetchLocalData(id) || require('./sample.ftm');
+
+let data = fetchLocalData(id);
+if (!data) {
+  data = require('./sample.ftm');
+  setLocalData(id, data)
+}
+const onUpdate = (updated: any) => setLocalData(id, updated);
+
 const config = {
   writeable: true,
   containerProps: { style: { height: '100vh', width: '100vw' } }
 };
-const onUpdate = (entities:Array<Entity>, additionalData: any) => setLocalData(id, entities, additionalData);
 
 renderEmbed({ id, type: 'NetworkDiagram', data, config, onUpdate });
 

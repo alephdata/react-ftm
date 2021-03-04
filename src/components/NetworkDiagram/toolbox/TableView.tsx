@@ -50,10 +50,11 @@ class TableViewBase extends React.Component<ITableViewProps & PropsFromRedux> {
 
     if (!isEmpty(entityChanges)) {
       if (entityChanges.created) {
-        layout.layout(entities.results, viewport.center);
+        layout.layout([...entityChanges.created, ...entities.results], viewport.center);
         layout.selectByEntityIds(entityChanges.created.map((e: Entity) => e.id));
+      } else {
+        layout.layout(entities.results);
       }
-      layout.layout(entities.results);
       updateLayout(layout, entityChanges, { modifyHistory: true });
     }
   }

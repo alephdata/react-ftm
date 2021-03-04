@@ -19,7 +19,7 @@ export interface IRenderEmbedProps {
   type: string
   data?: any
   config?: IRenderEmbedConfig
-  onUpdate?: (entities:Array<Entity>, additionalData: any) => void
+  onUpdate?: (updatedData: any) => void
 }
 
 export const renderEmbed = (props: IRenderEmbedProps) => {
@@ -47,6 +47,13 @@ export const renderEmbed = (props: IRenderEmbedProps) => {
       entities: createEntitiesReducer(entities),
     })
   );
+  if (onUpdate) {
+    store.subscribe(() => {
+      const { entities } = store.getState()
+      onUpdate({ entities });
+    });
+  }
+
   const entityContext = new LocalStorageEntityContext();
 
   ReactDOM.render(

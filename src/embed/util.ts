@@ -5,11 +5,14 @@ export const fetchLocalData = (id: string) => {
   return storedData && JSON.parse(storedData);
 }
 
-export const setLocalData = (id: string, entities: Array<Entity>, additionalData: any) => {
-  console.log('setting localstorage', entities);
+export const setLocalData = (id: string, updated: any) => {
+  if (!updated) { return; }
+  const existing = fetchLocalData(id);
+  
   const updatedData = JSON.stringify({
-    entities,
-    ...additionalData
+    entities: updated.entities || existing.entities,
+    layout: updated.layout || existing.layout,
+    viewport: updated.viewport || existing.viewport,
   })
   localStorage.setItem(id, updatedData);
 }

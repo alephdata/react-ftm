@@ -36,12 +36,10 @@ class EmbeddedElementBase extends React.Component <IEmbeddedElementProps & Props
         break;
     }
 
-    console.log('in embeddedelement', entities);
-
     return (
       <Element
         entityContext={entityContext}
-        onUpdate={onUpdate ? (layoutData: any) => onUpdate(entities.results, layoutData) : undefined}
+        onUpdate={onUpdate}
         writeable={config?.writeable}
         layoutData={rest}
       />
