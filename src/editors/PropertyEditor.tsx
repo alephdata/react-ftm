@@ -3,7 +3,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity, Property, Values } from '@alephdata/followthemoney';
 
-import { IEntityContext } from 'contexts/EntityContext';
+import { IEntityContext } from 'contexts/IEntityContext';
 import { CountrySelect, TopicSelect, EntitySuggest, TextEdit } from './';
 import { validate } from 'utils';
 

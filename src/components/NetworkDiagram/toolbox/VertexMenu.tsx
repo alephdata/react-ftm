@@ -4,7 +4,7 @@ import { defineMessages } from 'react-intl';
 import { Menu, MenuDivider, MenuItem, Spinner } from "@blueprintjs/core"
 import { Model, Entity } from "@alephdata/followthemoney";
 
-import { IEntityContext } from 'contexts/EntityContext';
+import { IEntityContext } from 'contexts/IEntityContext';
 import { modes } from 'components/NetworkDiagram/utils'
 import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { Count, Schema } from 'types';

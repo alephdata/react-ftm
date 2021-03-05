@@ -4,7 +4,7 @@ import { Entity } from '@alephdata/followthemoney';
 import NetworkDiagramWrapper from 'embed/NetworkDiagramWrapper';
 import EntityTableWrapper from 'embed/EntityTableWrapper';
 // import HistogramWrapper from 'embed/HistogramWrapper';
-import { IEntityContext } from 'contexts/EntityContext';
+import { IEntityContext } from 'contexts/IEntityContext';
 
 export interface IEmbeddedElementProps {
   entityContext: IEntityContext

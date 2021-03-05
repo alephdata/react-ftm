@@ -4,7 +4,7 @@ import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { FormGroup, Intent, Button } from '@blueprintjs/core'
 import { Entity, Schema } from '@alephdata/followthemoney'
 
-import { IEntityContext } from 'contexts/EntityContext';
+import { IEntityContext } from 'contexts';
 import { EdgeTypeSelect, EntitySuggest } from 'editors'
 import { EdgeType } from 'types'
 import { Dialog } from 'components/common'

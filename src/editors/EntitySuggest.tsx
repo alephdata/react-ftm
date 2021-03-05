@@ -2,7 +2,7 @@ import * as React from 'react'
 import { connect, ConnectedProps } from 'react-redux';
 import { Entity, Schema } from '@alephdata/followthemoney'
 
-import { IEntityContext } from 'contexts/EntityContext';
+import { IEntityContext } from 'contexts/IEntityContext';
 import { EntitySelect } from 'editors'
 
 interface IEntitySuggestProps  {

@@ -4,7 +4,7 @@ import { defineMessages } from 'react-intl';
 import { Icon } from '@blueprintjs/core'
 import { Entity } from '@alephdata/followthemoney';
 
-import { IEntityContext } from 'contexts/EntityContext';
+import { IEntityContext } from 'contexts';
 import { ColorPicker } from 'editors';
 import { Grouping } from 'NetworkDiagram/layout'
 import { GraphContext } from 'NetworkDiagram/GraphContext'

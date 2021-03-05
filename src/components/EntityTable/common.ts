@@ -2,7 +2,7 @@ import { Entity } from "@alephdata/followthemoney";
 import { WrappedComponentProps } from 'react-intl';
 
 import { EntityChanges } from 'components/common/types'
-import { IEntityContext } from 'contexts/EntityContext';
+import { IEntityContext } from 'contexts';
 
 
 export interface IEntityTableCommonProps extends WrappedComponentProps {

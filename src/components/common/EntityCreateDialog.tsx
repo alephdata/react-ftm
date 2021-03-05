@@ -4,7 +4,7 @@ import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Alignment, Button, ControlGroup, InputGroup } from '@blueprintjs/core'
 import { Entity, Schema as FTMSchema, Values } from '@alephdata/followthemoney'
 
-import { IEntityContext } from 'contexts/EntityContext';
+import { IEntityContext } from 'contexts';
 import { EntitySuggest, SchemaSelect } from 'editors'
 import { Schema } from 'types';
 import { Dialog } from 'components/common'

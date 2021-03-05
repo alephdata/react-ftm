@@ -1,4 +1,4 @@
-import { IEntityContext } from 'contexts/EntityContext'
+import { IEntityContext } from 'contexts/IEntityContext'
 
 
 export interface IWrappedElementProps {

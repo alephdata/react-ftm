@@ -5,7 +5,7 @@ import findIndex from 'lodash/findIndex'
 import { Entity } from '@alephdata/followthemoney';
 import { Drawer } from "@blueprintjs/core";
 
-import { IEntityContext } from 'contexts/EntityContext';
+import { IEntityContext } from 'contexts';
 import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { EntityList } from 'components/common';
 import { EntityViewer, GroupingViewer } from 'components/NetworkDiagram/toolbox';

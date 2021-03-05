@@ -2,7 +2,7 @@ import * as React from 'react'
 import { connect, ConnectedProps } from 'react-redux';
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
 
-import { IEntityContext } from 'contexts/EntityContext';
+import { IEntityContext } from 'contexts';
 import { GraphContext } from 'NetworkDiagram/GraphContext';
 import { Point } from 'NetworkDiagram/layout/Point'
 import { Vertex } from 'NetworkDiagram/layout/Vertex'

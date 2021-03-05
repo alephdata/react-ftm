@@ -2,7 +2,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import isEmpty from 'lodash/isEmpty'
 
-import { IEntityContext } from 'contexts/EntityContext';
+import { IEntityContext } from 'contexts/IEntityContext';
 import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { EntityChanges } from 'components/common/types';
 import { EntityTable } from 'components/EntityTable';

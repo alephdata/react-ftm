@@ -4,7 +4,7 @@ import { IEntityDatum, Property as FTMProperty } from '@alephdata/followthemoney
 import { ColorPicker, PropertyEditor, PropertySelect, RadiusPicker } from 'editors';
 import { Entity, FTMEntityExtended as FTMEntity, Property, Schema } from 'types';
 
-import { IEntityContext } from 'contexts/EntityContext';
+import { IEntityContext } from 'contexts';
 import { Vertex } from 'NetworkDiagram/layout'
 import { GraphContext } from 'NetworkDiagram/GraphContext';
 import c from 'classnames';

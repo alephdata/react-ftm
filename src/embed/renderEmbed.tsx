@@ -1,12 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createReducer } from 'redux-act';
-import { combineReducers, createStore } from 'redux';
 import { Provider } from 'react-redux';
-import { defaultModel, Model, IEntityDatum } from '@alephdata/followthemoney';
 
-import { LocalStorageEntityContext } from 'contexts/LocalStorageEntityContext';
-import createEntitiesReducer from 'reducers/entitiesReducer'
+import { createDefaultStore } from 'defaultStore';
+import { DefaultEntityContext } from 'contexts/DefaultEntityContext';
 import { EmbeddedElement } from 'embed/EmbeddedElement';
 
 export interface IRenderEmbedConfig {
@@ -37,24 +34,8 @@ export const renderEmbed = (props: IRenderEmbedProps) => {
     document.body.appendChild(domElem);
   }
 
-  const model = new Model(defaultModel);
-  const entities = data.entities?.map((eData: IEntityDatum) => model.getEntity(eData))
-
-  const store = createStore(
-    combineReducers({
-      model: createReducer({}, model),
-      locale: createReducer({}, 'en'),
-      entities: createEntitiesReducer(entities),
-    })
-  );
-  if (onUpdate) {
-    store.subscribe(() => {
-      const { entities } = store.getState()
-      onUpdate({ entities });
-    });
-  }
-
-  const entityContext = new LocalStorageEntityContext();
+  const store = createDefaultStore({ entities: data.entities }, onUpdate);
+  const entityContext = new DefaultEntityContext();
 
   ReactDOM.render(
     <div {...config?.containerProps}>

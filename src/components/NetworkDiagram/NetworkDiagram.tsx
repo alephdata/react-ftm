@@ -8,7 +8,7 @@ import { Button, ButtonGroup, Tooltip } from '@blueprintjs/core';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 
 import { EdgeCreateDialog, EntityCreateDialog } from 'components/common';
-import { IEntityContext } from 'contexts/EntityContext';
+import { IEntityContext } from 'contexts';
 import { GraphConfig } from 'NetworkDiagram/GraphConfig';
 import { GraphRenderer } from 'NetworkDiagram/renderer'
 import { Edge, GraphLayout, Rectangle, Point, Settings, Vertex } from 'NetworkDiagram/layout';

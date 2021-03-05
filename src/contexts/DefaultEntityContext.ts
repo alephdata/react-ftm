@@ -7,7 +7,7 @@ import { matchText } from 'utils';
 import { createEntity, deleteEntity, updateEntity, queryEntities } from 'actions/localStorageActions';
 import { loadComplete } from 'contexts/util';
 
-export class LocalStorageEntityContext {
+export class DefaultEntityContext {
 	selectModel = (state: any) => state.model
   selectLocale = (state: any) => state.locale
 

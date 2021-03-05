@@ -12,7 +12,7 @@ import c from 'classnames';
 import { connect, ConnectedProps } from 'react-redux';
 
 
-import { IEntityContext } from 'contexts/EntityContext';
+import { IEntityContext } from 'contexts/IEntityContext';
 import { GraphContext } from 'NetworkDiagram/GraphContext';
 import { IToolbarButtonGroup, ToolbarButtonGroup, SearchBox } from 'NetworkDiagram/toolbox';
 import { modes } from 'NetworkDiagram/utils';

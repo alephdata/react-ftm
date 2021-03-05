@@ -1,2 +1,3 @@
 export * from 'contexts/AlephEntityContext';
-export * from 'contexts/EntityContext';
+export * from 'contexts/DefaultEntityContext';
+export * from 'contexts/IEntityContext';
