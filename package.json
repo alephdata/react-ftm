@@ -112,7 +112,8 @@
     "@blueprintjs/core": "3.39.0",
     "@blueprintjs/select": "3.15.5",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react-dom": "^17.0.1",
+    "react-intl": "^5.13.1",
   },
   "dependencies": {
     "d3-force": "^2.1.1",
@@ -124,7 +125,6 @@
     "numeral": "^2.0.6",
     "react-datasheet": "^1.4.9",
     "react-draggable": "^4.4.3",
-    "react-intl": "^5.13.1",
     "recharts": "^2.0.8",
     "save-dev": "0.0.1-security",
     "truncate": "^2.1.0"
