@@ -113,7 +113,7 @@
     "@blueprintjs/select": "3.15.5",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-intl": "^5.13.1",
+    "react-intl": "^5.13.1"
   },
   "dependencies": {
     "d3-force": "^2.1.1",
