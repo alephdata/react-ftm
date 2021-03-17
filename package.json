@@ -109,8 +109,8 @@
     "webpack-merge": "^5.7.3"
   },
   "peerDependencies": {
-    "@blueprintjs/core": "3.39.0",
-    "@blueprintjs/select": "3.15.5",
+    "@blueprintjs/core": "^3.39.0",
+    "@blueprintjs/select": "^3.15.5",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-intl": "^5.13.1"
