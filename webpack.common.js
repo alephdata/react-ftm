@@ -33,7 +33,7 @@ module.exports = {
   },
   resolve: {
     modules: [path.resolve('src'), 'node_modules'],
-    extensions: [ '.tsx', '.ts', '.js' ],
+    extensions: ['.tsx', '.ts', '.js'],
     alias: {
       'NetworkDiagram': path.resolve('./src/components/NetworkDiagram')
     },
@@ -42,6 +42,23 @@ module.exports = {
       crypto: 'crypto-browserify',
       stream: 'stream-browserify',
     }
+  },
+  externals: {
+    react: {
+      root: 'React',
+      commonjs: 'react',
+      commonjs2: 'react',
+      amd: 'react',
+    },
+    'react-dom': {
+      root: 'ReactDOM',
+      commonjs: 'react-dom',
+      commonjs2: 'react-dom',
+      amd: 'react-dom',
+    },
+    // "@blueprintjs/core": ["Blueprint", "Core"],
+    // "@blueprintjs/select": ["Blueprint", "Select"],
+    // "classnames": "classNames",
   },
   plugins: [
     new CleanWebpackPlugin(),
