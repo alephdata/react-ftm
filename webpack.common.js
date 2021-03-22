@@ -1,12 +1,8 @@
 const path = require('path');
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-  entry: {
-    'react-ftm': './src/index.ts',
-  },
   module: {
     rules: [
       {
@@ -43,34 +39,10 @@ module.exports = {
       stream: 'stream-browserify',
     }
   },
-  externals: {
-    react: {
-      root: 'React',
-      commonjs: 'react',
-      commonjs2: 'react',
-      amd: 'react',
-    },
-    'react-dom': {
-      root: 'ReactDOM',
-      commonjs: 'react-dom',
-      commonjs2: 'react-dom',
-      amd: 'react-dom',
-    },
-    // "@blueprintjs/core": ["Blueprint", "Core"],
-    // "@blueprintjs/select": ["Blueprint", "Select"],
-    // "classnames": "classNames",
-  },
   plugins: [
-    new CleanWebpackPlugin(),
     new webpack.ProvidePlugin({
       process: 'process/browser',
       Buffer: ['buffer', 'Buffer'],
     })
   ],
-  output: {
-    filename: '[name].js',
-    path: path.resolve(__dirname, 'dist'),
-    library: 'reactFTM',
-    libraryTarget: 'umd'
-  }
 };
