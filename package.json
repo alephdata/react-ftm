@@ -1,6 +1,6 @@
 {
   "name": "@alephdata/react-ftm",
-  "version": "2.4.0-alpha.3",
+  "version": "2.4.0-alpha.4",
   "description": "React UI component library for aleph/followthemoney",
   "keywords": [],
   "files": [
@@ -89,6 +89,8 @@
     "jest-config": "^26.6.1",
     "json-loader": "^0.5.7",
     "node-sass": "^5.0.0",
+    "redux": "^4.0.5",
+    "redux-act": "^1.8.0",
     "rimraf": "^3.0.2",
     "sass": "^1.32.8",
     "sass-loader": "^11.0.1",
@@ -112,7 +114,8 @@
     "lodash": "^4.17.21",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "react-intl": "^5.0.0"
+    "react-intl": "^5.0.0",
+    "react-redux": "^7.2.2"
   },
   "dependencies": {
     "bezier-js": "^2.1.6",
@@ -125,10 +128,7 @@
     "react-countup": "^4.3.3",
     "react-datasheet": "^1.4.9",
     "react-draggable": "^4.4.3",
-    "react-redux": "^7.2.2",
     "recharts": "^2.0.8",
-    "redux": "^4.0.5",
-    "redux-act": "^1.8.0",
     "truncate": "^2.1.0"
   },
   "bugs": {
