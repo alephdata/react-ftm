@@ -1,12 +1,8 @@
 const path = require('path');
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-  entry: {
-    'react-ftm': './src/index.ts',
-  },
   module: {
     rules: [
       {
@@ -33,7 +29,7 @@ module.exports = {
   },
   resolve: {
     modules: [path.resolve('src'), 'node_modules'],
-    extensions: [ '.tsx', '.ts', '.js' ],
+    extensions: ['.tsx', '.ts', '.js'],
     alias: {
       'NetworkDiagram': path.resolve('./src/components/NetworkDiagram')
     },
@@ -44,16 +40,9 @@ module.exports = {
     }
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new webpack.ProvidePlugin({
       process: 'process/browser',
       Buffer: ['buffer', 'Buffer'],
     })
   ],
-  output: {
-    filename: '[name].js',
-    path: path.resolve(__dirname, 'dist'),
-    library: 'reactFTM',
-    libraryTarget: 'umd'
-  }
 };
