@@ -9,6 +9,7 @@ const ENTER_KEY = 13;
 const TAB_KEY = 9;
 
 interface ITextEditProps extends ITypeEditorProps {
+  multiline: boolean
   onChange: (values: Values) => void
 }
 
@@ -89,7 +90,7 @@ class TextEdit extends React.PureComponent<ITextEditProps, ITextEditState> {
   }
 
   render() {
-    const { onSubmit, values } = this.props;
+    const { multiline, onSubmit, values } = this.props;
     const { currMultiInputValue, forceMultiEdit } = this.state;
     const numVals = values.length;
     // don't show multi button if there is no existing input
@@ -105,10 +106,10 @@ class TextEdit extends React.PureComponent<ITextEditProps, ITextEditState> {
                   className="TextEdit__singleInput"
                   inputRef={(ref) => this.singleInputRef = ref}
                   value={values[0] as string || ''}
-                  rows={1}
+                  rows={multiline ? 3 : 1}
                   growVertically
                   fill
-                  style={{resize:"none", overflow:"hidden"}}
+                  style={multiline ? {} : {resize:"none", overflow:"hidden"}}
                   onChange={(e:React.ChangeEvent<HTMLTextAreaElement>) => {
                     const value = e.target.value;
                     // avoid setting an empty string val

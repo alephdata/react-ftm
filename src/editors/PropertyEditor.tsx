@@ -112,7 +112,7 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
         />
       );
     } else {
-      content = <TextEdit onChange={this.onChange} {...commonProps} />;
+      content = <TextEdit onChange={this.onChange} multiline={propType.name === 'text'} {...commonProps} />;
     }
 
     return (
