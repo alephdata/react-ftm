@@ -17,13 +17,10 @@ interface IEditablePropertyProps {
   onSubmit: (entity: Entity, previous: IEntityDatum) => void
   fetchEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>
   resolveEntityReference?: (entityId: string) => Entity | undefined
+  minimal?: boolean
 }
 
-interface IEditablePropertyState {
-
-}
-
-export class EditableProperty extends React.Component<IEditablePropertyProps, IEditablePropertyState> {
+export class EditableProperty extends React.Component<IEditablePropertyProps> {
   constructor(props: IEditablePropertyProps) {
     super(props);
 
@@ -38,19 +35,24 @@ export class EditableProperty extends React.Component<IEditablePropertyProps, IE
   }
 
   render() {
-    const { editing, entity, fetchEntitySuggestions, onSubmit, property, resolveEntityReference } = this.props;
+    const { editing, entity, fetchEntitySuggestions, onSubmit, property, minimal, resolveEntityReference } = this.props;
     const entityData = entity.toJSON();
+
+    const values = entity.getProperty(property.name);
+    const isEmpty = values.length === 0;
 
     return (
       <div
-        className={c('EditableProperty', {'active': editing})}
+        className={c('EditableProperty', {'active': editing, minimal})}
         onClick={(e) => !editing && this.toggleEditing(e)}
       >
-        <div className='EditableProperty__label'>
-          <span>
-            <Property.Name prop={property}/>
-          </span>
-        </div>
+        {(!minimal || isEmpty) && (
+          <div className='EditableProperty__label'>
+            <span>
+              <Property.Name prop={property}/>
+            </span>
+          </div>
+        )}
         <div className='EditableProperty__value'>
           {editing && (
             <PropertyEditor
@@ -62,10 +64,10 @@ export class EditableProperty extends React.Component<IEditablePropertyProps, IE
               resolveEntityReference={resolveEntityReference}
             />
           )}
-          {!editing && (
+          {(!editing && !(minimal && isEmpty)) && (
             <Property.Values
               prop={property}
-              values={entity.getProperty(property.name)}
+              values={values}
               resolveEntityReference={resolveEntityReference}
               translitLookup={entity.latinized}
             />

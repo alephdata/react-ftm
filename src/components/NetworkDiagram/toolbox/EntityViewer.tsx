@@ -132,7 +132,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
             </div>
           )}
         </div>
-        <div className={c('EntityViewer__property-list', Classes.LIST_UNSTYLED)}>
+        <div className="EntityViewer__property-list">
           {visibleProps.map(this.renderProperty)}
         </div>
         {writeable && !!availableProperties.length && (<>

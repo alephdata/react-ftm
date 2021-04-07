@@ -21,14 +21,24 @@
   }
 
   &.active {
+    cursor: auto;
     @include themify() {
       border: themed('sidebarMenuBorder');
       background-color: themed('sidebarMenuItemActiveColor');
     }
   }
 
-  &.active {
-    cursor: auto;
+  &.minimal {
+    padding: 0 5px !important;
+    border: none !important;
+    background: none !important;
+
+    &:hover:not(.active) {
+      @include themify() {
+        background-color: themed('sidebarMenuHoverColor') !important;
+        border-color: themed('sidebarMenuHoverColor') !important;
+      }
+    }
   }
 
   &:not(:last-child) {
