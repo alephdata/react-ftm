@@ -1,10 +1,11 @@
 import * as React from 'react'
 import { Classes, Divider, UL } from '@blueprintjs/core'
-import { IEntityDatum, Property as FTMProperty } from '@alephdata/followthemoney';
+import { IEntityDatum, Property as FTMProperty, Schema as FTMSchema } from '@alephdata/followthemoney';
 import { ColorPicker, PropertyEditor, PropertySelect, RadiusPicker } from 'editors';
 import { Entity, FTMEntityExtended as FTMEntity, Property, Schema } from 'types';
 import { Vertex } from 'NetworkDiagram/layout'
 import { GraphContext } from 'NetworkDiagram/GraphContext';
+import { EditableProperty } from 'components/common';
 import c from 'classnames';
 
 import './EntityViewer.scss';
@@ -39,6 +40,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     this.onNewPropertySelected = this.onNewPropertySelected.bind(this);
     this.renderProperty = this.renderProperty.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onEditPropertyClick = this.onEditPropertyClick.bind(this);
   }
 
   getVisibleProperties(props = this.props) {
@@ -56,16 +58,14 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     }
   }
 
-  onNewPropertySelected(p:FTMProperty){
+  onNewPropertySelected(p:FTMProperty) {
     this.setState(({visibleProps}) => ({
       visibleProps: [...visibleProps, ...[p]],
       currEditing: null
     }))
   }
 
-  onEditPropertyClick(e:React.MouseEvent, property:FTMProperty){
-    e.preventDefault()
-    e.stopPropagation()
+  onEditPropertyClick(property:FTMProperty) {
     this.setState({
       currEditing: property
     })
@@ -83,40 +83,19 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     const { entityManager } = this.context;
     const { entity } = this.props;
     const { currEditing } = this.state;
-    const isEditable = property?.name === currEditing?.name;
-    const entityData = entity.toJSON();
 
-    return <React.Fragment key={property.name}>
-      <li
-        className={c('EntityViewer__property-list-item', {'active': isEditable})}
-        onClick={(e) => !isEditable && this.onEditPropertyClick(e, property)}
-      >
-        <div className='EntityViewer__property-list-item__label'>
-          <span>
-            <Property.Name prop={property}/>
-          </span>
-        </div>
-        <div className='EntityViewer__property-list-item__value'>
-          {isEditable && (
-            <div>
-              <PropertyEditor
-                key={property.name}
-                onSubmit={(entity: FTMEntity) => this.onSubmit(entity, entityData)}
-                entity={entity}
-                property={property}
-                fetchEntitySuggestions={(queryText: string, schemata?: Array<Schema>) => entityManager.getEntitySuggestions(true, queryText, schemata)}
-                resolveEntityReference={entityManager.getEntity}
-              />
-            </div>
-          )}
-          {!isEditable && (
-            <div>
-              <Property.Values prop={property} values={entity.getProperty(property.name)} resolveEntityReference={entityManager.getEntity} translitLookup={entity.latinized} />
-            </div>
-          )}
-        </div>
-      </li>
-    </React.Fragment>
+    return (
+      <EditableProperty
+        key={property.name}
+        entity={entity}
+        property={property}
+        onSubmit={this.onSubmit}
+        onToggleEdit={this.onEditPropertyClick}
+        editing={property?.name === currEditing?.name}
+        fetchEntitySuggestions={(queryText: string, schemata?: Array<FTMSchema>) => entityManager.getEntitySuggestions(true, queryText, schemata)}
+        resolveEntityReference={entityManager.getEntity}
+      />
+    );
   }
 
   render() {
@@ -153,9 +132,9 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
             </div>
           )}
         </div>
-        <UL className={c('EntityViewer__property-list', Classes.LIST_UNSTYLED)}>
+        <div className={c('EntityViewer__property-list', Classes.LIST_UNSTYLED)}>
           {visibleProps.map(this.renderProperty)}
-        </UL>
+        </div>
         {writeable && !!availableProperties.length && (<>
           <Divider/>
           <PropertySelect
