@@ -57,7 +57,6 @@
   }
 
   &__value {
-    margin: 3px 0 !important;
     font-size: 14px;
     @include breakText;
 
@@ -83,7 +82,7 @@
       box-shadow: none !important;
       border-bottom: 1px solid !important;
       border-radius: 0 !important;
-      padding-left: 0 !important;
+      padding-bottom: 5px;
 
       @include themify() {
         color: themed('textColor') !important;
@@ -91,7 +90,20 @@
       }
     }
 
-    .bp3-input-ghost {
+    .bp3-input.bp3-tag-input {
+      padding: 0 !important;
+    }
+
+    .bp3-tag-input-values {
+      margin-top: 0;
+    }
+
+    .bp3-input, .bp3-input-ghost {
+      padding-top: 0;
+      padding-left: 0 !important;
+      height: auto;
+      margin-bottom: 0;
+
       @include themify() {
         color: themed('textColor') !important;
       }

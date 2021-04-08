@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity as FTMEntity } from "@alephdata/followthemoney";
-import { Entity } from 'types';
+import { Entity, Schema } from 'types';
 import { Alignment, Button, ControlGroup, Menu, MenuItem, Spinner } from "@blueprintjs/core";
 import { ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
 import { ITypeEditorProps } from "./common";
@@ -103,66 +103,65 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
   render() {
     const { allowMultiple, entitySuggestions, intl, onSubmit, inputProps = {}, popoverProps = {}, buttonProps = {}, values } = this.props;
     const { query } = this.state;
-    const buttonText = values.length
-      ? <Entity.Label entity={values[0]} icon transliterate={false} />
-      : (buttonProps?.placeholder || intl.formatMessage(messages.placeholder));
 
-    const filteredSuggestions = entitySuggestions.filter(e => (!values.find(val => val.id === e.id )))
+    const filteredSuggestions = entitySuggestions.filter(e => (!values.find(val => val.id === e.id )));
 
-    return <ControlGroup className="EntitySelect" vertical fill>
-        {!allowMultiple && (
-          <TypedSelect
-            onItemSelect={(entity: FTMEntity) => onSubmit([entity])}
-            itemRenderer={this.itemRenderer}
-            itemListRenderer={this.itemListRenderer}
-            items={filteredSuggestions}
-            popoverProps={{
-              minimal: true,
-              targetProps: {style: {width: '100%'}},
-              ...popoverProps
-            }}
-            resetOnSelect
-            filterable
-            query={query}
-            onQueryChange={this.onQueryChange}
-          >
-            <Button
-              text={buttonText}
-              alignText={Alignment.LEFT}
-              rightIcon="double-caret-vertical"
-              elementRef={(ref) => this.inputRef = ref }
-              fill
-              {...buttonProps}
-            />
-          </TypedSelect>
-        )}
-        {allowMultiple && (
-          <TypedMultiSelect
-            tagRenderer={entity => <Entity.Label entity={entity} icon transliterate={false} />}
-            onItemSelect={(entity: FTMEntity) => onSubmit([...values, entity])}
-            itemRenderer={this.itemRenderer}
-            itemListRenderer={this.itemListRenderer}
-            items={filteredSuggestions}
-            popoverProps={{
-              minimal: true,
-              targetProps: {style: {width: '100%'}},
-              ...popoverProps
-            }}
-            tagInputProps={{
-              inputRef: (ref) => this.inputRef = ref,
-              tagProps: {interactive: false, minimal: true},
-              onRemove: this.onRemove,
-              placeholder: '',
-              ...inputProps
-            }}
-            selectedItems={values}
-            resetOnSelect
+    const commmonProps = {
+      className: "EntitySelect",
+      itemRenderer: this.itemRenderer,
+      itemListRenderer: this.itemListRenderer,
+      items: filteredSuggestions,
+      popoverProps: {
+        minimal: true,
+        targetProps: {style: {width: '100%'}},
+        ...popoverProps
+      },
+      fill: true,
+      query,
+      onQueryChange: this.onQueryChange,
+      resetOnSelect: true
+    };
+
+    if (allowMultiple) {
+      return (
+        <TypedMultiSelect
+          {...commmonProps}
+          tagRenderer={entity => <Entity.Label entity={entity} icon transliterate={false} />}
+          onItemSelect={(entity: FTMEntity) => onSubmit([...values, entity])}
+          tagInputProps={{
+            inputRef: (ref) => this.inputRef = ref,
+            tagProps: {interactive: false, minimal: true},
+            onRemove: this.onRemove,
+            placeholder: '',
+            ...inputProps
+          }}
+          selectedItems={values}
+        />
+      );
+    } else {
+      const buttonText = values.length
+        ? <Entity.Label entity={values[0]} icon={false} transliterate={false} />
+        : (buttonProps?.placeholder || intl.formatMessage(messages.placeholder));
+      const buttonIcon = !!values.length && <Schema.Icon schema={values[0].schema} className="left-icon" />
+
+      return (
+        <TypedSelect
+          {...commmonProps}
+          onItemSelect={(entity: FTMEntity) => onSubmit([entity])}
+          filterable
+        >
+          <Button
+            text={buttonText}
+            alignText={Alignment.LEFT}
+            icon={buttonIcon}
+            rightIcon="caret-down"
+            elementRef={(ref) => this.inputRef = ref }
             fill
-            query={query}
-            onQueryChange={this.onQueryChange}
+            {...buttonProps}
           />
-        )}
-      </ControlGroup>
+        </TypedSelect>
+      );
+    }
   }
 }
 
