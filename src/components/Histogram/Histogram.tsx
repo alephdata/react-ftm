@@ -2,12 +2,15 @@ import * as React from 'react'
 import { Colors } from "@blueprintjs/core";
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import {
-  BarChart, Bar, XAxis, Tooltip, ReferenceArea, ResponsiveContainer,
+  BarChart, Bar, Cell, XAxis, Tooltip, ReferenceArea, ResponsiveContainer,
 } from 'recharts';
 import c from 'classnames';
 import Numeric from 'types/Numeric';
 
 import './Histogram.scss';
+
+const DEFAULT_FILL = Colors.BLUE2;
+const ACTIVE_FILL = Colors.ORANGE3;
 
 const dataFromEvent = (e: any) => (e?.activePayload?.[0]?.payload);
 
@@ -23,6 +26,7 @@ interface IHistogramProps extends WrappedComponentProps {
   chartProps?: any
   containerProps?: any
   dataPropName: string
+  activeId?: string
 }
 
 interface IHistogramState {
@@ -65,8 +69,24 @@ export class Histogram extends React.Component<IHistogramProps, IHistogramState>
     this.setState({ selectStart: undefined, selectEnd: undefined });
   }
 
+  renderBars() {
+    const { activeId, data, dataPropName } = this.props;
+
+    if (activeId) {
+      return (
+        <Bar dataKey={dataPropName}>
+          {data.map(({ id }) => (
+            <Cell fill={id === activeId ? ACTIVE_FILL : DEFAULT_FILL} key={`cell-${id}`} />
+          ))}
+        </Bar>
+      );
+    } else {
+      return <Bar dataKey={dataPropName} fill={DEFAULT_FILL} />
+    }
+  }
+
   render() {
-    const { chartProps, containerProps, data, dataPropName } = this.props;
+    const { activeId, chartProps, containerProps, data } = this.props;
     const { selectStart, selectEnd } = this.state;
 
     return (
@@ -85,8 +105,9 @@ export class Histogram extends React.Component<IHistogramProps, IHistogramState>
               offset={15}
               separator=": "
               formatter={(value: any) => <Numeric num={+value} />}
+              itemStyle={{ color: DEFAULT_FILL }}
             />
-            <Bar dataKey={dataPropName} fill={Colors.BLUE2} />
+            {this.renderBars()}
             {selectStart && selectEnd && (
               <ReferenceArea x1={selectStart.label} x2={selectEnd.label} />
             )}
