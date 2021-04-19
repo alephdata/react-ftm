@@ -58,6 +58,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
     this.onQueryChange = this.onQueryChange.bind(this);
     this.itemListRenderer = this.itemListRenderer.bind(this);
     this.onCreateNewEntity = this.onCreateNewEntity.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -85,13 +86,18 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
     this.props.onSubmit(nextValues)
   }
 
+  onSubmit(entity: FTMEntity) {
+    const { allowMultiple, values } = this.props;
+    this.props.onSubmit(allowMultiple ? [...values, entity] : [entity])
+  }
+
   async onCreateNewEntity(entityData: any) {
     const { createNewReferencedEntity, onSubmit } = this.props;
 
     if (!!createNewReferencedEntity) {
         const created = await createNewReferencedEntity(entityData);
         if (created) {
-          onSubmit([created]);
+          this.onSubmit(created);
           return created;
         }
     }
@@ -157,7 +163,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
         <TypedMultiSelect
           {...commmonProps}
           tagRenderer={entity => <Entity.Label entity={entity} icon transliterate={false} />}
-          onItemSelect={(entity: FTMEntity) => onSubmit([...values, entity])}
+          onItemSelect={this.onSubmit}
           tagInputProps={{
             inputRef: (ref) => this.inputRef = ref,
             tagProps: {interactive: false, minimal: true},
@@ -177,7 +183,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
       return (
         <TypedSelect
           {...commmonProps}
-          onItemSelect={(entity: FTMEntity) => onSubmit([entity])}
+          onItemSelect={this.onSubmit}
           filterable
         >
           <Button

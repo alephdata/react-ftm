@@ -25,6 +25,8 @@ interface IPropertyEditorState {
 }
 
 class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEditorState> {
+  private ref: any | null = null;
+
   constructor(props:IPropertyEditorProps) {
     super(props);
     const { entity, property, resolveEntityReference } = props;
@@ -46,6 +48,16 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
     };
 
     this.fetchEntitySuggestions = this.fetchEntitySuggestions.bind(this)
+    this.handleClickOutside = this.handleClickOutside.bind(this);
+    this.ref = React.createRef();
+  }
+
+  componentDidMount() {
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
   onChange = (values: Values) => {
@@ -68,6 +80,15 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
       const changed = entity.clone()
       changed.properties.set(property, values);
       this.props.onSubmit(changed)
+    }
+  }
+
+  handleClickOutside(e: MouseEvent) {
+    const target = e.target as Element;
+    if (target && !this.ref?.current?.contains(target) && !target.matches('.bp3-portal *, .bp3-overlay *')) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.onSubmit();
     }
   }
 
@@ -122,6 +143,7 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
     return (
       <>
         <div
+          ref={this.ref}
           onKeyDown={(e:any) => e.keyCode === TAB_KEY ? this.onSubmit() : null}
         >
           {content}

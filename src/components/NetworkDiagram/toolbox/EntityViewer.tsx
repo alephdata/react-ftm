@@ -95,6 +95,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
         fetchEntitySuggestions={(queryText: string, schemata?: Array<FTMSchema>) => entityManager.getEntitySuggestions(true, queryText, schemata)}
         resolveEntityReference={entityManager.getEntity}
         createNewReferencedEntity={(entityData: any) => entityManager.createEntity(entityData)}
+        model={entityManager.model}
       />
     );
   }
