@@ -1,14 +1,19 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
-import { Entity as FTMEntity } from "@alephdata/followthemoney";
+import { defaultModel, Entity as FTMEntity, Model } from "@alephdata/followthemoney";
 import { Entity, Schema } from 'types';
-import { Alignment, Button, ControlGroup, Menu, MenuItem, Spinner } from "@blueprintjs/core";
+import { EntityCreateDialog } from "components/common";
+import { Alignment, Button, ControlGroup, Intent, Menu, MenuItem, Spinner } from "@blueprintjs/core";
 import { ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
 import { ITypeEditorProps } from "./common";
 
 import './EntitySelect.scss';
 
 const messages = defineMessages({
+  create_entity: {
+    id: 'editor.entity.create_entity',
+    defaultMessage: 'Create a new entity',
+  },
   no_results: {
     id: 'editor.entity.no_results',
     defaultMessage: 'No matching results found',
@@ -25,12 +30,15 @@ interface IEntityTypeProps extends ITypeEditorProps, WrappedComponentProps {
   entitySuggestions: Array<FTMEntity>
   isFetching: boolean
   onQueryChange: (query: string) => void
+  createNewReferencedEntity?: (entityData: any) => Promise<FTMEntity>
   noResultsText?: string
   buttonProps?: any
+  model?: Model
 }
 
 interface IEntitySelectState {
   query: string
+  createNewDialogOpen: boolean
 }
 
 const TypedMultiSelect = MultiSelect.ofType<FTMEntity>();
@@ -43,11 +51,13 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
     super(props);
 
     this.state = {
-      query: ''
+      query: '',
+      createNewDialogOpen: false,
     }
 
     this.onQueryChange = this.onQueryChange.bind(this);
     this.itemListRenderer = this.itemListRenderer.bind(this);
+    this.onCreateNewEntity = this.onCreateNewEntity.bind(this);
   }
 
   componentDidMount() {
@@ -75,8 +85,20 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
     this.props.onSubmit(nextValues)
   }
 
+  async onCreateNewEntity(entityData: any) {
+    const { createNewReferencedEntity, onSubmit } = this.props;
+
+    if (!!createNewReferencedEntity) {
+        const created = await createNewReferencedEntity(entityData);
+        if (created) {
+          onSubmit([created]);
+          return created;
+        }
+    }
+  }
+
   itemListRenderer(rendererProps: any) {
-    const { intl, isFetching, noResultsText } = this.props;
+    const { createNewReferencedEntity, intl, isFetching, noResultsText } = this.props;
     const { filteredItems, itemsParentRef, renderItem } = rendererProps;
 
     let content;
@@ -91,6 +113,14 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
     return (
       <Menu ulRef={itemsParentRef}>
         {content}
+        {!!createNewReferencedEntity && (
+          <MenuItem
+            icon="add"
+            intent={Intent.PRIMARY}
+            onClick={() => this.setState({ createNewDialogOpen: true })}
+            text={intl.formatMessage(messages.create_entity)}
+          />
+        )}
       </Menu>
     );
   }
@@ -100,7 +130,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
     this.props.onQueryChange(query);
   }
 
-  render() {
+  renderSelect() {
     const { allowMultiple, entitySuggestions, intl, onSubmit, inputProps = {}, popoverProps = {}, buttonProps = {}, values } = this.props;
     const { query } = this.state;
 
@@ -162,6 +192,29 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
         </TypedSelect>
       );
     }
+  }
+
+  render() {
+    const { createNewReferencedEntity, model: inputModel, intl } = this.props;
+    const { createNewDialogOpen } = this.state;
+
+    const model = inputModel || new Model(defaultModel);
+
+    return (
+      <>
+        {this.renderSelect()}
+        {!!createNewReferencedEntity && (
+          <EntityCreateDialog
+            isOpen={createNewDialogOpen}
+            onSubmit={this.onCreateNewEntity}
+            toggleDialog={() => this.setState({ createNewDialogOpen: false })}
+            schema={model.getSchema("Person")}
+            model={model}
+            intl={intl}
+          />
+        )}
+      </>
+    )
   }
 }
 

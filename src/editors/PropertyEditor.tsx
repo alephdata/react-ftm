@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { injectIntl, WrappedComponentProps } from 'react-intl';
-import { Entity, Property, Schema, Values } from '@alephdata/followthemoney';
+import { Entity, Model, Property, Schema, Values } from '@alephdata/followthemoney';
 import { CountrySelect, TopicSelect, EntitySelect, TextEdit } from './';
 import { validate } from 'utils';
 
@@ -12,8 +12,10 @@ interface IPropertyEditorProps extends WrappedComponentProps {
   onSubmit: (entity: Entity) => void
   onChange?: (values: Values) => void
   fetchEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>
-  resolveEntityReference?: (entityId: string) => Entity | undefined,
+  resolveEntityReference?: (entityId: string) => Entity | undefined
+  createNewReferencedEntity?: (entityData: any) => Promise<Entity>
   popoverProps?: any
+  model?: Model
 }
 
 interface IPropertyEditorState {
@@ -81,7 +83,7 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
   }
 
   render() {
-    const { entity, intl, property, popoverProps } = this.props;
+    const { createNewReferencedEntity, entity, intl, property, popoverProps, model } = this.props;
     const { entitySuggestions, error, values } = this.state;
     const propType = property.type;
 
@@ -104,11 +106,13 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
       content = (
         <EntitySelect
           {...commonProps}
+          model={model}
           allowMultiple={!entity.schema.isEdge}
           values={values as Array<Entity>}
           isFetching={entitySuggestions.isPending}
           entitySuggestions={filteredSuggestions}
           onQueryChange={this.fetchEntitySuggestions}
+          createNewReferencedEntity={createNewReferencedEntity}
         />
       );
     } else {

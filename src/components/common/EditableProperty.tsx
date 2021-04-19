@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { FormGroup, Intent, Button } from '@blueprintjs/core'
-import { IEntityDatum, Property as FTMProperty, Schema } from '@alephdata/followthemoney'
+import { IEntityDatum, Model, Property as FTMProperty, Schema } from '@alephdata/followthemoney'
 import c from 'classnames';
 
 import { PropertyEditor } from 'editors'
@@ -18,7 +18,9 @@ interface IEditablePropertyProps {
   onSubmit: (entity: Entity, previous: IEntityDatum) => void
   fetchEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>
   resolveEntityReference?: (entityId: string) => Entity | undefined
+  createNewReferencedEntity?: (entityData: any) => Promise<Entity>
   minimal?: boolean
+  model?: Model
 }
 
 export class EditableProperty extends React.Component<IEditablePropertyProps> {
@@ -36,7 +38,7 @@ export class EditableProperty extends React.Component<IEditablePropertyProps> {
   }
 
   render() {
-    const { editing, entity, fetchEntitySuggestions, onSubmit, property, minimal, resolveEntityReference, writeable = true } = this.props;
+    const { createNewReferencedEntity, editing, entity, fetchEntitySuggestions, onSubmit, property, minimal, model, resolveEntityReference, writeable = true } = this.props;
     const entityData = entity.toJSON();
 
     const values = entity.getProperty(property.name);
@@ -61,8 +63,10 @@ export class EditableProperty extends React.Component<IEditablePropertyProps> {
               onSubmit={(entity: Entity) => onSubmit(entity, entityData)}
               entity={entity}
               property={property}
+              model={model}
               fetchEntitySuggestions={fetchEntitySuggestions}
               resolveEntityReference={resolveEntityReference}
+              createNewReferencedEntity={createNewReferencedEntity}
             />
           )}
           {!writeable || (!editing && !(minimal && isEmpty)) && (
