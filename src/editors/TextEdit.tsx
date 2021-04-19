@@ -109,7 +109,7 @@ class TextEdit extends React.PureComponent<ITextEditProps, ITextEditState> {
                   rows={multiline ? 3 : 1}
                   growVertically
                   fill
-                  style={multiline ? {} : {resize:"none", overflow:"hidden"}}
+                  style={{resize:"none", overflow:"hidden"}}
                   onChange={(e:React.ChangeEvent<HTMLTextAreaElement>) => {
                     const value = e.target.value;
                     // avoid setting an empty string val

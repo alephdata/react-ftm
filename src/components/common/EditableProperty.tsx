@@ -13,6 +13,7 @@ interface IEditablePropertyProps {
   entity: Entity
   property: FTMProperty
   editing: boolean
+  writeable?: boolean
   onToggleEdit: (property: FTMProperty) => void
   onSubmit: (entity: Entity, previous: IEntityDatum) => void
   fetchEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>
@@ -35,7 +36,7 @@ export class EditableProperty extends React.Component<IEditablePropertyProps> {
   }
 
   render() {
-    const { editing, entity, fetchEntitySuggestions, onSubmit, property, minimal, resolveEntityReference } = this.props;
+    const { editing, entity, fetchEntitySuggestions, onSubmit, property, minimal, resolveEntityReference, writeable = true } = this.props;
     const entityData = entity.toJSON();
 
     const values = entity.getProperty(property.name);
@@ -43,7 +44,7 @@ export class EditableProperty extends React.Component<IEditablePropertyProps> {
 
     return (
       <div
-        className={c('EditableProperty', {'active': editing, minimal})}
+        className={c('EditableProperty', {'active': editing, minimal, 'read-only': !writeable })}
         onClick={(e) => !editing && this.toggleEditing(e)}
       >
         {(!minimal || isEmpty) && (
@@ -54,7 +55,7 @@ export class EditableProperty extends React.Component<IEditablePropertyProps> {
           </div>
         )}
         <div className='EditableProperty__value'>
-          {editing && (
+          {writeable && editing && (
             <PropertyEditor
               key={property.name}
               onSubmit={(entity: Entity) => onSubmit(entity, entityData)}
@@ -64,7 +65,7 @@ export class EditableProperty extends React.Component<IEditablePropertyProps> {
               resolveEntityReference={resolveEntityReference}
             />
           )}
-          {(!editing && !(minimal && isEmpty)) && (
+          {!writeable || (!editing && !(minimal && isEmpty)) && (
             <Property.Values
               prop={property}
               values={values}

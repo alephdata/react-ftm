@@ -8,6 +8,10 @@
   border: 1px solid;
   transition: all .2s ease-in-out;
 
+  &.read-only {
+    pointer-events: none !important;
+  }
+
   @include themify() {
     background-color: themed('sidebarMenuColor');
     border-color: themed('sidebarMenuColor');
