@@ -58,7 +58,7 @@ class PropertySelect extends React.PureComponent<IPropertySelectProps> {
         onItemSelect={this.props.onSelected}
         items={properties}
       >
-        <Button icon='plus' text={intl.formatMessage(messages.add)} fill alignText={Alignment.LEFT} {...buttonProps} />
+        <Button icon='add' text={intl.formatMessage(messages.add)} fill alignText={Alignment.LEFT} {...buttonProps} />
       </TypedSelect>
     );
   }
