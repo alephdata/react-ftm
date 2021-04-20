@@ -15,7 +15,7 @@ export interface IEntityManagerProps {
   model?: Model,
   entities: Array<IEntityDatum>
   namespace?: Namespace,
-  createEntity?: (entity: IEntityDatum) => Entity,
+  createEntity?: (entity: IEntityDatum, local?: boolean) => Entity,
   updateEntity?: (entity: Entity) => void,
   deleteEntity?: (entityId: string) => void,
   expandEntity?: (entityId: string, properties?: Array<string>, limit?: number) => Promise<any>
@@ -49,7 +49,7 @@ export class EntityManager {
     this.resolveEntityReference = this.resolveEntityReference.bind(this);
   }
 
-  createEntity(entityData: any): Entity {
+  createEntity(entityData: any, local: boolean = true): Entity {
     let entity: Entity;
     if (entityData.id) {
       entity = this.model.getEntity(entityData);
@@ -70,10 +70,11 @@ export class EntityManager {
     }
 
     if (this.overload?.createEntity) {
-      this.overload.createEntity(entity);
+      this.overload.createEntity(entity, local);
     }
-
-    this.addEntities([entity]);
+    if (local) {
+      this.addEntities([entity]);
+    }
     return entity;
   }
 
