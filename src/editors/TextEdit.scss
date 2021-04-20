@@ -1,6 +1,7 @@
 .TextEdit {
   &__toggleMulti.bp3-button {
-    transform: translateY(-2px) !important;
+    top: 50%;
+    transform: translateY(-50%);
     margin: 0 !important;
   }
 }

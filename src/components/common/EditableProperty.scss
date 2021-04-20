@@ -106,7 +106,6 @@
       padding-top: 0;
       padding-left: 0 !important;
       height: auto;
-      margin-bottom: 0;
 
       @include themify() {
         color: themed('textColor') !important;
@@ -143,6 +142,9 @@
     }
 
     .TextEdit__toggleMulti.bp3-button {
+      top: 0;
+      transform: translateY(-2px);
+
       .bp3-icon {
         @include themify() {
           color: themed('textColor');
