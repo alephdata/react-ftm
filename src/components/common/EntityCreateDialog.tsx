@@ -28,7 +28,8 @@ interface IEntityCreateDialogProps extends WrappedComponentProps {
   isOpen: boolean,
   onSubmit: (entityData: any) => Promise<Entity | undefined>,
   toggleDialog: () => any,
-  schema: FTMSchema,
+  schema?: FTMSchema,
+  schemaRange?: string
   model: Model
   fetchEntitySuggestions?: (queryText: string, schemata?: Array<FTMSchema>) => Promise<Entity[]>,
 }
@@ -55,15 +56,28 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
       isFetchingSuggestions: false,
       isProcessing: false,
       suggestions: [],
-      schema: props.schema
+      schema: this.getInitialSchema()
     };
   }
 
   componentDidUpdate(prevProps: IEntityCreateDialogProps) {
     const { isOpen, schema } = this.props;
     if (!prevProps.isOpen && isOpen) {
-      this.setState({ schema });
+      this.setState({ schema: this.getInitialSchema() });
     }
+  }
+
+  getInitialSchema() {
+    const { model, schema, schemaRange } = this.props;
+    if (schema) {
+      return schema;
+    }
+    const range = schemaRange || 'Thing';
+    const schemata = model.getSchemata().filter((schema: FTMSchema) => schema.isA(range));
+    if (!!schemata.length) {
+      return schemata[0];
+    }
+    return model.getSchema('Person');
   }
 
   onQueryChange(inputText: string) {
@@ -116,7 +130,7 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
   }
 
   render() {
-    const { fetchEntitySuggestions, intl, isOpen, model, toggleDialog } = this.props;
+    const { fetchEntitySuggestions, intl, isOpen, model, toggleDialog, schemaRange } = this.props;
     const { isFetchingSuggestions, isProcessing, inputText, schema, suggestions } = this.state;
     const captionProperty = this.getCaptionProperty();
     const placeholder = `${schema.label} ${captionProperty}`;
@@ -143,7 +157,7 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
               <SchemaSelect
                 model={model}
                 onSelect={this.onSchemaSelect}
-                optionsFilter={schema => schema.isThing()}
+                optionsFilter={schema => schema.isA(schemaRange || 'Thing')}
               >
                 <Button
                   large

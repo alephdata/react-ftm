@@ -134,6 +134,7 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
           entitySuggestions={filteredSuggestions}
           onQueryChange={this.fetchEntitySuggestions}
           createNewReferencedEntity={createNewReferencedEntity}
+          referencedEntityRange={property.getRange()}
         />
       );
     } else {

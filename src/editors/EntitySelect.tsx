@@ -31,6 +31,7 @@ interface IEntityTypeProps extends ITypeEditorProps, WrappedComponentProps {
   isFetching: boolean
   onQueryChange: (query: string) => void
   createNewReferencedEntity?: (entityData: any) => Promise<FTMEntity>
+  referencedEntityRange?: string
   noResultsText?: string
   buttonProps?: any
   model?: Model
@@ -201,7 +202,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
   }
 
   render() {
-    const { createNewReferencedEntity, model: inputModel, intl } = this.props;
+    const { createNewReferencedEntity, model: inputModel, intl, referencedEntityRange } = this.props;
     const { createNewDialogOpen } = this.state;
 
     const model = inputModel || new Model(defaultModel);
@@ -214,7 +215,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
             isOpen={createNewDialogOpen}
             onSubmit={this.onCreateNewEntity}
             toggleDialog={() => this.setState({ createNewDialogOpen: false })}
-            schema={model.getSchema("Person")}
+            schemaRange={referencedEntityRange}
             model={model}
             intl={intl}
           />
