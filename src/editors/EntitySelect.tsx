@@ -3,7 +3,7 @@ import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { defaultModel, Entity as FTMEntity, Model } from "@alephdata/followthemoney";
 import { Entity, Schema } from 'types';
 import { EntityCreateDialog } from "components/common";
-import { Alignment, Button, ControlGroup, Intent, Menu, MenuItem, Spinner } from "@blueprintjs/core";
+import { Alignment, Button, ControlGroup, Intent, Menu, MenuDivider, MenuItem, Spinner } from "@blueprintjs/core";
 import { ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
 import { ITypeEditorProps } from "./common";
 
@@ -16,7 +16,7 @@ const messages = defineMessages({
   },
   no_results: {
     id: 'editor.entity.no_results',
-    defaultMessage: 'No matching results found',
+    defaultMessage: 'No existing entities found',
   },
   placeholder: {
     id: 'editor.entity.placeholder',
@@ -112,22 +112,25 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
     if (isFetching) {
       content = <Spinner className="EntityCreateDialog__spinner" size={Spinner.SIZE_SMALL} />
     } else if (filteredItems.length === 0) {
-      content = <span className="error-text">{noResultsText || intl.formatMessage(messages.no_results)}</span>
+      content = <li className="bp3-menu-item bp3-disabled error-text">{noResultsText || intl.formatMessage(messages.no_results)}</li>
     } else {
       content = filteredItems.map(renderItem);
     }
 
     return (
       <Menu ulRef={itemsParentRef}>
-        {content}
         {!!createNewReferencedEntity && (
-          <MenuItem
-            icon="add"
-            intent={Intent.PRIMARY}
-            onClick={() => this.setState({ createNewDialogOpen: true })}
-            text={intl.formatMessage(messages.create_entity)}
-          />
+          <>
+            <MenuItem
+              icon="add"
+              intent={Intent.PRIMARY}
+              onClick={() => this.setState({ createNewDialogOpen: true })}
+              text={intl.formatMessage(messages.create_entity)}
+            />
+            <MenuDivider />
+          </>
         )}
+        {content}
       </Menu>
     );
   }
