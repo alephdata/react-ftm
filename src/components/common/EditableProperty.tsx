@@ -69,7 +69,7 @@ export class EditableProperty extends React.Component<IEditablePropertyProps> {
               createNewReferencedEntity={createNewReferencedEntity}
             />
           )}
-          {!writeable || (!editing && !(minimal && isEmpty)) && (
+          {(!writeable || (!editing && !(minimal && isEmpty))) && (
             <Property.Values
               prop={property}
               values={values}

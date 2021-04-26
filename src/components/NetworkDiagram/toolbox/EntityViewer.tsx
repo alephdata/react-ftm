@@ -80,7 +80,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   renderProperty(property:FTMProperty){
-    const { entityManager } = this.context;
+    const { entityManager, writeable } = this.context;
     const { entity } = this.props;
     const { currEditing } = this.state;
 
@@ -96,6 +96,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
         resolveEntityReference={entityManager.getEntity}
         createNewReferencedEntity={(entityData: any) => entityManager.createEntity(entityData)}
         model={entityManager.model}
+        writeable={writeable}
       />
     );
   }
