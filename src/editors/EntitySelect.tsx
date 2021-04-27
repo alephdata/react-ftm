@@ -3,7 +3,7 @@ import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { defaultModel, Entity as FTMEntity, Model } from "@alephdata/followthemoney";
 import { Entity, Schema } from 'types';
 import { EntityCreateDialog } from "components/common";
-import { Alignment, Button, ControlGroup, Intent, Menu, MenuDivider, MenuItem, Spinner } from "@blueprintjs/core";
+import { Alignment, Button, Intent, Menu, MenuDivider, MenuItem, Spinner } from "@blueprintjs/core";
 import { ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
 import { ITypeEditorProps } from "./common";
 
@@ -93,9 +93,9 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
   }
 
   async onCreateNewEntity(entityData: any) {
-    const { createNewReferencedEntity, onSubmit } = this.props;
+    const { createNewReferencedEntity } = this.props;
 
-    if (!!createNewReferencedEntity) {
+    if (createNewReferencedEntity) {
         const created = await createNewReferencedEntity(entityData);
         if (created) {
           this.onSubmit(created);
@@ -141,7 +141,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
   }
 
   renderSelect() {
-    const { allowMultiple, entitySuggestions, intl, onSubmit, inputProps = {}, popoverProps = {}, buttonProps = {}, values } = this.props;
+    const { allowMultiple, entitySuggestions, intl, inputProps = {}, popoverProps = {}, buttonProps = {}, values } = this.props;
     const { query } = this.state;
 
     const filteredSuggestions = entitySuggestions.filter(e => (!values.find(val => val.id === e.id )));

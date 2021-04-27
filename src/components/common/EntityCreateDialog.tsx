@@ -61,7 +61,7 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
   }
 
   componentDidUpdate(prevProps: IEntityCreateDialogProps) {
-    const { isOpen, schema } = this.props;
+    const { isOpen } = this.props;
     if (!prevProps.isOpen && isOpen) {
       this.setState({ schema: this.getInitialSchema() });
     }
@@ -74,7 +74,7 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
     }
     const range = schemaRange || 'Thing';
     const schemata = model.getSchemata().filter((schema: FTMSchema) => schema.isA(range));
-    if (!!schemata.length) {
+    if (schemata.length) {
       return schemata[0];
     }
     return model.getSchema('Person');

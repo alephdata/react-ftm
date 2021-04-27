@@ -26,7 +26,6 @@ interface IHistogramProps extends WrappedComponentProps {
   chartProps?: any
   containerProps?: any
   dataPropName: string
-  activeId?: string
 }
 
 interface IHistogramState {
@@ -86,7 +85,7 @@ export class Histogram extends React.Component<IHistogramProps, IHistogramState>
   }
 
   render() {
-    const { activeId, chartProps, containerProps, data } = this.props;
+    const { chartProps, containerProps, data } = this.props;
     const { selectStart, selectEnd } = this.state;
 
     return (

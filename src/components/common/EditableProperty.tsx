@@ -1,11 +1,9 @@
 import * as React from 'react'
-import { FormGroup, Intent, Button } from '@blueprintjs/core'
 import { IEntityDatum, Model, Property as FTMProperty, Schema } from '@alephdata/followthemoney'
 import c from 'classnames';
 
 import { PropertyEditor } from 'editors'
-import { EdgeType, FTMEntityExtended as Entity, Property } from 'types'
-import { Dialog } from 'components/common'
+import { FTMEntityExtended as Entity, Property } from 'types'
 
 import './EditableProperty.scss';
 

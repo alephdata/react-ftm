@@ -49,7 +49,7 @@ export class EntityManager {
     this.resolveEntityReference = this.resolveEntityReference.bind(this);
   }
 
-  createEntity(entityData: any, local: boolean = true): Entity {
+  createEntity(entityData: any, local = true): Entity {
     let entity: Entity;
     if (entityData.id) {
       entity = this.model.getEntity(entityData);
