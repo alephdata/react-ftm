@@ -26,6 +26,7 @@ interface IHistogramProps extends WrappedComponentProps {
   chartProps?: any
   containerProps?: any
   dataPropName: string
+  activeId?: string
 }
 
 interface IHistogramState {
