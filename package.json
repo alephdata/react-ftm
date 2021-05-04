@@ -61,7 +61,7 @@
   "devDependencies": {
     "@formatjs/cli": "^3.1.5",
     "@types/bezier-js": "^0.0.8",
-    "@types/classnames": "^2.2.11",
+    "@types/classnames": "^2.3.1",
     "@types/d3": "^6.3.0",
     "@types/dagre": "^0.7.44",
     "@types/google-libphonenumber": "^7.4.20",
@@ -94,10 +94,10 @@
     "stream-browserify": "^3.0.0",
     "style-loader": "^2.0.0",
     "ts-jest": "^26.5.5",
-    "ts-loader": "^8.0.17",
+    "ts-loader": "^9.1.1",
     "ts-node": "^9.1.1",
     "tslib": "^2.2.0",
-    "typescript": "^4.2.2",
+    "typescript": "^4.2.4",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.6.0",
     "webpack-dev-server": "^3.11.2",
@@ -114,7 +114,7 @@
     "react-intl": "^5.0.0"
   },
   "dependencies": {
-    "bezier-js": "^2.1.6",
+    "bezier-js": "^4.1.1",
     "d3-force": "^2.1.1",
     "d3-scale": "^3.3.0",
     "dagre": "^0.8.4",
