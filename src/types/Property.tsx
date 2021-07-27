@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
+import { defineMessages, FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Values, Value, Property as FTMProperty, Entity as FTMEntity } from "@alephdata/followthemoney";
 
 import {
@@ -119,19 +119,20 @@ class PropertyValue extends React.PureComponent<IPropertyValueProps> {
 
 // ----------
 
-interface IPropertyValuesProps extends IPropertyCommonProps{
+interface IPropertyValuesProps extends IPropertyCommonProps, WrappedComponentProps {
   values:Values
   separator?: string
   missing?: string
   resolveEntityReference?: (entityId: string) => FTMEntity | undefined
   getEntityLink?: (entity: FTMEntity) => any
   translitLookup?: any
+  truncate?: number
 }
 
 class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
   render() {
-    const { getEntityLink, prop, resolveEntityReference, values, separator = ' · ', missing = '—', translitLookup } = this.props;
-    const vals = ensureArray(values).map(value => (
+    const { getEntityLink, prop, resolveEntityReference, values, truncate, separator = ' · ', missing = '—', translitLookup } = this.props;
+    const vals = ensureArray(truncate ? values.slice(0, truncate) : values).map(value => (
       <PropertyValue
         key={typeof value === 'string' ? value : value.id}
         prop={prop}
@@ -145,13 +146,23 @@ class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
     if (!vals.length) {
       content = (<span className="no-value">{missing}</span>);
     // display urls separated by newline
-  } else if (prop.type.name === 'url' || !!getEntityLink) {
+    } else if (prop.type.name === 'url' || !!getEntityLink) {
       content = vals.map((val, i) => <span key={i} style={{ display: 'block' }}>{val}</span>);
     } else {
       content = wordList(vals, separator);
     }
 
-    return <span className="PropertyValues">{content}</span>;
+    const truncateText = (!!truncate && values.length > truncate) && (
+      <span className="more-text">
+        <FormattedMessage
+          id='property.values.truncate'
+          defaultMessage='+{truncateCount} More'
+          values={{ truncateCount: values.length - truncate }}
+        />
+      </span>
+    );
+
+    return <span className="PropertyValues">{content}{truncateText}</span>;
   }
 }
 
@@ -164,7 +175,7 @@ class Property extends React.Component {
 
   static Value = PropertyValue;
 
-  static Values = PropertyValues;
+  static Values = withTranslator(injectIntl(PropertyValues));
 }
 
 export default Property;

@@ -351,16 +351,16 @@ class TableEditorBase extends React.Component<ITableEditorProps, ITableEditorSta
           values={values}
           prop={property}
           resolveEntityReference={entityManager.resolveEntityReference}
-          getEntityLink={showVisitLink ? (ent) => (
+          getEntityLink={showVisitLink ? (e: FTMEntity) => (
             <Button
               minimal
               small
-              icon={!!ent?.schema && <Schema.Icon schema={ent.schema} />}
+              icon={!!e?.schema && <Schema.Icon schema={e.schema} />}
               rightIcon={<Icon icon="fullscreen" iconSize={12} className="TableEditor__link-cell__icon" />}
               className="TableEditor__link-cell"
-              onClick={() => visitEntity && visitEntity(ent)}
+              onClick={() => visitEntity && visitEntity(e)}
             >
-              <Entity.Label entity={ent} icon={false} />
+              <Entity.Label entity={e} icon={false} />
             </Button>
           ) : undefined}
         />
