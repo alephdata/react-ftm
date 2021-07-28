@@ -1,12 +1,13 @@
 import React from 'react';
 import { Tooltip } from '@blueprintjs/core';
-
+import truncateText from 'truncate';
 
 import './Transliterate.scss';
 
 interface ITransliterateProps {
   value: string
   lookup?: any
+  truncate?: number
 }
 
 class Transliterate extends React.PureComponent<ITransliterateProps> {
@@ -35,9 +36,9 @@ class Transliterate extends React.PureComponent<ITransliterateProps> {
   }
 
   render() {
-    const { lookup, value } = this.props;
+    const { lookup, value, truncate } = this.props;
     if (!lookup || !lookup[value]) {
-      return value;
+      return truncate ? truncateText(value, truncate) : value;
     }
     const symbol = navigator.userAgent.indexOf('Mac OS X') != -1 ? '⌘' : 'Ctl';
 
@@ -57,7 +58,7 @@ class Transliterate extends React.PureComponent<ITransliterateProps> {
           )}
         >
           <span className="Transliterate bp3-tooltip-indicator">
-            {value}
+            {truncate ? truncateText(value, truncate) : value}
           </span>
         </Tooltip>
       </>

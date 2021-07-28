@@ -1,6 +1,7 @@
 import React from 'react';
 import { defineMessages, FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Values, Value, Property as FTMProperty, Entity as FTMEntity } from "@alephdata/followthemoney";
+import truncateText from 'truncate';
 
 import {
   Country,
@@ -53,11 +54,12 @@ class PropertyReverse extends React.PureComponent<IPropertyReverseProps> {
 
 // ----------
 
-interface IPropertyValueProps extends IPropertyCommonProps{
+interface IPropertyValueProps extends IPropertyCommonProps {
   value:Value
   resolveEntityReference?: (entityId: string) => FTMEntity | undefined
   getEntityLink?: (entity: FTMEntity) => any
   translitLookup?: any
+  truncate?: number
 }
 
 const getSortValue = ({ prop, resolveEntityReference, value }:IPropertyValueProps) => {
@@ -75,7 +77,7 @@ const getSortValue = ({ prop, resolveEntityReference, value }:IPropertyValueProp
 
 class PropertyValue extends React.PureComponent<IPropertyValueProps> {
   render() {
-    const { getEntityLink, prop, resolveEntityReference, value, translitLookup } = this.props;
+    const { getEntityLink, prop, resolveEntityReference, value, truncate, translitLookup } = this.props;
     if (!value) {
       return null;
     }
@@ -102,7 +104,7 @@ class PropertyValue extends React.PureComponent<IPropertyValueProps> {
       return <Language.Label code={value as string} fullList={prop.type.values}/>;
     }
     if (prop.type.name === 'url') {
-      return <URL value={value as string} onClick={(e: React.MouseEvent) => e.stopPropagation()} />;
+      return <URL value={value as string} onClick={(e: React.MouseEvent) => e.stopPropagation()} truncate={truncate} />;
     }
     if (prop.type.name === 'date') {
       return <Date value={value as string} />;
@@ -111,9 +113,9 @@ class PropertyValue extends React.PureComponent<IPropertyValueProps> {
       return <Numeric num={+value} />;
     }
     if (prop.type.name === 'name' || prop.type.name === 'address') {
-      return <Transliterate value={value} lookup={translitLookup} />;
+      return <Transliterate value={value} lookup={translitLookup} truncate={truncate} />;
     }
-    return value
+    return truncate ? truncateText(value, truncate) : value;
   }
 }
 
@@ -127,11 +129,12 @@ interface IPropertyValuesProps extends IPropertyCommonProps, WrappedComponentPro
   getEntityLink?: (entity: FTMEntity) => any
   translitLookup?: any
   truncate?: number
+  truncateItem?: number
 }
 
 class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
   render() {
-    const { getEntityLink, prop, resolveEntityReference, values, truncate, separator = ' · ', missing = '—', translitLookup } = this.props;
+    const { getEntityLink, prop, resolveEntityReference, values, truncate, truncateItem, separator = ' · ', missing = '—', translitLookup } = this.props;
     const vals = ensureArray(truncate ? values.slice(0, truncate) : values).map(value => (
       <PropertyValue
         key={typeof value === 'string' ? value : value.id}
@@ -140,6 +143,7 @@ class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
         resolveEntityReference={resolveEntityReference}
         getEntityLink={getEntityLink}
         translitLookup={translitLookup}
+        truncate={truncateItem}
       />
     ));
     let content;
