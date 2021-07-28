@@ -1,3 +1,5 @@
+@use "sass:math";
+
 $table-editor-padding: 20px;
 $border-color: rgba(16, 22, 26, 0.15);
 
@@ -14,8 +16,8 @@ $border-color: rgba(16, 22, 26, 0.15);
 
   &__close {
     position: absolute;
-    top: $table-editor-padding/2;
-    right: $table-editor-padding/2;
+    top: math.div($table-editor-padding, 2);
+    right: math.div($table-editor-padding, 2);
     z-index: 3;
   }
 
