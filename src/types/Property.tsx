@@ -1,5 +1,6 @@
 import React from 'react';
 import { defineMessages, FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
+import { Button, Intent } from '@blueprintjs/core'
 import { Values, Value, Property as FTMProperty, Entity as FTMEntity } from "@alephdata/followthemoney";
 import truncateText from 'truncate';
 
@@ -132,10 +133,38 @@ interface IPropertyValuesProps extends IPropertyCommonProps, WrappedComponentPro
   truncateItem?: number
 }
 
-class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
+interface IPropertyValuesState {
+  truncateShowAll: boolean
+}
+
+const messages = defineMessages({
+  truncate_show: {
+    id:'property.values.truncate_show',
+    defaultMessage:'+{truncateCount} More'
+  },
+  truncate_hide: {
+    id:'property.values.truncate_hide',
+    defaultMessage:'- Show fewer'
+  }
+})
+
+class PropertyValues extends React.PureComponent<IPropertyValuesProps, IPropertyValuesState> {
+  constructor(props: IPropertyValuesProps) {
+    super(props)
+    this.state = { truncateShowAll: false }
+  }
+
+  toggleTruncateShowAll = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState(({ truncateShowAll }) => ({ truncateShowAll: !truncateShowAll }));
+  }
+
   render() {
-    const { getEntityLink, prop, resolveEntityReference, values, truncate, truncateItem, separator = ' · ', missing = '—', translitLookup } = this.props;
-    const vals = ensureArray(truncate ? values.slice(0, truncate) : values).map(value => (
+    const { getEntityLink, intl, prop, resolveEntityReference, values, truncate, truncateItem, separator = ' · ', missing = '—', translitLookup } = this.props;
+    const { truncateShowAll } = this.state;
+
+    const vals = ensureArray((truncate && !truncateShowAll) ? values.slice(0, truncate) : values).map(value => (
       <PropertyValue
         key={typeof value === 'string' ? value : value.id}
         prop={prop}
@@ -157,13 +186,13 @@ class PropertyValues extends React.PureComponent<IPropertyValuesProps > {
     }
 
     const truncateText = (!!truncate && values.length > truncate) && (
-      <span className="more-text">
-        <FormattedMessage
-          id='property.values.truncate'
-          defaultMessage='+{truncateCount} More'
-          values={{ truncateCount: values.length - truncate }}
-        />
-      </span>
+      <Button
+        minimal
+        small
+        className="more-text bp3-text-muted"
+        onClick={this.toggleTruncateShowAll}
+        text={intl.formatMessage(messages[truncateShowAll ? 'truncate_hide' : 'truncate_show'], { truncateCount: values.length - truncate })}
+      />
     );
 
     return <span className="PropertyValues">{content}{truncateText}</span>;
