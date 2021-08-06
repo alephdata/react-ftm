@@ -1,9 +1,9 @@
-import * as React from 'react'
-import { IEntityDatum, Model, Property as FTMProperty, Schema } from '@alephdata/followthemoney'
+import * as React from 'react';
+import { IEntityDatum, Model, Property as FTMProperty, Schema } from '@alephdata/followthemoney';
 import c from 'classnames';
 
-import { PropertyEditor } from 'editors'
-import { FTMEntityExtended as Entity, Property } from 'types'
+import { PropertyEditor } from '../../editors';
+import { FTMEntityExtended as Entity, Property } from '../../types';
 
 import './EditableProperty.scss';
 
@@ -28,7 +28,7 @@ export class EditableProperty extends React.Component<IEditablePropertyProps> {
     this.toggleEditing = this.toggleEditing.bind(this);
   }
 
-  toggleEditing(e:React.MouseEvent) {
+  toggleEditing(e: React.MouseEvent) {
     const { onToggleEdit, property } = this.props;
     e.preventDefault();
     e.stopPropagation();
@@ -44,13 +44,13 @@ export class EditableProperty extends React.Component<IEditablePropertyProps> {
 
     return (
       <div
-        className={c('EditableProperty', {'active': editing, minimal, 'read-only': !writeable })}
+        className={c('EditableProperty', { 'active': editing, minimal, 'read-only': !writeable })}
         onClick={(e) => !editing && this.toggleEditing(e)}
       >
         {(!minimal || isEmpty) && (
           <div className='EditableProperty__label'>
             <span>
-              <Property.Name prop={property}/>
+              <Property.Name prop={property} />
             </span>
           </div>
         )}

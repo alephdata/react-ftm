@@ -1,6 +1,6 @@
 import 'index.scss';
-import { renderEmbed } from 'embed/renderEmbed';
-import { fetchLocalData } from 'embed/util';
+import { renderEmbed } from './renderEmbed';
+import { fetchLocalData } from './util';
 
 const id = 'dev';
 const data = fetchLocalData(id) || require('./sample.ftm');

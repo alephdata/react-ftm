@@ -1,10 +1,8 @@
-import React from 'react'
+import React from 'react';
 
-import NetworkDiagramWrapper from 'embed/NetworkDiagramWrapper';
-import EntityTableWrapper from 'embed/EntityTableWrapper';
-// import HistogramWrapper from 'embed/HistogramWrapper';
-
-import { EntityManager } from 'components/common'
+import NetworkDiagramWrapper from './NetworkDiagramWrapper';
+import EntityTableWrapper from './EntityTableWrapper';
+import { EntityManager } from '../components/common';
 
 export interface IEmbeddedElementProps {
   id: string
@@ -13,7 +11,7 @@ export interface IEmbeddedElementProps {
   config?: any
 }
 
-export class EmbeddedElement extends React.Component <IEmbeddedElementProps> {
+export class EmbeddedElement extends React.Component<IEmbeddedElementProps> {
   private entityManager: EntityManager
 
   constructor(props: IEmbeddedElementProps) {

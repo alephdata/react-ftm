@@ -7,8 +7,8 @@ import {
   IEntityDatum
 } from '@alephdata/followthemoney'
 
-import { EntityChanges, EntityChangeUpdate } from 'components/common/types';
-import { matchText } from 'utils';
+import { EntityChanges, EntityChangeUpdate } from './types';
+import { matchText } from '../../utils';
 
 
 export interface IEntityManagerProps {
@@ -161,7 +161,7 @@ export class EntityManager {
     const { created, updated, deleted } = entityChanges;
 
     created && created.forEach((entity: Entity) => factor > 0 ? this.createEntity(entity) : this.deleteEntities([entity.id]));
-    updated && updated.forEach(({prev, next}: EntityChangeUpdate) => factor > 0 ? this.updateEntity(next) : this.updateEntity(prev));
+    updated && updated.forEach(({ prev, next }: EntityChangeUpdate) => factor > 0 ? this.updateEntity(next) : this.updateEntity(prev));
     deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntities([entity.id]) : this.createEntity(entity));
   }
 

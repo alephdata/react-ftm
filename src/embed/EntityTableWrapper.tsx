@@ -1,12 +1,12 @@
-import React from 'react'
-import { IWrappedElementProps } from 'embed/common';
-import { EntityTable } from 'components/EntityTable';
+import React from 'react';
+import { IWrappedElementProps } from './common';
+import { EntityTable } from '../components/EntityTable';
 
 interface IEntityTableState {
   selection: Array<string>
 }
 
-export default class EntityTableWrapper extends React.Component <IWrappedElementProps, IEntityTableState> {
+export default class EntityTableWrapper extends React.Component<IWrappedElementProps, IEntityTableState> {
   constructor(props: IWrappedElementProps) {
     super(props);
 

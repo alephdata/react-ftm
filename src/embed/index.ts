@@ -1,2 +1,2 @@
 import 'index.scss';
-export { renderEmbed } from 'embed/renderEmbed';
+export { renderEmbed } from './renderEmbed';

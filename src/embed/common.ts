@@ -1,4 +1,4 @@
-import { EntityManager } from 'components/common'
+import { EntityManager } from '../components/common'
 
 export interface IWrappedElementProps {
   entityManager: EntityManager

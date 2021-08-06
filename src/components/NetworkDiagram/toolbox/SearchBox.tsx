@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { Button, InputGroup } from "@blueprintjs/core"
+import { Button, InputGroup } from "@blueprintjs/core";
 import c from 'classnames';
 
 import './SearchBox.scss';
 
 interface ISearchBoxProps {
-  onChangeSearch: (searchText:string) => void
+  onChangeSearch: (searchText: string) => void
   onSubmitSearch: (event: React.FormEvent) => void
   searchText: string
 }
@@ -31,7 +31,7 @@ export class SearchBox extends React.Component<ISearchBoxProps, ISearchBoxState>
   }
 
   toggleMobileExpanded() {
-    this.setState(({mobileExpanded}) => ({ mobileExpanded: !mobileExpanded}));
+    this.setState(({ mobileExpanded }) => ({ mobileExpanded: !mobileExpanded }));
   }
 
   render() {

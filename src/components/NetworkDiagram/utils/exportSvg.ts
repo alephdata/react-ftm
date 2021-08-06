@@ -1,5 +1,5 @@
-import { GraphLayout, Rectangle } from 'NetworkDiagram/layout';
-import { Viewport } from 'NetworkDiagram/Viewport';
+import { GraphLayout, Rectangle } from '../layout';
+import { Viewport } from '../Viewport';
 
 export const exportSvg = (layout: GraphLayout, viewport: Viewport, svgData: any) => {
   const points = layout.getVertices().filter((v) => !v.isHidden()).map((v) => v.position)
@@ -8,7 +8,7 @@ export const exportSvg = (layout: GraphLayout, viewport: Viewport, svgData: any)
 
   if (svgData) {
     const svgClone = svgData.cloneNode(true) as HTMLElement
-    svgClone.setAttribute("viewBox",viewBox as string)
+    svgClone.setAttribute("viewBox", viewBox as string)
 
     const canvas = svgClone.querySelector("#canvas-handle")
     canvas && canvas.setAttribute('fill', 'none');

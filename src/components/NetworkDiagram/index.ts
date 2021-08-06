@@ -1,4 +1,4 @@
-import { withTranslator } from 'utils'
+import { withTranslator } from '../../utils'
 import { NetworkDiagram as NetworkDiagramBase } from './NetworkDiagram';
 const NetworkDiagram = withTranslator(NetworkDiagramBase);
 

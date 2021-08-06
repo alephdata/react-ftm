@@ -1,11 +1,11 @@
-import * as React from 'react'
+import * as React from 'react';
 import { defineMessages, WrappedComponentProps } from 'react-intl';
-import { FormGroup, Intent, Button } from '@blueprintjs/core'
-import { Entity, Schema } from '@alephdata/followthemoney'
+import { FormGroup, Intent, Button } from '@blueprintjs/core';
+import { Entity, Schema } from '@alephdata/followthemoney';
 
-import { EdgeTypeSelect, EntitySelect } from 'editors'
-import { EdgeType } from 'types'
-import { Dialog, EntityManager } from 'components/common'
+import { EdgeTypeSelect, EntitySelect } from '../../editors';
+import { EdgeType } from '../../types';
+import { Dialog, EntityManager } from './';
 
 const messages = defineMessages({
   add_link: {
@@ -216,8 +216,8 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
       >
         <form onSubmit={this.onSubmit}>
           <div className="bp3-dialog-body">
-            <div style={{flex: 1, display: 'flex', flexFlow: 'row'}}>
-              <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
+            <div style={{ flex: 1, display: 'flex', flexFlow: 'row' }}>
+              <div style={{ flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em' }}>
                 <FormGroup label={intl.formatMessage(messages.source)} helperText={this.getSourceLabel()}>
                   <EntitySelect
                     onSubmit={(selected: Array<Entity>) => this.onSelectSource(selected?.[0])}
@@ -229,7 +229,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                   />
                 </FormGroup>
               </div>
-              <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
+              <div style={{ flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em' }}>
                 <FormGroup label={intl.formatMessage(messages.type)} helperText={this.getTypeDescription()}>
                   <EdgeTypeSelect
                     items={types}
@@ -239,7 +239,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                   />
                 </FormGroup>
               </div>
-              <div style={{flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em'}}>
+              <div style={{ flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em' }}>
                 <FormGroup label={intl.formatMessage(messages.target)} helperText={this.getTargetLabel()}>
                   <EntitySelect
                     onSubmit={(selected: Array<Entity>) => this.onSelectTarget(selected?.[0])}
@@ -251,7 +251,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                   />
                 </FormGroup>
               </div>
-              <div style={{flexGrow: 0, flexShrink: 1, flexBasis: '1%'}}>
+              <div style={{ flexGrow: 0, flexShrink: 1, flexBasis: '1%' }}>
                 <FormGroup label='&nbsp;'>
                   <Button
                     onClick={this.onReverse}

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { MenuItem } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 import { Model, Schema as FTMSchema } from '@alephdata/followthemoney';
-import { Schema } from 'types';
+import { Schema } from '../types';
 
 interface ISelectSchemaProps {
   model: Model,

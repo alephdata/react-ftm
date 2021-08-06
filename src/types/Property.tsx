@@ -1,6 +1,6 @@
 import React from 'react';
 import { defineMessages, FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
-import { Button, Intent } from '@blueprintjs/core'
+import { Button } from '@blueprintjs/core'
 import { Values, Value, Property as FTMProperty, Entity as FTMEntity } from "@alephdata/followthemoney";
 import truncateText from 'truncate';
 
@@ -15,7 +15,7 @@ import {
   Topic,
   URL
 } from '.';
-import { ensureArray, wordList, withTranslator } from 'utils';
+import { ensureArray, wordList, withTranslator } from '../utils';
 
 
 import './Property.scss';
@@ -34,7 +34,7 @@ class PropertyName extends React.PureComponent<IPropertyCommonProps> {
 
 // ----------
 
-interface IPropertyReverseProps extends IPropertyCommonProps, WrappedComponentProps {}
+interface IPropertyReverseProps extends IPropertyCommonProps, WrappedComponentProps { }
 
 class PropertyReverse extends React.PureComponent<IPropertyReverseProps> {
   render() {
@@ -56,14 +56,14 @@ class PropertyReverse extends React.PureComponent<IPropertyReverseProps> {
 // ----------
 
 interface IPropertyValueProps extends IPropertyCommonProps {
-  value:Value
+  value: Value
   resolveEntityReference?: (entityId: string) => FTMEntity | undefined
   getEntityLink?: (entity: FTMEntity) => any
   translitLookup?: any
   truncate?: number
 }
 
-const getSortValue = ({ prop, resolveEntityReference, value }:IPropertyValueProps) => {
+const getSortValue = ({ prop, resolveEntityReference, value }: IPropertyValueProps) => {
   if (prop.type.name === 'entity') {
     const entity = ('string' === typeof value && resolveEntityReference) ? resolveEntityReference(value) : value as FTMEntity;
     return entity ? entity.getCaption().toLowerCase() : value;
@@ -96,13 +96,13 @@ class PropertyValue extends React.PureComponent<IPropertyValueProps> {
       return <FileSize value={+value} />;
     }
     if (prop.type.name === 'country') {
-      return <Country.Label code={value as string} fullList={prop.type.values}/>;
+      return <Country.Label code={value as string} fullList={prop.type.values} />;
     }
     if (prop.type.name === 'topic') {
-      return <Topic.Label code={value as string} fullList={prop.type.values}/>;
+      return <Topic.Label code={value as string} fullList={prop.type.values} />;
     }
     if (prop.type.name === 'language') {
-      return <Language.Label code={value as string} fullList={prop.type.values}/>;
+      return <Language.Label code={value as string} fullList={prop.type.values} />;
     }
     if (prop.type.name === 'url') {
       return <URL value={value as string} onClick={(e: React.MouseEvent) => e.stopPropagation()} truncate={truncate} />;
@@ -123,7 +123,7 @@ class PropertyValue extends React.PureComponent<IPropertyValueProps> {
 // ----------
 
 interface IPropertyValuesProps extends IPropertyCommonProps, WrappedComponentProps {
-  values:Values
+  values: Values
   separator?: string
   missing?: string
   resolveEntityReference?: (entityId: string) => FTMEntity | undefined
@@ -139,12 +139,12 @@ interface IPropertyValuesState {
 
 const messages = defineMessages({
   truncate_show: {
-    id:'property.values.truncate_show',
-    defaultMessage:'+{truncateCount} More'
+    id: 'property.values.truncate_show',
+    defaultMessage: '+{truncateCount} More'
   },
   truncate_hide: {
-    id:'property.values.truncate_hide',
-    defaultMessage:'- Show fewer'
+    id: 'property.values.truncate_hide',
+    defaultMessage: '- Show fewer'
   }
 })
 
@@ -164,7 +164,7 @@ class PropertyValues extends React.PureComponent<IPropertyValuesProps, IProperty
     const { getEntityLink, intl, prop, resolveEntityReference, values, truncate, truncateItem, separator = ' · ', missing = '—', translitLookup } = this.props;
     const { truncateShowAll } = this.state;
 
-    const vals = ensureArray((truncate && !truncateShowAll) ? values.slice(0, truncate) : values).map(value => (
+    const vals = ensureArray((truncate && !truncateShowAll) ? values.slice(0, truncate) : values).map((value: any) => (
       <PropertyValue
         key={typeof value === 'string' ? value : value.id}
         prop={prop}
@@ -178,9 +178,9 @@ class PropertyValues extends React.PureComponent<IPropertyValuesProps, IProperty
     let content;
     if (!vals.length) {
       content = (<span className="no-value">{missing}</span>);
-    // display urls separated by newline
+      // display urls separated by newline
     } else if (prop.type.name === 'url' || !!getEntityLink) {
-      content = vals.map((val, i) => <span key={i} style={{ display: 'block' }}>{val}</span>);
+      content = vals.map((val: any, i: number) => <span key={i} style={{ display: 'block' }}>{val}</span>);
     } else {
       content = wordList(vals, separator);
     }

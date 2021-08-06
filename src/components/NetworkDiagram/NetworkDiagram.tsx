@@ -1,22 +1,22 @@
-import * as React from 'react'
+import * as React from 'react';
 import c from 'classnames';
 import { Entity, Schema } from "@alephdata/followthemoney";
 import { Button, ButtonGroup, Tooltip } from '@blueprintjs/core';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 
-import { EdgeCreateDialog, EntityCreateDialog, EntityManager } from 'components/common';
-import { GraphConfig } from 'NetworkDiagram/GraphConfig';
-import { GraphRenderer } from 'NetworkDiagram/renderer'
-import { Edge, GraphLayout, Rectangle, Point, Settings, Vertex } from 'NetworkDiagram/layout';
-import { Viewport } from 'NetworkDiagram/Viewport';
-import { GraphContext } from 'NetworkDiagram/GraphContext'
-import { Sidebar, TableView, Toolbar, VertexMenu } from 'NetworkDiagram/toolbox';
-import { History } from 'NetworkDiagram/History';
-import { GroupingCreateDialog, SettingsDialog } from 'NetworkDiagram/dialogs';
-import { EdgeType } from 'types';
-import { EntityChanges } from 'components/common/types';
-import { filterVerticesByText, modes } from 'NetworkDiagram/utils'
-import { showSuccessToast, showWarningToast } from 'utils'
+import { EdgeCreateDialog, EntityCreateDialog, EntityManager } from '../common';
+import { GraphConfig } from './GraphConfig';
+import { GraphRenderer } from './renderer';
+import { Edge, GraphLayout, Rectangle, Point, Settings, Vertex } from './layout';
+import { Viewport } from './Viewport';
+import { GraphContext } from './GraphContext';
+import { Sidebar, TableView, Toolbar, VertexMenu } from './toolbox';
+import { History } from './History';
+import { GroupingCreateDialog, SettingsDialog } from './dialogs';
+import { EdgeType } from '../../types';
+import { EntityChanges } from '../common/types';
+import { filterVerticesByText, modes } from './utils';
+import { showSuccessToast, showWarningToast } from '../../utils';
 
 import './NetworkDiagram.scss';
 
@@ -45,8 +45,8 @@ export interface INetworkDiagramProps extends WrappedComponentProps {
   entityManager: EntityManager
   layout: GraphLayout,
   viewport: Viewport,
-  updateLayout: (layout:GraphLayout, options?: any) => void,
-  updateViewport: (viewport:Viewport) => void
+  updateLayout: (layout: GraphLayout, options?: any) => void,
+  updateViewport: (viewport: Viewport) => void
   writeable: boolean
   externalFilterText?: string
   svgRef?: React.RefObject<SVGSVGElement>
@@ -73,7 +73,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     this.history = new History();
 
     if (layout) {
-      this.history.push({ layout:layout.toJSON() });
+      this.history.push({ layout: layout.toJSON() });
     }
 
     this.state = {
@@ -125,7 +125,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     const { viewport } = this.props;
     if (viewport) {
       const newZoomLevel = viewport.zoomLevel * factor
-      this.updateViewport(viewport.setZoom(newZoomLevel), {animate:true})
+      this.updateViewport(viewport.setZoom(newZoomLevel), { animate: true })
     }
   }
 
@@ -150,7 +150,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
 
   updateLayout(layout: GraphLayout, entityChanges?: EntityChanges, options?: any) {
     if (options?.modifyHistory) {
-      this.history.push({layout:layout.toJSON(), entityChanges: entityChanges});
+      this.history.push({ layout: layout.toJSON(), entityChanges: entityChanges });
     }
 
     this.setState(({ searchText }) => ({
@@ -167,12 +167,12 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
   updateViewport(viewport: Viewport, { animate = false } = {}) {
     const { updateViewport } = this.props;
 
-    this.setState({animateTransition: animate});
+    this.setState({ animateTransition: animate });
 
     updateViewport(viewport);
   }
 
-  navigateHistory(factor:number) {
+  navigateHistory(factor: number) {
     const { config, entityManager } = this.props;
 
     const { layout, entityChanges } = this.history.go(factor);
@@ -246,7 +246,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
 
     if (edge) {
       layout.selectElement(edge)
-      this.updateViewport(viewport.setCenter(edge.getCenter()), {animate:true})
+      this.updateViewport(viewport.setCenter(edge.getCenter()), { animate: true })
       this.updateLayout(layout, entityChanges, { modifyHistory: true, clearSearch: true });
     }
   }
@@ -256,7 +256,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     const menuSettings = { vertex, position, anchor: 'top', onlyShowExpand };
 
     const docHeight = document.body.clientHeight;
-    if (position.y > docHeight/2) {
+    if (position.y > docHeight / 2) {
       menuSettings.anchor = "bottom";
       menuSettings.position = new Point(position.x, docHeight - position.y);
     }
@@ -266,7 +266,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     })
     if (vertex.entityId) {
       const expandResults = await entityManager.expandEntity(vertex.entityId, undefined, 0);
-      this.setState(({vertexMenuSettings}) => ({
+      this.setState(({ vertexMenuSettings }) => ({
         vertexMenuSettings: vertexMenuSettings ? { ...menuSettings, expandResults } : null,
       }))
     }
@@ -327,12 +327,12 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     }
   }
   fitToSelection() {
-    const {layout, viewport} = this.props
+    const { layout, viewport } = this.props
     const selection = layout.getSelectedVertices()
     const vertices = selection.length > 0 ? selection : layout.getVertices()
     const points = vertices.filter((v) => !v.isHidden()).map((v) => v.position)
     const rect = Rectangle.fromPoints(...points)
-    this.updateViewport(viewport.fitToRect(rect), {animate:true})
+    this.updateViewport(viewport.fitToRect(rect), { animate: true })
   }
 
   removeSelection() {
@@ -343,13 +343,13 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     entityManager.deleteEntities(idsToRemove);
     layout.layout(entityManager.getEntities());
 
-    this.updateLayout(layout, { deleted: entitiesToRemove }, { modifyHistory:true })
+    this.updateLayout(layout, { deleted: entitiesToRemove }, { modifyHistory: true })
   }
 
   ungroupSelection() {
     const { layout } = this.props
     layout.ungroupSelection()
-    this.updateLayout(layout, undefined, { modifyHistory:true })
+    this.updateLayout(layout, undefined, { modifyHistory: true })
   }
 
   render() {
@@ -402,10 +402,10 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
               <div className="NetworkDiagram__button-group">
                 <ButtonGroup vertical>
                   <Tooltip content={intl.formatMessage(messages.tooltip_fit_selection)}>
-                    <Button icon="zoom-to-fit" onClick={this.fitToSelection}/>
+                    <Button icon="zoom-to-fit" onClick={this.fitToSelection} />
                   </Tooltip>
-                  <Button icon="zoom-in" onClick={() => this.onZoom(0.8)}/>
-                  <Button icon="zoom-out" onClick={() => this.onZoom(1.2)}/>
+                  <Button icon="zoom-in" onClick={() => this.onZoom(0.8)} />
+                  <Button icon="zoom-out" onClick={() => this.onZoom(1.2)} />
                 </ButtonGroup>
               </div>
               <GraphRenderer

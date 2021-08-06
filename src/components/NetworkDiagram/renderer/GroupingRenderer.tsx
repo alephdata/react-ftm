@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { GraphContext } from 'NetworkDiagram/GraphContext';
-import { GraphElement, Grouping, Point, Vertex } from 'NetworkDiagram/layout'
-import { getRefMatrix, applyMatrix } from 'NetworkDiagram/renderer/utils';
-import { modes } from 'NetworkDiagram/utils'
+import { GraphContext } from '../GraphContext';
+import { GraphElement, Grouping, Point, Vertex } from '../layout'
+import { getRefMatrix, applyMatrix } from '../renderer/utils';
+import { modes } from '../utils'
 
 interface IGroupingRendererProps {
   grouping: Grouping
@@ -70,11 +70,11 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
   }
 
   onMouseOver() {
-    this.context.interactionMode === modes.ITEM_DRAG && this.setState({hovered: true})
+    this.context.interactionMode === modes.ITEM_DRAG && this.setState({ hovered: true })
   }
 
   onMouseOut() {
-    this.setState({hovered: false})
+    this.setState({ hovered: false })
   }
 
   render() {
@@ -84,7 +84,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
 
     if (!vertices || vertices.length <= 1) { return null; }
 
-    const {x, y, width, height} = grouping.getBoundingRect();
+    const { x, y, width, height } = grouping.getBoundingRect();
     const isSelected = layout.isGroupingSelected(grouping);
     const isHighlighted = isSelected || layout.isGroupingMemberSelected(grouping) || layout.selection.length === 0;
 
@@ -129,7 +129,7 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
           />
           {grouping && (
             <text
-              x={x + width/2}
+              x={x + width / 2}
               y={y + height + 10}
               fill={displayColor}
               textAnchor="middle"

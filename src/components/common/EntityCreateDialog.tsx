@@ -1,11 +1,11 @@
-import * as React from 'react'
+import * as React from 'react';
 import { defineMessages, WrappedComponentProps } from 'react-intl';
-import { Alignment, Button, ControlGroup, InputGroup } from '@blueprintjs/core'
-import { Entity, Model, Schema as FTMSchema, Values } from '@alephdata/followthemoney'
+import { Alignment, Button, ControlGroup, InputGroup } from '@blueprintjs/core';
+import { Entity, Model, Schema as FTMSchema, Values } from '@alephdata/followthemoney';
 
-import { EntitySelect, SchemaSelect } from 'editors'
-import { Schema } from 'types';
-import { Dialog } from 'components/common'
+import { EntitySelect, SchemaSelect } from '../../editors';
+import { Schema } from '../../types';
+import { Dialog } from './';
 
 import './EntityCreateDialog.scss';
 
@@ -115,7 +115,7 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
       properties: captionProperty && { [captionProperty]: inputText }
     }
     await onSubmit(entityData);
-    this.setState({inputText: '', isProcessing: false, suggestions: []})
+    this.setState({ inputText: '', isProcessing: false, suggestions: [] })
     this.props.toggleDialog();
   }
 
@@ -124,7 +124,7 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
     if (values && values.length) {
       this.setState({ isProcessing: true });
       await onSubmit(values[0]);
-      this.setState({inputText: '', isProcessing: false, suggestions: []})
+      this.setState({ inputText: '', isProcessing: false, suggestions: [] })
       this.props.toggleDialog();
     }
   }
