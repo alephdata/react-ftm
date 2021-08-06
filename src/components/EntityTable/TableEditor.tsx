@@ -7,12 +7,12 @@ import groupBy from 'lodash/groupBy';
 import uniqBy from 'lodash/uniqBy';
 import { Button, Checkbox, Classes, Icon, Intent, Tooltip } from "@blueprintjs/core";
 import { Entity as FTMEntity, Property as FTMProperty, Schema as FTMSchema, Value } from "@alephdata/followthemoney";
-import { PropertyEditor, PropertySelect } from 'editors';
-import { Entity, Schema, Property } from 'types';
-import { EntityChanges, SortType } from 'components/common/types';
-import { IEntityTableCommonProps } from 'components/EntityTable/common';
-import { showErrorToast, validate } from 'utils';
-import { isScrolledIntoView } from 'components/EntityTable/utils';
+import { PropertyEditor, PropertySelect } from '../../editors';
+import { Entity, Schema, Property } from '../../types';
+import { EntityChanges, SortType } from '../common/types';
+import { IEntityTableCommonProps } from '../EntityTable/common';
+import { showErrorToast, validate } from '../../utils';
+import { isScrolledIntoView } from '../EntityTable/utils';
 
 import "./TableEditor.scss"
 

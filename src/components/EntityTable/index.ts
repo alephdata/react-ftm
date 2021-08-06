@@ -1,4 +1,4 @@
-import { withTranslator } from 'utils';
+import { withTranslator } from '../../utils';
 import { EntityTable as EntityTableBase } from './EntityTable';
 import { TableEditor as TableEditorBase } from './TableEditor';
 

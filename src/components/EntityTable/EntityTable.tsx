@@ -3,12 +3,12 @@ import { defineMessages, injectIntl } from 'react-intl';
 import { Button, Tab, Tabs } from "@blueprintjs/core";
 import { Schema as FTMSchema, Entity } from "@alephdata/followthemoney";
 
-import { SchemaSelect } from 'editors';
-import { Schema } from 'types';
-import { sortEntities } from 'utils';
-import { SortType } from 'components/common/types/SortType';
-import { IEntityTableCommonProps } from 'components/EntityTable/common';
-import { TableEditor } from 'components/EntityTable';
+import { SchemaSelect } from '../../editors';
+import { Schema } from '../../types';
+import { sortEntities } from '../../utils';
+import { SortType } from '../common/types/SortType';
+import { IEntityTableCommonProps } from '../EntityTable/common';
+import { TableEditor } from '../EntityTable';
 
 
 const messages = defineMessages({
@@ -87,10 +87,10 @@ class EntityTableBase extends React.Component<IEntityTableProps, IEntityTableSta
     this.setState(({ sort }) => {
       let nextSort;
       if (sort?.field !== sortedField) {
-        nextSort = { field: sortedField, direction: 'asc'};
+        nextSort = { field: sortedField, direction: 'asc' };
       } else {
         if (sort?.direction === 'asc') {
-          nextSort = { field: sort.field, direction: 'desc'};
+          nextSort = { field: sort.field, direction: 'desc' };
         } else {
           nextSort = null;
         }
