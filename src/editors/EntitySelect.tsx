@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { defaultModel, Entity as FTMEntity, Model } from "@alephdata/followthemoney";
-import { Entity, Schema } from 'types';
-import { EntityCreateDialog } from "components/common";
+import { Entity, Schema } from '../types';
+import { EntityCreateDialog } from "../components/common";
 import { Alignment, Button, Intent, Menu, MenuDivider, MenuItem, Spinner } from "@blueprintjs/core";
 import { ItemRenderer, MultiSelect, Select } from "@blueprintjs/select";
 import { ITypeEditorProps } from "./common";
@@ -48,7 +48,7 @@ const TypedSelect = Select.ofType<FTMEntity>();
 class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState> {
   private inputRef: HTMLElement | null = null;
 
-  constructor(props:IEntityTypeProps) {
+  constructor(props: IEntityTypeProps) {
     super(props);
 
     this.state = {
@@ -96,11 +96,11 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
     const { createNewReferencedEntity } = this.props;
 
     if (createNewReferencedEntity) {
-        const created = await createNewReferencedEntity(entityData);
-        if (created) {
-          this.onSubmit(created);
-          return created;
-        }
+      const created = await createNewReferencedEntity(entityData);
+      if (created) {
+        this.onSubmit(created);
+        return created;
+      }
     }
   }
 
@@ -144,7 +144,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
     const { allowMultiple, entitySuggestions, intl, inputProps = {}, popoverProps = {}, buttonProps = {}, values } = this.props;
     const { query } = this.state;
 
-    const filteredSuggestions = entitySuggestions.filter(e => (!values.find(val => val.id === e.id )));
+    const filteredSuggestions = entitySuggestions.filter(e => (!values.find(val => val.id === e.id)));
 
     const commmonProps = {
       className: "EntitySelect",
@@ -153,7 +153,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
       items: filteredSuggestions,
       popoverProps: {
         minimal: true,
-        targetProps: {style: {width: '100%'}},
+        targetProps: { style: { width: '100%' } },
         ...popoverProps
       },
       fill: true,
@@ -170,7 +170,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
           onItemSelect={this.onSubmit}
           tagInputProps={{
             inputRef: (ref) => this.inputRef = ref,
-            tagProps: {interactive: false, minimal: true},
+            tagProps: { interactive: false, minimal: true },
             onRemove: this.onRemove,
             placeholder: '',
             ...inputProps
@@ -195,7 +195,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
             alignText={Alignment.LEFT}
             icon={buttonIcon}
             rightIcon="caret-down"
-            elementRef={(ref) => this.inputRef = ref }
+            elementRef={(ref) => this.inputRef = ref}
             fill
             {...buttonProps}
           />

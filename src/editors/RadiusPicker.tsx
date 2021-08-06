@@ -1,8 +1,8 @@
-import * as React from 'react'
+import * as React from 'react';
 import { Slider } from '@blueprintjs/core';
-import { GraphContext } from 'NetworkDiagram/GraphContext';
+import { GraphContext } from '../components/NetworkDiagram/GraphContext';
 import { Schema as FTMSchema } from "@alephdata/followthemoney";
-import { Schema } from 'types';
+import { Schema } from '../types';
 
 
 interface IRadiusPickerProps {
@@ -21,7 +21,7 @@ class RadiusPicker extends React.PureComponent<IRadiusPickerProps> {
     const { layout } = this.context;
     const { onChange, radius, schema } = this.props;
     const defaultRadius = layout.config.DEFAULT_VERTEX_RADIUS;
-    const radiusRange = [defaultRadius*.5, defaultRadius*1.5];
+    const radiusRange = [defaultRadius * .5, defaultRadius * 1.5];
     return (
       <div className='RadiusPicker'>
         <div className='RadiusPicker__icon'>

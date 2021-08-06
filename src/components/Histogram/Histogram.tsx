@@ -5,7 +5,7 @@ import {
   BarChart, Bar, Cell, XAxis, Tooltip, ReferenceArea, ResponsiveContainer,
 } from 'recharts';
 import c from 'classnames';
-import Numeric from 'types/Numeric';
+import Numeric from '../../types/Numeric';
 
 import './Histogram.scss';
 
@@ -22,7 +22,7 @@ interface IHistogramDatum {
 
 interface IHistogramProps extends WrappedComponentProps {
   data: Array<IHistogramDatum>
-  onSelect: (selected: any | Array<any> ) => void
+  onSelect: (selected: any | Array<any>) => void
   chartProps?: any
   containerProps?: any
   dataPropName: string

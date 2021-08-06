@@ -3,7 +3,7 @@ import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { ItemPredicate, ItemRenderer, Select } from '@blueprintjs/select';
 import { MenuItem, Button, Position, Alignment } from '@blueprintjs/core';
 import { Property } from '@alephdata/followthemoney';
-import { highlightText, matchText } from 'utils';
+import { highlightText, matchText } from '../utils';
 
 const messages = defineMessages({
   add: {
@@ -14,7 +14,7 @@ const messages = defineMessages({
 
 const TypedSelect = Select.ofType<Property>()
 
-interface IPropertySelectProps extends WrappedComponentProps  {
+interface IPropertySelectProps extends WrappedComponentProps {
   properties: Property[]
   onSelected: (property: Property) => void
   buttonProps?: any
@@ -26,7 +26,7 @@ class PropertySelect extends React.PureComponent<IPropertySelectProps> {
     return matchText(property.label, query)
   }
 
-  itemRenderer: ItemRenderer<Property> = (property, {handleClick, modifiers, query}) => {
+  itemRenderer: ItemRenderer<Property> = (property, { handleClick, modifiers, query }) => {
     if (!modifiers.matchesPredicate) {
       return null;
     }
@@ -35,7 +35,7 @@ class PropertySelect extends React.PureComponent<IPropertySelectProps> {
         active={modifiers.active}
         disabled={modifiers.disabled}
         key={property.name}
-        onClick={(e: any) => { e.stopPropagation(); handleClick(e);}}
+        onClick={(e: any) => { e.stopPropagation(); handleClick(e); }}
         text={highlightText(property.label, query)}
       />
     );
@@ -49,7 +49,7 @@ class PropertySelect extends React.PureComponent<IPropertySelectProps> {
         popoverProps={{
           position: Position.BOTTOM_LEFT,
           minimal: true,
-          targetProps: {style: {width: '100%'}}
+          targetProps: { style: { width: '100%' } }
         }}
         itemPredicate={this.itemPredicate}
         itemRenderer={this.itemRenderer}

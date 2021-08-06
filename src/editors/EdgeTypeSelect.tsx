@@ -3,7 +3,7 @@ import partition from 'lodash/partition';
 import { Menu, MenuItem, Icon, Button, Alignment, Position } from '@blueprintjs/core'
 import { Select, IItemListRendererProps, IItemRendererProps } from '@blueprintjs/select';
 
-import { EdgeType, Schema } from 'types';
+import { EdgeType, Schema } from '../types';
 
 const TypedSelect = Select.ofType<EdgeType>()
 
@@ -42,7 +42,7 @@ class EdgeTypeSelect extends React.PureComponent<IEdgeTypeSelectProps> {
     );
   }
 
-  renderEdgeType = (type: EdgeType, { handleClick, modifiers }:IItemRendererProps) => {
+  renderEdgeType = (type: EdgeType, { handleClick, modifiers }: IItemRendererProps) => {
     return <MenuItem
       active={modifiers.active}
       key={type.key}
@@ -60,7 +60,7 @@ class EdgeTypeSelect extends React.PureComponent<IEdgeTypeSelectProps> {
         popoverProps={{
           position: Position.BOTTOM_LEFT,
           minimal: true,
-          targetProps: {style: {width: '100%'}}
+          targetProps: { style: { width: '100%' } }
         }}
         filterable={false}
         items={items}

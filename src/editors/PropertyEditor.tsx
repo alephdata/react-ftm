@@ -2,7 +2,7 @@ import * as React from 'react'
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity, Model, Property, Schema, Values } from '@alephdata/followthemoney';
 import { CountrySelect, TopicSelect, EntitySelect, TextEdit } from './';
-import { validate } from 'utils';
+import { validate } from '../utils';
 
 const TAB_KEY = 9;
 
@@ -27,7 +27,7 @@ interface IPropertyEditorState {
 class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEditorState> {
   private ref: any | null = null;
 
-  constructor(props:IPropertyEditorProps) {
+  constructor(props: IPropertyEditorProps) {
     super(props);
     const { entity, property, resolveEntityReference } = props;
 
@@ -96,10 +96,10 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
     const { entity, property } = this.props;
     if (this.props.fetchEntitySuggestions) {
       const entityId = entity.id;
-      this.setState({ entitySuggestions: { isPending: true, results: [] }});
+      this.setState({ entitySuggestions: { isPending: true, results: [] } });
       const suggestions = await this.props.fetchEntitySuggestions(query, [property.getRange()]);
       suggestions.filter(e => e.id !== entityId);
-      this.setState({ entitySuggestions: { isPending: false, results: suggestions }});
+      this.setState({ entitySuggestions: { isPending: false, results: suggestions } });
     }
   }
 
@@ -145,7 +145,7 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
       <>
         <div
           ref={this.ref}
-          onKeyDown={(e:any) => e.keyCode === TAB_KEY ? this.onSubmit() : null}
+          onKeyDown={(e: any) => e.keyCode === TAB_KEY ? this.onSubmit() : null}
         >
           {content}
         </div>
