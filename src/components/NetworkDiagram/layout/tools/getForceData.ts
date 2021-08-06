@@ -1,8 +1,8 @@
-import { Rectangle } from 'NetworkDiagram/layout';
+import { Rectangle } from '../../layout';
 import { IPositioningProps } from './common';
 
 
-const getForceData = ({vertices, edges, groupings, options = {}}:IPositioningProps): any => {
+const getForceData = ({ vertices, edges, groupings, options = {} }: IPositioningProps): any => {
   const { center, maintainFixed } = options;
 
   const layoutCenter = center || Rectangle.fromPoints(...vertices.map(v => v.position)).getCenter();
@@ -10,7 +10,7 @@ const getForceData = ({vertices, edges, groupings, options = {}}:IPositioningPro
   const nodes: Array<any> = vertices
     .filter((vertex) => !vertex.isHidden())
     .map((vertex) => {
-      const n = {id: vertex.id, radius: vertex.radius, fixed: vertex.fixed} as any
+      const n = { id: vertex.id, radius: vertex.radius, fixed: vertex.fixed } as any
       if (maintainFixed && vertex.fixed) {
         n.fx = vertex.position.x;
         n.fy = vertex.position.y;

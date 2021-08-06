@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { GraphContext } from 'NetworkDiagram/GraphContext';
-import { Point } from 'NetworkDiagram/layout/Point'
-import { getRefMatrix, applyMatrix } from 'NetworkDiagram/renderer/utils';
+import { GraphContext } from '../GraphContext';
+import { Point } from '../layout/Point'
+import { getRefMatrix, applyMatrix } from '../renderer/utils';
 
 import './EdgeLabelRenderer.scss'
 
@@ -27,9 +27,9 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
   text: any
   dragInitial: Point
 
-  constructor(props: IEdgeLabelRendererProps){
+  constructor(props: IEdgeLabelRendererProps) {
     super(props);
-    this.state = { textExtents:null };
+    this.state = { textExtents: null };
     this.onDragStart = this.onDragStart.bind(this)
     this.onDragMove = this.onDragMove.bind(this)
     this.onDragEnd = this.onDragEnd.bind(this)
@@ -45,14 +45,14 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
     }
 
     const box = this.text.getBBox();
-    this.setState({textExtents:[box.width,box.height]});
+    this.setState({ textExtents: [box.width, box.height] });
   }
 
   componentDidUpdate(prevProps: IEdgeLabelRendererProps) {
     if (prevProps.labelText !== this.props.labelText) {
       const box = this.text.getBBox();
 
-      this.setState({textExtents:[box.width,box.height]});
+      this.setState({ textExtents: [box.width, box.height] });
     }
   }
 
@@ -108,17 +108,17 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
     } as React.CSSProperties
 
     const outline = extents ?
-           <rect className="EdgeLabel__outline"
-              x={-extents[0]/2-margin}
-              y={-extents[1]/2-margin}
-              rx={3}
-              stroke={outlineColor}
-              strokeWidth=".8px"
-              fill="white"
-              width={extents[0]+2*margin}
-              height={extents[1]+2*margin}>
-            </rect>
-         : null;
+      <rect className="EdgeLabel__outline"
+        x={-extents[0] / 2 - margin}
+        y={-extents[1] / 2 - margin}
+        rx={3}
+        stroke={outlineColor}
+        strokeWidth=".8px"
+        fill="white"
+        width={extents[0] + 2 * margin}
+        height={extents[1] + 2 * margin}>
+      </rect>
+      : null;
 
     return (
       <DraggableCore
@@ -132,23 +132,23 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
           onClick={onClick}
           ref={this.gRef}
           className="EdgeLabel" >
-            <g className="edge-handle">
-              {outline}
-              <text
-                ref={(t) => { this.text = t; }}
-                textAnchor="middle"
-                dy={extents?(extents[1]/4):0}
-                className="EdgeLabel__text"
-                fill={textColor}
-                style={style}
-                pointerEvents="none"
-              >
-                {labelText}
-              </text>
-            </g>
+          <g className="edge-handle">
+            {outline}
+            <text
+              ref={(t) => { this.text = t; }}
+              textAnchor="middle"
+              dy={extents ? (extents[1] / 4) : 0}
+              className="EdgeLabel__text"
+              fill={textColor}
+              style={style}
+              pointerEvents="none"
+            >
+              {labelText}
+            </text>
+          </g>
         </g>
       </DraggableCore>
 
     );
- }
+  }
 }
