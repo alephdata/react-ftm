@@ -1,6 +1,6 @@
 import React from 'react';
 import { IntlProvider } from 'react-intl';
-import translations from 'translations/translations.json';
+import translations from '../translations/translations.json';
 
 export function withTranslator<T>(
   WrappedComponent: React.ComponentType<T>

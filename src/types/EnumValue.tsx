@@ -1,11 +1,11 @@
 import React from 'react';
-import { wordList } from 'utils';
+import { wordList } from '../utils';
 
 
 interface ILabelProps {
-  code:string
-  fullList:Map<string, string>
-  short?:boolean
+  code: string
+  fullList: Map<string, string>
+  short?: boolean
 }
 
 export class Label extends React.PureComponent<ILabelProps> {
@@ -20,9 +20,9 @@ export class Label extends React.PureComponent<ILabelProps> {
 }
 
 interface IListProps {
-  codes:string[],
+  codes: string[],
   truncate: number
-  fullList:Map<string, string>
+  fullList: Map<string, string>
 }
 
 class List extends React.Component<IListProps> {
@@ -30,7 +30,7 @@ class List extends React.Component<IListProps> {
     const { codes, truncate = Infinity, ...props } = this.props;
     if (!codes) return null;
 
-    let names:Array<any> = codes.map(code => (
+    let names: Array<any> = codes.map(code => (
       <Label code={code} key={code} {...props} />
     ));
 

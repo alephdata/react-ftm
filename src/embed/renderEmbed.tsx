@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { EmbeddedElement } from 'embed/EmbeddedElement';
-import { fetchExternalData } from 'embed/util';
+import { EmbeddedElement } from './EmbeddedElement';
+import { fetchExternalData } from './util';
 
 export interface IRenderEmbedConfig {
   writeable?: boolean
