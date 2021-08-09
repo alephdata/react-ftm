@@ -6,7 +6,7 @@ import { Point } from './Point';
 import { Rectangle } from './Rectangle';
 import { forceLayout } from '.';
 import { ISettingsData, Settings } from './Settings';
-import { GraphConfig } from 'NetworkDiagram/GraphConfig';
+import { GraphConfig } from 'components/NetworkDiagram/GraphConfig';
 
 export interface IGraphLayoutData {
   vertices: Array<any>
@@ -132,7 +132,7 @@ export class GraphLayout {
         this.addVertex(mainVertex)
 
         const properties = entity.getProperties()
-        // removing properties which should not be represented as a vertex
+          // removing properties which should not be represented as a vertex
           .filter(property => this.settings.hasPivotType(property.type.name));
 
         properties.forEach((prop) => {
@@ -268,7 +268,7 @@ export class GraphLayout {
     return this.isElementSelected(edge) || this.isEdgeAdjacent(edge, this.selection)
   }
 
-  isEdgeAdjacent(edge: Edge, vIds:Array<string>): boolean {
+  isEdgeAdjacent(edge: Edge, vIds: Array<string>): boolean {
     if (!vIds?.length) return false;
     return vIds.indexOf(edge.sourceId) !== -1 ||
       vIds.indexOf(edge.targetId) !== -1;
@@ -290,9 +290,9 @@ export class GraphLayout {
     }
 
     adjEdges.forEach((e, i) => {
-        const position = positionEdge ? positionEdge(e, i) : undefined;
-        this.edges.set(e.id, e.setLabelPosition(position))
-      });
+      const position = positionEdge ? positionEdge(e, i) : undefined;
+      this.edges.set(e.id, e.setLabelPosition(position))
+    });
     return this;
   }
 
@@ -417,15 +417,15 @@ export class GraphLayout {
     const vertices = this.getVertices().filter(v => !v.isHidden())
     const edges = this.getEdges();
     const groupings = this.getGroupings();
-    const positioningFunc = forceLayout({vertices, edges, groupings, options:{ center, maintainFixed: true }});
+    const positioningFunc = forceLayout({ vertices, edges, groupings, options: { center, maintainFixed: true } });
     this.applyPositioning(positioningFunc, vertices, true);
   }
 
-  clone():GraphLayout{
+  clone(): GraphLayout {
     return this.update(this.toJSON());
   }
 
-  update(withData:IGraphLayoutData):GraphLayout{
+  update(withData: IGraphLayoutData): GraphLayout {
     return GraphLayout.fromJSON(this.config, withData)
   }
 

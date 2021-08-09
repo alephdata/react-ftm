@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Vertex, Point, Rectangle, Edge, GraphElement, Grouping } from 'NetworkDiagram/layout';
-import { GraphContext } from 'NetworkDiagram/GraphContext'
+import { Vertex, Point, Rectangle, Edge, GraphElement, Grouping } from 'components/NetworkDiagram/layout';
+import { GraphContext } from 'components/NetworkDiagram/GraphContext'
 import { Canvas } from './Canvas'
 import { EdgeRenderer } from './EdgeRenderer'
 import { EdgeDrawer } from './EdgeDrawer'
@@ -39,7 +39,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
   dropSelection() {
     const { layout, updateLayout } = this.context;
     const shouldUpdateHistory = layout.dropSelection()
-    updateLayout(layout, null, { modifyHistory:shouldUpdateHistory })
+    updateLayout(layout, null, { modifyHistory: shouldUpdateHistory })
   }
 
   clearSelection() {
@@ -87,16 +87,16 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     return layout.getEdges().filter((edge: Edge) => !edge.isHidden()).map((edge: Edge) => {
       const vertex1 = layout.vertices.get(edge.sourceId);
       const vertex2 = layout.vertices.get(edge.targetId);
-      return  <EdgeRenderer
-          key={edge.id}
-          svgRef={this.svgRef}
-          edge={edge}
-          vertex1={vertex1}
-          vertex2={vertex2}
-          selectEdge={this.selectElement}
-          dragSelection={this.dragSelection}
-          dropSelection={this.dropSelection}
-        />
+      return <EdgeRenderer
+        key={edge.id}
+        svgRef={this.svgRef}
+        edge={edge}
+        vertex1={vertex1}
+        vertex2={vertex2}
+        selectEdge={this.selectElement}
+        dragSelection={this.dragSelection}
+        dropSelection={this.dropSelection}
+      />
     })
   }
 
@@ -126,7 +126,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
     }
   }
 
-  render(){
+  render() {
     const { interactionMode, viewport } = this.context;
     const { animateTransition, actions } = this.props;
 
@@ -142,7 +142,7 @@ export class GraphRenderer extends React.Component<IGraphRendererProps> {
         {interactionMode === modes.EDGE_DRAW &&
           <EdgeDrawer
             svgRef={this.svgRef}
-            sourcePoint={this.getEdgeCreateSourcePoint()}/>
+            sourcePoint={this.getEdgeCreateSourcePoint()} />
         }
         {this.renderGroupings()}
         {this.renderEdges()}

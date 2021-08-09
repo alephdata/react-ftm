@@ -3,8 +3,8 @@ import { defineMessages } from 'react-intl';
 import { Icon } from '@blueprintjs/core'
 import { Entity } from '@alephdata/followthemoney';
 import { ColorPicker } from 'editors';
-import { Grouping } from 'NetworkDiagram/layout'
-import { GraphContext } from 'NetworkDiagram/GraphContext'
+import { Grouping } from 'components/NetworkDiagram/layout'
+import { GraphContext } from 'components/NetworkDiagram/GraphContext'
 import { EntityList } from "components/common/EntityList";
 
 import './GroupingViewer.scss';
@@ -18,8 +18,8 @@ const messages = defineMessages({
 
 interface IGroupingViewerProps {
   grouping: Grouping,
-  onEntitySelected: (entity:Entity) => void
-  onEntityRemoved: (grouping: Grouping, entity:Entity) => void
+  onEntitySelected: (entity: Entity) => void
+  onEntityRemoved: (grouping: Grouping, entity: Entity) => void
   onColorSelected: (grouping: Grouping, color: string) => void
 }
 

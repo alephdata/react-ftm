@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Colors } from '@blueprintjs/core';
-import { Point } from 'NetworkDiagram/layout'
-import { getRefMatrix, applyMatrix } from 'NetworkDiagram/renderer/utils';
+import { Point } from 'components/NetworkDiagram/layout'
+import { getRefMatrix, applyMatrix } from 'components/NetworkDiagram/renderer/utils';
 
 
 interface IEdgeDrawerProps {
@@ -41,7 +41,7 @@ export class EdgeDrawer extends React.PureComponent<IEdgeDrawerProps, IEdgeDrawe
     const { svgRef } = this.props
     const matrix = getRefMatrix(svgRef)
     const targetPoint = applyMatrix(matrix, e.clientX, e.clientY)
-    this.setState({targetPoint})
+    this.setState({ targetPoint })
   }
 
   render() {

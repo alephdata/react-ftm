@@ -1,12 +1,12 @@
 import * as React from 'react'
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { GraphContext } from 'NetworkDiagram/GraphContext';
-import { Point } from 'NetworkDiagram/layout/Point'
-import { Vertex } from 'NetworkDiagram/layout/Vertex'
-import { getRefMatrix, applyMatrix } from 'NetworkDiagram/renderer/utils';
+import { GraphContext } from 'components/NetworkDiagram/GraphContext';
+import { Point } from 'components/NetworkDiagram/layout/Point'
+import { Vertex } from 'components/NetworkDiagram/layout/Vertex'
+import { getRefMatrix, applyMatrix } from 'components/NetworkDiagram/renderer/utils';
 import { VertexLabelRenderer } from './VertexLabelRenderer';
 import { IconRenderer } from "./IconRenderer";
-import { modes } from 'NetworkDiagram/utils'
+import { modes } from 'components/NetworkDiagram/utils'
 
 
 interface IVertexRendererProps {
@@ -126,7 +126,7 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
   }
 
   onMouseOut() {
-    this.setState({hovered: false})
+    this.setState({ hovered: false })
   }
 
   getColor() {
@@ -164,10 +164,10 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
     const { x, y } = layout.config.gridToPixel(vertex.position)
     const selected = layout.isElementSelected(vertex)
     const isEntity = vertex.isEntity()
-    const defaultRadius = isEntity ? layout.config.DEFAULT_VERTEX_RADIUS : layout.config.DEFAULT_VERTEX_RADIUS/2;
+    const defaultRadius = isEntity ? layout.config.DEFAULT_VERTEX_RADIUS : layout.config.DEFAULT_VERTEX_RADIUS / 2;
     const vertexRadius = (vertex.radius || defaultRadius) * layout.config.gridUnit
     const translate = `translate(${x} ${y})`
-    const labelPosition = new Point(0, vertexRadius + layout.config.gridUnit/2)
+    const labelPosition = new Point(0, vertexRadius + layout.config.gridUnit / 2)
 
     const vertexColor = this.getColor()
     const groupStyles: React.CSSProperties = {
@@ -189,9 +189,9 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
             fill={isEntity ? vertexColor : 'white'}
             stroke={isEntity ? 'none' : vertexColor}
             onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}
-            />
-          <VertexLabelRenderer center={labelPosition} label={vertex.label} type={vertex.type} onClick={this.onClick} color={vertexColor}/>
-          <IconRenderer entity={entityManager.getEntity(vertex.entityId)} radius={vertexRadius}/>
+          />
+          <VertexLabelRenderer center={labelPosition} label={vertex.label} type={vertex.type} onClick={this.onClick} color={vertexColor} />
+          <IconRenderer entity={entityManager.getEntity(vertex.entityId)} radius={vertexRadius} />
         </g>
       </DraggableCore>
     );

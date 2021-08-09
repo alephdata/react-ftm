@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Point } from 'NetworkDiagram/layout';
+import { Point } from 'components/NetworkDiagram/layout';
 
 export function getRefMatrix(ref: React.RefObject<SVGGraphicsElement>): DOMMatrix | null {
   if (ref.current) {

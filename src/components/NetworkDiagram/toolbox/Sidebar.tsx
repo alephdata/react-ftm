@@ -2,7 +2,7 @@ import * as React from 'react'
 import { defineMessages } from 'react-intl';
 import { Entity } from '@alephdata/followthemoney';
 import { Drawer } from "@blueprintjs/core";
-import { GraphContext } from 'NetworkDiagram/GraphContext'
+import { GraphContext } from 'components/NetworkDiagram/GraphContext'
 import { EntityList } from 'components/common';
 import { EntityViewer, GroupingViewer } from 'components/NetworkDiagram/toolbox';
 import { Grouping, Vertex } from 'components/NetworkDiagram/layout'
@@ -35,7 +35,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
 
   constructor(props: Readonly<ISidebarProps>) {
     super(props);
-    this.onEntityChanged  = this.onEntityChanged.bind(this);
+    this.onEntityChanged = this.onEntityChanged.bind(this);
     this.onEntitySelected = this.onEntitySelected.bind(this);
     this.removeGroupingEntity = this.removeGroupingEntity.bind(this);
     this.setVertexColor = this.setVertexColor.bind(this)
@@ -48,7 +48,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
     const previousEntity = entityManager.getEntity(entity.id);
     entityManager.updateEntity(entity);
     layout.layout(entityManager.getEntities());
-    updateLayout(layout, { updated: [{ prev: previousEntity, next: entity }] }, { modifyHistory:true });
+    updateLayout(layout, { updated: [{ prev: previousEntity, next: entity }] }, { modifyHistory: true });
   }
 
   removeGroupingEntity(grouping: Grouping, entity: Entity) {
@@ -58,7 +58,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
 
     if (vertex) {
       layout.groupings.set(grouping.id, grouping.removeVertex(vertex))
-      updateLayout(layout, null, { modifyHistory:true })
+      updateLayout(layout, null, { modifyHistory: true })
     }
   }
 
@@ -82,14 +82,14 @@ export class Sidebar extends React.Component<ISidebarProps> {
     const { layout, updateLayout } = this.context
     if (grouping) {
       layout.groupings.set(grouping.id, grouping.setColor(color))
-      updateLayout(layout, null, { modifyHistory:true });
+      updateLayout(layout, null, { modifyHistory: true });
     }
   }
 
-  onEntitySelected(entity:Entity){
+  onEntitySelected(entity: Entity) {
     const { layout, updateLayout } = this.context
     const vertexToSelect = layout.getVertexByEntity(entity);
-    if(vertexToSelect) {
+    if (vertexToSelect) {
       layout.selectElement(vertexToSelect)
       updateLayout(layout, null, { clearSearch: true });
     }
@@ -128,7 +128,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
       searchResultsText = intl.formatMessage(messages.search_found_multiple, { count: selectedEntities.length });
     } else {
       const entities = entityManager.getThingEntities()
-      contents = <EntityList entities={entities as Entity[]} onEntitySelected={this.onEntitySelected}/>
+      contents = <EntityList entities={entities as Entity[]} onEntitySelected={this.onEntitySelected} />
       searchResultsText = intl.formatMessage(messages.search_found_none);
     }
 

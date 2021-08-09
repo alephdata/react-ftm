@@ -2,11 +2,11 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom';
 import { Colors } from '@blueprintjs/core';
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { Point } from 'NetworkDiagram/layout/Point';
-import { Rectangle } from 'NetworkDiagram/layout/Rectangle';
-import { getRefMatrix, applyMatrix } from 'NetworkDiagram/renderer/utils';
-import { GraphContext } from 'NetworkDiagram/GraphContext';
-import { modes } from 'NetworkDiagram/utils';
+import { Point } from 'components/NetworkDiagram/layout/Point';
+import { Rectangle } from 'components/NetworkDiagram/layout/Rectangle';
+import { getRefMatrix, applyMatrix } from 'components/NetworkDiagram/renderer/utils';
+import { GraphContext } from 'components/NetworkDiagram/GraphContext';
+import { modes } from 'components/NetworkDiagram/utils';
 
 
 interface ICanvasProps {
@@ -18,7 +18,7 @@ interface ICanvasProps {
   viewBox: any
 }
 
-export class Canvas extends React.Component <ICanvasProps> {
+export class Canvas extends React.Component<ICanvasProps> {
   static contextType = GraphContext
   selectionRef: React.RefObject<SVGRectElement>
   dragInitial: Point
@@ -180,7 +180,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     const target = applyMatrix(matrix, event.clientX, event.clientY)
     const gridTarget = viewport.config.pixelToGrid(target)
     const newViewport = viewport.zoomToPoint(gridTarget, direction)
-    updateViewport(newViewport, {animate: false})
+    updateViewport(newViewport, { animate: false })
   }
 
   private onKeyZoom(event: KeyboardEvent, direction: string) {
@@ -189,7 +189,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     const { updateViewport, viewport } = this.context
     const zoomFactor = 3
     const newViewport = viewport.zoomToPoint(viewport.center, direction === 'in' ? -zoomFactor : zoomFactor)
-    updateViewport(newViewport, {animate: true})
+    updateViewport(newViewport, { animate: true })
   }
 
   private onDoubleClick(event: MouseEvent) {
@@ -202,10 +202,10 @@ export class Canvas extends React.Component <ICanvasProps> {
   }
 
   componentWillReceiveProps(nextProps: Readonly<ICanvasProps>): void {
-    this.animationHandler(nextProps.animateTransition, this.props.viewBox || '' , nextProps.viewBox || '');
+    this.animationHandler(nextProps.animateTransition, this.props.viewBox || '', nextProps.viewBox || '');
   }
 
-  animationHandler(animateTransition: boolean, oldViewBox:string, viewBox:string) {
+  animationHandler(animateTransition: boolean, oldViewBox: string, viewBox: string) {
     if (animateTransition && viewBox && oldViewBox && viewBox !== oldViewBox) {
       this._animateTransition(oldViewBox, viewBox)
     } else {
@@ -213,26 +213,26 @@ export class Canvas extends React.Component <ICanvasProps> {
     }
   }
 
-  _animateTransition(oldViewBox:string, viewBox:string, userDuration?:number) {
+  _animateTransition(oldViewBox: string, viewBox: string, userDuration?: number) {
     const start = this._now();
     const domNode = ReactDOM.findDOMNode(this) as Element;
-    let req:any;
+    let req: any;
 
     const oldVb = oldViewBox.split(" ").map(n => parseInt(n, 10));
     const newVb = viewBox.split(" ").map(n => parseInt(n, 10));
-    let duration:number = userDuration as number;
+    let duration: number = userDuration as number;
 
     // if duration not supplied, calculate based on change of size and center
     if (!userDuration) {
-      const wRatio = newVb[2]/oldVb[2];
-      const hRatio = newVb[3]/oldVb[3];
-      const oldCenterX = oldVb[0] + oldVb[2]/2;
-      const oldCenterY = oldVb[1] + oldVb[3]/2;
-      const newCenterX = newVb[0] + newVb[2]/2;
-      const newCenterY = newVb[1] + newVb[3]/2;
-      const ratio = Math.max(wRatio, 1/wRatio, hRatio, 1/hRatio);
+      const wRatio = newVb[2] / oldVb[2];
+      const hRatio = newVb[3] / oldVb[3];
+      const oldCenterX = oldVb[0] + oldVb[2] / 2;
+      const oldCenterY = oldVb[1] + oldVb[3] / 2;
+      const newCenterX = newVb[0] + newVb[2] / 2;
+      const newCenterY = newVb[1] + newVb[3] / 2;
+      const ratio = Math.max(wRatio, 1 / wRatio, hRatio, 1 / hRatio);
       const dist = Math.floor(Math.sqrt(Math.pow(newCenterX - oldCenterX, 2) + Math.pow(newCenterY - oldCenterY, 2)));
-      duration = 1 - 1/(ratio + Math.log(dist + 1));
+      duration = 1 - 1 / (ratio + Math.log(dist + 1));
       duration = Math.max(0.2, duration);
     }
 
@@ -261,7 +261,7 @@ export class Canvas extends React.Component <ICanvasProps> {
     const { interactionMode, viewport } = this.context;
     const { svgRef } = this.props
     const grid = `M ${viewport.config.gridUnit} 0 L 0 0 0 ${viewport.config.gridUnit}`
-    const style:React.CSSProperties = {width: "100%", height: "100%", cursor: interactionMode === modes.PAN ? 'grab' : 'crosshair'}
+    const style: React.CSSProperties = { width: "100%", height: "100%", cursor: interactionMode === modes.PAN ? 'grab' : 'crosshair' }
     return (
       <svg viewBox={viewport.viewBox} style={style} ref={svgRef} xmlns="http://www.w3.org/2000/svg" tabIndex={0}>
         <DraggableCore
@@ -272,37 +272,37 @@ export class Canvas extends React.Component <ICanvasProps> {
           enableUserSelectHack={false} >
           <g id="zoom">
             <rect id="canvas-handle"
-                  x="-5000"
-                  y="-5000"
-                  width="10000"
-                  height="10000"
-                  fill="url(#grid)" />
+              x="-5000"
+              y="-5000"
+              width="10000"
+              height="10000"
+              fill="url(#grid)" />
             {this.props.children}
             <rect id="selection"
-                  ref={this.selectionRef}
-                  stroke="black"
-                  strokeWidth="0.5px"
-                  strokeDasharray="2"
-                  fillOpacity="0" />
+              ref={this.selectionRef}
+              stroke="black"
+              strokeWidth="0.5px"
+              strokeDasharray="2"
+              fillOpacity="0" />
           </g>
         </DraggableCore>
         <defs>
           <pattern id="grid" width={viewport.config.gridUnit} height={viewport.config.gridUnit} patternUnits="userSpaceOnUse">
-            <path d={grid} fill="none" stroke={Colors.LIGHT_GRAY3} strokeWidth="0.5"/>
+            <path d={grid} fill="none" stroke={Colors.LIGHT_GRAY3} strokeWidth="0.5" />
           </pattern>
           <marker id="arrow" viewBox="0 0 10 10" refX="29" refY="5"
-              markerWidth="5" markerHeight="5"
-              orient="auto-start-reverse" fill={viewport.config.EDGE_COLOR}>
+            markerWidth="5" markerHeight="5"
+            orient="auto-start-reverse" fill={viewport.config.EDGE_COLOR}>
             <path d="M 0 0 L 10 5 L 0 10 z" />
           </marker>
           <marker id="arrow-unselected" viewBox="0 0 10 10" refX="29" refY="5"
-              markerWidth="5" markerHeight="5"
-              orient="auto-start-reverse" fill={viewport.config.UNSELECTED_COLOR}>
+            markerWidth="5" markerHeight="5"
+            orient="auto-start-reverse" fill={viewport.config.UNSELECTED_COLOR}>
             <path d="M 0 0 L 10 5 L 0 10 z" />
           </marker>
           <filter x="0" y="0" width="1" height="1" id="solid">
-            <feFlood floodColor="#ffffff"/>
-            <feComposite in="SourceGraphic"/>
+            <feFlood floodColor="#ffffff" />
+            <feComposite in="SourceGraphic" />
           </filter>
         </defs>
       </svg>

@@ -1,4 +1,4 @@
-import { Edge, Grouping, Point, Vertex } from "NetworkDiagram/layout";
+import { Edge, Grouping, Point, Vertex } from "components/NetworkDiagram/layout";
 
 export interface IPositioningProps {
   vertices: Array<Vertex>,
@@ -8,7 +8,7 @@ export interface IPositioningProps {
 }
 
 export const getPositionFromSimulation = (nodes: Array<any>) => {
-  return (v:Vertex) => {
+  return (v: Vertex) => {
     const node = nodes.find(n => n.id === v.id);
     if (node) {
       return new Point(node.x, node.y)

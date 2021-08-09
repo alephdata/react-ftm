@@ -1,6 +1,6 @@
 import React from 'react';
 import isEmpty from 'lodash/isEmpty'
-import { GraphContext } from 'NetworkDiagram/GraphContext'
+import { GraphContext } from 'components/NetworkDiagram/GraphContext'
 import { EntityChanges } from 'components/common/types';
 import { EntityTable } from 'components/EntityTable';
 import { Button, Drawer, Position } from "@blueprintjs/core";
@@ -76,7 +76,7 @@ export class TableView extends React.Component<ITableViewProps> {
           entityManager={entityManager}
           visitEntity={this.visitEntity}
           selection={layout.getSelectedEntityIds()}
-          onSelectionChange={(entityIds: Array<string>, forceVal: boolean) => this.onSelectionChange(entityIds, { forceVal, additional: true})}
+          onSelectionChange={(entityIds: Array<string>, forceVal: boolean) => this.onSelectionChange(entityIds, { forceVal, additional: true })}
           updateFinishedCallback={this.onEntitiesUpdate}
           writeable={writeable}
         />

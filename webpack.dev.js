@@ -19,5 +19,11 @@ module.exports = merge(common, {
   output: {
     filename: 'react-ftm.js',
     path: path.resolve(__dirname, 'dist'),
+  },
+  resolve: {
+    modules: [
+      path.resolve('./node_modules'),
+      path.resolve('./src')
+    ]
   }
 });

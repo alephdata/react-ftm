@@ -3,8 +3,8 @@ import { Divider } from '@blueprintjs/core'
 import { IEntityDatum, Property as FTMProperty, Schema as FTMSchema } from '@alephdata/followthemoney';
 import { ColorPicker, PropertySelect, RadiusPicker } from 'editors';
 import { Entity, FTMEntityExtended as FTMEntity, Schema } from 'types';
-import { Vertex } from 'NetworkDiagram/layout'
-import { GraphContext } from 'NetworkDiagram/GraphContext';
+import { Vertex } from 'components/NetworkDiagram/layout'
+import { GraphContext } from 'components/NetworkDiagram/GraphContext';
 import { EditableProperty } from 'components/common';
 import c from 'classnames';
 
@@ -44,7 +44,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
   }
 
   getVisibleProperties(props = this.props) {
-    const {entity} = props;
+    const { entity } = props;
 
     return Array.from(new Set([...entity.schema.getFeaturedProperties(), ...entity.getProperties()]))
   }
@@ -58,14 +58,14 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     }
   }
 
-  onNewPropertySelected(p:FTMProperty) {
-    this.setState(({visibleProps}) => ({
+  onNewPropertySelected(p: FTMProperty) {
+    this.setState(({ visibleProps }) => ({
       visibleProps: [...visibleProps, ...[p]],
       currEditing: null
     }))
   }
 
-  onEditPropertyClick(property:FTMProperty) {
+  onEditPropertyClick(property: FTMProperty) {
     this.setState({
       currEditing: property
     })
@@ -79,7 +79,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
     })
   }
 
-  renderProperty(property:FTMProperty){
+  renderProperty(property: FTMProperty) {
     const { entityManager, writeable } = this.context;
     const { entity } = this.props;
     const { currEditing } = this.state;
@@ -139,7 +139,7 @@ export class EntityViewer extends React.PureComponent<IEntityViewerProps, IEntit
           {visibleProps.map(this.renderProperty)}
         </div>
         {writeable && !!availableProperties.length && (<>
-          <Divider/>
+          <Divider />
           <PropertySelect
             properties={availableProperties}
             onSelected={this.onNewPropertySelected}

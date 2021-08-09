@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
 import { ControlGroup, InputGroup } from '@blueprintjs/core'
-import { GraphContext, IGraphContext } from 'NetworkDiagram/GraphContext'
+import { GraphContext, IGraphContext } from 'components/NetworkDiagram/GraphContext'
 import { Dialog } from 'components/common';
-import { Grouping } from 'NetworkDiagram/layout'
+import { Grouping } from 'components/NetworkDiagram/layout'
 
 const messages = defineMessages({
   title: {
@@ -61,8 +61,8 @@ export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogP
     if (grouping) {
       layout.addGrouping(grouping);
       layout.clearSelection();
-      updateLayout(layout, null, { modifyHistory:true });
-      this.setState({label: ''})
+      updateLayout(layout, null, { modifyHistory: true });
+      this.setState({ label: '' })
       this.setState({ isProcessing: false });
       this.props.toggleDialog()
     }

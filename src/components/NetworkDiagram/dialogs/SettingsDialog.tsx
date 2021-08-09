@@ -4,8 +4,8 @@ import { PropertyType } from '@alephdata/followthemoney';
 import { defineMessages } from 'react-intl';
 import { Intent, FormGroup, Checkbox, Dialog, Button } from '@blueprintjs/core'
 
-import { GraphContext } from 'NetworkDiagram/GraphContext'
-import { ISettingsData, Settings } from 'NetworkDiagram/layout'
+import { GraphContext } from 'components/NetworkDiagram/GraphContext'
+import { ISettingsData, Settings } from 'components/NetworkDiagram/layout'
 
 import './SettingsDialog.scss';
 
@@ -87,7 +87,7 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
     const { pivotTypes } = this.state;
 
     const matchableTypes = Object.values(entityManager.model.types as Array<PropertyType>)
-      .filter((t:PropertyType) => t.matchable);
+      .filter((t: PropertyType) => t.matchable);
     const typeOptions = sortBy(matchableTypes, ['label']);
 
     return (
