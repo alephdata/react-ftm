@@ -87,7 +87,7 @@
     "filesize": "^7.0.0",
     "google-libphonenumber": "^3.2.19",
     "numeral": "^2.0.6",
-    "react-countup": "^4.3.3",
+    "react-countup": "^5.2.0",
     "react-datasheet": "^1.4.9",
     "react-draggable": "^4.4.3",
     "recharts": "^2.0.9",
