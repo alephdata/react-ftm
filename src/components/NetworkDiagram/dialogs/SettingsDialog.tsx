@@ -2,10 +2,10 @@ import * as React from 'react';
 import sortBy from 'lodash/sortBy'
 import { PropertyType } from '@alephdata/followthemoney';
 import { defineMessages } from 'react-intl';
-import { Intent, FormGroup, Checkbox, Dialog, Button } from '@blueprintjs/core'
+import { Intent, FormGroup, Checkbox, Dialog, Button } from '@blueprintjs/core';
 
-import { GraphContext } from 'components/NetworkDiagram/GraphContext'
-import { ISettingsData, Settings } from 'components/NetworkDiagram/layout'
+import { GraphContext } from 'NetworkDiagram/GraphContext';
+import { ISettingsData, Settings } from 'NetworkDiagram/layout';
 
 import './SettingsDialog.scss';
 

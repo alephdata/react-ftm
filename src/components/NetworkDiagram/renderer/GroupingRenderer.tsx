@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { GraphContext } from 'components/NetworkDiagram/GraphContext';
-import { GraphElement, Grouping, Point, Vertex } from 'components/NetworkDiagram/layout'
-import { getRefMatrix, applyMatrix } from 'components/NetworkDiagram/renderer/utils';
-import { modes } from 'components/NetworkDiagram/utils'
+import { GraphContext } from 'NetworkDiagram/GraphContext';
+import { GraphElement, Grouping, Point, Vertex } from 'NetworkDiagram/layout'
+import { getRefMatrix, applyMatrix } from 'NetworkDiagram/renderer/utils';
+import { modes } from 'NetworkDiagram/utils'
 
 interface IGroupingRendererProps {
   grouping: Grouping

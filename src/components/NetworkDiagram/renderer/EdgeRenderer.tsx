@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { GraphContext } from 'components/NetworkDiagram/GraphContext';
-import { Edge, Vertex, Point } from 'components/NetworkDiagram/layout'
+import { GraphContext } from 'NetworkDiagram/GraphContext';
+import { Edge, Vertex, Point } from 'NetworkDiagram/layout'
 import { EdgeLabelRenderer } from './EdgeLabelRenderer';
 const { Bezier } = require("bezier-js");
 

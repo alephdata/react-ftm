@@ -1,6 +1,6 @@
 import React from 'react';
 import isEmpty from 'lodash/isEmpty'
-import { GraphContext } from 'components/NetworkDiagram/GraphContext'
+import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { EntityChanges } from 'components/common/types';
 import { EntityTable } from 'components/EntityTable';
 import { Button, Drawer, Position } from "@blueprintjs/core";

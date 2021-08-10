@@ -1,5 +1,5 @@
-import { GraphLayout, Rectangle } from 'components/NetworkDiagram/layout';
-import { Viewport } from 'components/NetworkDiagram/Viewport';
+import { GraphLayout, Rectangle } from 'NetworkDiagram/layout';
+import { Viewport } from 'NetworkDiagram/Viewport';
 
 export const exportSvg = (layout: GraphLayout, viewport: Viewport, svgData: any) => {
   const points = layout.getVertices().filter((v) => !v.isHidden()).map((v) => v.position)

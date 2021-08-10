@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Slider } from '@blueprintjs/core';
-import { GraphContext } from 'components/NetworkDiagram/GraphContext';
+import { GraphContext } from 'NetworkDiagram/GraphContext';
 import { Schema as FTMSchema } from "@alephdata/followthemoney";
 import { Schema } from 'types';
 

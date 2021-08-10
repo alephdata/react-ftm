@@ -2,10 +2,10 @@ import * as React from 'react'
 import { defineMessages } from 'react-intl';
 import { Entity } from '@alephdata/followthemoney';
 import { Drawer } from "@blueprintjs/core";
-import { GraphContext } from 'components/NetworkDiagram/GraphContext'
+import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { EntityList } from 'components/common';
-import { EntityViewer, GroupingViewer } from 'components/NetworkDiagram/toolbox';
-import { Grouping, Vertex } from 'components/NetworkDiagram/layout'
+import { EntityViewer, GroupingViewer } from 'NetworkDiagram/toolbox';
+import { Grouping, Vertex } from 'NetworkDiagram/layout'
 
 import './Sidebar.scss';
 

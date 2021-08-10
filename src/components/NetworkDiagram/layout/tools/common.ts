@@ -1,4 +1,4 @@
-import { Edge, Grouping, Point, Vertex } from "components/NetworkDiagram/layout";
+import { Edge, Grouping, Point, Vertex } from 'NetworkDiagram/layout';
 
 export interface IPositioningProps {
   vertices: Array<Vertex>,

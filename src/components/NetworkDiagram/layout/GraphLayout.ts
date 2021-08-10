@@ -6,7 +6,7 @@ import { Point } from './Point';
 import { Rectangle } from './Rectangle';
 import { forceLayout } from '.';
 import { ISettingsData, Settings } from './Settings';
-import { GraphConfig } from 'components/NetworkDiagram/GraphConfig';
+import { GraphConfig } from 'NetworkDiagram/GraphConfig';
 
 export interface IGraphLayoutData {
   vertices: Array<any>

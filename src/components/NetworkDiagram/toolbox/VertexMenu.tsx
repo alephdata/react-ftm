@@ -2,8 +2,8 @@ import * as React from 'react'
 import { defineMessages } from 'react-intl';
 import { Menu, MenuDivider, MenuItem, Spinner } from "@blueprintjs/core"
 
-import { modes } from 'components/NetworkDiagram/utils'
-import { GraphContext } from 'components/NetworkDiagram/GraphContext'
+import { modes } from 'NetworkDiagram/utils'
+import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { Count, Schema } from 'types';
 
 import './VertexMenu.scss';

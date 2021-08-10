@@ -10,16 +10,16 @@ import {
 } from "@blueprintjs/core"
 import c from 'classnames';
 
-import { GraphContext } from 'components/NetworkDiagram/GraphContext';
-import { IToolbarButtonGroup, ToolbarButtonGroup, SearchBox } from 'components/NetworkDiagram/toolbox';
-import { modes } from 'components/NetworkDiagram/utils';
+import { GraphContext } from 'NetworkDiagram/GraphContext';
+import { IToolbarButtonGroup, ToolbarButtonGroup, SearchBox } from 'NetworkDiagram/toolbox';
+import { modes } from 'NetworkDiagram/utils';
 import {
   Point,
   centerAround,
   positionSelection,
-} from "components/NetworkDiagram/layout";
+} from 'NetworkDiagram/layout';
 
-import { History } from 'components/NetworkDiagram/History';
+import { History } from 'NetworkDiagram/History';
 
 import './Toolbar.scss';
 

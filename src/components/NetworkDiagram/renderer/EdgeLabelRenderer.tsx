@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { GraphContext } from 'components/NetworkDiagram/GraphContext';
-import { Point } from 'components/NetworkDiagram/layout/Point'
-import { getRefMatrix, applyMatrix } from 'components/NetworkDiagram/renderer/utils';
+import { GraphContext } from 'NetworkDiagram/GraphContext';
+import { Point } from 'NetworkDiagram/layout/Point'
+import { getRefMatrix, applyMatrix } from 'NetworkDiagram/renderer/utils';
 
 import './EdgeLabelRenderer.scss'
 

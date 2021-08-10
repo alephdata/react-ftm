@@ -1,4 +1,4 @@
-import { GraphLayout } from "components/NetworkDiagram/layout";
+import { GraphLayout } from 'NetworkDiagram/layout';
 import alignCircle from './alignCircle';
 import alignHorizontal from './alignHorizontal';
 import alignVertical from './alignVertical';

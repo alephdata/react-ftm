@@ -5,17 +5,17 @@ import { Button, ButtonGroup, Tooltip } from '@blueprintjs/core';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 
 import { EdgeCreateDialog, EntityCreateDialog, EntityManager } from 'components/common';
-import { GraphConfig } from 'components/NetworkDiagram/GraphConfig';
-import { GraphRenderer } from 'components/NetworkDiagram/renderer'
-import { Edge, GraphLayout, Rectangle, Point, Settings, Vertex } from 'components/NetworkDiagram/layout';
-import { Viewport } from 'components/NetworkDiagram/Viewport';
-import { GraphContext } from 'components/NetworkDiagram/GraphContext'
-import { Sidebar, TableView, Toolbar, VertexMenu } from 'components/NetworkDiagram/toolbox';
-import { History } from 'components/NetworkDiagram/History';
-import { GroupingCreateDialog, SettingsDialog } from 'components/NetworkDiagram/dialogs';
+import { GraphConfig } from 'NetworkDiagram/GraphConfig';
+import { GraphRenderer } from 'NetworkDiagram/renderer'
+import { Edge, GraphLayout, Rectangle, Point, Settings, Vertex } from 'NetworkDiagram/layout';
+import { Viewport } from 'NetworkDiagram/Viewport';
+import { GraphContext } from 'NetworkDiagram/GraphContext'
+import { Sidebar, TableView, Toolbar, VertexMenu } from 'NetworkDiagram/toolbox';
+import { History } from 'NetworkDiagram/History';
+import { GroupingCreateDialog, SettingsDialog } from 'NetworkDiagram/dialogs';
 import { EdgeType } from 'types';
 import { EntityChanges } from 'components/common/types';
-import { filterVerticesByText, modes } from 'components/NetworkDiagram/utils'
+import { filterVerticesByText, modes } from 'NetworkDiagram/utils'
 import { showSuccessToast, showWarningToast } from 'utils'
 
 import './NetworkDiagram.scss';

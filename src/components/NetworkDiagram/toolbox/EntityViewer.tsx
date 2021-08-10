@@ -3,8 +3,8 @@ import { Divider } from '@blueprintjs/core'
 import { IEntityDatum, Property as FTMProperty, Schema as FTMSchema } from '@alephdata/followthemoney';
 import { ColorPicker, PropertySelect, RadiusPicker } from 'editors';
 import { Entity, FTMEntityExtended as FTMEntity, Schema } from 'types';
-import { Vertex } from 'components/NetworkDiagram/layout'
-import { GraphContext } from 'components/NetworkDiagram/GraphContext';
+import { Vertex } from 'NetworkDiagram/layout'
+import { GraphContext } from 'NetworkDiagram/GraphContext';
 import { EditableProperty } from 'components/common';
 import c from 'classnames';
 

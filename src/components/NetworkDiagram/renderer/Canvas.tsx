@@ -2,11 +2,11 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom';
 import { Colors } from '@blueprintjs/core';
 import { DraggableCore, DraggableEvent, DraggableData } from 'react-draggable';
-import { Point } from 'components/NetworkDiagram/layout/Point';
-import { Rectangle } from 'components/NetworkDiagram/layout/Rectangle';
-import { getRefMatrix, applyMatrix } from 'components/NetworkDiagram/renderer/utils';
-import { GraphContext } from 'components/NetworkDiagram/GraphContext';
-import { modes } from 'components/NetworkDiagram/utils';
+import { Point } from 'NetworkDiagram/layout/Point';
+import { Rectangle } from 'NetworkDiagram/layout/Rectangle';
+import { getRefMatrix, applyMatrix } from 'NetworkDiagram/renderer/utils';
+import { GraphContext } from 'NetworkDiagram/GraphContext';
+import { modes } from 'NetworkDiagram/utils';
 
 
 interface ICanvasProps {

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Colors } from '@blueprintjs/core';
-import { Point } from 'components/NetworkDiagram/layout'
-import { getRefMatrix, applyMatrix } from 'components/NetworkDiagram/renderer/utils';
+import { Point } from 'NetworkDiagram/layout'
+import { getRefMatrix, applyMatrix } from 'NetworkDiagram/renderer/utils';
 
 
 interface IEdgeDrawerProps {
