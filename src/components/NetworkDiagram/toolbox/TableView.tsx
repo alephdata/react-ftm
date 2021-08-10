@@ -76,7 +76,7 @@ export class TableView extends React.Component<ITableViewProps> {
           entityManager={entityManager}
           visitEntity={this.visitEntity}
           selection={layout.getSelectedEntityIds()}
-          onSelectionChange={(entityIds: Array<string>, forceVal: boolean) => this.onSelectionChange(entityIds, { forceVal, additional: true})}
+          onSelectionChange={(entityIds: Array<string>, forceVal: boolean) => this.onSelectionChange(entityIds, { forceVal, additional: true })}
           updateFinishedCallback={this.onEntitiesUpdate}
           writeable={writeable}
         />

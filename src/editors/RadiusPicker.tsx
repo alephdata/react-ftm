@@ -21,7 +21,7 @@ class RadiusPicker extends React.PureComponent<IRadiusPickerProps> {
     const { layout } = this.context;
     const { onChange, radius, schema } = this.props;
     const defaultRadius = layout.config.DEFAULT_VERTEX_RADIUS;
-    const radiusRange = [defaultRadius*.5, defaultRadius*1.5];
+    const radiusRange = [defaultRadius * .5, defaultRadius * 1.5];
     return (
       <div className='RadiusPicker'>
         <div className='RadiusPicker__icon'>

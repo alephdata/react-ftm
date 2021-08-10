@@ -1,4 +1,4 @@
-import { GraphLayout } from "NetworkDiagram/layout";
+import { GraphLayout } from 'NetworkDiagram/layout';
 import alignCircle from './alignCircle';
 import alignHorizontal from './alignHorizontal';
 import alignVertical from './alignVertical';
@@ -19,16 +19,16 @@ const positionSelection = (layout: GraphLayout, type: string, options?: any) => 
   let groupings;
 
   if (layout.hasSelection()) {
-    vertices = layout.getSelectedVertices().filter(v=>!v.isHidden());
+    vertices = layout.getSelectedVertices().filter(v => !v.isHidden());
     edges = layout.getSelectionAdjacentEdges();
     groupings = layout.getSelectedGroupings();
   } else {
-    vertices = layout.getVertices().filter(v=>!v.isHidden());
+    vertices = layout.getVertices().filter(v => !v.isHidden());
     edges = layout.getEdges();
     groupings = layout.getGroupings();
   }
 
-  const positioningFunc = positioning[type]({vertices, edges, groupings, options});
+  const positioningFunc = positioning[type]({ vertices, edges, groupings, options });
 
   return layout.applyPositioning(positioningFunc, vertices);
 }

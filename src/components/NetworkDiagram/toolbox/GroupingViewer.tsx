@@ -18,8 +18,8 @@ const messages = defineMessages({
 
 interface IGroupingViewerProps {
   grouping: Grouping,
-  onEntitySelected: (entity:Entity) => void
-  onEntityRemoved: (grouping: Grouping, entity:Entity) => void
+  onEntitySelected: (entity: Entity) => void
+  onEntityRemoved: (grouping: Grouping, entity: Entity) => void
   onColorSelected: (grouping: Grouping, color: string) => void
 }
 
