@@ -433,7 +433,7 @@ export class GraphLayout {
     return {
       vertices: this.getVertices().map((vertex) => vertex.toJSON()),
       edges: this.getEdges().map((edge) => edge.toJSON()),
-      groupings: this.getGroupings().map((grouping) => grouping.toJSON()),
+      groupings: this.getGroupings().filter(grouping => grouping.id !== 'selectedArea').map((grouping) => grouping.toJSON()),
       selection: this.selection,
       settings: this.settings.toJSON(),
     }

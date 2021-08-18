@@ -53,7 +53,8 @@ export class Grouping {
 
   getVertices(): Array<Vertex> {
     return this.getVertexIds()
-      .map((vertexId) => this.layout.vertices.get(vertexId)) as Vertex[]
+      .map((vertexId) => this.layout.vertices.get(vertexId))
+      .filter(v => v !== undefined) as Vertex[]
   }
 
   getEntityIds(): Array<string> {
