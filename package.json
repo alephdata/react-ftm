@@ -30,7 +30,7 @@
     "report-coverage": "cat ./coverage/lcov.info | coveralls"
   },
   "devDependencies": {
-    "@formatjs/cli": "^4.2.27",
+    "@formatjs/cli": "^4.2.33",
     "@types/bezier-js": "^4.1.0",
     "@types/classnames": "^2.3.1",
     "@types/d3": "^7.0.0",
