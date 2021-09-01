@@ -86,7 +86,7 @@
     "d3-force": "^3.0.0",
     "d3-scale": "^4.0.0",
     "dagre": "^0.8.4",
-    "filesize": "^7.0.0",
+    "filesize": "^8.0.0",
     "google-libphonenumber": "^3.2.19",
     "numeral": "^2.0.6",
     "react-countup": "^5.2.0",
