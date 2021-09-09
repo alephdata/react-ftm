@@ -1,5 +1,5 @@
 import { Colors } from '@blueprintjs/core';
-import { Point } from 'components/NetworkDiagram/layout';
+import { Point } from 'NetworkDiagram/layout';
 import { GraphLogo } from 'components/common';
 
 export interface IGraphConfig {

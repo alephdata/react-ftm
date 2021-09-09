@@ -10,6 +10,15 @@
       "es2017",
       "dom"
     ],
+    "baseUrl": "src",
+    "paths": {
+      "NetworkDiagram/*": [
+        "components/NetworkDiagram/*"
+      ],
+      "NetworkDiagram": [
+        "components/NetworkDiagram/index.ts"
+      ]
+    },
     "strict": true,
     "sourceMap": true,
     "declaration": true,
@@ -28,6 +37,6 @@
     ]
   },
   "include": [
-    "src"
+    "./src/**/*"
   ]
 }

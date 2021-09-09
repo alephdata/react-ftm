@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
   module: {
@@ -28,11 +29,8 @@ module.exports = {
     ],
   },
   resolve: {
-    modules: [path.resolve('src'), 'node_modules'],
+    plugins: [new TsconfigPathsPlugin()],
     extensions: ['.tsx', '.ts', '.js'],
-    alias: {
-      'NetworkDiagram': path.resolve('./src/components/NetworkDiagram')
-    },
     fallback: {
       buffer: 'buffer',
       crypto: 'crypto-browserify',

@@ -17,7 +17,7 @@ import {
   Point,
   centerAround,
   positionSelection,
-} from "NetworkDiagram/layout";
+} from 'NetworkDiagram/layout';
 
 import { History } from 'NetworkDiagram/History';
 
@@ -139,11 +139,11 @@ export class Toolbar extends React.Component<IToolbarProps> {
   onPosition(type: string) {
     const { layout, updateLayout } = this.context
     const { actions } = this.props
-    updateLayout(positionSelection(layout, type), null, { modifyHistory:true })
+    updateLayout(positionSelection(layout, type), null, { modifyHistory: true })
     actions.fitToSelection();
   }
 
-  itemRenderer(buttonGroup:IToolbarButtonGroup, visible: boolean) {
+  itemRenderer(buttonGroup: IToolbarButtonGroup, visible: boolean) {
     const { layout } = this.context
     const { showEditingButtons } = this.props;
 
@@ -166,7 +166,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
 
   overflowListRenderer(overflowItems: Array<IToolbarButtonGroup>) {
     const { config } = this.context.layout;
-    const menuContent = overflowItems.map((item:IToolbarButtonGroup) => this.itemRenderer(item, false));
+    const menuContent = overflowItems.map((item: IToolbarButtonGroup) => this.itemRenderer(item, false));
     return (
       <Popover
         content={<Menu>{menuContent}</Menu>}
@@ -330,7 +330,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
               helpText: intl.formatMessage(messages.tooltip_layout_center),
               icon: "layout-auto",
               disabled: !hasSelection,
-              onClick: () => updateLayout(centerAround(layout), null, { modifyHistory:true }),
+              onClick: () => updateLayout(centerAround(layout), null, { modifyHistory: true }),
             }
           ]
         }

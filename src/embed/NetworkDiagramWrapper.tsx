@@ -10,7 +10,7 @@ interface INetworkDiagramState {
   viewport: Viewport
 }
 
-export default class NetworkDiagramWrapper extends React.Component <IWrappedElementProps, INetworkDiagramState> {
+export default class NetworkDiagramWrapper extends React.Component<IWrappedElementProps, INetworkDiagramState> {
   constructor(props: IWrappedElementProps) {
     super(props)
     const { layoutData } = props;
@@ -25,7 +25,7 @@ export default class NetworkDiagramWrapper extends React.Component <IWrappedElem
   }
 
   updateLayout(layout: GraphLayout, historyModified = false) {
-    this.setState({'layout': layout})
+    this.setState({ 'layout': layout })
 
     if (historyModified) {
       this.propagateUpdate({ layout });
@@ -33,7 +33,7 @@ export default class NetworkDiagramWrapper extends React.Component <IWrappedElem
   }
 
   updateViewport(viewport: Viewport) {
-    this.setState({'viewport': viewport})
+    this.setState({ 'viewport': viewport })
     this.propagateUpdate({ viewport });
   }
 

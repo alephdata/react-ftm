@@ -2,7 +2,7 @@ import * as React from 'react'
 import { defineMessages } from 'react-intl';
 import { Menu, MenuDivider, MenuItem, Spinner } from "@blueprintjs/core"
 
-import { modes } from 'components/NetworkDiagram/utils'
+import { modes } from 'NetworkDiagram/utils'
 import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { Count, Schema } from 'types';
 
@@ -77,7 +77,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
     }
   }
 
-  renderExpandOption = ({ count, property }: {count: number, property: string}) => {
+  renderExpandOption = ({ count, property }: { count: number, property: string }) => {
     const { intl } = this.context;
     const { actions, contents } = this.props;
 
@@ -109,7 +109,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
       return <div className="error-text">{intl.formatMessage(messages.expand_none)}</div>;
     }
 
-    const allOption = { count: totalCount, property: null};
+    const allOption = { count: totalCount, property: null };
 
     return [allOption, ...expandResults].map(this.renderExpandOption);
   }

@@ -8,7 +8,7 @@ export const exportSvg = (layout: GraphLayout, viewport: Viewport, svgData: any)
 
   if (svgData) {
     const svgClone = svgData.cloneNode(true) as HTMLElement
-    svgClone.setAttribute("viewBox",viewBox as string)
+    svgClone.setAttribute("viewBox", viewBox as string)
 
     const canvas = svgClone.querySelector("#canvas-handle")
     canvas && canvas.setAttribute('fill', 'none');

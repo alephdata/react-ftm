@@ -1,7 +1,7 @@
 // import {forceCenter, forceCollide, forceLink, forceManyBody, forceSimulation} from "d3-force";
-// import {Vertex} from "NetworkDiagram/Vertex";
-// import {Point} from "NetworkDiagram/Point";
-// import {GraphLayout} from "NetworkDiagram/GraphLayout";
+// import {Vertex} from 'NetworkDiagram/Vertex";
+// import {Point} from 'NetworkDiagram/Point";
+// import {GraphLayout} from 'NetworkDiagram/GraphLayout";
 //
 // function removeCollisions(layout:GraphLayout): GraphLayout {
 //   const nodes = layout.getVertices().filter(v => !v.isHidden())

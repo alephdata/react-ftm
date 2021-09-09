@@ -41,7 +41,7 @@ export class EdgeDrawer extends React.PureComponent<IEdgeDrawerProps, IEdgeDrawe
     const { svgRef } = this.props
     const matrix = getRefMatrix(svgRef)
     const targetPoint = applyMatrix(matrix, e.clientX, e.clientY)
-    this.setState({targetPoint})
+    this.setState({ targetPoint })
   }
 
   render() {

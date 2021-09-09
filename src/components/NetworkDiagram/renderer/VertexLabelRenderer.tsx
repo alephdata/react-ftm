@@ -40,14 +40,14 @@ export class VertexLabelRenderer extends React.PureComponent<IVertexLabelRendere
     } as React.CSSProperties
     return (
       <text x={center.x}
-            y={center.y}
-            textAnchor="middle"
-            alignmentBaseline="middle"
-            filter="url(#solid)"
-            style={style}
-            pointerEvents="none"
-            fill={color || 'black'}
-            onClick={onClick}>
+        y={center.y}
+        textAnchor="middle"
+        alignmentBaseline="middle"
+        filter="url(#solid)"
+        style={style}
+        pointerEvents="none"
+        fill={color || 'black'}
+        onClick={onClick}>
         {this.formatLabel()}
       </text>
     );
