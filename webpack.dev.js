@@ -9,9 +9,6 @@ module.exports = merge(common, {
   entry: './src/embed/index-dev.ts',
   mode: 'development',
   devtool: 'inline-source-map',
-  devServer: {
-    contentBase: './dist',
-  },
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin(),
