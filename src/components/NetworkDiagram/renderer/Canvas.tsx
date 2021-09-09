@@ -170,7 +170,7 @@ export class Canvas extends React.Component<ICanvasProps> {
     this.dragExtent = this.dragInitial
   }
 
-  private onMouseZoom(event: MouseWheelEvent) {
+  private onMouseZoom(event: WheelEvent) {
     event.preventDefault()
     event.stopPropagation()
     const zoomFactor = 1.5;
