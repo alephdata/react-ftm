@@ -24,6 +24,16 @@ export default class NetworkDiagramWrapper extends React.Component<IWrappedEleme
     this.updateViewport = this.updateViewport.bind(this);
   }
 
+  componentDidMount() {
+    const { layout } = this.state;
+
+    // set viewport to fit all vertices present in layout
+    const initialBounds = layout.getVisibleVertexRect();
+    this.setState(({ viewport }) => ({
+      viewport: viewport.fitToRect(initialBounds),
+    }));
+  }
+
   updateLayout(layout: GraphLayout, historyModified = false) {
     this.setState({ 'layout': layout })
 
