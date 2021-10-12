@@ -1,7 +1,6 @@
 const path = require('path');
 const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const common = require('./webpack.common.js');
 
@@ -16,5 +15,6 @@ module.exports = merge(common, {
   output: {
     filename: 'react-ftm.js',
     path: path.resolve(__dirname, 'dist'),
+    clean: true,
   },
 });
