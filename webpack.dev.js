@@ -9,7 +9,6 @@ module.exports = merge(common, {
   mode: 'development',
   devtool: 'inline-source-map',
   plugins: [
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin(),
   ],
   output: {
