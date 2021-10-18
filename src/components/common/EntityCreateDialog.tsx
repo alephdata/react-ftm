@@ -62,9 +62,9 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
   }
 
   componentDidUpdate(prevProps: IEntityCreateDialogProps) {
-    const { isOpen } = this.props;
+    const { initialCaption, isOpen } = this.props;
     if (!prevProps.isOpen && isOpen) {
-      this.setState({ schema: this.getInitialSchema() });
+      this.setState({ schema: this.getInitialSchema(), inputText: initialCaption || '' });
     }
   }
 
