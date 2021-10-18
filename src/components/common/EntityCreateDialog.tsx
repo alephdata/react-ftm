@@ -32,6 +32,7 @@ interface IEntityCreateDialogProps extends WrappedComponentProps {
   schemaRange?: string
   model: Model
   fetchEntitySuggestions?: (queryText: string, schemata?: Array<FTMSchema>) => Promise<Entity[]>,
+  initialCaption?: string
 }
 
 interface IEntityCreateDialogState {
@@ -52,7 +53,7 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
     this.onSelectSubmit = this.onSelectSubmit.bind(this);
 
     this.state = {
-      inputText: '',
+      inputText: props.initialCaption || '',
       isFetchingSuggestions: false,
       isProcessing: false,
       suggestions: [],
