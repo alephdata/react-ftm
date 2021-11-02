@@ -1,13 +1,7 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
-import {
-  Boundary,
-  Button,
-  Divider,
-  Menu,
-  OverflowList,
-  Popover,
-} from "@blueprintjs/core"
+import { Boundary, Button, Divider, Menu, OverflowList } from "@blueprintjs/core"
+import { Popover2 as Popover } from "@blueprintjs/popover2";
 import c from 'classnames';
 
 import { GraphContext } from 'NetworkDiagram/GraphContext';
@@ -173,7 +167,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
         position="bottom"
         minimal
         popoverClassName={c("Toolbar__menu", `theme-${config.editorTheme}`)}
-        boundary="viewport"
+        rootBoundary="viewport"
       >
         <Button icon="double-chevron-right" />
       </Popover>
