@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { AnchorButton, Button, ButtonGroup, Menu, Tooltip } from "@blueprintjs/core"
-import { Popover2 as Popover } from "@blueprintjs/popover2";
+import { AnchorButton, Button, ButtonGroup, Menu } from "@blueprintjs/core"
+import { Popover2 as Popover, Tooltip2 as Tooltip } from "@blueprintjs/popover2";
 import c from 'classnames';
 
 export interface IToolbarButton {
@@ -55,7 +55,7 @@ export class ToolbarButtonGroup extends React.PureComponent<IToolbarButtonGroupP
                 key={icon}
                 position="bottom"
                 popoverClassName={c("Toolbar__button-tip", `theme-${editorTheme}`)}
-                boundary="viewport"
+                rootBoundary="viewport"
               >
                   <AnchorButton icon={icon} onClick={onClick} disabled={disabled} />
               </Tooltip>

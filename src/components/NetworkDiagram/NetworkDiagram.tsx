@@ -1,7 +1,8 @@
 import * as React from 'react'
 import c from 'classnames';
 import { Entity, Schema } from "@alephdata/followthemoney";
-import { Button, ButtonGroup, Tooltip } from '@blueprintjs/core';
+import { Button, ButtonGroup } from '@blueprintjs/core';
+import { Tooltip2 as Tooltip } from "@blueprintjs/popover2";
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 
 import { EdgeCreateDialog, EntityCreateDialog, EntityManager } from 'components/common';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tooltip } from '@blueprintjs/core';
+import { Tooltip2 as Tooltip } from '@blueprintjs/popover2';
 import truncateText from 'truncate';
 
 import './Transliterate.scss';
