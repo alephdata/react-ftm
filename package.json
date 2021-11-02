@@ -33,7 +33,7 @@
     "@formatjs/cli": "^4.3.1",
     "@types/bezier-js": "^4.1.0",
     "@types/classnames": "^2.3.1",
-    "@types/d3": "^7.0.0",
+    "@types/d3": "^7.1.0",
     "@types/dagre": "^0.7.46",
     "@types/google-libphonenumber": "^7.4.20",
     "@types/lodash": "^4.14.175",
