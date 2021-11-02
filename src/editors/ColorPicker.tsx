@@ -21,14 +21,14 @@ class ColorPicker extends React.PureComponent<IColorPickerProps> {
     this.renderColor = this.renderColor.bind(this);
   }
 
-  renderColor(color: string) {
+  renderColor(color: string | undefined, isCustom: boolean) {
     const { currSelected, onSelect, swatchShape } = this.props
     const style = {
       backgroundColor: color,
       borderColor: color,
     }
     return (
-      <div key={color} className='ColorPicker__item' onClick={() => onSelect(color)}>
+      <div key={color} className='ColorPicker__item' onClick={() => onSelect(color || "green")}>
         <div
           className={c('ColorPicker__item__swatch', swatchShape, { active: currSelected === color })}
           style={style}>
@@ -39,9 +39,12 @@ class ColorPicker extends React.PureComponent<IColorPickerProps> {
   }
 
   render() {
+    const { currSelected } = this.props
+    const hasCustomColor = !!currSelected && colorOptions.indexOf(currSelected) < 0
     return (
       <div className='ColorPicker'>
-        {colorOptions.map(this.renderColor)}
+        {colorOptions.map((color: string) => this.renderColor(color, false))}
+        {this.renderColor(hasCustomColor ? currSelected : undefined, hasCustomColor)}
       </div>
     )
   }
