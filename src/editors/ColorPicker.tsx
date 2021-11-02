@@ -1,6 +1,7 @@
 import * as React from 'react'
 import c from 'classnames';
 import { Colors } from '@blueprintjs/core';
+import { HexColorPicker } from "react-colorful";
 
 import './ColorPicker.scss';
 
@@ -19,6 +20,11 @@ class ColorPicker extends React.PureComponent<IColorPickerProps> {
     super(props);
 
     this.renderColor = this.renderColor.bind(this);
+    this.toggleCustomDialog = this.toggleCustomDialog.bind(this);
+  }
+
+  toggleCustomDialog() {
+    // this.set
   }
 
   renderColor(color: string | undefined, isCustom: boolean) {
@@ -28,7 +34,7 @@ class ColorPicker extends React.PureComponent<IColorPickerProps> {
       borderColor: color,
     }
     return (
-      <div key={color} className='ColorPicker__item' onClick={() => onSelect(color || "green")}>
+      <div key={color} className='ColorPicker__item' onClick={() => (isCustom || !color) ? this.toggleCustomDialog() : onSelect(color)}>
         <div
           className={c('ColorPicker__item__swatch', swatchShape, { active: currSelected === color })}
           style={style}>
@@ -39,12 +45,18 @@ class ColorPicker extends React.PureComponent<IColorPickerProps> {
   }
 
   render() {
-    const { currSelected } = this.props
+    const { currSelected, onSelect } = this.props
     const hasCustomColor = !!currSelected && colorOptions.indexOf(currSelected) < 0
     return (
       <div className='ColorPicker'>
         {colorOptions.map((color: string) => this.renderColor(color, false))}
-        {this.renderColor(hasCustomColor ? currSelected : undefined, hasCustomColor)}
+        <Popover
+          content={<HexColorPicker color={color} onChange={setColor} />}
+          minimal
+          boundary="viewport"
+        >
+          {this.renderColor(hasCustomColor ? currSelected : undefined, hasCustomColor)}
+        </Popover>
       </div>
     )
   }
