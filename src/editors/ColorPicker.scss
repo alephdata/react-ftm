@@ -20,6 +20,9 @@ $swatch-width: 20px;
       cursor: pointer;
       transition: all .1s ease-in-out;
       border: 1px solid;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
       &.square {
         border-radius: 5px;
@@ -42,7 +45,16 @@ $swatch-width: 20px;
       }
 
       &.active {
-        pointer-events: none;
+        opacity: 1 !important;
+      }
+
+      &.custom {
+        &:hover {
+          background: white !important;
+          .ColorPicker__item__swatch__inner {
+            display: none;
+          }
+        }
       }
 
       &__inner {
@@ -69,8 +81,6 @@ $swatch-width: 20px;
           height: 14px !important;
           border-color: white !important;
         }
-
-
       }
     }
   }

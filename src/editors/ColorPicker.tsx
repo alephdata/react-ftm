@@ -1,6 +1,7 @@
 import * as React from 'react'
 import c from 'classnames';
-import { Colors } from '@blueprintjs/core';
+import { Colors, Icon } from '@blueprintjs/core';
+import { Popover2 as Popover, Tooltip2 as Tooltip } from "@blueprintjs/popover2";
 import { HexColorPicker } from "react-colorful";
 
 import './ColorPicker.scss';
@@ -20,11 +21,6 @@ class ColorPicker extends React.PureComponent<IColorPickerProps> {
     super(props);
 
     this.renderColor = this.renderColor.bind(this);
-    this.toggleCustomDialog = this.toggleCustomDialog.bind(this);
-  }
-
-  toggleCustomDialog() {
-    // this.set
   }
 
   renderColor(color: string | undefined, isCustom: boolean) {
@@ -34,11 +30,14 @@ class ColorPicker extends React.PureComponent<IColorPickerProps> {
       borderColor: color,
     }
     return (
-      <div key={color} className='ColorPicker__item' onClick={() => (isCustom || !color) ? this.toggleCustomDialog() : onSelect(color)}>
+      <div key={color} className='ColorPicker__item' onClick={() => (isCustom || !color) ? null : onSelect(color)}>
         <div
-          className={c('ColorPicker__item__swatch', swatchShape, { active: currSelected === color })}
+          className={c('ColorPicker__item__swatch', swatchShape, { active: currSelected === color, custom: isCustom })}
           style={style}>
-          <div className="ColorPicker__item__swatch__inner" style={style} />
+          {color && <div className="ColorPicker__item__swatch__inner" style={style} />}
+          {isCustom && (
+            <Icon icon="plus" size={14} />
+          )}
         </div>
       </div>
     )
@@ -51,11 +50,10 @@ class ColorPicker extends React.PureComponent<IColorPickerProps> {
       <div className='ColorPicker'>
         {colorOptions.map((color: string) => this.renderColor(color, false))}
         <Popover
-          content={<HexColorPicker color={color} onChange={setColor} />}
+          content={<HexColorPicker color={currSelected} onChange={onSelect} />}
           minimal
-          boundary="viewport"
         >
-          {this.renderColor(hasCustomColor ? currSelected : undefined, hasCustomColor)}
+          {this.renderColor(hasCustomColor ? currSelected : undefined, true)}
         </Popover>
       </div>
     )
