@@ -50,7 +50,10 @@ $swatch-width: 20px;
 
       &.custom {
         &:hover {
-          background: white !important;
+          background: transparent !important;
+          @include themify() {
+            border-color: themed('textColor') !important;
+          }
           .ColorPicker__item__swatch__inner {
             display: none;
           }
