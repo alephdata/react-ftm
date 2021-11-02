@@ -2,7 +2,7 @@ import * as React from 'react'
 import c from 'classnames';
 import { Colors, Icon } from '@blueprintjs/core';
 import { Popover2 as Popover, Tooltip2 as Tooltip } from "@blueprintjs/popover2";
-import { HexColorPicker } from "react-colorful";
+import { HexColorPicker, HexColorInput } from "react-colorful";
 
 import './ColorPicker.scss';
 
@@ -50,8 +50,14 @@ class ColorPicker extends React.PureComponent<IColorPickerProps> {
       <div className='ColorPicker'>
         {colorOptions.map((color: string) => this.renderColor(color, false))}
         <Popover
-          content={<HexColorPicker color={currSelected} onChange={onSelect} />}
+          content={(
+            <>
+              <HexColorPicker color={currSelected} onChange={onSelect} />
+              <HexColorInput color={currSelected} onChange={onSelect} className="ColorPicker__custom__hex-input" />
+            </>
+          )}
           minimal
+          popoverClassName="ColorPicker__custom"
         >
           {this.renderColor(hasCustomColor ? currSelected : undefined, true)}
         </Popover>

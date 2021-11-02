@@ -87,4 +87,31 @@ $swatch-width: 20px;
       }
     }
   }
+
+  &__custom {
+    .bp3-popover2-content {
+      padding: 5px;
+    }
+    .react-colorful {
+      &__saturation, &__hue {
+        border-radius: $standard-border-radius;
+      }
+
+      &__hue {
+        margin: 5px 0;
+      }
+    }
+
+    &__hex-input {
+      width: 100%;
+      border-radius: $standard-border-radius;
+      border: 1px solid rgba(0,0,0,.4);
+      text-align: center;
+      padding: 3px;
+
+      @include themify() {
+        color: themed('textColor');
+      }
+    }
+  }
 }
