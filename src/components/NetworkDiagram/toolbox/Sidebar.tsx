@@ -64,7 +64,9 @@ export class Sidebar extends React.Component<ISidebarProps> {
 
   setVertexColor(vertex: Vertex, color: string) {
     const { layout, updateLayout } = this.context
-    if (vertex) {
+    
+    // don't allow pure white vertices
+    if (vertex && color !== '#fff' && color !== '#ffffff') {
       layout.vertices.set(vertex.id, vertex.setColor(color))
       updateLayout(layout, null, { modifyHistory: true })
     }

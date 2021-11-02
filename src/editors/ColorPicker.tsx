@@ -53,7 +53,7 @@ class ColorPicker extends React.PureComponent<IColorPickerProps> {
           content={(
             <>
               <HexColorPicker color={currSelected} onChange={onSelect} />
-              <HexColorInput color={currSelected} onChange={onSelect} className="ColorPicker__custom__hex-input" />
+              <HexColorInput color={currSelected} onChange={onSelect} className="ColorPicker__custom__hex-input" prefixed />
             </>
           )}
           minimal
