@@ -57,7 +57,7 @@ class Transliterate extends React.PureComponent<ITransliterateProps> {
             </>
           )}
         >
-          <span className="Transliterate bp3-tooltip-indicator">
+          <span className="Transliterate bp3-tooltip2-indicator">
             {truncate ? truncateText(value, truncate) : value}
           </span>
         </Tooltip>

@@ -3,7 +3,7 @@
 
 .Transliterate {
   &__popover {
-    .bp3-popover-content {
+    .bp3-popover2-content {
       padding: 5px !important;
       background: #fcf8d3 !important;
       color: $gray1 !important;
@@ -19,7 +19,7 @@
       opacity: .7;
     }
   }
-  &.bp3-tooltip-indicator {
+  &.bp3-tooltip2-indicator {
     cursor: inherit;
     border-color: $gray5;
   }
