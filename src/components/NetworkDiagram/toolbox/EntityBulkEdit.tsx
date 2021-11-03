@@ -22,6 +22,7 @@ const messages = defineMessages({
 });
 
 export interface IEntityBulkEditProps {
+  text: string
   entities: Array<Entity>
   setVerticesColor: (vertices: Array<Vertex>, color: string) => void
   setVerticesRadius: (vertices: Array<Vertex>, radius: number) => void
@@ -69,12 +70,16 @@ export class EntityBulkEdit extends React.Component<IEntityBulkEditProps, IEntit
 
   render() {
     const { intl } = this.context;
+    const { text } = this.props;
     const { isOpen, selectedColor, selectedRadius } = this.state;
     return (
       <div className="EntityBulkEdit">
-        <Button minimal intent={Intent.PRIMARY} onClick={this.toggleOpen} rightIcon={isOpen ? "chevron-up" : "chevron-down"}>
-          {intl.formatMessage(messages[isOpen ? "hide" : "show"])}
-        </Button>
+        <div className="EntityBulkEdit__main">
+          {text}
+          <Button minimal small onClick={this.toggleOpen} rightIcon={isOpen ? "chevron-up" : "chevron-down"}>
+            {intl.formatMessage(messages[isOpen ? "hide" : "show"])}
+          </Button>
+        </div>
         <Collapse isOpen={isOpen}>
           <ColorPicker
             currSelected={selectedColor}

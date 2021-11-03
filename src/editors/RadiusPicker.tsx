@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Slider } from '@blueprintjs/core';
+import { Icon, Slider } from '@blueprintjs/core';
 import { GraphContext } from 'NetworkDiagram/GraphContext';
 import { Schema as FTMSchema } from "@alephdata/followthemoney";
 import { Schema } from 'types';
@@ -23,14 +23,9 @@ class RadiusPicker extends React.PureComponent<IRadiusPickerProps> {
     const radiusRange = [defaultRadius * .5, defaultRadius * 1.5];
     return (
       <div className='RadiusPicker'>
-        {schema && (
-          <div className='RadiusPicker__icon'>
-            <Schema.Icon
-              size={10}
-              schema={schema}
-            />
-          </div>
-        )}
+        <div className='RadiusPicker__icon'>
+          {schema ? <Schema.Icon size={10} schema={schema} /> : <Icon icon="circle" size={10} />}
+        </div>
         <Slider
           value={radius || defaultRadius}
           onChange={(value) => onChange(value)}
@@ -41,14 +36,9 @@ class RadiusPicker extends React.PureComponent<IRadiusPickerProps> {
           labelRenderer={false}
           className='RadiusPicker__slider'
         />
-        {schema && (
-          <div className='RadiusPicker__icon'>
-            <Schema.Icon
-              size={20}
-              schema={schema}
-            />
-          </div>
-        )}
+        <div className='RadiusPicker__icon'>
+          {schema ? <Schema.Icon size={20} schema={schema} /> : <Icon icon="circle" size={20} />}
+        </div>
       </div>
     )
   }

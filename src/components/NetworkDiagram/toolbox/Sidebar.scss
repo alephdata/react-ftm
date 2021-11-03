@@ -22,5 +22,14 @@
     border-bottom: 1px solid;
     margin-bottom: 10px;
     padding-bottom: $sidebar-gutter;
+    line-height: 24px;
+
+    .EntityBulkEdit {
+      &__main {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
   }
 }

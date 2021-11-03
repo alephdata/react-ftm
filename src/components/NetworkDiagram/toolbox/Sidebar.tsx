@@ -143,7 +143,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
     } else if (selectedEntities.length) {
       contents = <EntityList entities={selectedEntities} onEntitySelected={this.onEntitySelected} />
       headerText = intl.formatMessage(messages[searchText ? 'search_found_multiple' : 'selected_multiple'], { count: selectedEntities.length });
-      editMenu = <EntityBulkEdit entities={selectedEntities} setVerticesColor={this.setVerticesColor} setVerticesRadius={this.setVerticesRadius} />
+      editMenu = <EntityBulkEdit text={headerText} entities={selectedEntities} setVerticesColor={this.setVerticesColor} setVerticesRadius={this.setVerticesRadius} />
     } else {
       const entities = entityManager.getThingEntities()
       contents = <EntityList entities={entities as Entity[]} onEntitySelected={this.onEntitySelected} />
@@ -161,8 +161,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
       >
         {headerText && (
           <div className="Sidebar__header-text">
-            {headerText}
-            {editMenu}
+            {editMenu || headerText}
           </div>
         )}
         {contents}
