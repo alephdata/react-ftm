@@ -47,7 +47,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
     this.onEntitySelected = this.onEntitySelected.bind(this);
     this.removeGroupingEntity = this.removeGroupingEntity.bind(this);
     this.setVerticesColor = this.setVerticesColor.bind(this)
-    this.setVertexRadius = this.setVertexRadius.bind(this)
+    this.setVerticesRadius = this.setVerticesRadius.bind(this)
     this.setGroupingColor = this.setGroupingColor.bind(this)
   }
 
@@ -72,7 +72,6 @@ export class Sidebar extends React.Component<ISidebarProps> {
 
   setVerticesColor(vertices: Array<Vertex>, color: string) {
     const { layout, updateLayout } = this.context
-
     if (color === '#fff' || color === '#ffffff') { return; }
 
     vertices.forEach(v => {
@@ -83,12 +82,15 @@ export class Sidebar extends React.Component<ISidebarProps> {
     updateLayout(layout, null, { modifyHistory: true })
   }
 
-  setVertexRadius(vertex: Vertex, radius: number) {
+  setVerticesRadius(vertices: Array<Vertex>, radius: number) {
     const { layout, updateLayout } = this.context
-    if (vertex) {
-      layout.vertices.set(vertex.id, vertex.setRadius(radius))
-      updateLayout(layout, null, { modifyHistory: true })
-    }
+    vertices.forEach(v => {
+      if (v) {
+        layout.vertices.set(v.id, v.setRadius(radius))
+      }
+    })
+
+    updateLayout(layout, null, { modifyHistory: true })
   }
 
   setGroupingColor(grouping: Grouping, color: string) {
@@ -127,7 +129,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
         onEntityChanged={this.onEntityChanged}
         vertexRef={vertexRef}
         onVertexColorSelected={(vertex, color) => this.setVerticesColor([vertex], color)}
-        onVertexRadiusSelected={this.setVertexRadius}
+        onVertexRadiusSelected={(vertex, radius) => this.setVerticesRadius([vertex], radius)}
       />
       headerText = !!searchText && intl.formatMessage(messages.search_found_one);
     } else if (!searchText && selectedGroupings.length === 1) {
@@ -141,7 +143,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
     } else if (selectedEntities.length) {
       contents = <EntityList entities={selectedEntities} onEntitySelected={this.onEntitySelected} />
       headerText = intl.formatMessage(messages[searchText ? 'search_found_multiple' : 'selected_multiple'], { count: selectedEntities.length });
-      editMenu = <EntityBulkEdit entities={selectedEntities} setVerticesColor={this.setVerticesColor} />
+      editMenu = <EntityBulkEdit entities={selectedEntities} setVerticesColor={this.setVerticesColor} setVerticesRadius={this.setVerticesRadius} />
     } else {
       const entities = entityManager.getThingEntities()
       contents = <EntityList entities={entities as Entity[]} onEntitySelected={this.onEntitySelected} />

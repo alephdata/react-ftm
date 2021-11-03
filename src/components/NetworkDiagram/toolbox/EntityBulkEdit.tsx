@@ -24,11 +24,13 @@ const messages = defineMessages({
 export interface IEntityBulkEditProps {
   entities: Array<Entity>
   setVerticesColor: (vertices: Array<Vertex>, color: string) => void
+  setVerticesRadius: (vertices: Array<Vertex>, radius: number) => void
 }
 
 export interface IEntityBulkEditState {
   isOpen: boolean,
   selectedColor?: string
+  selectedRadius?: number
 }
 
 export class EntityBulkEdit extends React.Component<IEntityBulkEditProps, IEntityBulkEditState> {
@@ -56,21 +58,18 @@ export class EntityBulkEdit extends React.Component<IEntityBulkEditProps, IEntit
   }
 
   onColorSelected = (color: string) => {
-    console.log('color', color);
-    const vertices = this.getVertices();
-    console.log(vertices)
-
     this.setState({ selectedColor: color })
-    this.props.setVerticesColor(vertices, color)
+    this.props.setVerticesColor(this.getVertices(), color)
   }
 
   onRadiusSelected = (radius: number) => {
-    console.log('radius', radius);
+    this.setState({ selectedRadius: radius })
+    this.props.setVerticesRadius(this.getVertices(), radius)
   }
 
   render() {
     const { intl } = this.context;
-    const { isOpen, selectedColor } = this.state;
+    const { isOpen, selectedColor, selectedRadius } = this.state;
     return (
       <div className="EntityBulkEdit">
         <Button minimal intent={Intent.PRIMARY} onClick={this.toggleOpen} rightIcon={isOpen ? "chevron-up" : "chevron-down"}>
@@ -82,6 +81,7 @@ export class EntityBulkEdit extends React.Component<IEntityBulkEditProps, IEntit
             onSelect={this.onColorSelected}
           />
           <RadiusPicker
+            radius={selectedRadius}
             onChange={this.onRadiusSelected}
           />
         </Collapse>
