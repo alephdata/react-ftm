@@ -76,7 +76,7 @@ export class EntityBulkEdit extends React.Component<IEntityBulkEditProps, IEntit
       <div className="EntityBulkEdit">
         <div className="EntityBulkEdit__main">
           {text}
-          <Button minimal small onClick={this.toggleOpen} rightIcon={isOpen ? "chevron-up" : "chevron-down"}>
+          <Button minimal small onClick={this.toggleOpen} rightIcon={isOpen ? "chevron-up" : "chevron-down"} >
             {intl.formatMessage(messages[isOpen ? "hide" : "show"])}
           </Button>
         </div>
