@@ -6,10 +6,9 @@ import { Schema } from 'types';
 
 
 interface IRadiusPickerProps {
-  currSelected?: number
   onChange: (radius: number) => void
-  schema: FTMSchema
-  radius: number
+  schema?: FTMSchema
+  radius?: number
 }
 
 import './RadiusPicker.scss'
@@ -24,12 +23,14 @@ class RadiusPicker extends React.PureComponent<IRadiusPickerProps> {
     const radiusRange = [defaultRadius * .5, defaultRadius * 1.5];
     return (
       <div className='RadiusPicker'>
-        <div className='RadiusPicker__icon'>
-          <Schema.Icon
-            size={10}
-            schema={schema}
-          />
-        </div>
+        {schema && (
+          <div className='RadiusPicker__icon'>
+            <Schema.Icon
+              size={10}
+              schema={schema}
+            />
+          </div>
+        )}
         <Slider
           value={radius || defaultRadius}
           onChange={(value) => onChange(value)}
@@ -40,12 +41,14 @@ class RadiusPicker extends React.PureComponent<IRadiusPickerProps> {
           labelRenderer={false}
           className='RadiusPicker__slider'
         />
-        <div className='RadiusPicker__icon'>
-          <Schema.Icon
-            size={20}
-            schema={schema}
-          />
-        </div>
+        {schema && (
+          <div className='RadiusPicker__icon'>
+            <Schema.Icon
+              size={20}
+              schema={schema}
+            />
+          </div>
+        )}
       </div>
     )
   }

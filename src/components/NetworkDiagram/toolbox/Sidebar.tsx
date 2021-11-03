@@ -4,7 +4,7 @@ import { Entity } from '@alephdata/followthemoney';
 import { Drawer } from "@blueprintjs/core";
 import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { EntityList } from 'components/common';
-import { EntityViewer, GroupingViewer } from 'NetworkDiagram/toolbox';
+import { EntityBulkEdit, EntityViewer, GroupingViewer } from 'NetworkDiagram/toolbox';
 import { Grouping, Vertex } from 'NetworkDiagram/layout'
 
 import './Sidebar.scss';
@@ -18,9 +18,17 @@ const messages = defineMessages({
     id: 'search.results_text.multiple',
     defaultMessage: 'Found {count} results',
   },
+  selected_multiple: {
+    id: 'sidebar.selected.multiple',
+    defaultMessage: '{count} selected',
+  },
   search_found_none: {
     id: 'search.results_text.none',
     defaultMessage: 'No results found',
+  },
+  selected_none: {
+    id: 'sidebar.selected.none',
+    defaultMessage: '{count} total entities',
   },
 });
 
@@ -38,7 +46,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
     this.onEntityChanged = this.onEntityChanged.bind(this);
     this.onEntitySelected = this.onEntitySelected.bind(this);
     this.removeGroupingEntity = this.removeGroupingEntity.bind(this);
-    this.setVertexColor = this.setVertexColor.bind(this)
+    this.setVerticesColor = this.setVerticesColor.bind(this)
     this.setVertexRadius = this.setVertexRadius.bind(this)
     this.setGroupingColor = this.setGroupingColor.bind(this)
   }
@@ -62,14 +70,17 @@ export class Sidebar extends React.Component<ISidebarProps> {
     }
   }
 
-  setVertexColor(vertex: Vertex, color: string) {
+  setVerticesColor(vertices: Array<Vertex>, color: string) {
     const { layout, updateLayout } = this.context
-    
-    // don't allow pure white vertices
-    if (vertex && color !== '#fff' && color !== '#ffffff') {
-      layout.vertices.set(vertex.id, vertex.setColor(color))
-      updateLayout(layout, null, { modifyHistory: true })
-    }
+
+    if (color === '#fff' || color === '#ffffff') { return; }
+
+    vertices.forEach(v => {
+      if (v) {
+        layout.vertices.set(v.id, v.setColor(color))
+      }
+    })
+    updateLayout(layout, null, { modifyHistory: true })
   }
 
   setVertexRadius(vertex: Vertex, radius: number) {
@@ -101,9 +112,11 @@ export class Sidebar extends React.Component<ISidebarProps> {
     const { entityManager, intl, layout } = this.context;
     const { isOpen, searchText, selectedEntities } = this.props;
     const selectedGroupings = layout.getSelectedGroupings()
-    let contents, searchResultsText;
+    let contents, headerText, editMenu;
 
-    if (selectedEntities.length === 1) {
+    if (searchText && !selectedEntities.length) {
+      headerText = intl.formatMessage(messages.search_found_none);
+    } else if (selectedEntities.length === 1) {
       const entity = selectedEntities[0];
       let vertexRef
       if (!entity.schema.edge) {
@@ -113,10 +126,10 @@ export class Sidebar extends React.Component<ISidebarProps> {
         entity={entity}
         onEntityChanged={this.onEntityChanged}
         vertexRef={vertexRef}
-        onVertexColorSelected={this.setVertexColor}
+        onVertexColorSelected={(vertex, color) => this.setVerticesColor([vertex], color)}
         onVertexRadiusSelected={this.setVertexRadius}
       />
-      searchResultsText = intl.formatMessage(messages.search_found_one);
+      headerText = !!searchText && intl.formatMessage(messages.search_found_one);
     } else if (!searchText && selectedGroupings.length === 1) {
       const grouping = selectedGroupings[0]
       contents = <GroupingViewer
@@ -127,11 +140,12 @@ export class Sidebar extends React.Component<ISidebarProps> {
       />
     } else if (selectedEntities.length) {
       contents = <EntityList entities={selectedEntities} onEntitySelected={this.onEntitySelected} />
-      searchResultsText = intl.formatMessage(messages.search_found_multiple, { count: selectedEntities.length });
+      headerText = intl.formatMessage(messages[searchText ? 'search_found_multiple' : 'selected_multiple'], { count: selectedEntities.length });
+      editMenu = <EntityBulkEdit entities={selectedEntities} setVerticesColor={this.setVerticesColor} />
     } else {
       const entities = entityManager.getThingEntities()
       contents = <EntityList entities={entities as Entity[]} onEntitySelected={this.onEntitySelected} />
-      searchResultsText = intl.formatMessage(messages.search_found_none);
+      headerText = intl.formatMessage(messages.selected_none, { count: entities.length });
     }
 
     return (
@@ -143,9 +157,10 @@ export class Sidebar extends React.Component<ISidebarProps> {
         enforceFocus={false}
         usePortal={false}
       >
-        {searchText && (
-          <div className="Sidebar__search-text">
-            {searchResultsText}
+        {headerText && (
+          <div className="Sidebar__header-text">
+            {headerText}
+            {editMenu}
           </div>
         )}
         {contents}

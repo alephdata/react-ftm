@@ -1,3 +1,4 @@
+export * from './EntityBulkEdit'
 export * from './EntityViewer'
 export * from './GroupingViewer'
 export * from './SearchBox'

@@ -16,8 +16,9 @@
     }
   }
 
-  &__search-text {
-    font-style: italic;
+  &__header-text {
+    color: $blue1;
+    font-weight: bold;
     border-bottom: 1px solid;
     margin-bottom: 10px;
     padding-bottom: $sidebar-gutter;
