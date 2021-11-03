@@ -111,6 +111,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
 
     if (externalFilterText) {
       this.onChangeSearch(externalFilterText);
+      this.onSubmitSearch()
     }
   }
 
@@ -119,6 +120,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
 
     if (externalFilterText !== undefined && prevProps.externalFilterText !== externalFilterText) {
       this.onChangeSearch(externalFilterText);
+      this.onSubmitSearch()
     }
   }
 
@@ -143,10 +145,12 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     this.updateLayout(layout, undefined, { modifyHistory: false })
   }
 
-  onSubmitSearch(event: React.FormEvent) {
+  onSubmitSearch(event?: React.FormEvent) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     this.fitToSelection();
-    event.preventDefault();
-    event.stopPropagation();
   }
 
   updateLayout(layout: GraphLayout, entityChanges?: EntityChanges, options?: any) {
