@@ -40,15 +40,15 @@ const messages = defineMessages({
   },
   tooltip_delete: {
     id: 'tooltip.delete',
-    defaultMessage: 'Delete selection',
+    defaultMessage: 'Delete selected',
   },
   tooltip_group: {
     id: 'tooltip.group',
-    defaultMessage: 'Group selection',
+    defaultMessage: 'Group selected',
   },
   tooltip_ungroup: {
     id: 'tooltip.ungroup',
-    defaultMessage: 'Ungroup selection',
+    defaultMessage: 'Ungroup selected',
   },
   tooltip_select_mode: {
     id: 'tooltip.select_mode',
@@ -220,7 +220,7 @@ export class Toolbar extends React.Component<IToolbarProps> {
         },
         {
           helpText: intl.formatMessage(messages.tooltip_delete),
-          icon: "graph-remove",
+          icon: "trash",
           onClick: () => actions.removeSelection(),
           disabled: !hasSelection,
           writeableOnly: true,
