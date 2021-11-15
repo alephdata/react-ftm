@@ -62,6 +62,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
 
     if (vertex) {
       layout.groupings.set(grouping.id, grouping.removeVertex(vertex))
+      layout.selectElement(grouping.getVertices())
       updateLayout(layout, null, { modifyHistory: true })
     }
   }
