@@ -36,7 +36,8 @@ export class VertexLabelRenderer extends React.PureComponent<IVertexLabelRendere
     const style = {
       fontSize: "5px",
       fontFamily: "sans-serif",
-      fontWeight: "bold"
+      fontWeight: "bold",
+      userSelect: "none"
     } as React.CSSProperties
     return (
       <text x={center.x}

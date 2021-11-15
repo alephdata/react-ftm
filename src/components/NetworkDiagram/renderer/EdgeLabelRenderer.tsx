@@ -105,6 +105,7 @@ export class EdgeLabelRenderer extends React.PureComponent<IEdgeLabelRendererPro
     const style = {
       fontSize: "5px",
       fontFamily: "sans-serif",
+      userSelect: "none"
     } as React.CSSProperties
 
     const outline = extents ?

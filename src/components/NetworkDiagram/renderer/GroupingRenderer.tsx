@@ -94,7 +94,8 @@ export class GroupingRenderer extends React.PureComponent<IGroupingRendererProps
     const textStyle: React.CSSProperties = {
       fontSize: "5px",
       fontFamily: "sans-serif",
-      fontWeight: "bold"
+      fontWeight: "bold",
+      userSelect: "none"
     }
     const selectedAreaStyle: React.CSSProperties = {
       stroke: layout.config.UNSELECTED_COLOR,
