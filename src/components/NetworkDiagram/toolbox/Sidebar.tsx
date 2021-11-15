@@ -26,10 +26,6 @@ const messages = defineMessages({
     id: 'search.results_text.none',
     defaultMessage: 'No results found',
   },
-  selected_none: {
-    id: 'sidebar.selected.none',
-    defaultMessage: '{count} total entities',
-  },
 });
 
 export interface ISidebarProps {
@@ -147,7 +143,6 @@ export class Sidebar extends React.Component<ISidebarProps> {
     } else {
       const entities = entityManager.getThingEntities()
       contents = <EntityList entities={entities as Entity[]} onEntitySelected={this.onEntitySelected} />
-      headerText = intl.formatMessage(messages.selected_none, { count: entities.length });
     }
 
     return (
