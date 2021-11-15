@@ -128,7 +128,7 @@ export class Sidebar extends React.Component<ISidebarProps> {
         onVertexRadiusSelected={(vertex, radius) => this.setVerticesRadius([vertex], radius)}
       />
       headerText = !!searchText && intl.formatMessage(messages.search_found_one);
-    } else if (!searchText && selectedGroupings.length === 1) {
+    } else if (!searchText && selectedGroupings.length === 1 && selectedGroupings[0].vertices?.size === selectedEntities.length) {
       const grouping = selectedGroupings[0]
       contents = <GroupingViewer
         grouping={grouping}
