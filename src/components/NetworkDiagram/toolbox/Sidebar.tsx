@@ -26,6 +26,10 @@ const messages = defineMessages({
     id: 'search.results_text.none',
     defaultMessage: 'No results found',
   },
+  default_multiple: {
+    id: 'sidebar.default.multiple',
+    defaultMessage: '{count} entities',
+  },
 });
 
 export interface ISidebarProps {
@@ -131,11 +135,13 @@ export class Sidebar extends React.Component<ISidebarProps> {
       headerText = !!searchText && intl.formatMessage(messages.search_found_one);
     } else if (!searchText && selectedGroupings.length === 1 && selectedGroupings[0].vertices?.size === selectedEntities.length) {
       const grouping = selectedGroupings[0]
+      const editMenuText = intl.formatMessage(messages.default_multiple, { count: selectedEntities.length })
       contents = <GroupingViewer
         grouping={grouping}
         onEntitySelected={this.onEntitySelected}
         onEntityRemoved={this.removeGroupingEntity}
         onColorSelected={this.setGroupingColor}
+        editMenu={<EntityBulkEdit text={editMenuText} entities={selectedEntities} setVerticesColor={this.setVerticesColor} setVerticesRadius={this.setVerticesRadius} />}
       />
     } else if (selectedEntities.length) {
       contents = <EntityList entities={selectedEntities} onEntitySelected={this.onEntitySelected} />
