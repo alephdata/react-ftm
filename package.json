@@ -90,7 +90,7 @@
     "google-libphonenumber": "^3.2.25",
     "numeral": "^2.0.6",
     "react-colorful": "^5.5.1",
-    "react-countup": "^6.0.0",
+    "react-countup": "^6.1.0",
     "react-datasheet": "^1.4.9",
     "react-draggable": "^4.4.4",
     "recharts": "^2.1.6",
