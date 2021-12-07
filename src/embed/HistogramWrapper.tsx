@@ -4,16 +4,18 @@ import { Histogram } from  'components/Histogram';
 export default class HistogramWrapper extends React.Component {
   render() {
     const sampleData = [
-      {id: "1000", label: "1000", count: 2},
-      {id: "1001", label: "1001", count: 21},
-      {id: "1002", label: "1002", count: 0},
-      {id: "1003", label: "1003", count: 0},
-      {id: "1004", label: "1004", count: 1},
-      {id: "1005", label: "1005", count: 0},
-      {id: "1006", label: "1006", count: 1},
-      {id: "1007", label: "1007", count: 0},
-      {id: "1008", label: "1008", count: 0},
-      {id: "1009", label: "1009", count: 0},
+      {label: 'Jan', tooltipLabel: '2000 / January 2000', count: 29, isUncertain: true, id: '2000-01-01T00:00:00'},
+      {label: 'Feb', tooltipLabel: 'February 2000', count: 0, isUncertain: false, id: '2000-02-01T00:00:00'},
+      {label: 'Mar', tooltipLabel: 'March 2000', count: 0, isUncertain: false, id: '2000-03-01T00:00:00'},
+      {label: 'Apr', tooltipLabel: 'April 2000', count: 0, isUncertain: false, id: '2000-04-01T00:00:00'},
+      {label: 'May', tooltipLabel: 'May 2000', count: 0, isUncertain: false, id: '2000-05-01T00:00:00'},
+      {label: 'Jun', tooltipLabel: 'June 2000', count: 0, isUncertain: false, id: '2000-06-01T00:00:00'},
+      {label: 'Jul', tooltipLabel: 'July 2000', count: 0, isUncertain: false, id: '2000-07-01T00:00:00'},
+      {label: 'Aug', tooltipLabel: 'August 2000', count: 2, isUncertain: false, id: '2000-08-01T00:00:00'},
+      {label: 'Sep', tooltipLabel: 'September 2000', count: 0, isUncertain: false, id: '2000-09-01T00:00:00'},
+      {label: 'Oct', tooltipLabel: 'October 2000', count: 2, isUncertain: false, id: '2000-10-01T00:00:00'},
+      {label: 'Nov', tooltipLabel: 'November 2000', count: 0, isUncertain: false, id: '2000-11-01T00:00:00'},
+      {label: 'Dec', tooltipLabel: 'December 2000', count: 2, isUncertain: false, id: '2000-12-01T00:00:00'}
     ];
 
     return (
