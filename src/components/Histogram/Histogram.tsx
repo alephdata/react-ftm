@@ -10,7 +10,6 @@ import Numeric from 'types/Numeric';
 import './Histogram.scss';
 
 const DEFAULT_FILL = Colors.BLUE2;
-const ACTIVE_FILL = Colors.ORANGE3;
 
 const dataFromEvent = (e: any) => (e?.activePayload?.[0]?.payload);
 
@@ -73,7 +72,13 @@ export class Histogram extends React.Component<IHistogramProps, IHistogramState>
 
     console.log('in render bars', data)
 
-    return <Bar dataKey={dataPropName} fill={DEFAULT_FILL} />
+    return (
+      <Bar dataKey={dataPropName}>
+        {data.map(({ id, isUncertain }) => (
+          <Cell fill={isUncertain ? "url(#diagonalHatch)" : DEFAULT_FILL} key={`cell-${id}`} />
+        ))}
+      </Bar>
+    );
   }
 
   render() {
@@ -91,6 +96,14 @@ export class Histogram extends React.Component<IHistogramProps, IHistogramState>
             onMouseUp={this.onMouseUp}
             {...chartProps}
           >
+            <defs>
+              <pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="4" height="4">
+                <path d="M-1,1 l2,-2
+                         M0,4 l4,-4
+                         M3,5 l2,-2"
+                      style={{stroke: DEFAULT_FILL, strokeWidth: '1' }} />
+              </pattern>
+            </defs>
             <XAxis dataKey="label" />
             <Tooltip
               offset={15}
