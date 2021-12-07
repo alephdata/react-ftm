@@ -26,7 +26,6 @@ interface IHistogramProps extends WrappedComponentProps {
   chartProps?: any
   containerProps?: any
   dataPropName: string
-  activeId?: string
 }
 
 interface IHistogramState {
@@ -70,19 +69,11 @@ export class Histogram extends React.Component<IHistogramProps, IHistogramState>
   }
 
   renderBars() {
-    const { activeId, data, dataPropName } = this.props;
+    const { data, dataPropName } = this.props;
 
-    if (activeId) {
-      return (
-        <Bar dataKey={dataPropName}>
-          {data.map(({ id }) => (
-            <Cell fill={id === activeId ? ACTIVE_FILL : DEFAULT_FILL} key={`cell-${id}`} />
-          ))}
-        </Bar>
-      );
-    } else {
-      return <Bar dataKey={dataPropName} fill={DEFAULT_FILL} />
-    }
+    console.log('in render bars', data)
+
+    return <Bar dataKey={dataPropName} fill={DEFAULT_FILL} />
   }
 
   render() {
