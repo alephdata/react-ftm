@@ -108,7 +108,7 @@ export class Histogram extends React.Component<IHistogramProps, IHistogramState>
             <Tooltip
               offset={15}
               separator=": "
-              labelFormatter={(label: string, data: any) => data[0]?.payload?.tooltipLabel || label}
+              labelFormatter={(label: string, data: any) => data?.[0]?.payload?.tooltipLabel || label}
               formatter={(value: any) => <Numeric num={+value} />}
               itemStyle={{ color: DEFAULT_FILL }}
             />
