@@ -26,10 +26,15 @@
     "prebuild": "rm -f dist/react-ftm.*",
     "build": "webpack --config webpack.prod.js",
     "start": "webpack serve --config webpack.dev.js --port 8081 --mode development --open",
+    "test": "jest",
     "test:prod": "npm run lint",
     "report-coverage": "cat ./coverage/lcov.info | coveralls"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.7",
+    "@babel/preset-env": "^7.16.8",
+    "@babel/preset-react": "^7.16.7",
+    "@babel/preset-typescript": "^7.16.7",
     "@formatjs/cli": "^4.7.1",
     "@types/bezier-js": "^4.1.0",
     "@types/classnames": "^2.3.1",
@@ -44,15 +49,20 @@
     "@types/recharts": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^5.8.0",
     "@typescript-eslint/parser": "^5.8.0",
+    "babel-jest": "^27.4.6",
     "buffer": "^6.0.3",
     "coveralls": "^3.0.11",
     "crypto-browserify": "^3.12.0",
     "css-loader": "^6.5.1",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.6",
+    "enzyme-to-json": "^3.6.2",
     "eslint": "^8.6.0",
     "eslint-import-resolver-webpack": "^0.13.0",
     "eslint-plugin-import": "^2.25.3",
     "git": "^0.1.5",
     "html-webpack-plugin": "^5.2.0",
+    "jest": "^27.4.7",
     "json-loader": "^0.5.7",
     "process": "^0.11.10",
     "rimraf": "^3.0.2",
@@ -102,5 +112,17 @@
   "homepage": "https://github.com/alephdata/react-ftm#readme",
   "directories": {
     "test": "test"
+  },
+  "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setupTests.js"
+    ],
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/__mocks__/fileMock.js",
+      "\\.(css|less|scss)$": "<rootDir>/src/__mocks__/styleMock.js"
+    }
   }
 }
