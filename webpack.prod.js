@@ -49,6 +49,8 @@ const embed = merge(prodConfig, common, {
   output: {
     filename: 'react-ftm-embed.js',
     path: path.resolve(__dirname, 'dist'),
+    library: 'reactFTM',
+    libraryTarget: 'umd'
   }
 });
 
