@@ -114,6 +114,10 @@
     "test": "test"
   },
   "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!d3-force|d3-quadtree|d3-dispatch|d3-timer|d3-scale|d3-array|d3-interpolate|d3-color|d3-format|d3-time|internmap)"
+    ],
+    "testEnvironment": "jsdom",
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
@@ -122,7 +126,21 @@
     ],
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/__mocks__/fileMock.js",
-      "\\.(css|less|scss)$": "<rootDir>/src/__mocks__/styleMock.js"
-    }
+      "\\.(css|less|scss)$": "<rootDir>/src/__mocks__/styleMock.js",
+      "^editors": "<rootDir>/src/editors",
+      "^utils": "<rootDir>/src/utils",
+      "^types": "<rootDir>/src/types",
+      "^pants": "<rootDir>/src/types",
+      "^NetworkDiagram": "<rootDir>/src/components/NetworkDiagram",
+      "^components": "<rootDir>/src/components",
+      "translations/translations.json": "<rootDir>/src/translations/translations.json"
+    },
+    "moduleFileExtensions": [
+      "js",
+      "ts",
+      "jsx",
+      "tsx",
+      "json"
+    ]
   }
 }
