@@ -15,7 +15,7 @@ interface IDialogProps {
 
 export class Dialog extends React.Component<IDialogProps> {
   render() {
-    const { children, className, isProcessing, ...rest} = this.props;
+    const { children, className, isProcessing, ...rest } = this.props;
 
     return (
       <Bp3Dialog
