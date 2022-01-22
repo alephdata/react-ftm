@@ -41,6 +41,7 @@ export class Histogram extends React.Component<IHistogramProps, IHistogramState>
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onSelect = this.onSelect.bind(this);
+    this.CustomTooltip = this.CustomTooltip.bind(this)
   }
 
   onMouseDown(e: any) {
@@ -70,8 +71,6 @@ export class Histogram extends React.Component<IHistogramProps, IHistogramState>
   renderBars() {
     const { data, dataPropName } = this.props;
 
-    console.log('in render bars', data)
-
     return (
       <Bar dataKey={dataPropName}>
         {data.map(({ id, isUncertain }) => (
@@ -79,6 +78,25 @@ export class Histogram extends React.Component<IHistogramProps, IHistogramState>
         ))}
       </Bar>
     );
+  }
+
+  CustomTooltip({ active, payload, label }: { active?: any, payload?: any, label?: any }) {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      console.log(payload)
+      const formattedLabel = `${data.tooltipLabel || label}${data.isUncertain ? '*' : ''}`
+      return (
+        <div className="Histogram__tooltip">
+          <p className="Histogram__tooltip__label">{formattedLabel}</p>
+          <ul className="Histogram__tooltip__item-list" style={{ color: DEFAULT_FILL }}>
+            <li className="Histogram__tooltip__item">{`${this.props.dataPropName}: `}<Numeric num={+payload[0].value} /></li>
+          </ul>
+          {data.isUncertain && <p className="Histogram__tooltip__secondary">{data.uncertainWarning}</p>}
+        </div>
+      );
+    }
+
+    return null;
   }
 
   render() {
@@ -105,13 +123,7 @@ export class Histogram extends React.Component<IHistogramProps, IHistogramState>
               </pattern>
             </defs>
             <XAxis dataKey="label" />
-            <Tooltip
-              offset={15}
-              separator=": "
-              labelFormatter={(label: string, data: any) => data?.[0]?.payload?.tooltipLabel || label}
-              formatter={(value: any) => <Numeric num={+value} />}
-              itemStyle={{ color: DEFAULT_FILL }}
-            />
+            <Tooltip content={<this.CustomTooltip />} />
             {this.renderBars()}
             {selectStart && selectEnd && (
               <ReferenceArea x1={selectStart.label} x2={selectEnd.label} />

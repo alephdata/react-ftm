@@ -1,5 +1,7 @@
 @import "src/variables.scss";
 
+$tooltip-border-color: $light-gray1;
+
 .Histogram {
   .recharts-surface {
     cursor: pointer;
@@ -21,13 +23,35 @@
     fill-opacity: .7;
   }
 
-
-  .recharts-default-tooltip {
+  &__tooltip {
     border-radius: $standard-border-radius;
-  }
-
-  .recharts-tooltip-label {
+    margin: 0px;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid $tooltip-border-color;
+    white-space: nowrap;
     text-align: center;
+
+    &__label {
+      margin-bottom: 3px;
+    }
+
+    &__item-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    &__secondary {
+      color: $black-70;
+      font-size: smaller;
+      max-width: 200px;
+      white-space: normal;
+      margin: 0;
+      padding-top: 7px;
+      margin-top: 7px;
+      border-top: 1px solid $tooltip-border-color;
+    }
   }
 
   text {
