@@ -2,7 +2,7 @@ import React from 'react'
 
 import NetworkDiagramWrapper from 'embed/NetworkDiagramWrapper';
 import EntityTableWrapper from 'embed/EntityTableWrapper';
-// import HistogramWrapper from 'embed/HistogramWrapper';
+import HistogramWrapper from 'embed/HistogramWrapper';
 
 import { EntityManager } from 'components/common'
 
@@ -48,9 +48,9 @@ export class EmbeddedElement extends React.Component <IEmbeddedElementProps> {
       case 'EntityTable':
         Element = EntityTableWrapper
         break;
-      // case 'Histogram':
-      //   return <HistogramWrapper />
-      //   break;
+      case 'Histogram':
+        return <HistogramWrapper />
+        break;
       default:
         Element = NetworkDiagramWrapper
         break;

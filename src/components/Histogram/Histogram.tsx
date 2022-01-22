@@ -83,7 +83,6 @@ export class Histogram extends React.Component<IHistogramProps, IHistogramState>
   CustomTooltip({ active, payload, label }: { active?: any, payload?: any, label?: any }) {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
-      console.log(payload)
       const formattedLabel = `${data.tooltipLabel || label}${data.isUncertain ? '*' : ''}`
       return (
         <div className="Histogram__tooltip">

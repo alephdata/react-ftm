@@ -11,5 +11,7 @@ const config = {
 
 
 renderEmbed({ id, type: 'NetworkDiagram', data, config });
-
+//
 // renderEmbed({ id, type: 'EntityTable', data, config });
+
+// renderEmbed({ id, type: 'Histogram', data, config });

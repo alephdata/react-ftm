@@ -4,7 +4,7 @@ import { Histogram } from  'components/Histogram';
 export default class HistogramWrapper extends React.Component {
   render() {
     const sampleData = [
-      {label: 'Jan', tooltipLabel: '2000 / January 2000', count: 29, isUncertain: true, id: '2000-01-01T00:00:00'},
+      {label: 'Jan', tooltipLabel: '2000 / January 2000', count: 29, isUncertain: true, uncertainWarning: '*This count includes dates where no day or month is specified', id: '2000-01-01T00:00:00'},
       {label: 'Feb', tooltipLabel: 'February 2000', count: 0, isUncertain: false, id: '2000-02-01T00:00:00'},
       {label: 'Mar', tooltipLabel: 'March 2000', count: 0, isUncertain: false, id: '2000-03-01T00:00:00'},
       {label: 'Apr', tooltipLabel: 'April 2000', count: 0, isUncertain: false, id: '2000-04-01T00:00:00'},
@@ -21,7 +21,6 @@ export default class HistogramWrapper extends React.Component {
     return (
       <Histogram
         data={sampleData}
-        onSelect={(selected: any) => console.log(selected)}
         dataPropName="count"
         containerProps={{ height: 200 }}
       />
