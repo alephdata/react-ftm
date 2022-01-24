@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { defineMessages } from 'react-intl';
 import { Entity } from '@alephdata/followthemoney';
-import { Button, Collapse, Intent } from "@blueprintjs/core";
+import { Button, Collapse } from "@blueprintjs/core";
 import { GraphContext } from 'NetworkDiagram/GraphContext'
 import { ColorPicker, RadiusPicker } from 'editors';
 // import { EntityList } from 'components/common';

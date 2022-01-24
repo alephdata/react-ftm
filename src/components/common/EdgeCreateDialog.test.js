@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { EdgeCreateDialog } from './EdgeCreateDialog';
 import { EdgeType } from 'pants';
+
 jest.mock('pants/EdgeType');
 
 describe('<EdgeCreateDialog />', () => {
@@ -10,11 +11,13 @@ describe('<EdgeCreateDialog />', () => {
             model: "yay"
         }
         EdgeType.getAll.mockResolvedValue("");
-        const wrapper = shallow(intl(<EdgeCreateDialog entityManager={thing} />))
+        // eslint-disable-next-line no-undef
+        const wrapper = shallow(intl(<EdgeCreateDialog entityManager={thing} />));
         expect(wrapper).toMatchSnapshot();
     });
 
     it('Should render correctly with properties', () => {
+        // eslint-disable-next-line no-undef
         const component = shallow(intl(<EdgeCreateDialog className="my-dialog" />));
         expect(component).toMatchSnapshot();
     });
