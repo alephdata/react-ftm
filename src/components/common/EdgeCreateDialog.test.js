@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { EdgeCreateDialog } from './EdgeCreateDialog';
-import { EdgeType } from 'pants';
+import { EdgeType } from 'types';
 
-jest.mock('pants/EdgeType');
+jest.mock('types/EdgeType');
 
 describe('<EdgeCreateDialog />', () => {
     it('Should render correctly with no properties', () => {
