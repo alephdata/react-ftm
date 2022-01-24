@@ -1,7 +1,7 @@
 import * as React from 'react'
 import c from 'classnames';
 import { Colors, Icon } from '@blueprintjs/core';
-import { Popover2 as Popover, Tooltip2 as Tooltip } from "@blueprintjs/popover2";
+import { Popover2 as Popover } from "@blueprintjs/popover2";
 import { HexColorPicker, HexColorInput } from "react-colorful";
 
 import './ColorPicker.scss';
