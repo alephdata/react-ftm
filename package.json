@@ -130,7 +130,6 @@
       "^editors": "<rootDir>/src/editors",
       "^utils": "<rootDir>/src/utils",
       "^types": "<rootDir>/src/types",
-      "^pants": "<rootDir>/src/types",
       "^NetworkDiagram": "<rootDir>/src/components/NetworkDiagram",
       "^components": "<rootDir>/src/components",
       "translations/translations.json": "<rootDir>/src/translations/translations.json"
