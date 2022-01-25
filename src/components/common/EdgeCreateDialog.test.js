@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { EdgeCreateDialog } from './EdgeCreateDialog';
 import { EdgeType } from 'types';
+import { shallowWithIntl } from '../../setupTests';
 
 jest.mock('types/EdgeType');
 
@@ -10,15 +11,7 @@ describe('<EdgeCreateDialog />', () => {
         const thing = {
             model: "yay"
         }
-        EdgeType.getAll.mockResolvedValue("");
-        // eslint-disable-next-line no-undef
-        const wrapper = shallow(intl(<EdgeCreateDialog entityManager={thing} />));
+        const wrapper = shallowWithIntl(<EdgeCreateDialog entityManager={thing} />);
         expect(wrapper).toMatchSnapshot();
-    });
-
-    it('Should render correctly with properties', () => {
-        // eslint-disable-next-line no-undef
-        const component = shallow(intl(<EdgeCreateDialog className="my-dialog" />));
-        expect(component).toMatchSnapshot();
     });
 });
