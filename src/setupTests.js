@@ -1,8 +1,8 @@
 // setup file
 import React from 'react';
-import { configure } from 'enzyme';
+import { shallow, mount, configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import { IntlProvider } from 'react-intl';
+import { IntlProvider, intlShape, createIntl } from 'react-intl';
 
 configure({ adapter: new Adapter() });
 
@@ -12,15 +12,19 @@ const locale = defaultLocale;
 const filtered_messages = {};
 filtered_messages[locale] = messages[locale];
 
-// eslint-disable-next-line no-undef
-global.intl = (component) => {
-    return (
-        <IntlProvider
-            locale={locale}
-            defaultLocale={defaultLocale}
-            messages={filtered_messages}
-        >
-            {React.cloneElement(component)}
-        </IntlProvider>
-    );
+const intl = createIntl({ locale: defaultLocale, messages: filtered_messages });
+
+function nodeWithIntlProp(node) {
+    return React.cloneElement(node, { intl });
+}
+
+export function shallowWithIntl(node) {
+    return shallow(nodeWithIntlProp(node), { context: { intl } })
+}
+
+export function mountWithIntl(node) {
+    return mount(nodeWithIntlProp(node), {
+        context: { intl },
+        childContextTypes: { intl: intlShape }
+    });
 }

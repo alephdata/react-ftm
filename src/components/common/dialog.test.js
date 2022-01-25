@@ -11,5 +11,6 @@ describe('<Dialog />', () => {
     it('Should render correctly with properties', () => {
         const component = shallow(<Dialog className="my-dialog" />);
         expect(component).toMatchSnapshot();
+        expect(component.find('.my-dialog').length).toBe(1);
     });
 });
