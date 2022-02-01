@@ -92,7 +92,7 @@
   },
   "dependencies": {
     "@blueprintjs/popover2": "^0.12.9",
-    "bezier-js": "^4.1.1",
+    "bezier-js": "^5.1.0",
     "d3-force": "^3.0.0",
     "d3-scale": "^4.0.2",
     "dagre": "^0.8.4",
