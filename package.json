@@ -97,7 +97,7 @@
     "d3-scale": "^4.0.2",
     "dagre": "^0.8.4",
     "filesize": "^8.0.3",
-    "google-libphonenumber": "^3.2.26",
+    "google-libphonenumber": "^3.2.27",
     "numeral": "^2.0.6",
     "react-colorful": "^5.5.1",
     "react-countup": "^6.1.0",
