@@ -49,7 +49,7 @@
     "@types/recharts": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^5.12.1",
     "@typescript-eslint/parser": "^5.10.2",
-    "babel-jest": "^27.4.6",
+    "babel-jest": "^28.0.3",
     "buffer": "^6.0.3",
     "coveralls": "^3.0.11",
     "crypto-browserify": "^3.12.0",
