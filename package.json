@@ -81,7 +81,7 @@
     "webpack-merge": "^5.7.3"
   },
   "peerDependencies": {
-    "@alephdata/followthemoney": "^2.0.0",
+    "@alephdata/followthemoney": "^2.9.3",
     "@blueprintjs/core": "^3.0.0",
     "@blueprintjs/select": "^3.0.0",
     "classnames": "^2.2.6",
