@@ -102,7 +102,7 @@
     "react-colorful": "^5.5.1",
     "react-countup": "^6.1.0",
     "react-datasheet": "^1.4.9",
-    "react-draggable": "^4.4.4",
+    "react-draggable": "^4.4.5",
     "recharts": "^2.1.9",
     "truncate": "^3.0.0"
   },
