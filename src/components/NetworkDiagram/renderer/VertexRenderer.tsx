@@ -190,8 +190,18 @@ export class VertexRenderer extends React.PureComponent<IVertexRendererProps, IV
             stroke={isEntity ? 'none' : vertexColor}
             onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}
           />
-          <VertexLabelRenderer center={labelPosition} label={vertex.label} type={vertex.type} onClick={this.onClick} color={vertexColor} />
-          <IconRenderer entity={entityManager.getEntity(vertex.entityId)} radius={vertexRadius} />
+          <VertexLabelRenderer
+            center={labelPosition}
+            label={vertex.label}
+            type={vertex.type}
+            selected={selected}
+            onClick={this.onClick}
+            color={vertexColor}
+          />
+          <IconRenderer
+            entity={entityManager.getEntity(vertex.entityId)}
+            radius={vertexRadius}
+          />
         </g>
       </DraggableCore>
     );
