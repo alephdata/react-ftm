@@ -1,16 +1,53 @@
 import * as React from 'react'
+import { injectIntl, defineMessages, WrappedComponentProps } from 'react-intl';
 import c from 'classnames';
 import { Colors, Icon } from '@blueprintjs/core';
-import { Popover2 as Popover } from "@blueprintjs/popover2";
+import { Tooltip2 as Tooltip, Popover2 as Popover } from "@blueprintjs/popover2";
 import { HexColorPicker, HexColorInput } from "react-colorful";
 
 import './ColorPicker.scss';
 
-const colorOptions = [
-  Colors.BLUE1, Colors.GREEN1, Colors.ORANGE1, Colors.RED1, Colors.VIOLET1, Colors.TURQUOISE1
-]
+const messages = defineMessages({
+  blue: {
+    id: 'editor.color_picker.blue',
+    defaultMessage: 'Blue',
+  },
+  green: {
+    id: 'editor.color_picker.green',
+    defaultMessage: 'Green',
+  },
+  orange: {
+    id: 'editor.color_picker.orange',
+    defaultMessage: 'Orange',
+  },
+  red: {
+    id: 'editor.color_picker.red',
+    defaultMessage: 'Red',
+  },
+  violet: {
+    id: 'editor.color_picker.violet',
+    defaultMessage: 'Violet',
+  },
+  turquoise: {
+    id: 'editor.color_picker.turquoise',
+    defaultMessage: 'Turquoise',
+  },
+  custom: {
+    id: 'editor.color_picker.custom',
+    defaultMessage: 'Custom',
+  },
+});
 
-interface IColorPickerProps {
+const colorOptions = {
+  blue: Colors.BLUE1,
+  green: Colors.GREEN1,
+  orange: Colors.ORANGE1,
+  red: Colors.RED1,
+  violet: Colors.VIOLET1,
+  turquoise: Colors.TURQUOISE1,
+};
+
+interface IColorPickerProps extends WrappedComponentProps {
   currSelected?: string
   onSelect: (color: string) => void
   swatchShape?: string
@@ -23,32 +60,42 @@ class ColorPicker extends React.PureComponent<IColorPickerProps> {
     this.renderColor = this.renderColor.bind(this);
   }
 
-  renderColor(color: string | undefined, isCustom: boolean) {
-    const { currSelected, onSelect, swatchShape } = this.props
+  renderColor(id: string, color: string | undefined, isCustom: boolean) {
+    const { currSelected, onSelect, swatchShape, intl } = this.props;
+
     const style = {
       backgroundColor: color,
       borderColor: color,
-    }
+    };
+
     return (
-      <div key={color} className='ColorPicker__item' onClick={() => (isCustom || !color) ? null : onSelect(color)}>
-        <div
-          className={c('ColorPicker__item__swatch', swatchShape, { active: currSelected === color, custom: isCustom })}
-          style={style}>
-          {color && <div className="ColorPicker__item__swatch__inner" style={style} />}
-          {isCustom && (
-            <Icon icon="plus" size={14} />
-          )}
-        </div>
+      <div
+        key={color}
+        className='ColorPicker__item'
+        onClick={() => (isCustom || !color) ? null : onSelect(color)}
+      >
+        <Tooltip content={intl.formatMessage(messages[id])} placement="top">
+          <div
+            className={c('ColorPicker__item__swatch', swatchShape, { active: currSelected === color, custom: isCustom })}
+            style={style}
+          >
+            {color && <div className="ColorPicker__item__swatch__inner" style={style} />}
+            {isCustom && (
+              <Icon icon="plus" size={14} />
+            )}
+          </div>
+        </Tooltip>
       </div>
     )
   }
 
   render() {
     const { currSelected, onSelect } = this.props
-    const hasCustomColor = !!currSelected && colorOptions.indexOf(currSelected) < 0
+    const hasCustomColor = !!currSelected && Object.values(colorOptions).indexOf(currSelected) < 0;
+
     return (
       <div className='ColorPicker'>
-        {colorOptions.map((color: string) => this.renderColor(color, false))}
+        {Object.entries(colorOptions).map(([id, color]) => this.renderColor(id, color, false))}
         <Popover
           content={(
             <>
@@ -59,11 +106,11 @@ class ColorPicker extends React.PureComponent<IColorPickerProps> {
           minimal
           popoverClassName="ColorPicker__custom"
         >
-          {this.renderColor(hasCustomColor ? currSelected : undefined, true)}
+          {this.renderColor('custom', hasCustomColor ? currSelected : undefined, true)}
         </Popover>
       </div>
     )
   }
 }
 
-export default ColorPicker;
+export default injectIntl(ColorPicker);
