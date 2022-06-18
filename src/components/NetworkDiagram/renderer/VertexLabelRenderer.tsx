@@ -1,22 +1,25 @@
 import * as React from 'react'
 import truncateText from 'truncate';
+import { wrapLines } from '../utils';
 
 import { Date, Numeric, URL } from 'types';
 import { Point } from 'NetworkDiagram/layout/Point'
 
 const labelTruncate = 30;
+const fontSize = 5;
 
 interface IVertexLabelRendererProps {
+  type: string,
   label: string,
   center: Point,
   onClick?: (e: any) => void,
   color?: string
-  type: string
+  selected?: boolean,
 }
 
 export class VertexLabelRenderer extends React.PureComponent<IVertexLabelRendererProps> {
   formatLabel() {
-    const { label, type } = this.props;
+    const { label, type, selected } = this.props;
 
     if (type === 'url') {
       return <URL value={label} onClick={(e: React.MouseEvent) => e.stopPropagation()} truncate={labelTruncate} />;
@@ -28,13 +31,25 @@ export class VertexLabelRenderer extends React.PureComponent<IVertexLabelRendere
       return <Numeric num={Number(label)} />;
     }
 
+    if (selected) {
+      return (
+        <>
+          {wrapLines(label, labelTruncate).map((line, index) => (
+            <tspan key={index} x="0" dy={index === 0 ? 0 : fontSize * 1.1}>
+              {line}
+            </tspan>)
+          )}
+        </>
+      );
+    }
+
     return truncateText(label, labelTruncate);
   }
 
   render() {
     const { center, onClick, color } = this.props;
     const style = {
-      fontSize: "5px",
+      fontSize: `${fontSize}px`,
       fontFamily: "sans-serif",
       fontWeight: "bold",
       userSelect: "none"
