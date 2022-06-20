@@ -1,5 +1,5 @@
-@import "src/variables.scss";
-@import "src/themes.scss";
+@import 'src/variables.scss';
+@import 'src/themes.scss';
 
 $swatch-width: 20px;
 
@@ -18,7 +18,7 @@ $swatch-width: 20px;
       height: $swatch-width;
       border-radius: 15px;
       cursor: pointer;
-      transition: all .1s ease-in-out;
+      transition: all 0.1s ease-in-out;
       border: 1px solid;
       display: flex;
       justify-content: center;
@@ -32,7 +32,8 @@ $swatch-width: 20px;
         border-color: white !important;
       }
 
-      &.active, &:hover {
+      &.active,
+      &:hover {
         @include themify() {
           border-width: themed('colorPickerActiveBorderWidth');
         }
@@ -68,7 +69,7 @@ $swatch-width: 20px;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        transition: all .1s ease-in-out;
+        transition: all 0.1s ease-in-out;
         border: 2px solid;
 
         .theme-dark & {
@@ -93,7 +94,8 @@ $swatch-width: 20px;
       padding: 5px;
     }
     .react-colorful {
-      &__saturation, &__hue {
+      &__saturation,
+      &__hue {
         border-radius: $standard-border-radius;
       }
 
@@ -105,7 +107,7 @@ $swatch-width: 20px;
     &__hex-input {
       width: 100%;
       border-radius: $standard-border-radius;
-      border: 1px solid rgba(0,0,0,.4);
+      border: 1px solid rgba(0, 0, 0, 0.4);
       text-align: center;
       padding: 3px;
 

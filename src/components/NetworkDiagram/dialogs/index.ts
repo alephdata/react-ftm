@@ -1,2 +1,2 @@
-export * from './GroupingCreateDialog'
-export * from './SettingsDialog'
+export * from './GroupingCreateDialog';
+export * from './SettingsDialog';

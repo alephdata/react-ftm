@@ -1,20 +1,20 @@
-import * as React from 'react'
+import * as React from 'react';
 import truncateText from 'truncate';
 import { wrapLines } from '../utils';
 
 import { Date, Numeric, URL } from 'types';
-import { Point } from 'NetworkDiagram/layout/Point'
+import { Point } from 'NetworkDiagram/layout/Point';
 
 const labelTruncate = 30;
 const fontSize = 5;
 
 interface IVertexLabelRendererProps {
-  type: string,
-  label: string,
-  center: Point,
-  onClick?: (e: any) => void,
-  color?: string
-  selected?: boolean,
+  type: string;
+  label: string;
+  center: Point;
+  onClick?: (e: any) => void;
+  color?: string;
+  selected?: boolean;
 }
 
 export class VertexLabelRenderer extends React.PureComponent<IVertexLabelRendererProps> {
@@ -22,7 +22,13 @@ export class VertexLabelRenderer extends React.PureComponent<IVertexLabelRendere
     const { label, type, selected } = this.props;
 
     if (type === 'url') {
-      return <URL value={label} onClick={(e: React.MouseEvent) => e.stopPropagation()} truncate={labelTruncate} />;
+      return (
+        <URL
+          value={label}
+          onClick={(e: React.MouseEvent) => e.stopPropagation()}
+          truncate={labelTruncate}
+        />
+      );
     }
     if (type === 'date') {
       return <Date value={label} />;
@@ -37,8 +43,8 @@ export class VertexLabelRenderer extends React.PureComponent<IVertexLabelRendere
           {wrapLines(label, labelTruncate).map((line, index) => (
             <tspan key={index} x="0" dy={index === 0 ? 0 : fontSize * 1.1}>
               {line}
-            </tspan>)
-          )}
+            </tspan>
+          ))}
         </>
       );
     }
@@ -50,12 +56,13 @@ export class VertexLabelRenderer extends React.PureComponent<IVertexLabelRendere
     const { center, onClick, color } = this.props;
     const style = {
       fontSize: `${fontSize}px`,
-      fontFamily: "sans-serif",
-      fontWeight: "bold",
-      userSelect: "none"
-    } as React.CSSProperties
+      fontFamily: 'sans-serif',
+      fontWeight: 'bold',
+      userSelect: 'none',
+    } as React.CSSProperties;
     return (
-      <text x={center.x}
+      <text
+        x={center.x}
         y={center.y}
         textAnchor="middle"
         alignmentBaseline="middle"
@@ -63,7 +70,8 @@ export class VertexLabelRenderer extends React.PureComponent<IVertexLabelRendere
         style={style}
         pointerEvents="none"
         fill={color || 'black'}
-        onClick={onClick}>
+        onClick={onClick}
+      >
         {this.formatLabel()}
       </text>
     );

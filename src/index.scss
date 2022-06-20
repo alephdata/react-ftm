@@ -1,10 +1,9 @@
-@import "@blueprintjs/core/lib/css/blueprint.css";
+@import '@blueprintjs/core/lib/css/blueprint.css';
 @import '@blueprintjs/select/lib/css/blueprint-select.css';
-@import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
+@import '@blueprintjs/popover2/lib/css/blueprint-popover2.css';
 @import 'react-datasheet/lib/react-datasheet.css';
 
-@import "./themes.scss";
-
+@import './themes.scss';
 
 body {
   padding: 0;
@@ -12,9 +11,8 @@ body {
   height: 100%;
   display: flex;
 
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -28,15 +26,20 @@ body {
   pointer-events: none;
 }
 
-.bp3-tab, .bp3-button, .bp3-input {
+.bp3-tab,
+.bp3-button,
+.bp3-input {
   outline: none !important;
 }
 
 .bp3-input:focus {
-  box-shadow: 0 0 0 0 rgba(19, 124, 189, 0), 0 0 0 0 rgba(19, 124, 189, 0), inset 0 0 0 1px rgba(16, 22, 26, 0.15), inset 0 1px 1px rgba(16, 22, 26, 0.2) !important;
+  box-shadow: 0 0 0 0 rgba(19, 124, 189, 0), 0 0 0 0 rgba(19, 124, 189, 0),
+    inset 0 0 0 1px rgba(16, 22, 26, 0.15), inset 0 1px 1px rgba(16, 22, 26, 0.2) !important;
 }
 
-.bp3-popover2-content, .bp3-popover2-arrow path, .bp3-popover2-content .bp3-menu {
+.bp3-popover2-content,
+.bp3-popover2-arrow path,
+.bp3-popover2-content .bp3-menu {
   @include themify() {
     background: themed('tooltipColor');
     color: themed('tooltipTextColor');
@@ -49,10 +52,10 @@ body {
   }
 }
 
-input, textarea {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+input,
+textarea {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
 .left-icon {

@@ -6,14 +6,14 @@ import { FormattedNumber, injectIntl, WrappedComponentProps } from 'react-intl';
 import './Numeric.scss';
 
 interface INumericProps extends WrappedComponentProps {
-  num?:number
-  abbr?:boolean
-  animate?: boolean
+  num?: number;
+  abbr?: boolean;
+  animate?: boolean;
 }
 
 class Numeric extends React.PureComponent<INumericProps> {
   renderAnimated(number: number) {
-    return <CountUp className="AnimatedCount__count" end={number} separator="," />
+    return <CountUp className="AnimatedCount__count" end={number} separator="," />;
   }
   render() {
     const { num, abbr = false, animate = false } = this.props;
@@ -29,16 +29,19 @@ class Numeric extends React.PureComponent<INumericProps> {
         const match = content.match(/(?<val>[0-9]+)(?<suffix>[a-z]?)/);
         if (match?.groups) {
           const { val, suffix } = match.groups;
-          content = <>{this.renderAnimated(+val)}{suffix}</>;
+          content = (
+            <>
+              {this.renderAnimated(+val)}
+              {suffix}
+            </>
+          );
         }
       }
     } else {
-      content = animate ? this.renderAnimated(num) : <FormattedNumber value={num} />
+      content = animate ? this.renderAnimated(num) : <FormattedNumber value={num} />;
     }
 
-    return (
-      <span className="Numeric">{content}</span>
-    );
+    return <span className="Numeric">{content}</span>;
   }
 }
 

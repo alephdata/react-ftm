@@ -2,7 +2,7 @@ import { PureComponent } from 'react';
 import filesize from 'filesize';
 
 interface IFileSizeProps {
-  value: number
+  value: number;
 }
 
 class FileSize extends PureComponent<IFileSizeProps> {

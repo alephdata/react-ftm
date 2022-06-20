@@ -17,22 +17,25 @@ const messages = defineMessages({
 });
 
 interface IGroupingCreateDialogProps {
-  isOpen: boolean,
-  toggleDialog: () => any,
+  isOpen: boolean;
+  toggleDialog: () => any;
 }
 
 interface IGroupingCreateDialogState {
-  label: string,
-  color?: string,
-  isProcessing: boolean
+  label: string;
+  color?: string;
+  isProcessing: boolean;
 }
 
-export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogProps, IGroupingCreateDialogState> {
+export class GroupingCreateDialog extends React.Component<
+  IGroupingCreateDialogProps,
+  IGroupingCreateDialogState
+> {
   static contextType = GraphContext;
   state: IGroupingCreateDialogState = {
     label: '',
     isProcessing: false,
-  }
+  };
 
   constructor(props: any) {
     super(props);
@@ -42,35 +45,35 @@ export class GroupingCreateDialog extends React.Component<IGroupingCreateDialogP
   }
 
   onChangeLabel(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ label: e.target.value })
+    this.setState({ label: e.target.value });
   }
 
   onChangeColor(color: string) {
-    this.setState({ color })
+    this.setState({ color });
   }
 
   onSubmit(e: React.ChangeEvent<HTMLFormElement>) {
-    const { label, color } = this.state
-    const { layout, updateLayout } = this.context as IGraphContext
-    e.preventDefault()
+    const { label, color } = this.state;
+    const { layout, updateLayout } = this.context as IGraphContext;
+    e.preventDefault();
     this.setState({ isProcessing: true });
 
-    const selectedVertices = layout.getSelectedVertices().filter(vertex => !vertex.isHidden())
+    const selectedVertices = layout.getSelectedVertices().filter((vertex) => !vertex.isHidden());
     const grouping = Grouping.fromVertices(layout, label, selectedVertices, color);
 
     if (grouping) {
       layout.addGrouping(grouping);
       layout.clearSelection();
       updateLayout(layout, null, { modifyHistory: true });
-      this.setState({ label: '' })
+      this.setState({ label: '' });
       this.setState({ isProcessing: false });
-      this.props.toggleDialog()
+      this.props.toggleDialog();
     }
   }
 
   render() {
-    const { intl } = this.context as IGraphContext
-    const { isOpen, toggleDialog } = this.props
+    const { intl } = this.context as IGraphContext;
+    const { isOpen, toggleDialog } = this.props;
     const { isProcessing } = this.state;
 
     return (

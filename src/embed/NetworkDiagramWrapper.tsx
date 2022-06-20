@@ -1,24 +1,31 @@
-import React from 'react'
+import React from 'react';
 import { IWrappedElementProps } from 'embed/common';
 import { GraphConfig, GraphLayout, Viewport, NetworkDiagram } from 'NetworkDiagram';
 
-const config = new GraphConfig({ editorTheme: "light", toolbarPosition: 'top' });
+const config = new GraphConfig({ editorTheme: 'light', toolbarPosition: 'top' });
 
 interface INetworkDiagramState {
-  layout: GraphLayout,
-  locale?: string,
-  viewport: Viewport
+  layout: GraphLayout;
+  locale?: string;
+  viewport: Viewport;
 }
 
-export default class NetworkDiagramWrapper extends React.Component<IWrappedElementProps, INetworkDiagramState> {
+export default class NetworkDiagramWrapper extends React.Component<
+  IWrappedElementProps,
+  INetworkDiagramState
+> {
   constructor(props: IWrappedElementProps) {
-    super(props)
+    super(props);
     const { layoutData } = props;
 
     this.state = {
-      layout: layoutData?.layout ? GraphLayout.fromJSON(config, layoutData.layout) : new GraphLayout(config),
-      viewport: layoutData?.viewport ? Viewport.fromJSON(config, layoutData.viewport) : new Viewport(config),
-    }
+      layout: layoutData?.layout
+        ? GraphLayout.fromJSON(config, layoutData.layout)
+        : new GraphLayout(config),
+      viewport: layoutData?.viewport
+        ? Viewport.fromJSON(config, layoutData.viewport)
+        : new Viewport(config),
+    };
 
     this.updateLayout = this.updateLayout.bind(this);
     this.updateViewport = this.updateViewport.bind(this);
@@ -35,7 +42,7 @@ export default class NetworkDiagramWrapper extends React.Component<IWrappedEleme
   }
 
   updateLayout(layout: GraphLayout, historyModified = false) {
-    this.setState({ 'layout': layout })
+    this.setState({ layout: layout });
 
     if (historyModified) {
       this.propagateUpdate({ layout });
@@ -43,14 +50,14 @@ export default class NetworkDiagramWrapper extends React.Component<IWrappedEleme
   }
 
   updateViewport(viewport: Viewport) {
-    this.setState({ 'viewport': viewport })
+    this.setState({ viewport: viewport });
     this.propagateUpdate({ viewport });
   }
 
-  propagateUpdate({ layout, viewport }: { layout?: GraphLayout, viewport?: Viewport }) {
+  propagateUpdate({ layout, viewport }: { layout?: GraphLayout; viewport?: Viewport }) {
     const graphData = {
       layout: layout ? layout.toJSON() : this.state.layout.toJSON(),
-      viewport: viewport ? viewport.toJSON() : this.state.viewport.toJSON()
+      viewport: viewport ? viewport.toJSON() : this.state.viewport.toJSON(),
     };
     this.props.onUpdate(graphData);
   }
@@ -70,6 +77,6 @@ export default class NetworkDiagramWrapper extends React.Component<IWrappedEleme
         locale="en"
         writeable={writeable}
       />
-    )
+    );
   }
 }

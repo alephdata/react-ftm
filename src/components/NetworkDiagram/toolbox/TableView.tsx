@@ -1,16 +1,16 @@
 import React from 'react';
-import isEmpty from 'lodash/isEmpty'
-import { GraphContext } from 'NetworkDiagram/GraphContext'
+import isEmpty from 'lodash/isEmpty';
+import { GraphContext } from 'NetworkDiagram/GraphContext';
 import { EntityChanges } from 'components/common/types';
 import { EntityTable } from 'components/EntityTable';
-import { Button, Drawer, Position } from "@blueprintjs/core";
-import { Entity } from "@alephdata/followthemoney";
+import { Button, Drawer, Position } from '@blueprintjs/core';
+import { Entity } from '@alephdata/followthemoney';
 
-import "./TableView.scss"
+import './TableView.scss';
 
 interface ITableViewProps {
-  toggleTableView: () => void
-  fitToSelection: () => void
+  toggleTableView: () => void;
+  fitToSelection: () => void;
 }
 
 export class TableView extends React.Component<ITableViewProps> {
@@ -66,21 +66,18 @@ export class TableView extends React.Component<ITableViewProps> {
         enforceFocus={false}
         usePortal={false}
       >
-        <Button
-          className="TableView__close"
-          icon="cross"
-          minimal
-          onClick={toggleTableView}
-        />
+        <Button className="TableView__close" icon="cross" minimal onClick={toggleTableView} />
         <EntityTable
           entityManager={entityManager}
           visitEntity={this.visitEntity}
           selection={layout.getSelectedEntityIds()}
-          onSelectionChange={(entityIds: Array<string>, forceVal: boolean) => this.onSelectionChange(entityIds, { forceVal, additional: true })}
+          onSelectionChange={(entityIds: Array<string>, forceVal: boolean) =>
+            this.onSelectionChange(entityIds, { forceVal, additional: true })
+          }
           updateFinishedCallback={this.onEntitiesUpdate}
           writeable={writeable}
         />
       </Drawer>
-    )
+    );
   }
 }

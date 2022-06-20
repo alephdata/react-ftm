@@ -42,8 +42,8 @@ describe('<VertexLabelRenderer />', () => {
       </svg>
     );
 
-    const lines = component.find('tspan').map(tspan => tspan.text());
-    const verticalLineDelta = component.find('tspan').map(tspan => tspan.prop('dy'));
+    const lines = component.find('tspan').map((tspan) => tspan.text());
+    const verticalLineDelta = component.find('tspan').map((tspan) => tspan.prop('dy'));
 
     expect(lines).toEqual([
       'Lorem ipsum dolor sit amet,',

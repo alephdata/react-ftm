@@ -1,4 +1,4 @@
-@import "src/variables.scss";
+@import 'src/variables.scss';
 
 @mixin center {
   position: absolute;
@@ -36,12 +36,15 @@
       box-shadow: none;
     }
 
-    &.property, &.header, &.prop-select {
+    &.property,
+    &.header,
+    &.prop-select {
       min-width: 200px;
       max-width: 200px;
     }
 
-    &.property, &.skeleton {
+    &.property,
+    &.skeleton {
       background-color: white;
       padding: 10px;
 
@@ -58,7 +61,9 @@
       justify-content: space-between;
     }
 
-    &.checkbox, &.entity-link, &.add-button {
+    &.checkbox,
+    &.entity-link,
+    &.add-button {
       min-width: 30px;
 
       .bp3-control {

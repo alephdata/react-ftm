@@ -1,23 +1,23 @@
-import * as React from 'react'
-import { AnchorButton, Button, ButtonGroup, Menu } from "@blueprintjs/core"
-import { Popover2 as Popover, Tooltip2 as Tooltip } from "@blueprintjs/popover2";
+import * as React from 'react';
+import { AnchorButton, Button, ButtonGroup, Menu } from '@blueprintjs/core';
+import { Popover2 as Popover, Tooltip2 as Tooltip } from '@blueprintjs/popover2';
 import c from 'classnames';
 
 export interface IToolbarButton {
-  icon: string
-  helpText: string
-  disabled?: boolean
-  writeableOnly?: boolean
-  onClick?: (e?: any) => void
-  subItems?: Array<IToolbarButton>
+  icon: string;
+  helpText: string;
+  disabled?: boolean;
+  writeableOnly?: boolean;
+  onClick?: (e?: any) => void;
+  subItems?: Array<IToolbarButton>;
 }
 
-export type IToolbarButtonGroup = Array<IToolbarButton>
+export type IToolbarButtonGroup = Array<IToolbarButton>;
 
 interface IToolbarButtonGroupProps {
-  buttonGroup: IToolbarButtonGroup
-  visible: boolean
-  editorTheme: string
+  buttonGroup: IToolbarButtonGroup;
+  visible: boolean;
+  editorTheme: string;
 }
 
 export class ToolbarButtonGroup extends React.PureComponent<IToolbarButtonGroupProps> {
@@ -29,9 +29,7 @@ export class ToolbarButtonGroup extends React.PureComponent<IToolbarButtonGroupP
     const { editorTheme } = this.props;
 
     return (
-      <ButtonGroup
-        className="ToolbarButtonGroup"
-      >
+      <ButtonGroup className="ToolbarButtonGroup">
         {items.map((config: any) => {
           const { disabled, helpText, icon, onClick, subItems } = config;
           if (subItems) {
@@ -40,7 +38,7 @@ export class ToolbarButtonGroup extends React.PureComponent<IToolbarButtonGroupP
                 key={icon}
                 content={<Menu>{this.renderHidden(subItems)}</Menu>}
                 position="bottom"
-                popoverClassName={c("Toolbar__menu", `theme-${editorTheme}`)}
+                popoverClassName={c('Toolbar__menu', `theme-${editorTheme}`)}
                 rootBoundary="viewport"
                 minimal
                 interactionKind="hover"
@@ -54,10 +52,10 @@ export class ToolbarButtonGroup extends React.PureComponent<IToolbarButtonGroupP
                 content={helpText}
                 key={icon}
                 position="bottom"
-                popoverClassName={c("Toolbar__button-tip", `theme-${editorTheme}`)}
+                popoverClassName={c('Toolbar__button-tip', `theme-${editorTheme}`)}
                 rootBoundary="viewport"
               >
-                  <AnchorButton icon={icon} onClick={onClick} disabled={disabled} />
+                <AnchorButton icon={icon} onClick={onClick} disabled={disabled} />
               </Tooltip>
             );
           }
@@ -67,23 +65,15 @@ export class ToolbarButtonGroup extends React.PureComponent<IToolbarButtonGroupP
   }
 
   renderHidden(items: any) {
-    return (
-      items.map(({ disabled, helpText, icon, onClick, subItems }: any) => (
-        <Menu.Item
-          icon={icon}
-          key={icon}
-          onClick={onClick}
-          text={helpText}
-          disabled={disabled}
-        >
-          {subItems && this.renderHidden(subItems)}
-        </Menu.Item>
-      ))
-    );
+    return items.map(({ disabled, helpText, icon, onClick, subItems }: any) => (
+      <Menu.Item icon={icon} key={icon} onClick={onClick} text={helpText} disabled={disabled}>
+        {subItems && this.renderHidden(subItems)}
+      </Menu.Item>
+    ));
   }
 
   render() {
-    const { buttonGroup, visible } = this.props
+    const { buttonGroup, visible } = this.props;
 
     if (visible) {
       return this.renderVisible(buttonGroup);

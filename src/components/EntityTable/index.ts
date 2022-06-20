@@ -5,4 +5,4 @@ import { TableEditor as TableEditorBase } from './TableEditor';
 const EntityTable = withTranslator(EntityTableBase);
 const TableEditor = withTranslator(TableEditorBase);
 
-export { EntityTable, TableEditor }
+export { EntityTable, TableEditor };

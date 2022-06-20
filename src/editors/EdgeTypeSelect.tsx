@@ -1,17 +1,17 @@
-import * as React from 'react'
+import * as React from 'react';
 import partition from 'lodash/partition';
-import { Menu, MenuItem, Icon, Button, Alignment, Position } from '@blueprintjs/core'
+import { Menu, MenuItem, Icon, Button, Alignment, Position } from '@blueprintjs/core';
 import { Select, IItemListRendererProps, IItemRendererProps } from '@blueprintjs/select';
 
 import { EdgeType, Schema } from 'types';
 
-const TypedSelect = Select.ofType<EdgeType>()
+const TypedSelect = Select.ofType<EdgeType>();
 
 interface IEdgeTypeSelectProps {
-  items: Array<EdgeType>
-  value?: EdgeType
-  onChange: (item: EdgeType) => void
-  placeholder: string
+  items: Array<EdgeType>;
+  value?: EdgeType;
+  onChange: (item: EdgeType) => void;
+  placeholder: string;
 }
 
 class EdgeTypeSelect extends React.PureComponent<IEdgeTypeSelectProps> {
@@ -21,17 +21,16 @@ class EdgeTypeSelect extends React.PureComponent<IEdgeTypeSelectProps> {
 
   getEdgeTypeIcon(type?: EdgeType) {
     if (type?.schema) {
-      return <Schema.Icon schema={type.schema} />
+      return <Schema.Icon schema={type.schema} />;
     } else {
-      return <Icon icon="link" />
+      return <Icon icon="link" />;
     }
   }
 
   renderEdgeTypeList = (props: IItemListRendererProps<EdgeType>) => {
     const { items, itemsParentRef, renderItem } = props;
-    const [propertyEdgeTypes, entityEdgeTypes] = partition(
-      items,
-      (et: EdgeType) => et.isPropertyEdgeType()
+    const [propertyEdgeTypes, entityEdgeTypes] = partition(items, (et: EdgeType) =>
+      et.isPropertyEdgeType()
     );
     return (
       <Menu ulRef={itemsParentRef}>
@@ -40,17 +39,19 @@ class EdgeTypeSelect extends React.PureComponent<IEdgeTypeSelectProps> {
         {propertyEdgeTypes.map(renderItem)}
       </Menu>
     );
-  }
+  };
 
-  renderEdgeType = (type: EdgeType, { handleClick, modifiers }:IItemRendererProps) => {
-    return <MenuItem
-      active={modifiers.active}
-      key={type.key}
-      text={type.label}
-      icon={this.getEdgeTypeIcon(type)}
-      onClick={handleClick}
-    />
-  }
+  renderEdgeType = (type: EdgeType, { handleClick, modifiers }: IItemRendererProps) => {
+    return (
+      <MenuItem
+        active={modifiers.active}
+        key={type.key}
+        text={type.label}
+        icon={this.getEdgeTypeIcon(type)}
+        onClick={handleClick}
+      />
+    );
+  };
 
   render() {
     const { items, onChange, placeholder, value } = this.props;
@@ -60,7 +61,7 @@ class EdgeTypeSelect extends React.PureComponent<IEdgeTypeSelectProps> {
         popoverProps={{
           position: Position.BOTTOM_LEFT,
           minimal: true,
-          targetProps: {style: {width: '100%'}}
+          targetProps: { style: { width: '100%' } },
         }}
         filterable={false}
         items={items}
@@ -68,15 +69,16 @@ class EdgeTypeSelect extends React.PureComponent<IEdgeTypeSelectProps> {
         itemRenderer={this.renderEdgeType}
         onItemSelect={onChange}
       >
-        <Button fill
+        <Button
+          fill
           disabled={!items.length}
           text={value ? value.label : placeholder}
           alignText={Alignment.LEFT}
           icon={this.getEdgeTypeIcon(value)}
-          rightIcon='double-caret-vertical'
+          rightIcon="double-caret-vertical"
         />
       </TypedSelect>
-    )
+    );
   }
 }
 

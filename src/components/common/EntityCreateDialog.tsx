@@ -1,11 +1,11 @@
-import * as React from 'react'
+import * as React from 'react';
 import { defineMessages, WrappedComponentProps } from 'react-intl';
-import { Alignment, Button, ControlGroup, InputGroup } from '@blueprintjs/core'
-import { Entity, Model, Schema as FTMSchema, Values } from '@alephdata/followthemoney'
+import { Alignment, Button, ControlGroup, InputGroup } from '@blueprintjs/core';
+import { Entity, Model, Schema as FTMSchema, Values } from '@alephdata/followthemoney';
 
-import { EntitySelect, SchemaSelect } from 'editors'
+import { EntitySelect, SchemaSelect } from 'editors';
 import { Schema } from 'types';
-import { Dialog } from 'components/common'
+import { Dialog } from 'components/common';
 
 import './EntityCreateDialog.scss';
 
@@ -25,25 +25,28 @@ const messages = defineMessages({
 });
 
 interface IEntityCreateDialogProps extends WrappedComponentProps {
-  isOpen: boolean,
-  onSubmit: (entityData: any) => Promise<Entity | undefined>,
-  toggleDialog: () => any,
-  schema?: FTMSchema,
-  schemaRange?: string
-  model: Model
-  fetchEntitySuggestions?: (queryText: string, schemata?: Array<FTMSchema>) => Promise<Entity[]>,
-  initialCaption?: string
+  isOpen: boolean;
+  onSubmit: (entityData: any) => Promise<Entity | undefined>;
+  toggleDialog: () => any;
+  schema?: FTMSchema;
+  schemaRange?: string;
+  model: Model;
+  fetchEntitySuggestions?: (queryText: string, schemata?: Array<FTMSchema>) => Promise<Entity[]>;
+  initialCaption?: string;
 }
 
 interface IEntityCreateDialogState {
-  inputText: string,
-  isProcessing: boolean,
-  isFetchingSuggestions: boolean,
-  schema: FTMSchema
-  suggestions: Entity[],
+  inputText: string;
+  isProcessing: boolean;
+  isFetchingSuggestions: boolean;
+  schema: FTMSchema;
+  suggestions: Entity[];
 }
 
-export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps, IEntityCreateDialogState> {
+export class EntityCreateDialog extends React.Component<
+  IEntityCreateDialogProps,
+  IEntityCreateDialogState
+> {
   constructor(props: any) {
     super(props);
 
@@ -57,7 +60,7 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
       isFetchingSuggestions: false,
       isProcessing: false,
       suggestions: [],
-      schema: this.getInitialSchema()
+      schema: this.getInitialSchema(),
     };
   }
 
@@ -84,13 +87,13 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
   onQueryChange(inputText: string) {
     if (!this.state.isProcessing) {
       this.setState({ inputText });
-      this.fetchSuggestions(inputText, [this.state.schema])
+      this.fetchSuggestions(inputText, [this.state.schema]);
     }
   }
 
   onSchemaSelect(schema: FTMSchema) {
     this.setState({ schema });
-    this.fetchSuggestions(this.state.inputText, [schema])
+    this.fetchSuggestions(this.state.inputText, [schema]);
   }
 
   async fetchSuggestions(inputText: string, schemata: Array<FTMSchema>) {
@@ -113,10 +116,10 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
     const captionProperty = this.getCaptionProperty();
     const entityData = {
       schema,
-      properties: captionProperty && { [captionProperty]: inputText }
-    }
+      properties: captionProperty && { [captionProperty]: inputText },
+    };
     await onSubmit(entityData);
-    this.setState({inputText: '', isProcessing: false, suggestions: []})
+    this.setState({ inputText: '', isProcessing: false, suggestions: [] });
     this.props.toggleDialog();
   }
 
@@ -125,7 +128,7 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
     if (values && values.length) {
       this.setState({ isProcessing: true });
       await onSubmit(values[0]);
-      this.setState({inputText: '', isProcessing: false, suggestions: []})
+      this.setState({ inputText: '', isProcessing: false, suggestions: [] });
       this.props.toggleDialog();
     }
   }
@@ -147,18 +150,20 @@ export class EntityCreateDialog extends React.Component<IEntityCreateDialogProps
         onClose={() => toggleDialog()}
         className="EntityCreateDialog"
       >
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          // only allow submit of input on enter when no suggestions are present
-          !suggestions.length && inputText.length && this.onInputSubmit()
-        }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            // only allow submit of input on enter when no suggestions are present
+            !suggestions.length && inputText.length && this.onInputSubmit();
+          }}
+        >
           <div className="bp3-dialog-body">
             <ControlGroup fill>
               <SchemaSelect
                 model={model}
                 onSelect={this.onSchemaSelect}
-                optionsFilter={schema => schema.isA(schemaRange || 'Thing')}
+                optionsFilter={(schema) => schema.isA(schemaRange || 'Thing')}
               >
                 <Button
                   large

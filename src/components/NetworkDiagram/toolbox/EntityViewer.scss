@@ -1,5 +1,5 @@
-@import "src/variables.scss";
-@import "src/themes.scss";
+@import 'src/variables.scss';
+@import 'src/themes.scss';
 
 .EntityViewer {
   padding: 0;
@@ -28,7 +28,7 @@
       }
       &__secondary {
         margin-bottom: 3px !important;
-        opacity: .9;
+        opacity: 0.9;
 
         @include themify() {
           color: themed('textColor') !important;
@@ -47,5 +47,4 @@
       border-color: themed('textColor') !important;
     }
   }
-
 }

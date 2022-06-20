@@ -1,5 +1,5 @@
-@import "src/variables.scss";
-@import "src/themes.scss";
+@import 'src/variables.scss';
+@import 'src/themes.scss';
 
 .Sidebar {
   &.bp3-drawer {
@@ -43,5 +43,4 @@
       align-items: center;
     }
   }
-
 }

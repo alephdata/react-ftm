@@ -1,19 +1,7 @@
-import partition from 'lodash/partition'
+import partition from 'lodash/partition';
 import { defaultModel, Entity, Model } from '@alephdata/followthemoney';
 
-const rtlLangs = [
-  'ara',
-  'ar',
-  'heb',
-  'he',
-  'ur',
-  'urd',
-  'fa',
-  'fas',
-  'per',
-  'ps',
-  'pus',
-];
+const rtlLangs = ['ara', 'ar', 'heb', 'he', 'ur', 'urd', 'fa', 'fas', 'per', 'ps', 'pus'];
 
 export function isLangRtl(langCode: string): boolean {
   return rtlLangs.includes(langCode);

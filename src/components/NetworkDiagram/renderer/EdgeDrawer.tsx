@@ -1,66 +1,66 @@
-import * as React from 'react'
+import * as React from 'react';
 import { Colors } from '@blueprintjs/core';
-import { Point } from 'NetworkDiagram/layout'
+import { Point } from 'NetworkDiagram/layout';
 import { getRefMatrix, applyMatrix } from 'NetworkDiagram/renderer/utils';
 
-
 interface IEdgeDrawerProps {
-  svgRef: React.RefObject<SVGSVGElement>,
-  sourcePoint?: Point
+  svgRef: React.RefObject<SVGSVGElement>;
+  sourcePoint?: Point;
 }
 
 interface IEdgeDrawerState {
-  targetPoint?: Point
+  targetPoint?: Point;
 }
 
-export class EdgeDrawer extends React.PureComponent<IEdgeDrawerProps, IEdgeDrawerState>{
-
+export class EdgeDrawer extends React.PureComponent<IEdgeDrawerProps, IEdgeDrawerState> {
   constructor(props: Readonly<IEdgeDrawerProps>) {
-    super(props)
-    this.onMouseMove = this.onMouseMove.bind(this)
+    super(props);
+    this.onMouseMove = this.onMouseMove.bind(this);
     this.state = {
-      targetPoint: props.sourcePoint
-    }
+      targetPoint: props.sourcePoint,
+    };
   }
 
   componentDidMount() {
     const svg = this.props.svgRef.current;
     if (svg !== null) {
-      svg.addEventListener('mousemove', this.onMouseMove)
+      svg.addEventListener('mousemove', this.onMouseMove);
     }
   }
 
   componentWillUnmount() {
     const svg = this.props.svgRef.current;
     if (svg !== null) {
-      svg.removeEventListener('mousemove', this.onMouseMove)
+      svg.removeEventListener('mousemove', this.onMouseMove);
     }
   }
 
   onMouseMove(e: MouseEvent) {
-    const { svgRef } = this.props
-    const matrix = getRefMatrix(svgRef)
-    const targetPoint = applyMatrix(matrix, e.clientX, e.clientY)
-    this.setState({ targetPoint })
+    const { svgRef } = this.props;
+    const matrix = getRefMatrix(svgRef);
+    const targetPoint = applyMatrix(matrix, e.clientX, e.clientY);
+    this.setState({ targetPoint });
   }
 
   render() {
-    const { sourcePoint } = this.props
-    const { targetPoint } = this.state
+    const { sourcePoint } = this.props;
+    const { targetPoint } = this.state;
 
     if (!sourcePoint || !targetPoint) {
-      return null
+      return null;
     }
 
-    return <g className="edge-drawer">
-      <line
-        stroke={Colors.GRAY2}
-        strokeWidth='1'
-        x1={sourcePoint.x}
-        y1={sourcePoint.y}
-        x2={targetPoint.x}
-        y2={targetPoint.y}
-      />
-    </g>
+    return (
+      <g className="edge-drawer">
+        <line
+          stroke={Colors.GRAY2}
+          strokeWidth="1"
+          x1={sourcePoint.x}
+          y1={sourcePoint.y}
+          x2={targetPoint.x}
+          y2={targetPoint.y}
+        />
+      </g>
+    );
   }
 }

@@ -1,12 +1,12 @@
-@import "src/variables.scss";
-@import "src/themes.scss";
+@import 'src/variables.scss';
+@import 'src/themes.scss';
 
 .EditableProperty {
   padding: 10px !important;
   border-radius: $standard-border-radius;
   cursor: pointer;
   border: 1px solid;
-  transition: all .2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 
   &.read-only {
     pointer-events: none !important;
@@ -102,7 +102,8 @@
       margin-top: 0;
     }
 
-    .bp3-input, .bp3-input-ghost {
+    .bp3-input,
+    .bp3-input-ghost {
       padding-top: 0;
       padding-left: 0 !important;
       height: auto;
@@ -134,7 +135,8 @@
     }
 
     .TextEdit__singleInput {
-      & > .bp3-input, & > .bp3-input-action {
+      & > .bp3-input,
+      & > .bp3-input-action {
         @include themify() {
           color: themed('textColor') !important;
         }

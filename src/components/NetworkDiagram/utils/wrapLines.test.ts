@@ -8,18 +8,11 @@ describe('wrapLines', () => {
 
   it('breaks text longer than maximum line length', () => {
     const lines = wrapLines('a very very very very long line', 25);
-    expect(lines).toEqual([
-        'a very very very very',
-        'long line',
-    ]);
+    expect(lines).toEqual(['a very very very very', 'long line']);
   });
 
   it('breaks lines after punctuation', () => {
     const lines = wrapLines('This is the 1st sentence. And this is the 2nd sentence.', 25);
-    expect(lines).toEqual([
-        'This is the 1st sentence.',
-        'And this is the 2nd',
-        'sentence.',
-    ]);
+    expect(lines).toEqual(['This is the 1st sentence.', 'And this is the 2nd', 'sentence.']);
   });
 });

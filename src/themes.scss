@@ -1,10 +1,10 @@
-@import "./variables.scss";
+@import './variables.scss';
 
 $themes: (
   light: (
     backgroundColor: $white-3,
     colorPickerActiveBorderWidth: 1px,
-    colorPickerHoverOpacity: .7,
+    colorPickerHoverOpacity: 0.7,
     disabledColor: $black-30,
     sidebarColor: $white-3,
     sidebarMenuBorder: 1px solid $black-70,
@@ -40,7 +40,6 @@ $themes: (
     tooltipColor: $black-80,
     tooltipTextColor: #fff,
     listItemDividerColor: rgba(255, 255, 255, 0.07),
-
     buttonTextColor: #aaa,
     buttonTextTransform: uppercase,
     buttonTextHoverColor: #ddd,
@@ -55,7 +54,12 @@ $themes: (
       $theme-map: () !global;
       @each $key, $submap in $map {
         $value: map-get(map-get($themes, $theme), '#{$key}');
-        $theme-map: map-merge($theme-map, ($key: $value)) !global;
+        $theme-map: map-merge(
+          $theme-map,
+          (
+            $key: $value,
+          )
+        ) !global;
       }
 
       @content;

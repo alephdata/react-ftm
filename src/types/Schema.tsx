@@ -4,19 +4,21 @@ import c from 'classnames';
 import './Schema.scss';
 
 interface ISchemaCommonProps {
-  schema: FTMSchema,
-  className?: string,
-  size?: number
+  schema: FTMSchema;
+  className?: string;
+  size?: number;
 }
 
-class SchemaIcon extends React.Component<ISchemaCommonProps>{
+class SchemaIcon extends React.Component<ISchemaCommonProps> {
   render() {
     const { className, schema, size = 16 } = this.props;
     const iconPaths = IconRegistry.getSchemaIcon(schema);
     return (
-      <span className={c("SchemaIcon bp3-icon", className)}>
+      <span className={c('SchemaIcon bp3-icon', className)}>
         <svg viewBox={'0 0 25 25'} height={size} width={size}>
-          {iconPaths.map((d, i) => <path key={i} d={d}/>)}
+          {iconPaths.map((d, i) => (
+            <path key={i} d={d} />
+          ))}
         </svg>
       </span>
     );
@@ -24,8 +26,8 @@ class SchemaIcon extends React.Component<ISchemaCommonProps>{
 }
 
 interface ISchemaLabelProps extends ISchemaCommonProps {
-  plural?:boolean
-  icon?:boolean
+  plural?: boolean;
+  icon?: boolean;
 }
 
 class SchemaLabel extends React.Component<ISchemaLabelProps> {

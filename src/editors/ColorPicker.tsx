@@ -1,9 +1,9 @@
-import * as React from 'react'
+import * as React from 'react';
 import { injectIntl, defineMessages, WrappedComponentProps } from 'react-intl';
 import c from 'classnames';
 import { Colors, Icon } from '@blueprintjs/core';
-import { Tooltip2 as Tooltip, Popover2 as Popover } from "@blueprintjs/popover2";
-import { HexColorPicker, HexColorInput } from "react-colorful";
+import { Tooltip2 as Tooltip, Popover2 as Popover } from '@blueprintjs/popover2';
+import { HexColorPicker, HexColorInput } from 'react-colorful';
 
 import './ColorPicker.scss';
 
@@ -48,9 +48,9 @@ const colorOptions = {
 };
 
 interface IColorPickerProps extends WrappedComponentProps {
-  currSelected?: string
-  onSelect: (color: string) => void
-  swatchShape?: string
+  currSelected?: string;
+  onSelect: (color: string) => void;
+  swatchShape?: string;
 }
 
 class ColorPicker extends React.PureComponent<IColorPickerProps> {
@@ -71,45 +71,51 @@ class ColorPicker extends React.PureComponent<IColorPickerProps> {
     return (
       <div
         key={color}
-        className='ColorPicker__item'
-        onClick={() => (isCustom || !color) ? null : onSelect(color)}
+        className="ColorPicker__item"
+        onClick={() => (isCustom || !color ? null : onSelect(color))}
       >
         <Tooltip content={intl.formatMessage(messages[id])} placement="top">
           <div
-            className={c('ColorPicker__item__swatch', swatchShape, { active: currSelected === color, custom: isCustom })}
+            className={c('ColorPicker__item__swatch', swatchShape, {
+              active: currSelected === color,
+              custom: isCustom,
+            })}
             style={style}
           >
             {color && <div className="ColorPicker__item__swatch__inner" style={style} />}
-            {isCustom && (
-              <Icon icon="plus" size={14} />
-            )}
+            {isCustom && <Icon icon="plus" size={14} />}
           </div>
         </Tooltip>
       </div>
-    )
+    );
   }
 
   render() {
-    const { currSelected, onSelect } = this.props
+    const { currSelected, onSelect } = this.props;
     const hasCustomColor = !!currSelected && Object.values(colorOptions).indexOf(currSelected) < 0;
 
     return (
-      <div className='ColorPicker'>
+      <div className="ColorPicker">
         {Object.entries(colorOptions).map(([id, color]) => this.renderColor(id, color, false))}
         <Popover
-          content={(
+          content={
             <>
               <HexColorPicker color={currSelected} onChange={onSelect} />
-              <HexColorInput color={currSelected} onChange={onSelect} className="ColorPicker__custom__hex-input" prefixed />
+              <HexColorInput
+                color={currSelected}
+                onChange={onSelect}
+                className="ColorPicker__custom__hex-input"
+                prefixed
+              />
             </>
-          )}
+          }
           minimal
           popoverClassName="ColorPicker__custom"
         >
           {this.renderColor('custom', hasCustomColor ? currSelected : undefined, true)}
         </Popover>
       </div>
-    )
+    );
   }
 }
 

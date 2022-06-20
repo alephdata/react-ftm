@@ -1,12 +1,15 @@
-import React from 'react'
+import React from 'react';
 import { IWrappedElementProps } from 'embed/common';
 import { EntityTable } from 'components/EntityTable';
 
 interface IEntityTableState {
-  selection: Array<string>
+  selection: Array<string>;
 }
 
-export default class EntityTableWrapper extends React.Component <IWrappedElementProps, IEntityTableState> {
+export default class EntityTableWrapper extends React.Component<
+  IWrappedElementProps,
+  IEntityTableState
+> {
   constructor(props: IWrappedElementProps) {
     super(props);
 
@@ -20,9 +23,9 @@ export default class EntityTableWrapper extends React.Component <IWrappedElement
       if (newVal) {
         newSelection = [...selection, ...entityIds];
       } else {
-        newSelection = selection.filter(id => entityIds.indexOf(id) < 0);
+        newSelection = selection.filter((id) => entityIds.indexOf(id) < 0);
       }
-      return ({ selection: newSelection });
+      return { selection: newSelection };
     });
   }
 

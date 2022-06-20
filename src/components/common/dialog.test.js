@@ -3,14 +3,14 @@ import { shallow } from 'enzyme';
 import { Dialog } from './Dialog';
 
 describe('<Dialog />', () => {
-    it('Should render correctly with no properties', () => {
-        const component = shallow(<Dialog />);
-        expect(component).toMatchSnapshot();
-    });
+  it('Should render correctly with no properties', () => {
+    const component = shallow(<Dialog />);
+    expect(component).toMatchSnapshot();
+  });
 
-    it('Should render correctly with properties', () => {
-        const component = shallow(<Dialog className="my-dialog" />);
-        expect(component).toMatchSnapshot();
-        expect(component.find('.my-dialog').length).toBe(1);
-    });
+  it('Should render correctly with properties', () => {
+    const component = shallow(<Dialog className="my-dialog" />);
+    expect(component).toMatchSnapshot();
+    expect(component.find('.my-dialog').length).toBe(1);
+  });
 });

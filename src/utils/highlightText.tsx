@@ -4,14 +4,14 @@ export function highlightText(text: string, query: string) {
   let lastIndex = 0;
   const words = query
     .split(/\s+/)
-    .filter(word => word.length > 0)
+    .filter((word) => word.length > 0)
     .map((text: string) => {
-      return text.replace(/([.*+?^=!:${}()|[\]/\\])/g, "\\$1");
+      return text.replace(/([.*+?^=!:${}()|[\]/\\])/g, '\\$1');
     });
   if (words.length === 0) {
     return [text];
   }
-  const regexp = new RegExp(words.join("|"), "gi");
+  const regexp = new RegExp(words.join('|'), 'gi');
   const tokens: React.ReactNode[] = [];
   let match = regexp.exec(text);
   while (match != null) {

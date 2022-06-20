@@ -15,16 +15,16 @@ filtered_messages[locale] = messages[locale];
 const intl = createIntl({ locale: defaultLocale, messages: filtered_messages });
 
 function nodeWithIntlProp(node) {
-    return React.cloneElement(node, { intl });
+  return React.cloneElement(node, { intl });
 }
 
 export function shallowWithIntl(node) {
-    return shallow(nodeWithIntlProp(node), { context: { intl } })
+  return shallow(nodeWithIntlProp(node), { context: { intl } });
 }
 
 export function mountWithIntl(node) {
-    return mount(nodeWithIntlProp(node), {
-        context: { intl },
-        childContextTypes: { intl: intlShape }
-    });
+  return mount(nodeWithIntlProp(node), {
+    context: { intl },
+    childContextTypes: { intl: intlShape },
+  });
 }

@@ -1,13 +1,12 @@
-
 export interface ISettingsData {
-  pivotTypes: Array<string>
+  pivotTypes: Array<string>;
 }
 
 export class Settings {
-  public pivotTypes: Array<string>
+  public pivotTypes: Array<string>;
 
   constructor(props?: ISettingsData) {
-    this.pivotTypes = props?.pivotTypes || ['entity']
+    this.pivotTypes = props?.pivotTypes || ['entity'];
   }
 
   hasPivotType(type: string) {
@@ -15,9 +14,9 @@ export class Settings {
   }
 
   toJSON() {
-    return ({
-      pivotTypes: this.pivotTypes
-    })
+    return {
+      pivotTypes: this.pivotTypes,
+    };
   }
 
   static fromJSON(data: ISettingsData): Settings {

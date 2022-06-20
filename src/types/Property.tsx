@@ -1,28 +1,21 @@
 import React from 'react';
 import { defineMessages, FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
-import { Button } from '@blueprintjs/core'
-import { Values, Value, Property as FTMProperty, Entity as FTMEntity } from "@alephdata/followthemoney";
+import { Button } from '@blueprintjs/core';
+import {
+  Values,
+  Value,
+  Property as FTMProperty,
+  Entity as FTMEntity,
+} from '@alephdata/followthemoney';
 import truncateText from 'truncate';
 
-import {
-  Country,
-  Date,
-  Entity,
-  FileSize,
-  Language,
-  Transliterate,
-  Numeric,
-  Topic,
-  URL
-} from '.';
+import { Country, Date, Entity, FileSize, Language, Transliterate, Numeric, Topic, URL } from '.';
 import { ensureArray, wordList, withTranslator } from 'utils';
-
 
 import './Property.scss';
 
-
 interface IPropertyCommonProps {
-  prop: FTMProperty
+  prop: FTMProperty;
 }
 
 class PropertyName extends React.PureComponent<IPropertyCommonProps> {
@@ -34,19 +27,21 @@ class PropertyName extends React.PureComponent<IPropertyCommonProps> {
 
 // ----------
 
-interface IPropertyReverseProps extends IPropertyCommonProps, WrappedComponentProps { }
+interface IPropertyReverseProps extends IPropertyCommonProps, WrappedComponentProps {}
 
 class PropertyReverse extends React.PureComponent<IPropertyReverseProps> {
   render() {
     const { prop } = this.props;
     if (!prop.hasReverse) {
-      return <FormattedMessage
-        id="property.inverse"
-        defaultMessage="'{label}' of …"
-        values={{
-          label: <PropertyName prop={prop} />
-        }}
-      />;
+      return (
+        <FormattedMessage
+          id="property.inverse"
+          defaultMessage="'{label}' of …"
+          values={{
+            label: <PropertyName prop={prop} />,
+          }}
+        />
+      );
     }
     const reverseProp = prop.getReverse();
     return reverseProp.label;
@@ -56,34 +51,43 @@ class PropertyReverse extends React.PureComponent<IPropertyReverseProps> {
 // ----------
 
 interface IPropertyValueProps extends IPropertyCommonProps {
-  value: Value
-  resolveEntityReference?: (entityId: string) => FTMEntity | undefined
-  getEntityLink?: (entity: FTMEntity) => any
-  translitLookup?: any
-  truncate?: number
+  value: Value;
+  resolveEntityReference?: (entityId: string) => FTMEntity | undefined;
+  getEntityLink?: (entity: FTMEntity) => any;
+  translitLookup?: any;
+  truncate?: number;
 }
 
 const getSortValue = ({ prop, resolveEntityReference, value }: IPropertyValueProps) => {
   if (prop.type.name === 'entity') {
-    const entity = ('string' === typeof value && resolveEntityReference) ? resolveEntityReference(value) : value as FTMEntity;
+    const entity =
+      'string' === typeof value && resolveEntityReference
+        ? resolveEntityReference(value)
+        : (value as FTMEntity);
     return entity ? entity.getCaption().toLowerCase() : value;
   } else if (prop.type.name === 'number' || prop.type.name === 'fileSize') {
     return +value;
-  } else if (prop.type.name === 'country' || prop.type.name === 'topic' || prop.type.name === 'language') {
+  } else if (
+    prop.type.name === 'country' ||
+    prop.type.name === 'topic' ||
+    prop.type.name === 'language'
+  ) {
     const resolved = prop.type.values.get(value as string);
     return resolved ? resolved.toLowerCase() : value;
   }
   return (value as string).toLowerCase();
-}
+};
 
 class PropertyValue extends React.PureComponent<IPropertyValueProps> {
   render() {
-    const { getEntityLink, prop, resolveEntityReference, value, truncate, translitLookup } = this.props;
+    const { getEntityLink, prop, resolveEntityReference, value, truncate, translitLookup } =
+      this.props;
     if (!value) {
       return null;
     }
     if (prop.type.name === 'entity') {
-      const entity = ('string' === typeof value && resolveEntityReference) ? resolveEntityReference(value) : value;
+      const entity =
+        'string' === typeof value && resolveEntityReference ? resolveEntityReference(value) : value;
       if (getEntityLink) {
         return getEntityLink(entity as FTMEntity);
       }
@@ -105,7 +109,13 @@ class PropertyValue extends React.PureComponent<IPropertyValueProps> {
       return <Language.Label code={value as string} fullList={prop.type.values} />;
     }
     if (prop.type.name === 'url') {
-      return <URL value={value as string} onClick={(e: React.MouseEvent) => e.stopPropagation()} truncate={truncate} />;
+      return (
+        <URL
+          value={value as string}
+          onClick={(e: React.MouseEvent) => e.stopPropagation()}
+          truncate={truncate}
+        />
+      );
     }
     if (prop.type.name === 'date') {
       return <Date value={value as string} />;
@@ -123,79 +133,103 @@ class PropertyValue extends React.PureComponent<IPropertyValueProps> {
 // ----------
 
 interface IPropertyValuesProps extends IPropertyCommonProps, WrappedComponentProps {
-  values: Values
-  separator?: string
-  missing?: string
-  resolveEntityReference?: (entityId: string) => FTMEntity | undefined
-  getEntityLink?: (entity: FTMEntity) => any
-  translitLookup?: any
-  truncate?: number
-  truncateItem?: number
+  values: Values;
+  separator?: string;
+  missing?: string;
+  resolveEntityReference?: (entityId: string) => FTMEntity | undefined;
+  getEntityLink?: (entity: FTMEntity) => any;
+  translitLookup?: any;
+  truncate?: number;
+  truncateItem?: number;
 }
 
 interface IPropertyValuesState {
-  truncateShowAll: boolean
+  truncateShowAll: boolean;
 }
 
 const messages = defineMessages({
   truncate_show: {
     id: 'property.values.truncate_show',
-    defaultMessage: '+{truncateCount} More'
+    defaultMessage: '+{truncateCount} More',
   },
   truncate_hide: {
     id: 'property.values.truncate_hide',
-    defaultMessage: '- Show fewer'
-  }
-})
+    defaultMessage: '- Show fewer',
+  },
+});
 
 class PropertyValues extends React.PureComponent<IPropertyValuesProps, IPropertyValuesState> {
   constructor(props: IPropertyValuesProps) {
-    super(props)
-    this.state = { truncateShowAll: false }
+    super(props);
+    this.state = { truncateShowAll: false };
   }
 
   toggleTruncateShowAll = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     this.setState(({ truncateShowAll }) => ({ truncateShowAll: !truncateShowAll }));
-  }
+  };
 
   render() {
-    const { getEntityLink, intl, prop, resolveEntityReference, values, truncate, truncateItem, separator = ' · ', missing = '—', translitLookup } = this.props;
+    const {
+      getEntityLink,
+      intl,
+      prop,
+      resolveEntityReference,
+      values,
+      truncate,
+      truncateItem,
+      separator = ' · ',
+      missing = '—',
+      translitLookup,
+    } = this.props;
     const { truncateShowAll } = this.state;
 
-    const vals = ensureArray((truncate && !truncateShowAll) ? values.slice(0, truncate) : values).map(value => (
-      <PropertyValue
-        key={typeof value === 'string' ? value : value.id}
-        prop={prop}
-        value={value}
-        resolveEntityReference={resolveEntityReference}
-        getEntityLink={getEntityLink}
-        translitLookup={translitLookup}
-        truncate={truncateItem}
-      />
-    ));
+    const vals = ensureArray(truncate && !truncateShowAll ? values.slice(0, truncate) : values).map(
+      (value) => (
+        <PropertyValue
+          key={typeof value === 'string' ? value : value.id}
+          prop={prop}
+          value={value}
+          resolveEntityReference={resolveEntityReference}
+          getEntityLink={getEntityLink}
+          translitLookup={translitLookup}
+          truncate={truncateItem}
+        />
+      )
+    );
     let content;
     if (!vals.length) {
-      content = (<span className="no-value">{missing}</span>);
+      content = <span className="no-value">{missing}</span>;
       // display urls separated by newline
     } else if (prop.type.name === 'url' || !!getEntityLink) {
-      content = vals.map((val, i) => <span key={i} style={{ display: 'block' }}>{val}</span>);
+      content = vals.map((val, i) => (
+        <span key={i} style={{ display: 'block' }}>
+          {val}
+        </span>
+      ));
     } else {
       content = wordList(vals, separator);
     }
 
-    const truncateText = (!!truncate && values.length > truncate) && (
+    const truncateText = !!truncate && values.length > truncate && (
       <Button
         minimal
         small
         className="more-text bp3-text-muted"
         onClick={this.toggleTruncateShowAll}
-        text={intl.formatMessage(messages[truncateShowAll ? 'truncate_hide' : 'truncate_show'], { truncateCount: values.length - truncate })}
+        text={intl.formatMessage(messages[truncateShowAll ? 'truncate_hide' : 'truncate_show'], {
+          truncateCount: values.length - truncate,
+        })}
       />
     );
 
-    return <span className="PropertyValues">{content}{truncateText}</span>;
+    return (
+      <span className="PropertyValues">
+        {content}
+        {truncateText}
+      </span>
+    );
   }
 }
 
