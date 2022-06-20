@@ -1,12 +1,12 @@
-import * as React from 'react'
+import * as React from 'react';
 import { defineMessages } from 'react-intl';
 import { Entity } from '@alephdata/followthemoney';
-import { Button, Collapse } from "@blueprintjs/core";
-import { GraphContext } from 'NetworkDiagram/GraphContext'
+import { Button, Collapse } from '@blueprintjs/core';
+import { GraphContext } from 'NetworkDiagram/GraphContext';
 import { ColorPicker, RadiusPicker } from 'editors';
 // import { EntityList } from 'components/common';
 // import { EntityBulkEdit, EntityViewer, GroupingViewer } from 'NetworkDiagram/toolbox';
-import { Vertex } from 'NetworkDiagram/layout'
+import { Vertex } from 'NetworkDiagram/layout';
 
 // import './EntityBulkEdit.scss';
 
@@ -22,16 +22,16 @@ const messages = defineMessages({
 });
 
 export interface IEntityBulkEditProps {
-  text: string
-  entities: Array<Entity>
-  setVerticesColor: (vertices: Array<Vertex>, color: string) => void
-  setVerticesRadius: (vertices: Array<Vertex>, radius: number) => void
+  text: string;
+  entities: Array<Entity>;
+  setVerticesColor: (vertices: Array<Vertex>, color: string) => void;
+  setVerticesRadius: (vertices: Array<Vertex>, radius: number) => void;
 }
 
 export interface IEntityBulkEditState {
-  isOpen: boolean,
-  selectedColor?: string
-  selectedRadius?: number
+  isOpen: boolean;
+  selectedColor?: string;
+  selectedRadius?: number;
 }
 
 export class EntityBulkEdit extends React.Component<IEntityBulkEditProps, IEntityBulkEditState> {
@@ -42,31 +42,29 @@ export class EntityBulkEdit extends React.Component<IEntityBulkEditProps, IEntit
 
     this.state = {
       isOpen: false,
-    }
+    };
   }
 
   toggleOpen = () => {
     this.setState(({ isOpen }) => ({ isOpen: !isOpen }));
-  }
+  };
 
   getVertices() {
     const { layout } = this.context;
     const { entities } = this.props;
 
-    return entities
-      .filter(e => !e.schema.edge)
-      .map(e => layout.getVertexByEntity(e))
+    return entities.filter((e) => !e.schema.edge).map((e) => layout.getVertexByEntity(e));
   }
 
   onColorSelected = (color: string) => {
-    this.setState({ selectedColor: color })
-    this.props.setVerticesColor(this.getVertices(), color)
-  }
+    this.setState({ selectedColor: color });
+    this.props.setVerticesColor(this.getVertices(), color);
+  };
 
   onRadiusSelected = (radius: number) => {
-    this.setState({ selectedRadius: radius })
-    this.props.setVerticesRadius(this.getVertices(), radius)
-  }
+    this.setState({ selectedRadius: radius });
+    this.props.setVerticesRadius(this.getVertices(), radius);
+  };
 
   render() {
     const { intl } = this.context;
@@ -76,21 +74,20 @@ export class EntityBulkEdit extends React.Component<IEntityBulkEditProps, IEntit
       <div className="EntityBulkEdit">
         <div className="EntityBulkEdit__main">
           {text}
-          <Button minimal small onClick={this.toggleOpen} rightIcon={isOpen ? "chevron-up" : "chevron-down"} >
-            {intl.formatMessage(messages[isOpen ? "hide" : "show"])}
+          <Button
+            minimal
+            small
+            onClick={this.toggleOpen}
+            rightIcon={isOpen ? 'chevron-up' : 'chevron-down'}
+          >
+            {intl.formatMessage(messages[isOpen ? 'hide' : 'show'])}
           </Button>
         </div>
         <Collapse isOpen={isOpen}>
-          <ColorPicker
-            currSelected={selectedColor}
-            onSelect={this.onColorSelected}
-          />
-          <RadiusPicker
-            radius={selectedRadius}
-            onChange={this.onRadiusSelected}
-          />
+          <ColorPicker currSelected={selectedColor} onSelect={this.onColorSelected} />
+          <RadiusPicker radius={selectedRadius} onChange={this.onRadiusSelected} />
         </Collapse>
       </div>
-    )
+    );
   }
 }

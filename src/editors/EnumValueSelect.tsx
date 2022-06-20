@@ -1,9 +1,9 @@
-import * as React from 'react'
+import * as React from 'react';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
-import { Value } from "@alephdata/followthemoney";
-import { ControlGroup, MenuItem, Position } from "@blueprintjs/core";
-import { MultiSelect } from "@blueprintjs/select";
-import { ITypeEditorProps } from "./common";
+import { Value } from '@alephdata/followthemoney';
+import { ControlGroup, MenuItem, Position } from '@blueprintjs/core';
+import { MultiSelect } from '@blueprintjs/select';
+import { ITypeEditorProps } from './common';
 import { highlightText } from 'utils';
 
 const messages = defineMessages({
@@ -13,10 +13,10 @@ const messages = defineMessages({
   },
 });
 
-const TypedMultiSelect = MultiSelect.ofType<string>()
+const TypedMultiSelect = MultiSelect.ofType<string>();
 
 interface IEnumValueSelectProps extends ITypeEditorProps, WrappedComponentProps {
-  fullList: Map<string, string>
+  fullList: Map<string, string>;
 }
 
 class EnumValueSelect extends React.Component<IEnumValueSelectProps> {
@@ -24,8 +24,8 @@ class EnumValueSelect extends React.Component<IEnumValueSelectProps> {
 
   constructor(props: any) {
     super(props);
-    this.onChange = this.onChange.bind(this)
-    this.onRemove = this.onRemove.bind(this)
+    this.onChange = this.onChange.bind(this);
+    this.onRemove = this.onRemove.bind(this);
   }
 
   componentDidMount() {
@@ -45,7 +45,7 @@ class EnumValueSelect extends React.Component<IEnumValueSelectProps> {
 
   onRemove(item: string) {
     const { values } = this.props;
-    this.props.onSubmit(values.filter(v => v !== item));
+    this.props.onSubmit(values.filter((v) => v !== item));
   }
 
   render() {
@@ -55,7 +55,7 @@ class EnumValueSelect extends React.Component<IEnumValueSelectProps> {
     const getLabel = (key: string) => optionsMap.get(key) || '';
 
     return (
-      <ControlGroup vertical fill >
+      <ControlGroup vertical fill>
         <TypedMultiSelect
           tagRenderer={getLabel}
           onItemSelect={this.onChange}
@@ -72,25 +72,23 @@ class EnumValueSelect extends React.Component<IEnumValueSelectProps> {
           items={options}
           popoverProps={{ minimal: true, position: Position.BOTTOM_LEFT, ...popoverProps }}
           tagInputProps={{
-            inputRef: (ref) => this.inputRef = ref,
+            inputRef: (ref) => (this.inputRef = ref),
             tagProps: { interactive: false, minimal: true },
             placeholder: '',
-            ...inputProps
+            ...inputProps,
           }}
           itemPredicate={(query, item) => {
             const queryProcessed = query.toLowerCase();
             return getLabel(item).toLowerCase().includes(queryProcessed); // eslint-disable-line @typescript-eslint/no-unused-vars
           }}
           selectedItems={values as [string]}
-          noResults={
-            <MenuItem disabled text={intl.formatMessage(messages.no_results)} />
-          }
+          noResults={<MenuItem disabled text={intl.formatMessage(messages.no_results)} />}
           openOnKeyDown
           resetOnSelect
           fill
         />
-      </ControlGroup >
-    )
+      </ControlGroup>
+    );
   }
 }
 

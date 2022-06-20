@@ -1,16 +1,16 @@
-import * as React from 'react'
-import { Dialog as Bp3Dialog, IconName, Spinner } from '@blueprintjs/core'
+import * as React from 'react';
+import { Dialog as Bp3Dialog, IconName, Spinner } from '@blueprintjs/core';
 import c from 'classnames';
 
-import "./Dialog.scss";
+import './Dialog.scss';
 
 interface IDialogProps {
-  icon: IconName,
-  isOpen: boolean,
-  isProcessing: boolean,
-  title: string,
-  onClose: () => any,
-  className?: string,
+  icon: IconName;
+  isOpen: boolean;
+  isProcessing: boolean;
+  title: string;
+  onClose: () => any;
+  className?: string;
 }
 
 export class Dialog extends React.Component<IDialogProps> {

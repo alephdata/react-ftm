@@ -1,24 +1,24 @@
-import * as React from 'react'
-import { IEntityDatum, Model, Property as FTMProperty, Schema } from '@alephdata/followthemoney'
+import * as React from 'react';
+import { IEntityDatum, Model, Property as FTMProperty, Schema } from '@alephdata/followthemoney';
 import c from 'classnames';
 
-import { PropertyEditor } from 'editors'
-import { FTMEntityExtended as Entity, Property } from 'types'
+import { PropertyEditor } from 'editors';
+import { FTMEntityExtended as Entity, Property } from 'types';
 
 import './EditableProperty.scss';
 
 interface IEditablePropertyProps {
-  entity: Entity
-  property: FTMProperty
-  editing: boolean
-  writeable?: boolean
-  onToggleEdit: (property: FTMProperty) => void
-  onSubmit: (entity: Entity, previous: IEntityDatum) => void
-  fetchEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>
-  resolveEntityReference?: (entityId: string) => Entity | undefined
-  createNewReferencedEntity?: (entityData: any) => Promise<Entity>
-  minimal?: boolean
-  model?: Model
+  entity: Entity;
+  property: FTMProperty;
+  editing: boolean;
+  writeable?: boolean;
+  onToggleEdit: (property: FTMProperty) => void;
+  onSubmit: (entity: Entity, previous: IEntityDatum) => void;
+  fetchEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>;
+  resolveEntityReference?: (entityId: string) => Entity | undefined;
+  createNewReferencedEntity?: (entityData: any) => Promise<Entity>;
+  minimal?: boolean;
+  model?: Model;
 }
 
 export class EditableProperty extends React.Component<IEditablePropertyProps> {
@@ -28,7 +28,7 @@ export class EditableProperty extends React.Component<IEditablePropertyProps> {
     this.toggleEditing = this.toggleEditing.bind(this);
   }
 
-  toggleEditing(e:React.MouseEvent) {
+  toggleEditing(e: React.MouseEvent) {
     const { onToggleEdit, property } = this.props;
     e.preventDefault();
     e.stopPropagation();
@@ -36,7 +36,18 @@ export class EditableProperty extends React.Component<IEditablePropertyProps> {
   }
 
   render() {
-    const { createNewReferencedEntity, editing, entity, fetchEntitySuggestions, onSubmit, property, minimal, model, resolveEntityReference, writeable = true } = this.props;
+    const {
+      createNewReferencedEntity,
+      editing,
+      entity,
+      fetchEntitySuggestions,
+      onSubmit,
+      property,
+      minimal,
+      model,
+      resolveEntityReference,
+      writeable = true,
+    } = this.props;
     const entityData = entity.toJSON();
 
     const values = entity.getProperty(property.name);
@@ -44,17 +55,17 @@ export class EditableProperty extends React.Component<IEditablePropertyProps> {
 
     return (
       <div
-        className={c('EditableProperty', {'active': editing, minimal, 'read-only': !writeable })}
+        className={c('EditableProperty', { active: editing, minimal, 'read-only': !writeable })}
         onClick={(e) => !editing && this.toggleEditing(e)}
       >
         {(!minimal || isEmpty) && (
-          <div className='EditableProperty__label'>
+          <div className="EditableProperty__label">
             <span>
-              <Property.Name prop={property}/>
+              <Property.Name prop={property} />
             </span>
           </div>
         )}
-        <div className='EditableProperty__value'>
+        <div className="EditableProperty__value">
           {writeable && editing && (
             <PropertyEditor
               key={property.name}

@@ -5,16 +5,16 @@ import { EmbeddedElement } from 'embed/EmbeddedElement';
 import { fetchExternalData } from 'embed/util';
 
 export interface IRenderEmbedConfig {
-  writeable?: boolean
-  containerProps?: any
+  writeable?: boolean;
+  containerProps?: any;
 }
 
 export interface IRenderEmbedProps {
-  id: string
-  type: string
-  data?: any
-  dataURL?: string
-  config?: IRenderEmbedConfig
+  id: string;
+  type: string;
+  data?: any;
+  dataURL?: string;
+  config?: IRenderEmbedConfig;
 }
 
 export const renderEmbed = async (props: IRenderEmbedProps) => {
@@ -43,4 +43,4 @@ export const renderEmbed = async (props: IRenderEmbedProps) => {
     </div>,
     domElem
   );
-}
+};

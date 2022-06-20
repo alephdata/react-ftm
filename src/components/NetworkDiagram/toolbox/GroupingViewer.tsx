@@ -1,11 +1,11 @@
-import * as React from 'react'
+import * as React from 'react';
 import { defineMessages } from 'react-intl';
-import { Icon } from '@blueprintjs/core'
+import { Icon } from '@blueprintjs/core';
 import { Entity } from '@alephdata/followthemoney';
 import { ColorPicker } from 'editors';
-import { Grouping } from 'NetworkDiagram/layout'
-import { GraphContext } from 'NetworkDiagram/GraphContext'
-import { EntityList } from "components/common/EntityList";
+import { Grouping } from 'NetworkDiagram/layout';
+import { GraphContext } from 'NetworkDiagram/GraphContext';
+import { EntityList } from 'components/common/EntityList';
 
 import './GroupingViewer.scss';
 
@@ -17,11 +17,11 @@ const messages = defineMessages({
 });
 
 interface IGroupingViewerProps {
-  grouping: Grouping,
-  onEntitySelected: (entity: Entity) => void
-  onEntityRemoved: (grouping: Grouping, entity: Entity) => void
-  onColorSelected: (grouping: Grouping, color: string) => void
-  editMenu: any
+  grouping: Grouping;
+  onEntitySelected: (entity: Entity) => void;
+  onEntityRemoved: (grouping: Grouping, entity: Entity) => void;
+  onColorSelected: (grouping: Grouping, color: string) => void;
+  editMenu: any;
 }
 
 export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
@@ -31,18 +31,16 @@ export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
     const { entityManager, intl, writeable } = this.context;
     const { editMenu, grouping, onEntitySelected, onEntityRemoved, onColorSelected } = this.props;
     return (
-      <div className='GroupingViewer'>
-        <div className='GroupingViewer__title'>
-          <div className='GroupingViewer__title__text'>
-            <p className='GroupingViewer__title__text__secondary'>
+      <div className="GroupingViewer">
+        <div className="GroupingViewer__title">
+          <div className="GroupingViewer__title__text">
+            <p className="GroupingViewer__title__text__secondary">
               <Icon icon="group-objects" />
               <span>{intl.formatMessage(messages.group)}</span>
             </p>
-            <h2 className='GroupingViewer__title__text__main'>
-              {grouping.label}
-            </h2>
+            <h2 className="GroupingViewer__title__text__main">{grouping.label}</h2>
           </div>
-          <div className='GroupingViewer__title__settings'>
+          <div className="GroupingViewer__title__settings">
             <ColorPicker
               currSelected={grouping.color}
               onSelect={(color: string) => onColorSelected(grouping, color)}
@@ -50,15 +48,13 @@ export class GroupingViewer extends React.PureComponent<IGroupingViewerProps> {
             />
           </div>
         </div>
-        <div className="">
-          {editMenu}
-        </div>
+        <div className="">{editMenu}</div>
         <EntityList
           entities={entityManager.getEntities(grouping.getEntityIds())}
           onEntitySelected={onEntitySelected}
-          onEntityRemoved={writeable ? (entity => onEntityRemoved(grouping, entity)) : undefined}
+          onEntityRemoved={writeable ? (entity) => onEntityRemoved(grouping, entity) : undefined}
         />
       </div>
-    )
+    );
   }
 }

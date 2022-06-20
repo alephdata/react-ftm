@@ -1,5 +1,5 @@
-@import "src/variables.scss";
-@import "src/themes.scss";
+@import 'src/variables.scss';
+@import 'src/themes.scss';
 
 .EntityList {
   background: none !important;
@@ -39,12 +39,12 @@
     }
 
     &:after {
-      content : "";
+      content: '';
       position: absolute;
-      left    : 5px;
-      bottom  : -1px;
-      height  : 1px;
-      width   : calc(100% - 10px);
+      left: 5px;
+      bottom: -1px;
+      height: 1px;
+      width: calc(100% - 10px);
       border-bottom: 1px solid;
       @include themify() {
         border-color: themed('sidebarMenuHoverColor');
@@ -60,7 +60,8 @@
       @include breakText;
     }
 
-    &__left, &__right {
+    &__left,
+    &__right {
       display: flex;
       align-items: center !important;
 

@@ -1,5 +1,5 @@
-@import "src/variables.scss";
-@import "src/themes.scss";
+@import 'src/variables.scss';
+@import 'src/themes.scss';
 
 .Transliterate {
   &__popover {
@@ -9,14 +9,15 @@
       color: $gray1 !important;
     }
 
-    &__main, &__secondary {
+    &__main,
+    &__secondary {
       display: block;
     }
 
     &__secondary {
       font-size: 10px !important;
       padding-top: 3px;
-      opacity: .7;
+      opacity: 0.7;
     }
   }
   &.bp3-tooltip2-indicator {

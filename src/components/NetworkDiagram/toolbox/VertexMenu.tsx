@@ -1,9 +1,9 @@
-import * as React from 'react'
+import * as React from 'react';
 import { defineMessages } from 'react-intl';
-import { Menu, MenuDivider, MenuItem, Spinner } from "@blueprintjs/core"
+import { Menu, MenuDivider, MenuItem, Spinner } from '@blueprintjs/core';
 
-import { modes } from 'NetworkDiagram/utils'
-import { GraphContext } from 'NetworkDiagram/GraphContext'
+import { modes } from 'NetworkDiagram/utils';
+import { GraphContext } from 'NetworkDiagram/GraphContext';
 import { Count, Schema } from 'types';
 
 import './VertexMenu.scss';
@@ -28,10 +28,10 @@ const messages = defineMessages({
 });
 
 interface IVertexMenuProps {
-  isOpen: boolean
-  contents: any
-  actions: any
-  hideMenu: any
+  isOpen: boolean;
+  contents: any;
+  actions: any;
+  hideMenu: any;
 }
 
 export class VertexMenu extends React.Component<IVertexMenuProps> {
@@ -63,7 +63,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
     if (property) {
       const schemaForIcon = property.getRange();
       const icon = schemaForIcon ? <Schema.Icon schema={schemaForIcon} /> : null;
-      return { label: property.label, icon }
+      return { label: property.label, icon };
     }
   }
 
@@ -77,7 +77,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
     }
   }
 
-  renderExpandOption = ({ count, property }: { count: number, property: string }) => {
+  renderExpandOption = ({ count, property }: { count: number; property: string }) => {
     const { intl } = this.context;
     const { actions, contents } = this.props;
 
@@ -87,13 +87,13 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
     return (
       <MenuItem
         key={property}
-        icon={propLabel.icon || "search-around"}
+        icon={propLabel.icon || 'search-around'}
         onClick={() => actions.expandVertex(contents.vertex, property)}
         text={intl.formatMessage(messages.expand, { property: propLabel.label.toLowerCase() })}
         labelElement={<Count count={count} />}
       />
-    )
-  }
+    );
+  };
 
   renderExpand = () => {
     const { intl } = this.context;
@@ -104,7 +104,10 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
       return <Spinner size={Spinner.SIZE_SMALL} />;
     }
 
-    const totalCount = expandResults.reduce(((totalCount: number, obj: any) => totalCount + obj.count), 0);
+    const totalCount = expandResults.reduce(
+      (totalCount: number, obj: any) => totalCount + obj.count,
+      0
+    );
     if (!totalCount) {
       return <div className="error-text">{intl.formatMessage(messages.expand_none)}</div>;
     }
@@ -112,7 +115,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
     const allOption = { count: totalCount, property: null };
 
     return [allOption, ...expandResults].map(this.renderExpandOption);
-  }
+  };
 
   renderFull = () => {
     const { intl } = this.context;
@@ -129,7 +132,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
         {this.renderExpand()}
       </>
     );
-  }
+  };
 
   render() {
     const { contents, isOpen } = this.props;
@@ -139,7 +142,13 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
     const style = { [anchor]: `${position.y}px`, left: `${position.x}px` };
 
     return (
-      <div className="VertexMenu" style={style} ref={(ref) => { this.menuRef = ref }}>
+      <div
+        className="VertexMenu"
+        style={style}
+        ref={(ref) => {
+          this.menuRef = ref;
+        }}
+      >
         <Menu>
           {onlyShowExpand && this.renderExpand()}
           {!onlyShowExpand && this.renderFull()}

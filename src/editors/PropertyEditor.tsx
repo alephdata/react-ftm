@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity, Model, Property, Schema, Values } from '@alephdata/followthemoney';
 import { CountrySelect, TopicSelect, EntitySelect, TextEdit } from './';
@@ -7,33 +7,33 @@ import { validate } from 'utils';
 const TAB_KEY = 9;
 
 interface IPropertyEditorProps extends WrappedComponentProps {
-  entity: Entity,
-  property: Property,
-  onSubmit: (entity: Entity) => void
-  onChange?: (values: Values) => void
-  fetchEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>
-  resolveEntityReference?: (entityId: string) => Entity | undefined
-  createNewReferencedEntity?: (entityData: any) => Promise<Entity>
-  popoverProps?: any
-  model?: Model
+  entity: Entity;
+  property: Property;
+  onSubmit: (entity: Entity) => void;
+  onChange?: (values: Values) => void;
+  fetchEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>;
+  resolveEntityReference?: (entityId: string) => Entity | undefined;
+  createNewReferencedEntity?: (entityData: any) => Promise<Entity>;
+  popoverProps?: any;
+  model?: Model;
 }
 
 interface IPropertyEditorState {
-  values: Values,
-  error: any | null,
-  entitySuggestions: { isPending: boolean, results: Array<Entity> }
+  values: Values;
+  error: any | null;
+  entitySuggestions: { isPending: boolean; results: Array<Entity> };
 }
 
 class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEditorState> {
   private ref: any | null = null;
 
-  constructor(props:IPropertyEditorProps) {
+  constructor(props: IPropertyEditorProps) {
     super(props);
     const { entity, property, resolveEntityReference } = props;
 
     let values = entity?.getProperty(property.name) || [];
     if (property.type.name === 'entity' && resolveEntityReference) {
-      values = values.map(val => {
+      values = values.map((val) => {
         if (typeof val === 'string') {
           return resolveEntityReference(val) || '';
         }
@@ -47,7 +47,7 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
       error: null,
     };
 
-    this.fetchEntitySuggestions = this.fetchEntitySuggestions.bind(this)
+    this.fetchEntitySuggestions = this.fetchEntitySuggestions.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.ref = React.createRef();
   }
@@ -65,7 +65,7 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
       this.props.onChange(values);
     }
     this.setState({ values });
-  }
+  };
 
   onSubmit = (overrideStateValues?: Values) => {
     const { entity, property } = this.props;
@@ -77,15 +77,19 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
     if (validationError) {
       this.setState({ error: validationError });
     } else {
-      const changed = entity.clone()
+      const changed = entity.clone();
       changed.properties.set(property, values);
-      this.props.onSubmit(changed)
+      this.props.onSubmit(changed);
     }
-  }
+  };
 
   handleClickOutside(e: MouseEvent) {
     const target = e.target as Element;
-    if (target && !this.ref?.current?.contains(target) && !target.matches('.bp3-portal *, .bp3-overlay *')) {
+    if (
+      target &&
+      !this.ref?.current?.contains(target) &&
+      !target.matches('.bp3-portal *, .bp3-overlay *')
+    ) {
       e.preventDefault();
       e.stopPropagation();
       this.onSubmit();
@@ -96,10 +100,10 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
     const { entity, property } = this.props;
     if (this.props.fetchEntitySuggestions) {
       const entityId = entity.id;
-      this.setState({ entitySuggestions: { isPending: true, results: [] }});
+      this.setState({ entitySuggestions: { isPending: true, results: [] } });
       const suggestions = await this.props.fetchEntitySuggestions(query, [property.getRange()]);
-      suggestions.filter(e => e.id !== entityId);
-      this.setState({ entitySuggestions: { isPending: false, results: suggestions }});
+      suggestions.filter((e) => e.id !== entityId);
+      this.setState({ entitySuggestions: { isPending: false, results: suggestions } });
     }
   }
 
@@ -121,7 +125,7 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
       content = <TopicSelect fullList={propType.values} {...commonProps} />;
     } else if (propType.name === 'entity') {
       const filteredSuggestions = entitySuggestions.results
-        ? entitySuggestions.results.filter(e => (e.id !== entity.id))
+        ? entitySuggestions.results.filter((e) => e.id !== entity.id)
         : [];
 
       content = (
@@ -138,22 +142,22 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
         />
       );
     } else {
-      content = <TextEdit onChange={this.onChange} multiline={propType.name === 'text'} {...commonProps} />;
+      content = (
+        <TextEdit onChange={this.onChange} multiline={propType.name === 'text'} {...commonProps} />
+      );
     }
 
     return (
       <>
         <div
           ref={this.ref}
-          onKeyDown={(e:any) => e.keyCode === TAB_KEY ? this.onSubmit() : null}
+          onKeyDown={(e: any) => (e.keyCode === TAB_KEY ? this.onSubmit() : null)}
         >
           {content}
         </div>
-        {error && (
-          <div className="error-text">{intl.formatMessage(error)}</div>
-        )}
+        {error && <div className="error-text">{intl.formatMessage(error)}</div>}
       </>
-    )
+    );
   }
 }
 

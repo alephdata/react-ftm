@@ -1,4 +1,4 @@
-@import "src/variables.scss";
+@import 'src/variables.scss';
 
 $tooltip-border-color: $light-gray1;
 
@@ -14,13 +14,13 @@ $tooltip-border-color: $light-gray1;
     }
   }
 
-
-  .recharts-reference-area-rect, .recharts-tooltip-cursor {
+  .recharts-reference-area-rect,
+  .recharts-tooltip-cursor {
     fill: $light-gray4;
   }
 
   .recharts-reference-area-rect {
-    fill-opacity: .7;
+    fill-opacity: 0.7;
   }
 
   &__tooltip {

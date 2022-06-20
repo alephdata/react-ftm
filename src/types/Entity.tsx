@@ -1,27 +1,32 @@
 import React from 'react';
-import { Entity as FTMEntity} from "@alephdata/followthemoney";
+import { Entity as FTMEntity } from '@alephdata/followthemoney';
 import truncateText from 'truncate';
 import c from 'classnames';
 import Schema from './Schema';
 import Transliterate from './Transliterate';
 
 export interface FTMEntityExtended extends FTMEntity {
-  latinized?: any
+  latinized?: any;
 }
 
-interface IEntityLabelProps  {
-  entity: FTMEntityExtended
-  icon?:boolean
-  iconSize?: number
-  truncate?:number
-  className?: string
-  transliterate?: boolean
+interface IEntityLabelProps {
+  entity: FTMEntityExtended;
+  icon?: boolean;
+  iconSize?: number;
+  truncate?: number;
+  className?: string;
+  transliterate?: boolean;
 }
 
 class EntityLabel extends React.Component<IEntityLabelProps> {
   render() {
     const {
-      entity, icon = false, iconSize = 16, truncate, className, transliterate = true
+      entity,
+      icon = false,
+      iconSize = 16,
+      truncate,
+      className,
+      transliterate = true,
     } = this.props;
     if (!entity || !entity.id || !FTMEntity.isEntity(entity)) {
       return null;

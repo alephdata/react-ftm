@@ -1,28 +1,28 @@
-import * as React from 'react'
-import { Button, InputGroup } from "@blueprintjs/core"
+import * as React from 'react';
+import { Button, InputGroup } from '@blueprintjs/core';
 import c from 'classnames';
 
 import './SearchBox.scss';
 
 interface ISearchBoxProps {
-  onChangeSearch: (searchText:string) => void
-  onSubmitSearch: (event: React.FormEvent) => void
-  searchText: string
+  onChangeSearch: (searchText: string) => void;
+  onSubmitSearch: (event: React.FormEvent) => void;
+  searchText: string;
 }
 
 interface ISearchBoxState {
-  mobileExpanded: boolean
+  mobileExpanded: boolean;
 }
 
 export class SearchBox extends React.Component<ISearchBoxProps, ISearchBoxState> {
   state: ISearchBoxState = {
     mobileExpanded: false,
-  }
+  };
 
   constructor(props: Readonly<ISearchBoxProps>) {
     super(props);
-    this.onChangeSearch = this.onChangeSearch.bind(this)
-    this.toggleMobileExpanded = this.toggleMobileExpanded.bind(this)
+    this.onChangeSearch = this.onChangeSearch.bind(this);
+    this.toggleMobileExpanded = this.toggleMobileExpanded.bind(this);
   }
 
   onChangeSearch(event: React.FormEvent<HTMLInputElement>) {
@@ -31,7 +31,7 @@ export class SearchBox extends React.Component<ISearchBoxProps, ISearchBoxState>
   }
 
   toggleMobileExpanded() {
-    this.setState(({mobileExpanded}) => ({ mobileExpanded: !mobileExpanded}));
+    this.setState(({ mobileExpanded }) => ({ mobileExpanded: !mobileExpanded }));
   }
 
   render() {
@@ -44,7 +44,11 @@ export class SearchBox extends React.Component<ISearchBoxProps, ISearchBoxState>
             <InputGroup leftIcon="search" onChange={this.onChangeSearch} value={searchText} />
           </form>
         </div>
-        <Button icon={mobileExpanded ? "cross" : "search"} className="SearchBox__mobile-toggle" onClick={this.toggleMobileExpanded} />
+        <Button
+          icon={mobileExpanded ? 'cross' : 'search'}
+          className="SearchBox__mobile-toggle"
+          onClick={this.toggleMobileExpanded}
+        />
       </div>
     );
   }

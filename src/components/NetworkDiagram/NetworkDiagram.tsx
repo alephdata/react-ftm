@@ -1,23 +1,23 @@
-import * as React from 'react'
+import * as React from 'react';
 import c from 'classnames';
-import { Entity, Schema } from "@alephdata/followthemoney";
+import { Entity, Schema } from '@alephdata/followthemoney';
 import { Button, ButtonGroup } from '@blueprintjs/core';
-import { Tooltip2 as Tooltip } from "@blueprintjs/popover2";
+import { Tooltip2 as Tooltip } from '@blueprintjs/popover2';
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 
 import { EdgeCreateDialog, EntityCreateDialog, EntityManager } from 'components/common';
 import { GraphConfig } from 'NetworkDiagram/GraphConfig';
-import { GraphRenderer } from 'NetworkDiagram/renderer'
+import { GraphRenderer } from 'NetworkDiagram/renderer';
 import { Edge, GraphLayout, Rectangle, Point, Settings, Vertex } from 'NetworkDiagram/layout';
 import { Viewport } from 'NetworkDiagram/Viewport';
-import { GraphContext } from 'NetworkDiagram/GraphContext'
+import { GraphContext } from 'NetworkDiagram/GraphContext';
 import { Sidebar, TableView, Toolbar, VertexMenu } from 'NetworkDiagram/toolbox';
 import { History } from 'NetworkDiagram/History';
 import { GroupingCreateDialog, SettingsDialog } from 'NetworkDiagram/dialogs';
 import { EdgeType } from 'types';
 import { EntityChanges } from 'components/common/types';
-import { filterVerticesByText, modes } from 'NetworkDiagram/utils'
-import { showSuccessToast, showWarningToast } from 'utils'
+import { filterVerticesByText, modes } from 'NetworkDiagram/utils';
+import { showSuccessToast, showWarningToast } from 'utils';
 
 import './NetworkDiagram.scss';
 
@@ -41,26 +41,26 @@ const messages = defineMessages({
 });
 
 export interface INetworkDiagramProps extends WrappedComponentProps {
-  config: GraphConfig,
-  locale?: string
-  entityManager: EntityManager
-  layout: GraphLayout,
-  viewport: Viewport,
-  updateLayout: (layout: GraphLayout, options?: any) => void,
-  updateViewport: (viewport: Viewport) => void
-  writeable: boolean
-  externalFilterText?: string
-  svgRef?: React.RefObject<SVGSVGElement>
+  config: GraphConfig;
+  locale?: string;
+  entityManager: EntityManager;
+  layout: GraphLayout;
+  viewport: Viewport;
+  updateLayout: (layout: GraphLayout, options?: any) => void;
+  updateViewport: (viewport: Viewport) => void;
+  writeable: boolean;
+  externalFilterText?: string;
+  svgRef?: React.RefObject<SVGSVGElement>;
 }
 
 interface INetworkDiagramState {
-  animateTransition: boolean
-  interactionMode: string
-  searchText: string
-  tableView: boolean
-  settingsDialogOpen: boolean
-  vertexCreateOptions?: any
-  vertexMenuSettings: any,
+  animateTransition: boolean;
+  interactionMode: string;
+  searchText: string;
+  tableView: boolean;
+  settingsDialogOpen: boolean;
+  vertexCreateOptions?: any;
+  vertexMenuSettings: any;
 }
 
 class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkDiagramState> {
@@ -68,8 +68,8 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
   history: History;
 
   constructor(props: INetworkDiagramProps) {
-    super(props)
-    const { externalFilterText, layout, writeable } = props
+    super(props);
+    const { externalFilterText, layout, writeable } = props;
 
     this.history = new History();
 
@@ -86,16 +86,16 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
       settingsDialogOpen: false,
     };
 
-    this.addVertex = this.addVertex.bind(this)
-    this.fitToSelection = this.fitToSelection.bind(this)
+    this.addVertex = this.addVertex.bind(this);
+    this.fitToSelection = this.fitToSelection.bind(this);
     this.navigateHistory = this.navigateHistory.bind(this);
     this.onZoom = this.onZoom.bind(this);
     this.onChangeSearch = this.onChangeSearch.bind(this);
     this.onSubmitSearch = this.onSubmitSearch.bind(this);
-    this.removeSelection = this.removeSelection.bind(this)
-    this.setInteractionMode = this.setInteractionMode.bind(this)
-    this.toggleTableView = this.toggleTableView.bind(this)
-    this.ungroupSelection = this.ungroupSelection.bind(this)
+    this.removeSelection = this.removeSelection.bind(this);
+    this.setInteractionMode = this.setInteractionMode.bind(this);
+    this.toggleTableView = this.toggleTableView.bind(this);
+    this.ungroupSelection = this.ungroupSelection.bind(this);
     this.updateLayout = this.updateLayout.bind(this);
     this.updateViewport = this.updateViewport.bind(this);
     this.hideVertexMenu = this.hideVertexMenu.bind(this);
@@ -111,7 +111,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
 
     if (externalFilterText) {
       this.onChangeSearch(externalFilterText);
-      this.onSubmitSearch()
+      this.onSubmitSearch();
     }
   }
 
@@ -120,20 +120,20 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
 
     if (externalFilterText !== undefined && prevProps.externalFilterText !== externalFilterText) {
       this.onChangeSearch(externalFilterText);
-      this.onSubmitSearch()
+      this.onSubmitSearch();
     }
   }
 
   onZoom(factor: number) {
     const { viewport } = this.props;
     if (viewport) {
-      const newZoomLevel = viewport.zoomLevel * factor
-      this.updateViewport(viewport.setZoom(newZoomLevel), { animate: true })
+      const newZoomLevel = viewport.zoomLevel * factor;
+      this.updateViewport(viewport.setZoom(newZoomLevel), { animate: true });
     }
   }
 
   onChangeSearch(searchText: string) {
-    const { layout } = this.props
+    const { layout } = this.props;
 
     if (searchText.length > 0) {
       const predicate = filterVerticesByText(searchText);
@@ -142,7 +142,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
       layout.clearSelection();
     }
     this.setState({ searchText });
-    this.updateLayout(layout, undefined, { modifyHistory: false })
+    this.updateLayout(layout, undefined, { modifyHistory: false });
   }
 
   onSubmitSearch(event?: React.FormEvent) {
@@ -160,7 +160,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
 
     this.setState(({ searchText }) => ({
       animateTransition: false,
-      searchText: options?.clearSearch ? '' : searchText
+      searchText: options?.clearSearch ? '' : searchText,
     }));
 
     this.props.updateLayout(layout, {
@@ -186,14 +186,14 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
       entityManager.applyEntityChanges(entityChanges, factor);
     }
 
-    this.updateLayout(GraphLayout.fromJSON(config, layout), undefined, { forceSaveUpdate: true })
+    this.updateLayout(GraphLayout.fromJSON(config, layout), undefined, { forceSaveUpdate: true });
   }
 
   addVertex(options?: any) {
     this.setState({
       interactionMode: modes.VERTEX_CREATE,
-      vertexCreateOptions: options
-    })
+      vertexCreateOptions: options,
+    });
   }
 
   async onVertexCreate(entityData: any) {
@@ -206,11 +206,11 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     layout.layout(entityManager.getEntities(), center);
     layout.selectByEntityIds([entity.id]);
 
-    const vertex = layout.getVertexByEntity(entity)
+    const vertex = layout.getVertexByEntity(entity);
 
     if (vertex) {
       if (vertexCreateOptions?.initialPosition) {
-        layout.vertices.set(vertex.id, vertex.snapPosition(center))
+        layout.vertices.set(vertex.id, vertex.snapPosition(center));
       }
       this.updateLayout(layout, { created: [entity] }, { modifyHistory: true, clearSearch: true });
       return entity;
@@ -228,12 +228,12 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     const entityChanges: EntityChanges = {};
     let edge;
     if (type.property && source) {
-      const nextSource = source.clone()
-      nextSource.setProperty(type.property, target)
+      const nextSource = source.clone();
+      nextSource.setProperty(type.property, target);
       entityManager.updateEntity(nextSource);
       layout.layout(entityManager.getEntities());
       entityChanges.updated = [{ prev: source, next: nextSource }];
-      edge = Edge.fromValue(layout, type.property, sourceVertex, targetVertex)
+      edge = Edge.fromValue(layout, type.property, sourceVertex, targetVertex);
     }
     if (type.schema && type.schema.edge && source && target) {
       const entity = entityManager.createEntity({
@@ -241,17 +241,17 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
         properties: {
           [type.schema.edge.source]: source.id,
           [type.schema.edge.target]: target.id,
-        }
+        },
       });
       entityManager.addEntities([entity]);
       layout.layout(entityManager.getEntities());
       entityChanges.created = [entity];
-      edge = Edge.fromEntity(layout, entity, sourceVertex, targetVertex)
+      edge = Edge.fromEntity(layout, entity, sourceVertex, targetVertex);
     }
 
     if (edge) {
-      layout.selectElement(edge)
-      this.updateViewport(viewport.setCenter(edge.getCenter()), { animate: true })
+      layout.selectElement(edge);
+      this.updateViewport(viewport.setCenter(edge.getCenter()), { animate: true });
       this.updateLayout(layout, entityChanges, { modifyHistory: true, clearSearch: true });
     }
   }
@@ -262,18 +262,18 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
 
     const docHeight = document.body.clientHeight;
     if (position.y > docHeight / 2) {
-      menuSettings.anchor = "bottom";
+      menuSettings.anchor = 'bottom';
       menuSettings.position = new Point(position.x, docHeight - position.y);
     }
 
     this.setState({
       vertexMenuSettings: menuSettings,
-    })
+    });
     if (vertex.entityId) {
       const expandResults = await entityManager.expandEntity(vertex.entityId, undefined, 0);
       this.setState(({ vertexMenuSettings }) => ({
         vertexMenuSettings: vertexMenuSettings ? { ...menuSettings, expandResults } : null,
-      }))
+      }));
     }
   }
 
@@ -292,8 +292,14 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
       const before = layout.getVisibleElementCount();
 
       const entityIds = expandResults
-        .reduce((entities: Array<Entity>, expandObj: any) => ([...entities, ...expandObj.entities]), [])
-        .map((entity: Entity) => { entityManager.createEntity(entity); return entity.id; });
+        .reduce(
+          (entities: Array<Entity>, expandObj: any) => [...entities, ...expandObj.entities],
+          []
+        )
+        .map((entity: Entity) => {
+          entityManager.createEntity(entity);
+          return entity.id;
+        });
 
       layout.layout(entityManager.getEntities(), viewport.center);
       layout.selectByEntityIds(entityIds);
@@ -303,21 +309,23 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
       const eDiff = after.edges - before.edges;
 
       if (vDiff || eDiff) {
-        showSuccessToast(intl.formatMessage(messages.expand_success, { vertices: vDiff, edges: eDiff }));
+        showSuccessToast(
+          intl.formatMessage(messages.expand_success, { vertices: vDiff, edges: eDiff })
+        );
       } else {
         showWarningToast(intl.formatMessage(messages.expand_none));
       }
 
-      this.updateLayout(layout, undefined, { modifyHistory: true })
+      this.updateLayout(layout, undefined, { modifyHistory: true });
     }
   }
 
   setInteractionMode(newMode?: string) {
-    this.setState({ interactionMode: newMode || modes.SELECT, vertexCreateOptions: null })
+    this.setState({ interactionMode: newMode || modes.SELECT, vertexCreateOptions: null });
   }
 
   toggleTableView() {
-    this.setState(({ tableView }) => ({ tableView: !tableView }))
+    this.setState(({ tableView }) => ({ tableView: !tableView }));
   }
 
   toggleSettingsDialog(settings?: any) {
@@ -332,12 +340,12 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     }
   }
   fitToSelection() {
-    const { layout, viewport } = this.props
-    const selection = layout.getSelectedVertices()
-    const vertices = selection.length > 0 ? selection : layout.getVertices()
-    const points = vertices.filter((v) => !v.isHidden()).map((v) => v.position)
-    const rect = Rectangle.fromPoints(...points)
-    this.updateViewport(viewport.fitToRect(rect), { animate: true })
+    const { layout, viewport } = this.props;
+    const selection = layout.getSelectedVertices();
+    const vertices = selection.length > 0 ? selection : layout.getVertices();
+    const points = vertices.filter((v) => !v.isHidden()).map((v) => v.position);
+    const rect = Rectangle.fromPoints(...points);
+    this.updateViewport(viewport.fitToRect(rect), { animate: true });
   }
 
   removeSelection() {
@@ -348,18 +356,25 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
     entityManager.deleteEntities(idsToRemove);
     layout.layout(entityManager.getEntities());
 
-    this.updateLayout(layout, { deleted: entitiesToRemove }, { modifyHistory: true })
+    this.updateLayout(layout, { deleted: entitiesToRemove }, { modifyHistory: true });
   }
 
   ungroupSelection() {
-    const { layout } = this.props
-    layout.ungroupSelection()
-    this.updateLayout(layout, undefined, { modifyHistory: true })
+    const { layout } = this.props;
+    layout.ungroupSelection();
+    this.updateLayout(layout, undefined, { modifyHistory: true });
   }
 
   render() {
     const { config, entityManager, intl, layout, svgRef, viewport, writeable } = this.props;
-    const { animateTransition, interactionMode, searchText, settingsDialogOpen, tableView, vertexMenuSettings } = this.state;
+    const {
+      animateTransition,
+      interactionMode,
+      searchText,
+      settingsDialogOpen,
+      tableView,
+      vertexMenuSettings,
+    } = this.state;
     const selectedEntities = entityManager.getEntities(layout.getSelectedEntityIds());
 
     const layoutContext = {
@@ -370,7 +385,7 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
       entityManager,
       intl,
       writeable,
-      interactionMode
+      interactionMode,
     };
 
     const actions = {
@@ -392,7 +407,13 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
 
     return (
       <GraphContext.Provider value={layoutContext}>
-        <div className={c('NetworkDiagram', `toolbar-${config.toolbarPosition}`, `theme-${config.editorTheme}`)}>
+        <div
+          className={c(
+            'NetworkDiagram',
+            `toolbar-${config.toolbarPosition}`,
+            `theme-${config.editorTheme}`
+          )}
+        >
           <div className="NetworkDiagram__toolbar">
             <Toolbar
               actions={actions}
@@ -402,7 +423,12 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
               tableView={tableView}
             />
           </div>
-          <div className={c("NetworkDiagram__content", { 'sidebar-open': showSidebar, 'table-open': tableView })}>
+          <div
+            className={c('NetworkDiagram__content', {
+              'sidebar-open': showSidebar,
+              'table-open': tableView,
+            })}
+          >
             <div className="NetworkDiagram__main">
               <div className="NetworkDiagram__button-group">
                 <ButtonGroup vertical>
@@ -447,9 +473,11 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
               toggleDialog={this.setInteractionMode}
               schema={entityManager.model.getSchema('Person')}
               model={entityManager.model}
-              fetchEntitySuggestions={entityManager.hasSuggest
-                ? (queryText: string, schemata?: Array<Schema>) => entityManager.getEntitySuggestions(false, queryText, schemata)
-                : undefined
+              fetchEntitySuggestions={
+                entityManager.hasSuggest
+                  ? (queryText: string, schemata?: Array<Schema>) =>
+                      entityManager.getEntitySuggestions(false, queryText, schemata)
+                  : undefined
               }
               intl={intl}
             />
@@ -475,7 +503,9 @@ class NetworkDiagramBase extends React.Component<INetworkDiagramProps, INetworkD
               toggleDialog={this.setInteractionMode}
               onSubmit={this.onEdgeCreate}
               entityManager={entityManager}
-              fetchEntitySuggestions={(queryText: string, schemata?: Array<Schema>) => entityManager.getEntitySuggestions(true, queryText, schemata)}
+              fetchEntitySuggestions={(queryText: string, schemata?: Array<Schema>) =>
+                entityManager.getEntitySuggestions(true, queryText, schemata)
+              }
               intl={intl}
             />
           </>

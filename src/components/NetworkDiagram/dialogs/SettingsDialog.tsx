@@ -1,5 +1,5 @@
 import * as React from 'react';
-import sortBy from 'lodash/sortBy'
+import sortBy from 'lodash/sortBy';
 import { PropertyType } from '@alephdata/followthemoney';
 import { defineMessages } from 'react-intl';
 import { Intent, FormGroup, Checkbox, Dialog, Button } from '@blueprintjs/core';
@@ -24,18 +24,19 @@ const messages = defineMessages({
   },
   helpText: {
     id: 'dialog.settings.pivot_types.help_text',
-    defaultMessage: 'The selected property types above will be used to draw connections between nodes when values are shared',
+    defaultMessage:
+      'The selected property types above will be used to draw connections between nodes when values are shared',
   },
 });
 
 interface ISettingsDialogProps {
-  isOpen: boolean
-  toggleDialog: (settings?: ISettingsData) => void
-  settings: Settings
+  isOpen: boolean;
+  toggleDialog: (settings?: ISettingsData) => void;
+  settings: Settings;
 }
 
 interface ISettingsDialogState {
-  pivotTypes: Array<string>
+  pivotTypes: Array<string>;
 }
 
 export class SettingsDialog extends React.Component<ISettingsDialogProps, ISettingsDialogState> {
@@ -56,16 +57,15 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
   togglePivotType(type: string) {
     this.setState(({ pivotTypes }) => {
       if (pivotTypes.includes(type)) {
-        return ({
-          pivotTypes: pivotTypes.filter(t => t !== type)
-        })
+        return {
+          pivotTypes: pivotTypes.filter((t) => t !== type),
+        };
       }
-      return ({
-        pivotTypes: [...pivotTypes, type]
-      })
+      return {
+        pivotTypes: [...pivotTypes, type],
+      };
     });
   }
-
 
   renderPivotType = (type: PropertyType) => {
     const { pivotTypes } = this.state;
@@ -79,15 +79,16 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
         onChange={() => this.togglePivotType(type.name)}
       />
     );
-  }
+  };
 
   render() {
     const { entityManager, intl } = this.context;
     const { isOpen, toggleDialog } = this.props;
     const { pivotTypes } = this.state;
 
-    const matchableTypes = Object.values(entityManager.model.types as Array<PropertyType>)
-      .filter((t: PropertyType) => t.matchable);
+    const matchableTypes = Object.values(entityManager.model.types as Array<PropertyType>).filter(
+      (t: PropertyType) => t.matchable
+    );
     const typeOptions = sortBy(matchableTypes, ['label']);
 
     return (

@@ -68,23 +68,43 @@ function isValidPhone(entity: Entity, value: string) {
   return false;
 }
 
-export function validate({ entity, property, values, schema }: { entity?: Entity, property: Property, values: Values, schema: Schema }): any {
+export function validate({
+  entity,
+  property,
+  values,
+  schema,
+}: {
+  entity?: Entity;
+  property: Property;
+  values: Values;
+  schema: Schema;
+}): any {
   if (!values || !values.length || (values.length === 1 && values[0] === '')) {
     const isPropRequired = schema.required.indexOf(property.name) > -1;
     return isPropRequired ? validationMessages.required : null;
   }
   const propType = property.type.name;
   if (propType === 'url') {
-    return values.some(val => !isValidUrl(val as string)) ? validationMessages.invalidUrl : null;
+    return values.some((val) => !isValidUrl(val as string)) ? validationMessages.invalidUrl : null;
   } else if (propType === 'date') {
-    const dateRegex = RegExp(/^([12]\d{3}(-[01]?[0-9](-[0123]?[0-9]([T ]([012]?\d(:\d{1,2}(:\d{1,2}(\.\d{6})?(Z|[-+]\d{2}(:?\d{2})?)?)?)?)?)?)?)?)?$/)
-    return values.some(val => !dateRegex.test(val as string)) ? validationMessages.invalidDate : null;
+    const dateRegex = RegExp(
+      /^([12]\d{3}(-[01]?[0-9](-[0123]?[0-9]([T ]([012]?\d(:\d{1,2}(:\d{1,2}(\.\d{6})?(Z|[-+]\d{2}(:?\d{2})?)?)?)?)?)?)?)?)?$/
+    );
+    return values.some((val) => !dateRegex.test(val as string))
+      ? validationMessages.invalidDate
+      : null;
   } else if (propType === 'country') {
-    return values.some(val => !isValidEnumValue(property, val as string)) ? validationMessages.invalidCountry : null;
+    return values.some((val) => !isValidEnumValue(property, val as string))
+      ? validationMessages.invalidCountry
+      : null;
   } else if (propType === 'topic') {
-    return values.some(val => !isValidEnumValue(property, val as string)) ? validationMessages.invalidTopic : null;
+    return values.some((val) => !isValidEnumValue(property, val as string))
+      ? validationMessages.invalidTopic
+      : null;
   } else if (propType === 'phone' && entity !== undefined) {
-    return values.some(val => !isValidPhone(entity, val as string)) ? validationMessages.invalidPhone : null;
+    return values.some((val) => !isValidPhone(entity, val as string))
+      ? validationMessages.invalidPhone
+      : null;
   }
   return null;
 }
@@ -92,5 +112,7 @@ export function validate({ entity, property, values, schema }: { entity?: Entity
 export function checkEntityRequiredProps(entityData: Entity): any {
   const { schema, properties } = entityData;
 
-  return schema.required.some((propName: string) => !properties[propName]) ? validationMessages.required : null;
+  return schema.required.some((propName: string) => !properties[propName])
+    ? validationMessages.required
+    : null;
 }

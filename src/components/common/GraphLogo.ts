@@ -1,7 +1,6 @@
-
 export interface IGraphLogo {
-  text?: string,
-  image?: string,
+  text?: string;
+  image?: string;
 }
 
 export class GraphLogo {

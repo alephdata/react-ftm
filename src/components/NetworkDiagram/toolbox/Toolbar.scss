@@ -1,5 +1,5 @@
-@import "src/variables.scss";
-@import "src/themes.scss";
+@import 'src/variables.scss';
+@import 'src/themes.scss';
 
 $width-right: $sidebar-width;
 
@@ -22,7 +22,9 @@ $width-right: $sidebar-width;
     background-color: themed('toolbarColor');
   }
 
-  &__logo-container, &__main, &__search-container {
+  &__logo-container,
+  &__main,
+  &__search-container {
     .toolbar-top & {
       vertical-align: middle;
       padding: 5px 10px;
@@ -74,12 +76,12 @@ $width-right: $sidebar-width;
       margin: 5px auto;
     }
 
-    &__image, &__text {
+    &__image,
+    &__text {
       display: table-cell;
     }
     &__image {
       height: 30px;
-
     }
     &__text {
       font-size: 16px;
@@ -147,5 +149,4 @@ $width-right: $sidebar-width;
       border-color: themed('disabledColor') !important;
     }
   }
-
 }

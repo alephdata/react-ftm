@@ -1,4 +1,4 @@
-@import "src/variables.scss";
+@import 'src/variables.scss';
 
 .Count {
   &.bp3-tag {
@@ -8,7 +8,8 @@
     background: none !important;
   }
 
-  &.bp3-intent-primary, .bp3-tab[aria-selected="true"] > & {
+  &.bp3-intent-primary,
+  .bp3-tab[aria-selected='true'] > & {
     background-color: $pt-intent-primary !important;
     color: white !important;
   }

@@ -14,5 +14,5 @@ export function wrapLines(text: string, maxLength: number): string[] {
 
   lines.push(currentLine);
 
-  return lines.map(line => line.join(' '));
+  return lines.map((line) => line.join(' '));
 }

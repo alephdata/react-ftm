@@ -1,5 +1,5 @@
-@import "src/variables.scss";
-@import "src/themes.scss";
+@import 'src/variables.scss';
+@import 'src/themes.scss';
 
 .GroupingViewer {
   height: 100%;
@@ -24,7 +24,7 @@
       }
       &__secondary {
         margin-bottom: 3px !important;
-        opacity: .9;
+        opacity: 0.9;
 
         .bp3-icon {
           margin-right: 5px;
@@ -49,12 +49,10 @@
     border-bottom: 1px solid $blue1;
   }
 
-
   .bp3-divider {
     margin: 15px 0;
     @include themify() {
       border-color: themed('textColor');
     }
   }
-
 }

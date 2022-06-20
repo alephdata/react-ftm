@@ -1,25 +1,28 @@
-import React from 'react'
+import React from 'react';
 
 import NetworkDiagramWrapper from 'embed/NetworkDiagramWrapper';
 import EntityTableWrapper from 'embed/EntityTableWrapper';
 import HistogramWrapper from 'embed/HistogramWrapper';
 
-import { EntityManager } from 'components/common'
+import { EntityManager } from 'components/common';
 
 export interface IEmbeddedElementProps {
-  id: string
-  data: any
-  type: string
-  config?: any
+  id: string;
+  data: any;
+  type: string;
+  config?: any;
 }
 
-export class EmbeddedElement extends React.Component <IEmbeddedElementProps> {
-  private entityManager: EntityManager
+export class EmbeddedElement extends React.Component<IEmbeddedElementProps> {
+  private entityManager: EntityManager;
 
   constructor(props: IEmbeddedElementProps) {
-    super(props)
+    super(props);
     if (props.data) {
-      this.entityManager = EntityManager.fromJSON({}, props.data?.entities || props.data?.layout?.entities);
+      this.entityManager = EntityManager.fromJSON(
+        {},
+        props.data?.entities || props.data?.layout?.entities
+      );
     } else {
       this.entityManager = new EntityManager();
     }
@@ -32,9 +35,9 @@ export class EmbeddedElement extends React.Component <IEmbeddedElementProps> {
     if (config?.writeable) {
       const updatedData = JSON.stringify({
         entities: this.entityManager.toJSON(),
-        ...additionalData
-      })
-      localStorage.setItem(id, updatedData)
+        ...additionalData,
+      });
+      localStorage.setItem(id, updatedData);
     }
   }
 
@@ -46,13 +49,13 @@ export class EmbeddedElement extends React.Component <IEmbeddedElementProps> {
     let Element;
     switch (type) {
       case 'EntityTable':
-        Element = EntityTableWrapper
+        Element = EntityTableWrapper;
         break;
       case 'Histogram':
-        return <HistogramWrapper />
+        return <HistogramWrapper />;
         break;
       default:
-        Element = NetworkDiagramWrapper
+        Element = NetworkDiagramWrapper;
         break;
     }
 
@@ -63,6 +66,6 @@ export class EmbeddedElement extends React.Component <IEmbeddedElementProps> {
         writeable={config?.writeable}
         layoutData={rest}
       />
-    )
+    );
   }
 }

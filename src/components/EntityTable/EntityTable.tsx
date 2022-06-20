@@ -1,7 +1,7 @@
 import React from 'react';
 import { defineMessages, injectIntl } from 'react-intl';
-import { Button, Tab, Tabs } from "@blueprintjs/core";
-import { Schema as FTMSchema, Entity } from "@alephdata/followthemoney";
+import { Button, Tab, Tabs } from '@blueprintjs/core';
+import { Schema as FTMSchema, Entity } from '@alephdata/followthemoney';
 
 import { SchemaSelect } from 'editors';
 import { Schema } from 'types';
@@ -9,7 +9,6 @@ import { sortEntities } from 'utils';
 import { SortType } from 'components/common/types/SortType';
 import { IEntityTableCommonProps } from 'components/EntityTable/common';
 import { TableEditor } from 'components/EntityTable';
-
 
 const messages = defineMessages({
   add: {
@@ -19,14 +18,14 @@ const messages = defineMessages({
 });
 
 interface IEntityTableProps extends IEntityTableCommonProps {
-  selection?: Array<string>
-  onSelectionChange?: (entityIds: Array<string>, newVal: boolean) => void
+  selection?: Array<string>;
+  onSelectionChange?: (entityIds: Array<string>, newVal: boolean) => void;
 }
 
 interface IEntityTableState {
-  schemata: Array<FTMSchema>,
-  activeSchema: string
-  sort: SortType | null
+  schemata: Array<FTMSchema>;
+  activeSchema: string;
+  sort: SortType | null;
 }
 
 class EntityTableBase extends React.Component<IEntityTableProps, IEntityTableState> {
@@ -50,15 +49,20 @@ class EntityTableBase extends React.Component<IEntityTableProps, IEntityTableSta
   getSchemata() {
     const { entityManager } = this.props;
 
-    return entityManager.getEntities()
+    return entityManager
+      .getEntities()
       .map((entity: Entity) => entity.schema)
-      .filter((schema: FTMSchema, index: number, list: any) => !schema.isEdge && list.indexOf(schema) === index)
+      .filter(
+        (schema: FTMSchema, index: number, list: any) =>
+          !schema.isEdge && list.indexOf(schema) === index
+      )
       .sort((a: FTMSchema, b: FTMSchema) => a.label.localeCompare(b.label));
   }
 
   addSchema(schema: FTMSchema) {
-    const schemata = [...this.state.schemata, ...[schema]]
-      .sort((a, b) => a.label.localeCompare(b.label))
+    const schemata = [...this.state.schemata, ...[schema]].sort((a, b) =>
+      a.label.localeCompare(b.label)
+    );
     this.setState({ schemata });
     this.setActiveSchema(schema.name);
   }
@@ -71,13 +75,16 @@ class EntityTableBase extends React.Component<IEntityTableProps, IEntityTableSta
     const { entityManager } = this.props;
     const { activeSchema, sort } = this.state;
 
-    const entities = entityManager.getEntities()
+    const entities = entityManager
+      .getEntities()
       .filter((e: Entity) => e.schema.name === schema.name);
 
     if (activeSchema === schema.name && sort) {
       const { field, direction } = sort;
       const property = schema.getProperty(field);
-      return entities.sort((a: Entity, b: Entity) => sortEntities(a, b, property, direction, entityManager.getEntity));
+      return entities.sort((a: Entity, b: Entity) =>
+        sortEntities(a, b, property, direction, entityManager.getEntity)
+      );
     } else {
       return entities;
     }
@@ -87,10 +94,10 @@ class EntityTableBase extends React.Component<IEntityTableProps, IEntityTableSta
     this.setState(({ sort }) => {
       let nextSort;
       if (sort?.field !== sortedField) {
-        nextSort = { field: sortedField, direction: 'asc'};
+        nextSort = { field: sortedField, direction: 'asc' };
       } else {
         if (sort?.direction === 'asc') {
-          nextSort = { field: sort.field, direction: 'desc'};
+          nextSort = { field: sort.field, direction: 'desc' };
         } else {
           nextSort = null;
         }
@@ -100,21 +107,26 @@ class EntityTableBase extends React.Component<IEntityTableProps, IEntityTableSta
   }
 
   render() {
-    const { entityManager, intl, isPending, onSelectionChange, selection, updateFinishedCallback, visitEntity, writeable } = this.props;
+    const {
+      entityManager,
+      intl,
+      isPending,
+      onSelectionChange,
+      selection,
+      updateFinishedCallback,
+      visitEntity,
+      writeable,
+    } = this.props;
     const { activeSchema, sort, schemata } = this.state;
 
     return (
-      <Tabs
-        renderActiveTabPanelOnly
-        selectedTabId={activeSchema}
-        onChange={this.setActiveSchema}
-      >
-        {schemata.map(schema => (
+      <Tabs renderActiveTabPanelOnly selectedTabId={activeSchema} onChange={this.setActiveSchema}>
+        {schemata.map((schema) => (
           <Tab
             id={schema.name}
             key={schema.name}
             title={<Schema.Label schema={schema} icon />}
-            panel={(
+            panel={
               <TableEditor
                 entities={this.getEntities(schema)}
                 schema={schema}
@@ -124,30 +136,29 @@ class EntityTableBase extends React.Component<IEntityTableProps, IEntityTableSta
                 updateSelection={onSelectionChange}
                 writeable={writeable}
                 entityManager={entityManager}
-                fetchEntitySuggestions={(queryText: string, schemata?: Array<FTMSchema>) => entityManager.getEntitySuggestions(true, queryText, schemata)}
+                fetchEntitySuggestions={(queryText: string, schemata?: Array<FTMSchema>) =>
+                  entityManager.getEntitySuggestions(true, queryText, schemata)
+                }
                 updateFinishedCallback={updateFinishedCallback}
                 visitEntity={visitEntity}
                 isPending={isPending}
               />
-            )}
+            }
           />
         ))}
         {writeable && (
           <div className="TableView__schemaAdd">
             <SchemaSelect
               model={entityManager.model}
-              onSelect={schema => this.addSchema(schema)}
-              optionsFilter={(schema => !schemata.includes(schema))}
+              onSelect={(schema) => this.addSchema(schema)}
+              optionsFilter={(schema) => !schemata.includes(schema)}
             >
-              <Button
-                text={intl.formatMessage(messages.add)}
-                icon="plus"
-              />
+              <Button text={intl.formatMessage(messages.add)} icon="plus" />
             </SchemaSelect>
           </div>
         )}
       </Tabs>
-    )
+    );
   }
 }
 

@@ -5,9 +5,9 @@ import truncateText from 'truncate';
 import './Transliterate.scss';
 
 interface ITransliterateProps {
-  value: string
-  lookup?: any
-  truncate?: number
+  value: string;
+  lookup?: any;
+  truncate?: number;
 }
 
 class Transliterate extends React.PureComponent<ITransliterateProps> {
@@ -15,20 +15,19 @@ class Transliterate extends React.PureComponent<ITransliterateProps> {
     super(props);
 
     this.copyText = this.copyText.bind(this);
-
   }
   onOpen = () => {
     document.addEventListener('copy', this.copyText);
-  }
+  };
 
   onClose = () => {
     document.removeEventListener('copy', this.copyText);
-  }
+  };
 
   copyText = (e: any) => {
     e.clipboardData.setData('text/plain', this.getTranslitValue());
     e.preventDefault();
-  }
+  };
 
   getTranslitValue() {
     const { lookup, value } = this.props;
@@ -48,14 +47,14 @@ class Transliterate extends React.PureComponent<ITransliterateProps> {
           popoverClassName="Transliterate__popover bp3-minimal bp3-small"
           onOpening={this.onOpen}
           onClosing={this.onClose}
-          content={(
+          content={
             <>
               <span className="Transliterate__popover__main">{this.getTranslitValue()}</span>
               <span className="Transliterate__popover__secondary">
                 <code>{symbol}</code>+<code>C</code> to copy
               </span>
             </>
-          )}
+          }
         >
           <span className="Transliterate bp3-tooltip2-indicator">
             {truncate ? truncateText(value, truncate) : value}

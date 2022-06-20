@@ -1,9 +1,8 @@
 import React from 'react';
 import min from 'lodash/min';
 
-
 interface IEarliestProps {
-  values:number[]
+  values: number[];
 }
 
 class Earliest extends React.PureComponent<IEarliestProps> {
@@ -13,14 +12,14 @@ class Earliest extends React.PureComponent<IEarliestProps> {
     if (earliest) {
       return <Date value={earliest.toString()} />;
     } else {
-      return <span>-</span>
+      return <span>-</span>;
     }
   }
 }
 
 interface IDateProps {
-  value:string
-  showTime?: boolean
+  value: string;
+  showTime?: boolean;
 }
 
 class Date extends React.PureComponent<IDateProps> {
@@ -31,9 +30,9 @@ class Date extends React.PureComponent<IDateProps> {
     if (!dateString) {
       return null;
     }
-    const [date, time] = dateString.split("T");
+    const [date, time] = dateString.split('T');
     if (showTime && time) {
-      const [hours, minutes] = time.split(":");
+      const [hours, minutes] = time.split(':');
       const formattedTime = `${+hours}:${minutes}`;
       return `${date} ${formattedTime}`;
     }

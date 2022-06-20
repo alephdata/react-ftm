@@ -1,11 +1,11 @@
-import * as React from 'react'
+import * as React from 'react';
 import { injectIntl, defineMessages, WrappedComponentProps } from 'react-intl';
-import { FormGroup, Intent, Button } from '@blueprintjs/core'
-import { Entity, Schema } from '@alephdata/followthemoney'
+import { FormGroup, Intent, Button } from '@blueprintjs/core';
+import { Entity, Schema } from '@alephdata/followthemoney';
 
-import { EdgeTypeSelect, EntitySelect } from 'editors'
-import { EdgeType } from 'types'
-import { Dialog, EntityManager } from 'components/common'
+import { EdgeTypeSelect, EntitySelect } from 'editors';
+import { EdgeType } from 'types';
+import { Dialog, EntityManager } from 'components/common';
 
 const messages = defineMessages({
   add_link: {
@@ -35,43 +35,45 @@ const messages = defineMessages({
 });
 
 interface IEdgeCreateDialogProps extends WrappedComponentProps {
-  source: Entity
-  target?: Entity
-  isOpen: boolean,
-  toggleDialog: () => any
-  onSubmit: (source: Entity, target: Entity, type: EdgeType) => void
-  fetchEntitySuggestions: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>,
-  entityManager: EntityManager
+  source: Entity;
+  target?: Entity;
+  isOpen: boolean;
+  toggleDialog: () => any;
+  onSubmit: (source: Entity, target: Entity, type: EdgeType) => void;
+  fetchEntitySuggestions: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>;
+  entityManager: EntityManager;
 }
 
 interface IEdgeCreateDialogState {
-  source?: Entity
-  target?: Entity
-  sourceSuggestions: any
-  targetSuggestions: any
-  type?: EdgeType
-  isProcessing: boolean
+  source?: Entity;
+  target?: Entity;
+  sourceSuggestions: any;
+  targetSuggestions: any;
+  type?: EdgeType;
+  isProcessing: boolean;
 }
 
-export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IEdgeCreateDialogState> {
-  types: EdgeType[] = []
+export class EdgeCreateDialog extends React.Component<
+  IEdgeCreateDialogProps,
+  IEdgeCreateDialogState
+> {
+  types: EdgeType[] = [];
   state: IEdgeCreateDialogState = {
     isProcessing: false,
     sourceSuggestions: { isPending: false, results: [] },
     targetSuggestions: { isPending: false, results: [] },
-  }
+  };
 
   constructor(props: any) {
-    super(props)
+    super(props);
 
-    this.types = EdgeType.getAll(props.entityManager.model)
+    this.types = EdgeType.getAll(props.entityManager.model);
 
-    this.onSelectSource = this.onSelectSource.bind(this)
-    this.onSelectTarget = this.onSelectTarget.bind(this)
-    this.onChangeType = this.onChangeType.bind(this)
-    this.onSubmit = this.onSubmit.bind(this)
-    this.onReverse = this.onReverse.bind(this)
-
+    this.onSelectSource = this.onSelectSource.bind(this);
+    this.onSelectTarget = this.onSelectTarget.bind(this);
+    this.onChangeType = this.onChangeType.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onReverse = this.onReverse.bind(this);
   }
 
   componentDidUpdate(prevProps: IEdgeCreateDialogProps) {
@@ -82,12 +84,12 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   }
 
   onChangeType(type: EdgeType) {
-    const { source, target } = this.state
+    const { source, target } = this.state;
     if (source && target) {
       if (!type.match(source, target) && type.match(target, source)) {
-        this.setState({ source: target, target: source })
+        this.setState({ source: target, target: source });
       }
-      this.setState({ type })
+      this.setState({ type });
     }
   }
 
@@ -95,27 +97,27 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
     this.setState(({ target }) => ({
       source,
       target: target?.id === source.id ? undefined : target,
-      type: undefined
-    }))
+      type: undefined,
+    }));
   }
 
   onSelectTarget(target: Entity) {
     this.setState(({ source }) => ({
       target,
       source: source?.id === target.id ? undefined : source,
-      type: undefined
-    }))
+      type: undefined,
+    }));
   }
 
   isValid() {
-    const { source, target, type } = this.state
-    return source && target && type && type.match(source, target)
+    const { source, target, type } = this.state;
+    return source && target && type && type.match(source, target);
   }
 
   async onSubmit(e: React.ChangeEvent<HTMLFormElement>) {
-    const { onSubmit, toggleDialog } = this.props
-    const { source, target, type } = this.state
-    e.preventDefault()
+    const { onSubmit, toggleDialog } = this.props;
+    const { source, target, type } = this.state;
+    e.preventDefault();
     if (source && target && type && this.isValid()) {
       onSubmit(source, target, type);
       toggleDialog();
@@ -123,58 +125,58 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   }
 
   isReversible() {
-    const { source, target, type } = this.state
-    return source && target && type && type.match(target, source)
+    const { source, target, type } = this.state;
+    return source && target && type && type.match(target, source);
   }
 
   onReverse() {
-    const { source, target } = this.state
+    const { source, target } = this.state;
     if (this.isReversible()) {
-      this.setState({ source: target, target: source })
+      this.setState({ source: target, target: source });
     }
   }
 
   getTypes(): EdgeType[] {
-    const { source, target } = this.state
+    const { source, target } = this.state;
 
     if (source && target) {
-      return this.types.filter((et) => et.match(source, target) || et.match(target, source))
+      return this.types.filter((et) => et.match(source, target) || et.match(target, source));
     }
-    return []
+    return [];
   }
 
   getSourceLabel(): string | undefined {
-    const { type } = this.state
+    const { type } = this.state;
     if (type) {
       if (type.schema && type.schema.edge) {
-        return type.schema.getProperty(type.schema.edge.source).label
+        return type.schema.getProperty(type.schema.edge.source).label;
       }
       if (type.property) {
-        return type.property.schema.label
+        return type.property.schema.label;
       }
     }
   }
 
   getTargetLabel(): string | undefined {
-    const { type } = this.state
+    const { type } = this.state;
     if (type) {
       if (type.schema && type.schema.edge) {
-        return type.schema.getProperty(type.schema.edge.target).label
+        return type.schema.getProperty(type.schema.edge.target).label;
       }
       if (type.property) {
-        return type.property.label
+        return type.property.label;
       }
     }
   }
 
   getTypeDescription(): string | undefined | null {
-    const { type } = this.state
+    const { type } = this.state;
     if (type) {
       if (type.schema) {
-        return type.schema.description
+        return type.schema.description;
       }
       if (type.property) {
-        return type.property.description
+        return type.property.description;
       }
     }
   }
@@ -194,16 +196,17 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
   async fetchSuggestions(query: string) {
     const { entityManager, fetchEntitySuggestions } = this.props;
 
-    const schemata = entityManager.model.getSchemata()
-      .filter((schema: Schema) => schema.isThing() && !schema.generated && !schema.abstract)
+    const schemata = entityManager.model
+      .getSchemata()
+      .filter((schema: Schema) => schema.isThing() && !schema.generated && !schema.abstract);
 
     return await fetchEntitySuggestions(query, schemata);
   }
 
   render() {
-    const { intl, isOpen, toggleDialog } = this.props
-    const { isProcessing, source, target, type, sourceSuggestions, targetSuggestions } = this.state
-    const types = this.getTypes()
+    const { intl, isOpen, toggleDialog } = this.props;
+    const { isProcessing, source, target, type, sourceSuggestions, targetSuggestions } = this.state;
+    const types = this.getTypes();
 
     return (
       <Dialog
@@ -218,7 +221,10 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
           <div className="bp3-dialog-body">
             <div style={{ flex: 1, display: 'flex', flexFlow: 'row' }}>
               <div style={{ flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em' }}>
-                <FormGroup label={intl.formatMessage(messages.source)} helperText={this.getSourceLabel()}>
+                <FormGroup
+                  label={intl.formatMessage(messages.source)}
+                  helperText={this.getSourceLabel()}
+                >
                   <EntitySelect
                     onSubmit={(selected: Array<Entity>) => this.onSelectSource(selected?.[0])}
                     values={source ? [source] : []}
@@ -230,7 +236,10 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                 </FormGroup>
               </div>
               <div style={{ flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em' }}>
-                <FormGroup label={intl.formatMessage(messages.type)} helperText={this.getTypeDescription()}>
+                <FormGroup
+                  label={intl.formatMessage(messages.type)}
+                  helperText={this.getTypeDescription()}
+                >
                   <EdgeTypeSelect
                     items={types}
                     value={type}
@@ -240,7 +249,10 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                 </FormGroup>
               </div>
               <div style={{ flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em' }}>
-                <FormGroup label={intl.formatMessage(messages.target)} helperText={this.getTargetLabel()}>
+                <FormGroup
+                  label={intl.formatMessage(messages.target)}
+                  helperText={this.getTargetLabel()}
+                >
                   <EntitySelect
                     onSubmit={(selected: Array<Entity>) => this.onSelectTarget(selected?.[0])}
                     values={target ? [target] : []}
@@ -252,7 +264,7 @@ export class EdgeCreateDialog extends React.Component<IEdgeCreateDialogProps, IE
                 </FormGroup>
               </div>
               <div style={{ flexGrow: 0, flexShrink: 1, flexBasis: '1%' }}>
-                <FormGroup label='&nbsp;'>
+                <FormGroup label="&nbsp;">
                   <Button
                     onClick={this.onReverse}
                     disabled={!this.isReversible()}

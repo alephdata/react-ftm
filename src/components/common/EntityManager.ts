@@ -4,38 +4,37 @@ import {
   Model,
   Namespace,
   Schema,
-  IEntityDatum
-} from '@alephdata/followthemoney'
+  IEntityDatum,
+} from '@alephdata/followthemoney';
 
 import { EntityChanges, EntityChangeUpdate } from 'components/common/types';
 import { matchText } from 'utils';
 
-
 export interface IEntityManagerProps {
-  model?: Model,
-  entities: Array<IEntityDatum>
-  namespace?: Namespace,
-  createEntity?: (entity: IEntityDatum, local?: boolean) => Entity,
-  updateEntity?: (entity: Entity) => void,
-  deleteEntity?: (entityId: string) => void,
-  expandEntity?: (entityId: string, properties?: Array<string>, limit?: number) => Promise<any>
-  getEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>,
-  resolveEntityReference?: (entityId: string) => Entity | undefined,
+  model?: Model;
+  entities: Array<IEntityDatum>;
+  namespace?: Namespace;
+  createEntity?: (entity: IEntityDatum, local?: boolean) => Entity;
+  updateEntity?: (entity: Entity) => void;
+  deleteEntity?: (entityId: string) => void;
+  expandEntity?: (entityId: string, properties?: Array<string>, limit?: number) => Promise<any>;
+  getEntitySuggestions?: (queryText: string, schemata?: Array<Schema>) => Promise<Entity[]>;
+  resolveEntityReference?: (entityId: string) => Entity | undefined;
 }
 
 export class EntityManager {
-  public readonly model: Model
-  public readonly namespace?: Namespace
-  public readonly hasExpand: boolean = false
-  public readonly hasSuggest: boolean = false
-  entities = new Map<string, Entity>()
-  private overload: any = {}
+  public readonly model: Model;
+  public readonly namespace?: Namespace;
+  public readonly hasExpand: boolean = false;
+  public readonly hasSuggest: boolean = false;
+  entities = new Map<string, Entity>();
+  private overload: any = {};
 
   constructor(props?: IEntityManagerProps) {
     if (props) {
       const { model, namespace, ...rest } = props;
-      this.model = model || new Model(defaultModel)
-      this.namespace = namespace
+      this.model = model || new Model(defaultModel);
+      this.namespace = namespace;
       this.overload = rest;
       this.hasExpand = this.overload.expandEntity !== undefined;
       this.hasSuggest = this.overload.getEntitySuggestions !== undefined;
@@ -61,7 +60,7 @@ export class EntityManager {
       if (properties) {
         Object.entries(properties).forEach(([prop, value]: [string, any]) => {
           if (Array.isArray(value)) {
-            value.forEach(v => entity.setProperty(prop, v));
+            value.forEach((v) => entity.setProperty(prop, v));
           } else {
             entity.setProperty(prop, value);
           }
@@ -80,14 +79,14 @@ export class EntityManager {
 
   getEntities(ids?: Array<string>): Entity[] {
     if (ids) {
-      return ids.map(id => this.getEntity(id)).filter(e => e !== undefined) as Entity[];
+      return ids.map((id) => this.getEntity(id)).filter((e) => e !== undefined) as Entity[];
     } else {
       return Array.from(this.entities.values());
     }
   }
 
   getThingEntities(): Entity[] {
-    return this.getEntities().filter(e => !e.schema.edge);
+    return this.getEntities().filter((e) => !e.schema.edge);
   }
 
   getEntity(entityId: string): Entity | undefined {
@@ -99,11 +98,11 @@ export class EntityManager {
   }
 
   addEntities(entities: Array<Entity>) {
-    entities.map(e => this.entities.set(e.id, e));
+    entities.map((e) => this.entities.set(e.id, e));
   }
 
   updateEntity(entity: Entity) {
-    this.entities.set(entity.id, entity)
+    this.entities.set(entity.id, entity);
 
     if (this.overload?.updateEntity) {
       this.overload.updateEntity(entity);
@@ -113,12 +112,12 @@ export class EntityManager {
   }
 
   deleteEntities(entityIds: Array<string>) {
-    entityIds.forEach(entityId => {
+    entityIds.forEach((entityId) => {
       this.entities.delete(entityId);
       if (this.overload?.deleteEntity) {
         this.overload.deleteEntity(entityId);
       }
-    })
+    });
   }
 
   async expandEntity(entityId: string, properties?: Array<string>, limit?: number) {
@@ -140,11 +139,11 @@ export class EntityManager {
         const schemaMatch = !schemata || e.schema.isAny(schemata);
         const textMatch = matchText(e.getCaption() || '', queryText);
         return schemaMatch && textMatch;
-      }
+      };
 
       const entities = this.getEntities()
         .filter(predicate)
-        .sort((a, b) => a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1);
+        .sort((a, b) => (a.getCaption().toLowerCase() > b.getCaption().toLowerCase() ? 1 : -1));
 
       return new Promise((resolve) => resolve(entities));
     }
@@ -160,22 +159,33 @@ export class EntityManager {
   applyEntityChanges(entityChanges: EntityChanges, factor: number) {
     const { created, updated, deleted } = entityChanges;
 
-    created && created.forEach((entity: Entity) => factor > 0 ? this.createEntity(entity) : this.deleteEntities([entity.id]));
-    updated && updated.forEach(({prev, next}: EntityChangeUpdate) => factor > 0 ? this.updateEntity(next) : this.updateEntity(prev));
-    deleted && deleted.forEach((entity: Entity) => factor > 0 ? this.deleteEntities([entity.id]) : this.createEntity(entity));
+    created &&
+      created.forEach((entity: Entity) =>
+        factor > 0 ? this.createEntity(entity) : this.deleteEntities([entity.id])
+      );
+    updated &&
+      updated.forEach(({ prev, next }: EntityChangeUpdate) =>
+        factor > 0 ? this.updateEntity(next) : this.updateEntity(prev)
+      );
+    deleted &&
+      deleted.forEach((entity: Entity) =>
+        factor > 0 ? this.deleteEntities([entity.id]) : this.createEntity(entity)
+      );
   }
 
   toJSON(): Array<IEntityDatum> {
-    return this.getEntities().map(entity => entity.toJSON());
+    return this.getEntities().map((entity) => entity.toJSON());
   }
 
   static fromJSON(props: any, entitiesData: Array<IEntityDatum>): EntityManager {
     const entityManager = new EntityManager(props);
 
-    const entities = entitiesData.map((entityDatum: IEntityDatum) => new Entity(entityManager.model, entityDatum));
+    const entities = entitiesData.map(
+      (entityDatum: IEntityDatum) => new Entity(entityManager.model, entityDatum)
+    );
 
     entityManager.addEntities(entities);
 
-    return entityManager
+    return entityManager;
   }
 }
