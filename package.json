@@ -37,6 +37,8 @@
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
     "@formatjs/cli": "^4.7.1",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^12.1.5",
     "@types/bezier-js": "^4.1.0",
     "@types/d3": "^7.1.0",
     "@types/dagre": "^0.7.47",
