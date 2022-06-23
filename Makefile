@@ -24,3 +24,6 @@ publish:
 
 clean:
 	rm -rf node_modules dist
+
+test:
+	npm run test
