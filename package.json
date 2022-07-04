@@ -105,7 +105,7 @@
     "react-countup": "^6.1.0",
     "react-datasheet": "^1.4.9",
     "react-draggable": "^4.4.4",
-    "recharts": "^2.1.9",
+    "recharts": "^2.1.12",
     "truncate": "^3.0.0"
   },
   "bugs": {
