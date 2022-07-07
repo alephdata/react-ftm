@@ -112,7 +112,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
       content = <Spinner className="EntityCreateDialog__spinner" size={SpinnerSize.SMALL} />;
     } else if (filteredItems.length === 0) {
       content = (
-        <li className="bp3-menu-item bp3-disabled error-text">
+        <li className="bp4-menu-item bp4-disabled error-text">
           {noResultsText || intl.formatMessage(messages.no_results)}
         </li>
       );

@@ -14,7 +14,7 @@ class SchemaIcon extends React.Component<ISchemaCommonProps> {
     const { className, schema, size = 16 } = this.props;
     const iconPaths = IconRegistry.getSchemaIcon(schema);
     return (
-      <span className={c('SchemaIcon bp3-icon', className)}>
+      <span className={c('SchemaIcon bp4-icon', className)}>
         <svg viewBox={'0 0 25 25'} height={size} width={size}>
           {iconPaths.map((d, i) => (
             <path key={i} d={d} />

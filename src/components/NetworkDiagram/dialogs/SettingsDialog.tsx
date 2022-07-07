@@ -99,7 +99,7 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
         onClose={() => toggleDialog()}
         className="SettingsDialog"
       >
-        <div className="bp3-dialog-body">
+        <div className="bp4-dialog-body">
           <div className="SettingsDialog__section">
             <FormGroup
               helperText={intl.formatMessage(messages.helpText)}
@@ -111,8 +111,8 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
             </FormGroup>
           </div>
         </div>
-        <div className="bp3-dialog-footer">
-          <div className="bp3-dialog-footer-actions">
+        <div className="bp4-dialog-footer">
+          <div className="bp4-dialog-footer-actions">
             <Button
               intent={Intent.PRIMARY}
               text={intl.formatMessage(messages.submit)}

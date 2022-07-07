@@ -24,8 +24,8 @@ class Count extends React.PureComponent<ICountProps> {
 
     return (
       <span
-        className={c('Count', 'bp3-tag', 'bp3-small', 'bp3-minimal', 'bp3-round', {
-          'bp3-skeleton': showLoading,
+        className={c('Count', 'bp4-tag', 'bp4-small', 'bp4-minimal', 'bp4-round', {
+          'bp4-skeleton': showLoading,
         })}
       >
         {showLoading && <span>--</span>}

@@ -216,7 +216,7 @@ class PropertyValues extends React.PureComponent<IPropertyValuesProps, IProperty
       <Button
         minimal
         small
-        className="more-text bp3-text-muted"
+        className="more-text bp4-text-muted"
         onClick={this.toggleTruncateShowAll}
         text={intl.formatMessage(messages[truncateShowAll ? 'truncate_hide' : 'truncate_show'], {
           truncateCount: values.length - truncate,

@@ -44,7 +44,7 @@ class Transliterate extends React.PureComponent<ITransliterateProps> {
     return (
       <>
         <Tooltip
-          popoverClassName="Transliterate__popover bp3-minimal bp3-small"
+          popoverClassName="Transliterate__popover bp4-minimal bp4-small"
           onOpening={this.onOpen}
           onClosing={this.onClose}
           content={
@@ -56,7 +56,7 @@ class Transliterate extends React.PureComponent<ITransliterateProps> {
             </>
           }
         >
-          <span className="Transliterate bp3-tooltip2-indicator">
+          <span className="Transliterate bp4-tooltip2-indicator">
             {truncate ? truncateText(value, truncate) : value}
           </span>
         </Tooltip>

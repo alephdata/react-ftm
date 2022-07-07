@@ -35,7 +35,7 @@ class EntityLabel extends React.Component<IEntityLabelProps> {
     const caption = entity.getCaption();
     const label = truncate ? truncateText(caption, truncate) : caption;
     return (
-      <span className={c('EntityLabel', { 'bp3-text-muted': !label }, className)} title={caption}>
+      <span className={c('EntityLabel', { 'bp4-text-muted': !label }, className)} title={caption}>
         {icon && <Schema.Icon schema={entity.schema} className="left-icon" size={iconSize} />}
         <span>
           <Transliterate value={label} lookup={transliterate && entity.latinized} />

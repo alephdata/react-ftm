@@ -107,7 +107,7 @@ class TextEdit extends React.PureComponent<ITextEditProps, ITextEditState> {
         >
           <FormGroup>
             {!forceMultiEdit && numVals <= 1 && (
-              <div className="bp3-input-group">
+              <div className="bp4-input-group">
                 <TextArea
                   className="TextEdit__singleInput"
                   inputRef={(ref) => (this.singleInputRef = ref)}

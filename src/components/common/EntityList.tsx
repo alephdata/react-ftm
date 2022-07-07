@@ -24,11 +24,11 @@ export class EntityList extends React.PureComponent<IEntityListProps> {
     return (
       <li className="EntityList__item" key={entity.id}>
         <div
-          className="EntityList__item__left bp3-menu-item"
+          className="EntityList__item__left bp4-menu-item"
           onClick={() => onEntitySelected && onEntitySelected(entity)}
         >
           <Schema.Icon schema={entity.schema} />
-          <div className="bp3-fill">{entity.getCaption()}</div>
+          <div className="bp4-fill">{entity.getCaption()}</div>
         </div>
         {onEntityRemoved && (
           <div className="EntityList__item__right" onClick={() => onEntityRemoved(entity)}>

@@ -85,12 +85,12 @@ export class GroupingCreateDialog extends React.Component<
         isProcessing={isProcessing}
       >
         <form onSubmit={this.onSubmit}>
-          <div className="bp3-dialog-body">
+          <div className="bp4-dialog-body">
             <ControlGroup fill>
               <InputGroup
                 autoFocus
                 large
-                className="bp3-fill"
+                className="bp4-fill"
                 value={this.state.label}
                 onChange={this.onChangeLabel}
                 placeholder={intl.formatMessage(messages.placeholder)}

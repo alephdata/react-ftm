@@ -218,7 +218,7 @@ export class EdgeCreateDialog extends React.Component<
         className="large"
       >
         <form onSubmit={this.onSubmit}>
-          <div className="bp3-dialog-body">
+          <div className="bp4-dialog-body">
             <div style={{ flex: 1, display: 'flex', flexFlow: 'row' }}>
               <div style={{ flexGrow: 1, flexShrink: 1, flexBasis: 'auto', paddingRight: '1em' }}>
                 <FormGroup
@@ -274,8 +274,8 @@ export class EdgeCreateDialog extends React.Component<
               </div>
             </div>
           </div>
-          <div className="bp3-dialog-footer">
-            <div className="bp3-dialog-footer-actions">
+          <div className="bp4-dialog-footer">
+            <div className="bp4-dialog-footer-actions">
               <Button
                 intent={Intent.PRIMARY}
                 disabled={!this.isValid()}

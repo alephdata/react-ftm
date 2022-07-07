@@ -158,7 +158,7 @@ export class EntityCreateDialog extends React.Component<
             !suggestions.length && inputText.length && this.onInputSubmit();
           }}
         >
-          <div className="bp3-dialog-body">
+          <div className="bp4-dialog-body">
             <ControlGroup fill>
               <SchemaSelect
                 model={model}
