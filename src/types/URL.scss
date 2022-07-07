@@ -1,5 +1,7 @@
+@import 'src/variables.scss';
+
 .URL {
-  .bp4-icon {
+  .#{$bp-ns}-icon {
     margin-right: 5px;
   }
 }

@@ -1,8 +1,8 @@
 @import 'src/variables.scss';
 
 .EntitySelect {
-  .bp4-popover2-content,
-  .bp4-menu {
+  .#{$bp-ns}-popover2-content,
+  .#{$bp-ns}-menu {
     background: white !important;
     color: $black-70 !important;
     fill: $black-70 !important;

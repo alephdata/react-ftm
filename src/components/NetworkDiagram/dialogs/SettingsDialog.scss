@@ -1,18 +1,20 @@
+@import 'src/variables.scss';
+
 .SettingsDialog {
   &__type-select {
     columns: 2;
     margin-top: 5px;
 
-    .bp4-control {
+    .#{$bp-ns}-control {
       margin-top: 0;
     }
   }
 
-  .bp4-label {
+  .#{$bp-ns}-label {
     font-weight: bold !important;
   }
 
-  .bp4-form-group .bp4-form-helper-text {
+  .#{$bp-ns}-form-group .#{$bp-ns}-form-helper-text {
     margin-top: 15px;
   }
 }
