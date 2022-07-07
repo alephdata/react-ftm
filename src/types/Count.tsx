@@ -4,6 +4,7 @@ import Numeric from './Numeric';
 import c from 'classnames';
 
 import './Count.scss';
+import { Classes } from '@blueprintjs/core';
 
 interface ICountProps extends WrappedComponentProps {
   count: number;
@@ -24,8 +25,8 @@ class Count extends React.PureComponent<ICountProps> {
 
     return (
       <span
-        className={c('Count', 'bp4-tag', 'bp4-small', 'bp4-minimal', 'bp4-round', {
-          'bp4-skeleton': showLoading,
+        className={c('Count', Classes.TAG, Classes.SMALL, Classes.MINIMAL, Classes.ROUND, {
+          [Classes.SKELETON]: showLoading,
         })}
       >
         {showLoading && <span>--</span>}

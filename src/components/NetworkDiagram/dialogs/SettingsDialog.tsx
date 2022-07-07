@@ -2,7 +2,7 @@ import * as React from 'react';
 import sortBy from 'lodash/sortBy';
 import { PropertyType } from '@alephdata/followthemoney';
 import { defineMessages } from 'react-intl';
-import { Intent, FormGroup, Checkbox, Dialog, Button } from '@blueprintjs/core';
+import { Intent, FormGroup, Checkbox, Dialog, Button, Classes } from '@blueprintjs/core';
 
 import { GraphContext } from 'NetworkDiagram/GraphContext';
 import { ISettingsData, Settings } from 'NetworkDiagram/layout';
@@ -99,7 +99,7 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
         onClose={() => toggleDialog()}
         className="SettingsDialog"
       >
-        <div className="bp4-dialog-body">
+        <div className={Classes.DIALOG_BODY}>
           <div className="SettingsDialog__section">
             <FormGroup
               helperText={intl.formatMessage(messages.helpText)}
@@ -111,8 +111,8 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps, ISetti
             </FormGroup>
           </div>
         </div>
-        <div className="bp4-dialog-footer">
-          <div className="bp4-dialog-footer-actions">
+        <div className={Classes.DIALOG_FOOTER}>
+          <div className={Classes.DIALOG_FOOTER_ACTIONS}>
             <Button
               intent={Intent.PRIMARY}
               text={intl.formatMessage(messages.submit)}

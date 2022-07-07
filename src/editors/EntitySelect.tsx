@@ -3,7 +3,17 @@ import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { defaultModel, Entity as FTMEntity, Model } from '@alephdata/followthemoney';
 import { Entity, Schema } from 'types';
 import { EntityCreateDialog } from 'components/common';
-import { Alignment, Button, Intent, Menu, MenuDivider, MenuItem, Spinner, SpinnerSize } from '@blueprintjs/core';
+import {
+  Alignment,
+  Button,
+  Classes,
+  Intent,
+  Menu,
+  MenuDivider,
+  MenuItem,
+  Spinner,
+  SpinnerSize,
+} from '@blueprintjs/core';
 import { ItemRenderer, MultiSelect, Select } from '@blueprintjs/select';
 import { ITypeEditorProps } from './common';
 
@@ -112,7 +122,7 @@ class EntitySelect extends React.Component<IEntityTypeProps, IEntitySelectState>
       content = <Spinner className="EntityCreateDialog__spinner" size={SpinnerSize.SMALL} />;
     } else if (filteredItems.length === 0) {
       content = (
-        <li className="bp4-menu-item bp4-disabled error-text">
+        <li className={`${Classes.MENU_ITEM} ${Classes.DISABLED} error-text`}>
           {noResultsText || intl.formatMessage(messages.no_results)}
         </li>
       );
