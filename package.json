@@ -118,7 +118,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "node_modules/(?!d3-force|d3-quadtree|d3-dispatch|d3-timer|d3-scale|d3-array|d3-interpolate|d3-color|d3-format|d3-time|internmap)"
+      "node_modules/(?!d3-force|d3-quadtree|d3-dispatch|d3-timer|d3-scale|d3-array|d3-interpolate|d3-color|d3-format|d3-time|internmap|react-colorful)"
     ],
     "testEnvironment": "jsdom",
     "setupFilesAfterEnv": [
