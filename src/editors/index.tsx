@@ -1,6 +1,6 @@
 import { withTranslator } from 'utils';
 
-import ColorPicker from './ColorPicker';
+import ColorPickerBase from './ColorPicker';
 import EdgeTypeSelect from './EdgeTypeSelect';
 import EntitySelectBase from './EntitySelect';
 import EnumValueSelectBase from './EnumValueSelect';
@@ -15,6 +15,7 @@ const EnumValueSelect = withTranslator(EnumValueSelectBase);
 const PropertyEditor = withTranslator(PropertyEditorBase);
 const PropertySelect = withTranslator(PropertySelectBase);
 const TextEdit = withTranslator(TextEditBase);
+const ColorPicker = withTranslator(ColorPickerBase);
 
 export {
   ColorPicker,
