@@ -43,7 +43,7 @@
     "@types/d3": "^7.1.0",
     "@types/dagre": "^0.7.47",
     "@types/google-libphonenumber": "^7.4.23",
-    "@types/jest": "^28.1.1",
+    "@types/jest": "^28.1.6",
     "@types/lodash": "^4.14.178",
     "@types/node": "^17.0.43",
     "@types/numeral": "^2.0.2",
@@ -63,7 +63,8 @@
     "eslint-plugin-jsx-a11y": "^6.6.1",
     "git": "^0.1.5",
     "html-webpack-plugin": "^5.2.0",
-    "jest": "^27.4.7",
+    "jest": "^28.1.3",
+    "jest-environment-jsdom": "^28.1.3",
     "json-loader": "^0.5.7",
     "prettier": "^2.7.1",
     "process": "^0.11.10",
@@ -117,7 +118,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "node_modules/(?!d3-force|d3-quadtree|d3-dispatch|d3-timer|d3-scale|d3-array|d3-interpolate|d3-color|d3-format|d3-time|internmap)"
+      "node_modules/(?!d3-force|d3-quadtree|d3-dispatch|d3-timer|d3-scale|d3-array|d3-interpolate|d3-color|d3-format|d3-time|internmap|react-colorful)"
     ],
     "testEnvironment": "jsdom",
     "setupFilesAfterEnv": [
