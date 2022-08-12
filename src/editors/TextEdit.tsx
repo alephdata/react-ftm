@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Values } from '@alephdata/followthemoney';
-import { Button, FormGroup, TagInput, TextArea } from '@blueprintjs/core';
+import { Button, Classes, FormGroup, TagInput, TextArea } from '@blueprintjs/core';
 import { ITypeEditorProps } from './common';
 
 import './TextEdit.scss';
@@ -107,7 +107,7 @@ class TextEdit extends React.PureComponent<ITextEditProps, ITextEditState> {
         >
           <FormGroup>
             {!forceMultiEdit && numVals <= 1 && (
-              <div className="bp3-input-group">
+              <div className={Classes.INPUT_GROUP}>
                 <TextArea
                   className="TextEdit__singleInput"
                   inputRef={(ref) => (this.singleInputRef = ref)}

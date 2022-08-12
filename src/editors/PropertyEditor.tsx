@@ -3,6 +3,7 @@ import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Entity, Model, Property, Schema, Values } from '@alephdata/followthemoney';
 import { CountrySelect, TopicSelect, EntitySelect, TextEdit } from './';
 import { validate } from 'utils';
+import { Classes } from '@blueprintjs/core';
 
 const TAB_KEY = 9;
 
@@ -88,7 +89,7 @@ class PropertyEditor extends React.Component<IPropertyEditorProps, IPropertyEdit
     if (
       target &&
       !this.ref?.current?.contains(target) &&
-      !target.matches('.bp3-portal *, .bp3-overlay *')
+      !target.matches(`.${Classes.PORTAL} *, .${Classes.OVERLAY} *`)
     ) {
       e.preventDefault();
       e.stopPropagation();

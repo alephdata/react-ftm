@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { defineMessages, WrappedComponentProps } from 'react-intl';
-import { Alignment, Button, ControlGroup, InputGroup } from '@blueprintjs/core';
+import { Alignment, Button, Classes, ControlGroup, InputGroup } from '@blueprintjs/core';
 import { Entity, Model, Schema as FTMSchema, Values } from '@alephdata/followthemoney';
 
 import { EntitySelect, SchemaSelect } from 'editors';
@@ -158,7 +158,7 @@ export class EntityCreateDialog extends React.Component<
             !suggestions.length && inputText.length && this.onInputSubmit();
           }}
         >
-          <div className="bp3-dialog-body">
+          <div className={Classes.DIALOG_BODY}>
             <ControlGroup fill>
               <SchemaSelect
                 model={model}
