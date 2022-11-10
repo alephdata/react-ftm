@@ -1,5 +1,11 @@
 # React-ftm
 
+***
+
+**November 2022: react-ftm has been deprecated and will not receive any further updates. As a small team with limited resources, we are unfortunately unable to continue react-ftm as a standalone library.**
+
+***
+
 `React-ftm` contains React components for the display, visualisation and
 editing of [FollowTheMoney](https://docs.alephdata.org/developers/followthemoney)
 entities. This includes:
