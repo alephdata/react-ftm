@@ -1,6 +1,6 @@
 import React from 'react';
 import { defineMessages, FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
-import { Button } from '@blueprintjs/core';
+import { Button, Classes } from '@blueprintjs/core';
 import {
   Values,
   Value,
@@ -216,7 +216,7 @@ class PropertyValues extends React.PureComponent<IPropertyValuesProps, IProperty
       <Button
         minimal
         small
-        className="more-text bp3-text-muted"
+        className={`more-text ${Classes.TEXT_MUTED}`}
         onClick={this.toggleTruncateShowAll}
         text={intl.formatMessage(messages[truncateShowAll ? 'truncate_hide' : 'truncate_show'], {
           truncateCount: values.length - truncate,

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { defineMessages } from 'react-intl';
-import { Menu, MenuDivider, MenuItem, Spinner } from '@blueprintjs/core';
+import { Menu, MenuDivider, MenuItem, Spinner, SpinnerSize } from '@blueprintjs/core';
 
 import { modes } from 'NetworkDiagram/utils';
 import { GraphContext } from 'NetworkDiagram/GraphContext';
@@ -101,7 +101,7 @@ export class VertexMenu extends React.Component<IVertexMenuProps> {
     const { expandResults } = contents;
 
     if (!expandResults) {
-      return <Spinner size={Spinner.SIZE_SMALL} />;
+      return <Spinner size={SpinnerSize.SMALL} />;
     }
 
     const totalCount = expandResults.reduce(
